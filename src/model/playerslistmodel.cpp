@@ -47,21 +47,21 @@ QVariant PlayersListModel::headerData(int section, Qt::Orientation orientation, 
     case WinsColumn:
         return tr("#Wins");
     case ContraCountColumn:
-        return tr("#Contra Rounds");
+        return tr("#Contra");
     case ContraPercentageColumn:
-        return tr("%Contra Rounds");
+        return tr("%");
     case ContraWinsColumn:
         return tr("#Contra Wins");
     case ContraWinsPercentageColumn:
-        return tr("%Contra Wins");
+        return tr("%");
     case ReCountColumn:
         return tr("#Re Rounds");
     case RePercentageColumn:
-        return tr("%Re Rounds");
+        return tr("%");
     case ReWinsColumn:
         return tr("#Re Wins");
     case ReWinsPercentageColumn:
-        return tr("%Re Wins");
+        return tr("%");
     case HochzeitenCountColumn:
         return tr("#Hochzeiten");
     case SchmeissereienCountColumn:
@@ -93,11 +93,11 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
         case NameColumn:
             return player->name();
         case GenderColumn:
-            return player->gender();
+            return player->genderString();
         case HeightColumn:
-            return player->height();
+            return ifPositive(player->height());
         case WeightColumn:
-            return player->weight();
+            return ifPositive(player->weight());
         case GameCountColumn:
             return player->games().size();
         case GamePointsColumn:
@@ -119,19 +119,19 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
         case ContraCountColumn:
             return player->contraRounds().size();
         case ContraPercentageColumn:
-            return player->contraPercentage();
+            return percentageString(player->contraPercentage());
         case ContraWinsColumn:
             return player->contraWins().size();
         case ContraWinsPercentageColumn:
-            return player->contraWinsPercentage();
+            return percentageString(player->contraWinsPercentage());
         case ReCountColumn:
             return player->re1Rounds().size() + player->re2Rounds().size();
         case RePercentageColumn:
-            return player->rePercentage();
+            return percentageString(player->rePercentage());
         case ReWinsColumn:
             return player->reWins().size();
         case ReWinsPercentageColumn:
-            return player->reWinsPercentage();
+            return percentageString(player->reWinsPercentage());
         case HochzeitenCountColumn:
             return player->hochzeitRounds().size();
         case SchmeissereienCountColumn:
@@ -160,6 +160,22 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
             return QVariant();
         }
     }
+
+    return QVariant();
+}
+
+QVariant PlayersListModel::percentageString(double percentage) const
+{
+    if(percentage < 0)
+        return QVariant();
+
+    return QString("%1 %").arg(percentage * 100, 4, 'f', 2);
+}
+
+QVariant PlayersListModel::ifPositive(int number) const
+{
+    if(number > 0)
+        return number;
 
     return QVariant();
 }

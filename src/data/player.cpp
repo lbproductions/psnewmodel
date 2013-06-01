@@ -85,6 +85,20 @@ void Player::setGender(const Gender &gender)
     m_gender = gender;
 }
 
+QString Player::genderString() const
+{
+    switch(m_gender) {
+    case Male:
+        return tr("male");
+    case Female:
+        return tr("female");
+    case UnkownGender:
+    default:
+        break;
+    }
+    return tr("");
+}
+
 QString Player::name() const
 {
     return m_name;

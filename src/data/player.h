@@ -84,6 +84,7 @@ public:
 
     Gender gender() const;
     void setGender(const Gender &gender);
+    QString genderString() const;
 
     int weight() const;
     void setWeight(int weight);
