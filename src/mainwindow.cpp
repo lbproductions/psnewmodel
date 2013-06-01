@@ -17,6 +17,8 @@ MainWindow::MainWindow(QWidget *parent) :
     model->setSourceModel(playerModel);
 
     ui->treeViewPlayers->setModel(model);
+
+    QTimer::singleShot(0, this, SLOT(showMaximized()));
 }
 
 MainWindow::~MainWindow()
