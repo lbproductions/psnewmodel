@@ -295,26 +295,16 @@ double Player::reWinsPercentage() const
 QList<QSharedPointer<Round> > Player::rounds() const
 {
     QList<QSharedPointer<Round> > result;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-
-    foreach(QSharedPointer<Game> game, games()) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->playingPlayers().contains(sharedThis))
-                result.append(round);
-        }
-    }
+    result.append(reRounds());
+    result.append(contraRounds());
     return result;
 }
 
 QList<QSharedPointer<Round> > Player::contraRounds() const
 {
-    QList<QSharedPointer<Round> > result;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Round> round, rounds()) {
-        if(round->contraPlayers().contains(sharedThis)) {
-            result.append(round);
-        }
-    }
+    QList<QSharedPointer<Round> > result = contra1Rounds();
+    result.append(contra2Rounds());
+    result.append(contra3Rounds());
     return result;
 }
 

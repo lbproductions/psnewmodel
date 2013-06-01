@@ -155,11 +155,17 @@ QSharedPointer<Player> Round::cardMixer() const
 
 QList<QSharedPointer<Player> > Round::playingPlayers() const
 {
+    QList<QSharedPointer<Player> > result;
+    result.append(rePlayers());
+    result.append(contraPlayers());
+    if(result.size() == 4)
+        return result;
+
+    result.clear();
+
     QList<QSharedPointer<Player> > ps = game()->players();
     if(ps.isEmpty())
         return QList<QSharedPointer<Player> >();
-
-    QList<QSharedPointer<Player> > result;
 
     int countPlayers = ps.size();
     int cardMixerPos = cardMixerPosition();
@@ -384,29 +390,22 @@ QList<QSharedPointer<Player> > Round::rePlayers() const
     QList<QSharedPointer<Player> > result;
     result.append(re1Player());
 
-    if(!isSolo()) {
-        result.append(re2Player());
-    }
+    if(isSolo())
+        return result;
 
-    Q_ASSERT(result.size() == 1 || result.size() == 2);
+    result.append(re2Player());
     return result;
 }
 
 QList<QSharedPointer<Player> > Round::contraPlayers() const
 {    
     QList<QSharedPointer<Player> > result;
-    QSharedPointer<Player> re1 = re1Player();
-    if(!re1)
-        return QList<QSharedPointer<Player> >();
+    result << contra1Player() << contra2Player();
 
-    QSharedPointer<Player> re2 = re2Player();
+    if(!isSolo())
+        return result;
 
-    foreach(QSharedPointer<Player> p, playingPlayers()) {
-        if(re1.data() != p.data() && re2.data() != p.data())
-            result.append(p);
-    }
-
-    Q_ASSERT(result.size() == 2 || result.size() == 3);
+    result.append(contra3Player());
     return result;
 }
 
