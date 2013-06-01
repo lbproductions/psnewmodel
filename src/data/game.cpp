@@ -382,10 +382,10 @@ int Game::placement(QSharedPointer<Player> player) const
 int Game::placementAfterRounds(QSharedPointer<Player> player, int roundNumber) const
 {
     QList<QSharedPointer<Round> > rs = rounds();
-    if(roundNumber - 1 <= rs.size())
+    if(roundNumber >= rs.size())
         return -1;
 
-    return rs.at(roundNumber - 1)->placement(player);
+    return rs.at(roundNumber)->placement(player);
 }
 
 double Game::averagePlacement(QSharedPointer<Player> player) const
