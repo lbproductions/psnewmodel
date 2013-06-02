@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/general">
+        <file>state-finished.png</file>
+        <file>state-paused.png</file>
+        <file>state-running.png</file>
+    </qresource>
+</RCC>

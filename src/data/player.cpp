@@ -5,18 +5,20 @@
 #include "game.h"
 #include "round.h"
 #include "schmeisserei.h"
+#include "playerstatistics.h"
+#include "league.h"
 
 #include <QPersistence.h>
-
-
 
 Player::Player(QObject *parent) :
     QObject(parent),
     m_gender(UnkownGender),
     m_weight(-1),
     m_height(-1),
+    m_allGamesStatistics(new PlayerStatistics()),
     m_places("places", this),
     m_liveDrinks("liveDrinks", this),
+    m_leagues("leagues", this),
     m_games("games",this),
     m_schmeissereien("schmeissereien",this),
     m_hochzeitRounds("hochzeitRounds",this),
@@ -29,6 +31,7 @@ Player::Player(QObject *parent) :
     m_contra2Rounds("contra2Rounds",this),
     m_contra3Rounds("contra3Rounds",this)
 {
+    m_allGamesStatistics->setPlayer(this);
 }
 
 Player::~Player()
@@ -85,6 +88,17 @@ void Player::setGender(const Gender &gender)
     m_gender = gender;
 }
 
+QList<QSharedPointer<League> > Player::leagues() const
+{
+    return m_leagues.resolveList();
+}
+
+void Player::setLeagues(const QList<QSharedPointer<League> > &arg)
+{
+    m_leagues.relate(arg);
+}
+
+
 QString Player::genderString() const
 {
     switch(m_gender) {
@@ -114,12 +128,6 @@ QList<QSharedPointer<Place> > Player::places() const
     return m_places.resolveList();
 }
 
-void Player::addPlace(QSharedPointer<Place> place)
-{
-    m_places.relate(place);
-    place->addPlayer(Qp::sharedFrom<Player>(this));
-}
-
 void Player::setPlaces(const QList<QSharedPointer<Place> > &places)
 {
     m_places.clear();
@@ -143,110 +151,42 @@ QList<QSharedPointer<Game> > Player::games() const
 
 int Player::gamePoints() const
 {
-    int points = 0;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Game> game, games()) {
-        points += game->totalPoints(sharedThis);
-    }
-    return points;
+    return m_allGamesStatistics->gamePoints();
 }
 
 int Player::points() const
 {
-    int points = 0;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Game> game, games()) {
-        int playerCount = game->players().size();
-        int zaehler = playerCount - game->placement(sharedThis);
-        int nenner = playerCount - 1;
-        points += 100 * zaehler / nenner;
-    }
-    return points;
+    return m_allGamesStatistics->points();
 }
 
 double Player::average() const
 {
-    int gameCount = games().size();
-    if(gameCount == 0)
-        return 0.0;
-
-    return (double) points() / (double) gameCount;
+    return m_allGamesStatistics->average();
 }
 
 int Player::wins() const
 {
-    int wins = 0;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Game> game, games()) {
-        QList<QSharedPointer<Player> > players = game->playersSortedByPlacement();
-        if(players.isEmpty())
-            continue;
-
-        if(players.first() == sharedThis)
-            ++wins;
-    }
-    return wins;
+    return m_allGamesStatistics->wins().size();
 }
 
 int Player::losses() const
 {
-    int losses = 0;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Game> game, games()) {
-        QList<QSharedPointer<Player> > players = game->playersSortedByPlacement();
-        if(players.isEmpty())
-            continue;
-
-        if(players.last() == sharedThis)
-            ++losses;
-    }
-    return losses;
+    return m_allGamesStatistics->losses().size();
 }
 
 double Player::averagePlacement() const
 {
-    int gameCount = games().size();
-    if(gameCount == 0)
-        return 0.0;
-
-    double result = 0;
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Game> game, games()) {
-        result += game->placement(sharedThis);
-    }
-    return result / (double) gameCount;
-}
-
-bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2) {
-    return g1->creationTime() > g2->creationTime();
+    return m_allGamesStatistics->averagePlacement();
 }
 
 QSharedPointer<Game> Player::lastGame() const
 {
-    QList<QSharedPointer<Game> > gs = games();
-    if(gs.isEmpty())
-        return QSharedPointer<Game>();
-
-    qSort(gs.begin(), gs.end(), &sortGamesByDate);
-
-    return gs.first();
+    return m_allGamesStatistics->lastGame();
 }
 
 QSharedPointer<Game> Player::lastWin() const
 {
-    QList<QSharedPointer<Game> > gs = games();
-    if(gs.isEmpty())
-        return QSharedPointer<Game>();
-
-    qSort(gs.begin(), gs.end(), &sortGamesByDate);
-
-    QSharedPointer<Player> sharedThis = Qp::sharedFrom<Player>(this);
-    foreach(QSharedPointer<Game> game, gs) {
-        if(game->placement(sharedThis) == 1)
-            return game;
-    }
-
-    return QSharedPointer<Game>();
+    return m_allGamesStatistics->lastWin();
 }
 
 void Player::setGames(const QList<QSharedPointer<Game> > &games)
@@ -279,31 +219,17 @@ QList<QSharedPointer<Round> > Player::reRounds() const
 
 double Player::rePercentage() const
 {
-    int roundCount = rounds().size();
-    if(roundCount == 0)
-        return -1.0;
-
-    return (double) reRounds().size() / (double) roundCount;
+    return m_allGamesStatistics->rePercentage();
 }
 
 QList<QSharedPointer<Round> > Player::reWins() const
 {
-    QList<QSharedPointer<Round> > result;
-    foreach(QSharedPointer<Round> round, reRounds()) {
-        if(round->winnerParty() == Round::Re) {
-            result.append(round);
-        }
-    }
-    return result;
+    return m_allGamesStatistics->reWins();
 }
 
 double Player::reWinsPercentage() const
 {
-    int roundCount = reRounds().size();
-    if(roundCount == 0)
-        return -1.0;
-
-    return (double) reWins().size() / (double) roundCount;
+    return m_allGamesStatistics->reWinsPercentage();
 }
 
 QList<QSharedPointer<Round> > Player::rounds() const
@@ -324,56 +250,32 @@ QList<QSharedPointer<Round> > Player::contraRounds() const
 
 double Player::contraPercentage() const
 {
-    int roundCount = rounds().size();
-    if(roundCount == 0)
-        return -1.0;
-
-    return (double) contraRounds().size() / (double) roundCount;
+    return m_allGamesStatistics->contraPercentage();
 }
 
 QList<QSharedPointer<Round> > Player::contraWins() const
 {
-    QList<QSharedPointer<Round> > result;
-    foreach(QSharedPointer<Round> round, contraRounds()) {
-        if(round->winnerParty() == Round::Contra) {
-            result.append(round);
-        }
-    }
-    return result;
+    return m_allGamesStatistics->contraWins();
 }
 
 double Player::contraWinsPercentage() const
 {
-    int roundCount = contraRounds().size();
-    if(roundCount == 0)
-        return -1.0;
-
-    return (double) contraWins().size() / (double) roundCount;
+    return m_allGamesStatistics->contraWinsPercentage();
 }
 
 double Player::averagePointsPerRound() const
 {
-    int roundCount = rounds().size();
-    if(roundCount == 0)
-        return 0.0;
-
-    return (double) gamePoints() / (double) roundCount;
+    return m_allGamesStatistics->averagePointsPerRound();
 }
 
 QList<QSharedPointer<Round> > Player::winRounds() const
 {
-    QList<QSharedPointer<Round> > result = reWins();
-    result.append(contraWins());
-    return result;
+    return m_allGamesStatistics->winRounds();
 }
 
 double Player::roundWinsPercentage() const
 {
-    int roundCount = rounds().size();
-    if(roundCount == 0)
-        return 0.0;
-
-    return (double) winRounds().size() / (double) roundCount;
+    return m_allGamesStatistics->roundWinsPercentage();
 }
 
 void Player::setRe2Rounds(const QList<QSharedPointer<Round> > &re2Rounds)
@@ -469,4 +371,9 @@ void Player::setContra2Rounds(QList<QSharedPointer<Round> > arg)
 void Player::setContra3Rounds(QList<QSharedPointer<Round> > arg)
 {
     m_contra3Rounds.relate(arg);
+}
+
+QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
+{
+    return m_allGamesStatistics;
 }

@@ -15,6 +15,8 @@ class Place;
 class LiveDrink;
 class Game;
 class Point;
+class PlayerStatistics;
+class League;
 
 class Player : public QObject
 {
@@ -40,6 +42,7 @@ class Player : public QObject
     Q_PROPERTY(QList<QSharedPointer<Round> > contra1Rounds READ contra1Rounds WRITE setContra1Rounds)
     Q_PROPERTY(QList<QSharedPointer<Round> > contra2Rounds READ contra2Rounds WRITE setContra2Rounds)
     Q_PROPERTY(QList<QSharedPointer<Round> > contra3Rounds READ contra3Rounds WRITE setContra3Rounds)
+    Q_PROPERTY(QList<QSharedPointer<League> > leagues READ leagues WRITE setLeagues)
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:places",
                 "reverserelation=players")
@@ -49,6 +52,8 @@ class Player : public QObject
                 "reverserelation=players")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:schmeissereien",
                 "reverserelation=player")
+    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:leagues",
+                "reverserelation=players")
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:hochzeitRounds",
                 "reverserelation=hochzeitPlayer")
@@ -99,58 +104,48 @@ public:
     void setAvatar(const QPixmap &avatar);
 
     QList<QSharedPointer<Place> > places() const;
-    void addPlace(QSharedPointer<Place> place);
-
     QList<QSharedPointer<LiveDrink> > liveDrinks() const;
+
+    QList<QSharedPointer<League> > leagues() const;
+
     QList<QSharedPointer<Game> > games() const;
+    QSharedPointer<Game> lastGame() const;
+    QSharedPointer<Game> lastWin() const;
+
+    QList<QSharedPointer<Round> > rounds() const;
+    QList<QSharedPointer<Round> > winRounds() const;
+    QList<QSharedPointer<Round> > reRounds() const;
+    QList<QSharedPointer<Round> > reWins() const;
+    QList<QSharedPointer<Round> > contraRounds() const;
+    QList<QSharedPointer<Round> > contraWins() const;
+    QList<QSharedPointer<Round> > hochzeitRounds() const;
+    QList<QSharedPointer<Round> > trumpfabgabeRounds() const;
+    QList<QSharedPointer<Round> > soloRounds() const;
+    QList<QSharedPointer<Round> > schweinereiRounds() const;
+    QList<QSharedPointer<Schmeisserei> > schmeissereien() const;
+
+    double roundWinsPercentage() const;
+    double rePercentage() const;
+    double reWinsPercentage() const;
+    double contraPercentage() const;
+    double contraWinsPercentage() const;
+
+    double averagePointsPerRound() const;
+    double averagePlacement() const;
 
     int gamePoints() const;
+
     int points() const;
     double average() const;
 
     int wins() const;
     int losses() const;
-    double averagePlacement() const;
 
-    QSharedPointer<Game> lastGame() const;
-    QSharedPointer<Game> lastWin() const;
-
-//    DECLARE_MAPPINGATTRIBUTE_IN_CALC(LiveGame*,double,Player,PlayerCalculator,alcPegel)
-
-    QList<QSharedPointer<Schmeisserei> > schmeissereien() const;
-    QList<QSharedPointer<Round> > rounds() const;
-
-    QList<QSharedPointer<Round> > hochzeitRounds() const;
-    QList<QSharedPointer<Round> > trumpfabgabeRounds() const;
-    QList<QSharedPointer<Round> > soloRounds() const;
-    QList<QSharedPointer<Round> > schweinereiRounds() const;
-    QList<QSharedPointer<Round> > re1Rounds() const;
-    QList<QSharedPointer<Round> > re2Rounds() const;
-
-    QList<QSharedPointer<Round> > reRounds() const;
-    double rePercentage() const;
-    QList<QSharedPointer<Round> > reWins() const;
-    double reWinsPercentage() const;
-
-    QList<QSharedPointer<Round> > contraRounds() const;
-    double contraPercentage() const;
-    QList<QSharedPointer<Round> > contraWins() const;
-    double contraWinsPercentage() const;
-
-    double averagePointsPerRound() const;
-    QList<QSharedPointer<Round> > winRounds() const;
-    double roundWinsPercentage() const;
-
-    QList<QSharedPointer<Round> > contra1Rounds() const;
-    void setContra1Rounds(QList<QSharedPointer<Round> > arg);
-
-    QList<QSharedPointer<Round> > contra2Rounds() const;
-    void setContra2Rounds(QList<QSharedPointer<Round> > arg);
-
-    QList<QSharedPointer<Round> > contra3Rounds() const;
-    void setContra3Rounds(QList<QSharedPointer<Round> > arg);
+    QSharedPointer<PlayerStatistics> allGamesStatistics() const;
 
 private:
+    friend class PlayersListModel;
+
     void setPlaces(const QList<QSharedPointer<Place> > &places);
     void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
     void setGames(const QList<QSharedPointer<Game> > &games);
@@ -159,8 +154,18 @@ private:
     void setTrumpfabgabeRounds(const QList<QSharedPointer<Round> > &trumpfabgabeRounds);
     void setSoloRounds(const QList<QSharedPointer<Round> > &soloRounds);
     void setSchweinereiRounds(const QList<QSharedPointer<Round> > &schweinereiRounds);
+    void setLeagues(const QList<QSharedPointer<League> > &arg);
+
+    QList<QSharedPointer<Round> > re1Rounds() const;
+    QList<QSharedPointer<Round> > re2Rounds() const;
+    QList<QSharedPointer<Round> > contra1Rounds() const;
+    QList<QSharedPointer<Round> > contra2Rounds() const;
+    QList<QSharedPointer<Round> > contra3Rounds() const;
     void setRe1Rounds(const QList<QSharedPointer<Round> > &re1Rounds);
     void setRe2Rounds(const QList<QSharedPointer<Round> > &re2Rounds);
+    void setContra1Rounds(QList<QSharedPointer<Round> > arg);
+    void setContra2Rounds(QList<QSharedPointer<Round> > arg);
+    void setContra3Rounds(QList<QSharedPointer<Round> > arg);
 
     int _gender() const;
     void _setGender(int gender);
@@ -172,8 +177,11 @@ private:
     QColor m_color;
     QPixmap m_avatar;
 
+    QSharedPointer<PlayerStatistics> m_allGamesStatistics;
+
     QpWeakRelation<Place> m_places;
     QpWeakRelation<LiveDrink> m_liveDrinks;
+    QpWeakRelation<League> m_leagues;
     QpWeakRelation<Game> m_games;
     QpStrongRelation<Schmeisserei> m_schmeissereien;
 

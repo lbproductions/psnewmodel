@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/sidebar">
+        <file alias="item-background-selected">item-background-selected.png</file>
+        <file>players.png</file>
+        <file>drinks.png</file>
+        <file>games.png</file>
+        <file>places.png</file>
+    </qresource>
+</RCC>

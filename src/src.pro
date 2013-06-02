@@ -27,7 +27,11 @@ SOURCES += main.cpp \
     data/round.cpp \
     data/schmeisserei.cpp \
     mainwindow.cpp \
-    model/playerslistmodel.cpp
+    model/playerslistmodel.cpp \
+    data/playerstatistics.cpp \
+    data/league.cpp \
+    model/gamelistmodel.cpp \
+    model/drinkslistmodel.cpp
 
 HEADERS  += \
     data/player.h \
@@ -38,7 +42,16 @@ HEADERS  += \
     data/round.h \
     data/schmeisserei.h \
     mainwindow.h \
-    model/playerslistmodel.h
+    model/playerslistmodel.h \
+    data/playerstatistics.h \
+    data/league.h \
+    model/gamelistmodel.h \
+    model/drinkslistmodel.h
 
 FORMS += \
     mainwindow.ui
+
+RESOURCES += \
+    resource/sidebar/sidebar.qrc \
+    resource/statusbar/statusbar.qrc \
+    resource/general/general.qrc

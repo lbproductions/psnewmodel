@@ -4,9 +4,9 @@
 #include "player.h"
 #include "round.h"
 #include "livedrink.h"
+#include "league.h"
 
 #include <QTimer>
-
 
 
 Game::Game(QObject *parent) :
@@ -16,7 +16,8 @@ Game::Game(QObject *parent) :
     m_mitPflichtSolo(false),
     m_site("site", this),
     m_players("players", this),
-    m_rounds("rounds", this)
+    m_rounds("rounds", this),
+    m_leagues("leagues",this)
 {
     m_lengthTimer.setInterval(1000);
     m_lengthTimer.setSingleShot(false);
@@ -34,12 +35,13 @@ Game::~Game()
 
 QTime Game::length() const
 {
-    QTime time;
+    QTime time(0,0,0);
     foreach(QSharedPointer<Round> r, rounds()) {
         QTime t = r->length();
-        time.addSecs(t.hour() * 60 * 60
-                     + t.minute() * 60
-                     + t.second());
+        int secs = t.hour() * 60 * 60
+                + t.minute() * 60
+                + t.second();
+        time = time.addSecs(secs);
     }
     return time;
 }
@@ -55,6 +57,8 @@ Game::State Game::state() const
         return Finished;
     case Round::Running:
         return Running;
+    case Round::Paused:
+        return Paused;
     case Round::UnkownState:
     default:
         return UnkownState;
@@ -81,11 +85,35 @@ void Game::setState(State state)
     case Running:
         r->setState(Round::Running);
         return;
+    case Paused:
+        r->setState(Round::Paused);
+        return;
     case UnkownState:
     default:
         r->setState(Round::UnkownState);
         return;
     }
+}
+
+QPixmap Game::statePixmap() const
+{
+    static const QPixmap RunningStatePixmap(":/general/state-running.png");
+    static const QPixmap PausedStatePixmap(":/general/state-paused.png");
+    static const QPixmap FinishedStatePixmap(":/general/state-finished.png");
+
+    switch(state()) {
+    case Finished:
+        return FinishedStatePixmap;
+    case Running:
+        return RunningStatePixmap;
+    case Paused:
+        return PausedStatePixmap;
+    case UnkownState:
+    default:
+        break;
+    }
+
+    return QPixmap();
 }
 
 QString Game::comment() const
@@ -247,7 +275,7 @@ QList<QSharedPointer<LiveDrink> > Game::drinks(QSharedPointer<Player> player) co
 
 double Game::completedPercentage() const
 {
-    int totalRoundCount = players().size() * 5;
+    int totalRoundCount = players().size() * 6;
     if(totalRoundCount == 0)
         return 0;
 
@@ -257,12 +285,12 @@ double Game::completedPercentage() const
     if(state() != Finished)
         --finishedRoundCount;
 
-    return finishedRoundCount / totalRoundCount;
+    return (double) finishedRoundCount / (double) totalRoundCount;
 }
 
 bool Game::isComplete() const
 {
-    int totalRoundCount = players().size() * 5;
+    int totalRoundCount = players().size() * 6;
     int finishedRoundCount = rounds().size();
 
     // If the game is not finished, the last round is not finished.
@@ -282,7 +310,7 @@ bool Game::hasPflichtSolo(QSharedPointer<Player> player) const
     return false;
 }
 
-int Game::hochzeitCountAfterRounds(int roundCount)
+int Game::hochzeitCount(int roundCount)
 {
     int result = 0;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -297,7 +325,7 @@ int Game::hochzeitCountAfterRounds(int roundCount)
     return result;
 }
 
-int Game::soloCountAfterRounds(int roundCount)
+int Game::soloCount(int roundCount)
 {
     int result = 0;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -312,7 +340,7 @@ int Game::soloCountAfterRounds(int roundCount)
     return result;
 }
 
-int Game::pflichtSoloCountAfterRounds(int roundCount)
+int Game::pflichtSoloCount(int roundCount)
 {
     int result = 0;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -327,7 +355,7 @@ int Game::pflichtSoloCountAfterRounds(int roundCount)
     return result;
 }
 
-int Game::trumpfabgabeCountAfterRounds(int roundCount)
+int Game::trumpfabgabeCount(int roundCount)
 {
     int result = 0;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -342,7 +370,7 @@ int Game::trumpfabgabeCountAfterRounds(int roundCount)
     return result;
 }
 
-int Game::schweinereiCountAfterRounds(int roundCount)
+int Game::schweinereiCount(int roundCount)
 {
     int result = 0;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -357,7 +385,7 @@ int Game::schweinereiCountAfterRounds(int roundCount)
     return result;
 }
 
-int Game::schmeissereiCountAfterRounds(int roundCount)
+int Game::schmeissereiCount(int roundCount)
 {
     int result = 0;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -370,20 +398,11 @@ int Game::schmeissereiCountAfterRounds(int roundCount)
     return result;
 }
 
-int Game::placement(QSharedPointer<Player> player) const
-{
-    QSharedPointer<Round> round = currentRound();
-    if(!round)
-        return -1;
-
-    return round->placement(player);
-}
-
-int Game::placementAfterRounds(QSharedPointer<Player> player, int roundNumber) const
+int Game::placement(QSharedPointer<Player> player, int roundNumber) const
 {
     QList<QSharedPointer<Round> > rs = rounds();
     if(roundNumber >= rs.size())
-        return -1;
+        roundNumber = rs.size() - 1;
 
     return rs.at(roundNumber)->placement(player);
 }
@@ -433,4 +452,19 @@ void Game::setMitPflichtSolo(bool arg)
 bool Game::mitPflichtSolo() const
 {
     return m_mitPflichtSolo;
+}
+
+bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)
+{
+    return g1->creationTime() > g2->creationTime();
+}
+
+QList<QSharedPointer<League> > Game::leagues() const
+{
+    return m_leagues.resolveList();
+}
+
+void Game::setLeagues(const QList<QSharedPointer<League> > &arg)
+{
+    m_leagues.relate(arg);
 }

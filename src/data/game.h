@@ -7,13 +7,13 @@
 #include <QTime>
 #include <QDateTime>
 #include <QTimer>
-
-
+#include <limits>
 
 class Round;
 class Place;
 class Player;
 class LiveDrink;
+class League;
 
 class Game: public QObject
 {
@@ -28,6 +28,7 @@ class Game: public QObject
     Q_PROPERTY(QSharedPointer<Place> site READ site WRITE setSite)
     Q_PROPERTY(QList<QSharedPointer<Player> > players READ players WRITE setPlayers)
     Q_PROPERTY(QList<QSharedPointer<Round> > rounds READ rounds WRITE setRounds)
+    Q_PROPERTY(QList<QSharedPointer<League> > leagues READ leagues WRITE setLeagues)
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:site",
                 "reverserelation=games")
@@ -35,8 +36,8 @@ class Game: public QObject
                 "reverserelation=games")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:rounds",
                 "reverserelation=game")
-    Q_CLASSINFO("QPERSISTENCE_SQLFILTER",
-                "typeString = 'Doppelkopf' AND live = 'True'")
+    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:leagues",
+                "reverserelation=games")
 
 public:
     enum Type {
@@ -71,12 +72,16 @@ public:
     State state() const;
     void setState(State state);
 
+    QPixmap statePixmap() const;
+
     bool mitPflichtSolo() const;
     void setMitPflichtSolo(bool arg);
 
     QTime length() const;
 
     QSharedPointer<Place> site() const;
+
+    QList<QSharedPointer<League> > leagues() const;
 
     QList<QSharedPointer<Player> > players() const;
     QSharedPointer<Player> currentCardMixer() const;
@@ -86,8 +91,7 @@ public:
     QSharedPointer<Round> currentRound() const;
 
     QList<QSharedPointer<Player> > playersSortedByPlacement() const;
-    int placement(QSharedPointer<Player> player) const;
-    int placementAfterRounds(QSharedPointer<Player> player, int roundNumber) const;
+    int placement(QSharedPointer<Player> player, int roundNumber = std::numeric_limits<int>::max()) const;
     double averagePlacement(QSharedPointer<Player> player) const;
     int leadingRoundCount(QSharedPointer<Player> player) const;
     int totalPoints() const;
@@ -101,18 +105,19 @@ public:
 
     bool hasPflichtSolo(QSharedPointer<Player> player) const;
 
-    int hochzeitCountAfterRounds(int roundCount);
-    int soloCountAfterRounds(int roundCount);
-    int pflichtSoloCountAfterRounds(int roundCount);
-    int trumpfabgabeCountAfterRounds(int roundCount);
-    int schweinereiCountAfterRounds(int roundCount);
-    int schmeissereiCountAfterRounds(int roundCount);
+    int hochzeitCount(int roundCount = std::numeric_limits<int>::max());
+    int soloCount(int roundCount = std::numeric_limits<int>::max());
+    int pflichtSoloCount(int roundCount = std::numeric_limits<int>::max());
+    int trumpfabgabeCount(int roundCount = std::numeric_limits<int>::max());
+    int schweinereiCount(int roundCount = std::numeric_limits<int>::max());
+    int schmeissereiCount(int roundCount = std::numeric_limits<int>::max());
 
 private:
     void setCreationTime(const QDateTime &creationTime);
     void setSite(QSharedPointer<Place> site);
     void setPlayers(const QList<QSharedPointer<Player> > &players);
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
+    void setLeagues(const QList<QSharedPointer<League> > &arg);
 
     int _type() const;
     void _setType(int type);
@@ -126,10 +131,12 @@ private:
     QpWeakRelation<Place> m_site;
     QpStrongRelation<Player> m_players;
     QpStrongRelation<Round> m_rounds;
+    QpWeakRelation<League> m_leagues;
 
     QTimer m_lengthTimer;
 };
 
+bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);
 
 
 #endif // GAME_H
