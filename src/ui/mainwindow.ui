@@ -108,7 +108,7 @@ QFrame#frameSidebar {
            <string>Players</string>
           </property>
           <property name="icon">
-           <iconset resource="resource/sidebar/sidebar.qrc">
+           <iconset resource="../resource/sidebar/sidebar.qrc">
             <normaloff>:/sidebar/players.png</normaloff>:/sidebar/players.png</iconset>
           </property>
           <property name="checkable">
@@ -134,7 +134,7 @@ QFrame#frameSidebar {
            <string>Games</string>
           </property>
           <property name="icon">
-           <iconset resource="resource/sidebar/sidebar.qrc">
+           <iconset resource="../resource/sidebar/sidebar.qrc">
             <normaloff>:/sidebar/games.png</normaloff>:/sidebar/games.png</iconset>
           </property>
           <property name="checkable">
@@ -157,7 +157,7 @@ QFrame#frameSidebar {
            <string>Places</string>
           </property>
           <property name="icon">
-           <iconset resource="resource/sidebar/sidebar.qrc">
+           <iconset resource="../resource/sidebar/sidebar.qrc">
             <normaloff>:/sidebar/places.png</normaloff>:/sidebar/places.png</iconset>
           </property>
           <property name="checkable">
@@ -180,7 +180,7 @@ QFrame#frameSidebar {
            <string>Drinks</string>
           </property>
           <property name="icon">
-           <iconset resource="resource/sidebar/sidebar.qrc">
+           <iconset resource="../resource/sidebar/sidebar.qrc">
             <normaloff>:/sidebar/drinks.png</normaloff>:/sidebar/drinks.png</iconset>
           </property>
           <property name="checkable">
@@ -240,6 +240,9 @@ QFrame#frameSidebar {
          </property>
          <item>
           <widget class="QTreeView" name="treeViewPlayers">
+           <property name="contextMenuPolicy">
+            <enum>Qt::ActionsContextMenu</enum>
+           </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -336,6 +339,13 @@ QFrame#frameSidebar {
     <addaction name="actionPlaces"/>
     <addaction name="actionDrinks"/>
    </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionInformation"/>
+   </widget>
+   <addaction name="menuFile"/>
    <addaction name="menuLibrary"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
@@ -351,7 +361,7 @@ QFrame#frameSidebar {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resource/sidebar/sidebar.qrc">
+    <iconset resource="../resource/sidebar/sidebar.qrc">
      <normaloff>:/sidebar/players.png</normaloff>:/sidebar/players.png</iconset>
    </property>
    <property name="text">
@@ -366,7 +376,7 @@ QFrame#frameSidebar {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resource/sidebar/sidebar.qrc">
+    <iconset resource="../resource/sidebar/sidebar.qrc">
      <normaloff>:/sidebar/games.png</normaloff>:/sidebar/games.png</iconset>
    </property>
    <property name="text">
@@ -381,7 +391,7 @@ QFrame#frameSidebar {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resource/sidebar/sidebar.qrc">
+    <iconset resource="../resource/sidebar/sidebar.qrc">
      <normaloff>:/sidebar/places.png</normaloff>:/sidebar/places.png</iconset>
    </property>
    <property name="text">
@@ -396,7 +406,7 @@ QFrame#frameSidebar {
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset resource="resource/sidebar/sidebar.qrc">
+    <iconset resource="../resource/sidebar/sidebar.qrc">
      <normaloff>:/sidebar/drinks.png</normaloff>:/sidebar/drinks.png</iconset>
    </property>
    <property name="text">
@@ -406,10 +416,23 @@ QFrame#frameSidebar {
     <string>Ctrl+4</string>
    </property>
   </action>
+  <action name="actionInformation">
+   <property name="text">
+    <string>Information</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+I</string>
+   </property>
+  </action>
+  <action name="actionPlayerInformation">
+   <property name="text">
+    <string>Information</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="resource/sidebar/sidebar.qrc"/>
+  <include location="../resource/sidebar/sidebar.qrc"/>
  </resources>
  <connections/>
 </ui>

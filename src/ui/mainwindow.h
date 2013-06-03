@@ -25,6 +25,8 @@ private slots:
 
     void restoreWindowState();
 
+    void on_actionPlayerInformation_triggered();
+
 private:
     Ui::MainWindow *ui;
 

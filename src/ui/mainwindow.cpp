@@ -1,8 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include "playerinformationdialog.h"
+
 #include <model/playerslistmodel.h>
 #include <model/gamelistmodel.h>
+#include <misc/tools.h>
 
 #include <QApplication>
 #include <QTimer>
@@ -31,8 +34,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeViewPlaces->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
 
+    connect(ui->actionInformation, &QAction::triggered,
+            ui->actionPlayerInformation, &QAction::trigger);
+
     PlayersListModel *modelPlayer = new PlayersListModel(this);
     ui->treeViewPlayers->setModel(modelPlayer);
+    ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
 
     GameListModel *modelGames = new GameListModel(this);
     ui->treeViewGames->setModel(modelGames);
@@ -93,4 +100,18 @@ void MainWindow::on_actionPlaces_triggered()
 void MainWindow::on_actionDrinks_triggered()
 {
     ui->stackedWidget->setCurrentWidget(ui->pageDrinks);
+}
+
+void MainWindow::on_actionPlayerInformation_triggered()
+{
+    if(ui->stackedWidget->currentWidget() != ui->pagePlayers)
+        return;
+
+    QSharedPointer<Player> player = Tools::selectedObjectFrom<Player>(ui->treeViewPlayers);
+    if(!player)
+        return;
+
+    PlayerInformationDialog dialog;
+    dialog.setPlayer(player);
+    dialog.exec();
 }

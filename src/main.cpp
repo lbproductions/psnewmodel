@@ -9,7 +9,7 @@
 #include <data/schmeisserei.h>
 #include <data/league.h>
 
-#include <mainwindow.h>
+#include <ui/mainwindow.h>
 
 #include <QSqlDatabase>
 #include <QPersistence.h>

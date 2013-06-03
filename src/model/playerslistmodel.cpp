@@ -153,7 +153,7 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
 
         switch(index.column()) {
         case AvatarColumn:
-            return player->avatar();
+            return scaledPixmap(player->avatar());
         case ColorColumn:
             return player->color();
         default:
@@ -178,4 +178,12 @@ QVariant PlayersListModel::ifPositive(int number) const
         return number;
 
     return QVariant();
+}
+
+QVariant PlayersListModel::scaledPixmap(const QPixmap &pm) const
+{
+    if(pm.isNull())
+        return QVariant();
+
+    return pm.scaled(16,16);
 }

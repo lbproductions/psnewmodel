@@ -19,39 +19,52 @@ LIBS            += $$QPERSISTENCE_LIBS
 ### Files ###
 
 SOURCES += main.cpp \
-    data/player.cpp \
-    data/place.cpp \
     data/drink.cpp \
     data/game.cpp \
+    data/league.cpp \
     data/livedrink.cpp \
+    data/place.cpp \
+    data/player.cpp \
+    data/playerstatistics.cpp \
     data/round.cpp \
     data/schmeisserei.cpp \
-    mainwindow.cpp \
-    model/playerslistmodel.cpp \
-    data/playerstatistics.cpp \
-    data/league.cpp \
+    model/drinkslistmodel.cpp \
     model/gamelistmodel.cpp \
-    model/drinkslistmodel.cpp
+    model/playerslistmodel.cpp \
+    ui/mainwindow.cpp \
+    ui/playerinformationdialog.cpp \
+    ui/widgets/imagewell.cpp \
+    misc/tools.cpp
+
 
 HEADERS  += \
-    data/player.h \
-    data/place.h \
     data/drink.h \
     data/game.h \
+    data/league.h \
     data/livedrink.h \
+    data/place.h \
+    data/player.h \
+    data/playerstatistics.h \
     data/round.h \
     data/schmeisserei.h \
-    mainwindow.h \
-    model/playerslistmodel.h \
-    data/playerstatistics.h \
-    data/league.h \
+    model/drinkslistmodel.h \
     model/gamelistmodel.h \
-    model/drinkslistmodel.h
+    model/playerslistmodel.h \
+    ui/mainwindow.h \
+    ui/playerinformationdialog.h \
+    ui/widgets/imagewell.h \
+    misc/tools.h
+
 
 FORMS += \
-    mainwindow.ui
+    ui/mainwindow.ui \
+    ui/playerinformationdialog.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
     resource/statusbar/statusbar.qrc \
-    resource/general/general.qrc
+    resource/general/general.qrc \
+    resource/stylesheets/stylesheets.qrc
+
+OTHER_FILES += \
+    resource/stylesheets/imagewell.qss

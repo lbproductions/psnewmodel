@@ -54,6 +54,8 @@ public:
 private:
     QVariant percentageString(double percentage) const;
     QVariant ifPositive(int number) const;
+    QVariant scaledPixmap(const QPixmap &pm) const;
 };
 
 #endif // PLAYERSLISTMODEL_H
+

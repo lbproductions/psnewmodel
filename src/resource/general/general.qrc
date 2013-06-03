@@ -3,5 +3,7 @@
         <file>state-finished.png</file>
         <file>state-paused.png</file>
         <file>state-running.png</file>
+        <file>imagewell-background.png</file>
+        <file>imagewell-background2.png</file>
     </qresource>
 </RCC>
