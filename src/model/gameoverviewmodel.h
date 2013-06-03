@@ -12,13 +12,16 @@ class GameOverviewModel : public QAbstractTableModel
     Q_OBJECT
 public:
     enum ExtraRows {
-        HochzeitenRow
+        HochzeitenRow,
+        TrumpfabgabenRow,
+        SoliRow
     };
     enum ExtraColumns {
         TotalColumn
     };
     enum Roles {
-        HochzeitMitspielerColorRole = Qt::UserRole + 1
+        MitspielerColorRole = Qt::UserRole + 1,
+        SoloTypeRole
     };
 
     explicit GameOverviewModel(QObject *parent = 0);
@@ -30,13 +33,21 @@ public:
     int columnCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     int rowCount(const QModelIndex &parent = QModelIndex()) const Q_DECL_OVERRIDE;
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
-    QVariant headerData(int section, Qt::Orientation orientation, int role) const Q_DECL_OVERRIDE;
+    QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+
+    int extraColumnCount() const;
+    void setExtraColumnCount(int extraColumnCount);
+
+    int extraRowsCount() const;
+    void setExtraRowsCount(int extraRowsCount);
 
 private:
     QSharedPointer<Game> m_game;
 
     int m_extraColumnCount;
     int m_extraRowsCount;
+
+    static QColor colorFromPoints(int points);
     
 };
 

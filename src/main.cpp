@@ -49,7 +49,7 @@ int main(int argc, char *argv[])
 
 //    MainWindow w;
     GameWindow w;
-    w.setGame(games.first());
+    w.setGame(games.at(30));
     w.show();
 
     return a.exec();

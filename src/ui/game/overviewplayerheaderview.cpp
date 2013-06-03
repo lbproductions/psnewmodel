@@ -1,5 +1,7 @@
 #include "overviewplayerheaderview.h"
 
+#include <model/gameoverviewmodel.h>
+
 #include <QPainter>
 
 OverviewPlayerHeaderView::OverviewPlayerHeaderView(Qt::Orientation orientation, QWidget *parent) :
@@ -11,14 +13,14 @@ OverviewPlayerHeaderView::OverviewPlayerHeaderView(Qt::Orientation orientation, 
 QSize OverviewPlayerHeaderView::sizeHint() const
 {
     QSize size = QHeaderView::sizeHint();
-    size += QSize(28,0);
+    size += QSize(40,0);
     return size;
 }
 
 QSize OverviewPlayerHeaderView::sectionSizeFromContents(int logicalIndex) const
 {
     QSize size = QHeaderView::sectionSizeFromContents(logicalIndex);
-    size += QSize(28,0);
+    size += QSize(40,0);
     return size;
 }
 
@@ -45,11 +47,21 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     QRect r = rect.adjusted(32,0,0,0);
     painter->drawText(r, model()->headerData(logicalIndex, orientation()).toString(), option);
 
-    if(logicalIndex > 0) {
+    if(logicalIndex >= m_model->extraRowsCount()) {
         painter->setPen(QPen(palette.highlight().color()));
         painter->setBrush(model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QColor>());
         painter->drawRect(QRect(rect.topLeft() + QPoint(9, 6),
                                 rect.topLeft() + QPoint(9, 6) + QPoint(16,16)));
     }
     painter->restore();
+}
+
+GameOverviewModel *OverviewPlayerHeaderView::model() const
+{
+    return m_model;
+}
+
+void OverviewPlayerHeaderView::setGameModel(GameOverviewModel *model)
+{
+    m_model = model;
 }

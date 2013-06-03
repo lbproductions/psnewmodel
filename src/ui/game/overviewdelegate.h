@@ -3,6 +3,8 @@
 
 #include <QStyledItemDelegate>
 
+class GameOverviewModel;
+
 class OverviewDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
@@ -11,6 +13,11 @@ public:
 
     void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
     
+    GameOverviewModel *model() const;
+    void setGameModel(GameOverviewModel *model);
+
+private:
+    GameOverviewModel *m_model;
 };
 
 #endif // OVERVIEWDELEGATE_H

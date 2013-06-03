@@ -35,9 +35,14 @@ GameWindow::GameWindow(QWidget *parent) :
 
     ui->tableView->setPalette(darkPalette);
     ui->tableView->setModel(m_gameOverViewModel);
-    ui->tableView->setVerticalHeader(new OverviewPlayerHeaderView(Qt::Vertical, this));
-    ui->tableView->setHorizontalHeader(new OverviewHorizontalHeaderView(Qt::Horizontal, this));
-    ui->tableView->setItemDelegate(new OverviewDelegate(this));
+    OverviewPlayerHeaderView *verticalHeaderView = new OverviewPlayerHeaderView(Qt::Vertical, this);
+    verticalHeaderView->setGameModel(m_gameOverViewModel);
+    OverviewHorizontalHeaderView *horizontalHeaderView = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
+    OverviewDelegate *delegate = new OverviewDelegate(this);
+    delegate->setGameModel(m_gameOverViewModel);
+    ui->tableView->setVerticalHeader(verticalHeaderView);
+    ui->tableView->setHorizontalHeader(horizontalHeaderView);
+    ui->tableView->setItemDelegate(delegate);
 
     connect(ui->scrollAreaGraph->horizontalScrollBar(), &QScrollBar::valueChanged,
             ui->tableView->horizontalScrollBar(), &QScrollBar::setValue);
@@ -75,9 +80,9 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     m_game = game;
     m_gameOverViewModel->setGame(game);
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
-                                  m_gameOverViewModel->rowCount() * ui->tableView->rowHeight(0));
+                                  (m_gameOverViewModel->rowCount()) * ui->tableView->rowHeight(0));
     ui->graphWidget->setGame(game);
-    ui->graphWidget->setOriginX(ui->tableView->verticalHeader()->width() - 1);
+    ui->graphWidget->setOriginX(m_gameOverViewModel->extraColumnCount() * 40 + ui->tableView->verticalHeader()->width() - 1);
 }
 
 void GameWindow::wheelEvent(QWheelEvent *e)
