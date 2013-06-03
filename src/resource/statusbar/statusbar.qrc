@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/statusbar">
-        <file alias="background">background.png</file>
+        <file>background.png</file>
+        <file>background-dark.png</file>
     </qresource>
 </RCC>

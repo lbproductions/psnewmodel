@@ -273,31 +273,34 @@ QList<QSharedPointer<LiveDrink> > Game::drinks(QSharedPointer<Player> player) co
     return result;
 }
 
-double Game::completedPercentage() const
+int Game::totalRoundCount() const
 {
-    int totalRoundCount = players().size() * 6;
-    if(totalRoundCount == 0)
-        return 0;
+    return players().size() * 6;
+}
 
+int Game::finishedRoundCount() const
+{
     int finishedRoundCount = rounds().size();
 
     // If the game is not finished, the last round is not finished.
     if(state() != Finished)
         --finishedRoundCount;
 
-    return (double) finishedRoundCount / (double) totalRoundCount;
+    return finishedRoundCount;
+}
+
+double Game::completedPercentage() const
+{
+    int total = totalRoundCount();
+    if(total == 0)
+        return 0;
+
+    return (double) finishedRoundCount() / (double) total;
 }
 
 bool Game::isComplete() const
 {
-    int totalRoundCount = players().size() * 6;
-    int finishedRoundCount = rounds().size();
-
-    // If the game is not finished, the last round is not finished.
-    if(state() != Finished)
-        --finishedRoundCount;
-
-    return totalRoundCount == finishedRoundCount;
+    return totalRoundCount() == finishedRoundCount();
 }
 
 bool Game::hasPflichtSolo(QSharedPointer<Player> player) const

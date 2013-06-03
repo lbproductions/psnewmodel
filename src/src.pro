@@ -34,7 +34,13 @@ SOURCES += main.cpp \
     ui/mainwindow.cpp \
     ui/playerinformationdialog.cpp \
     ui/widgets/imagewell.cpp \
-    misc/tools.cpp
+    misc/tools.cpp \
+    ui/game/gamewindow.cpp \
+    model/gameoverviewmodel.cpp \
+    ui/game/overviewplayerheaderview.cpp \
+    ui/game/overviewhorizontalheaderview.cpp \
+    ui/game/overviewdelegate.cpp \
+    ui/game/graphwidget.cpp
 
 
 HEADERS  += \
@@ -53,12 +59,19 @@ HEADERS  += \
     ui/mainwindow.h \
     ui/playerinformationdialog.h \
     ui/widgets/imagewell.h \
-    misc/tools.h
+    misc/tools.h \
+    ui/game/gamewindow.h \
+    model/gameoverviewmodel.h \
+    ui/game/overviewplayerheaderview.h \
+    ui/game/overviewhorizontalheaderview.h \
+    ui/game/overviewdelegate.h \
+    ui/game/graphwidget.h
 
 
 FORMS += \
     ui/mainwindow.ui \
-    ui/playerinformationdialog.ui
+    ui/playerinformationdialog.ui \
+    ui/game/gamewindow.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

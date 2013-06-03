@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QStatusBar {
-background: url(:/statusbar/background) repeat-x;
+background: url(:/statusbar/background.png) repeat-x;
 }
 QSplitter {
 	width: 1px;

@@ -100,6 +100,8 @@ public:
     QList<QSharedPointer<LiveDrink> > drinks() const;
     QList<QSharedPointer<LiveDrink> > drinks(QSharedPointer<Player> player) const;
 
+    int totalRoundCount() const;
+    int finishedRoundCount() const;
     double completedPercentage() const;
     bool isComplete() const;
 
