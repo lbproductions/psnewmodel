@@ -24,13 +24,23 @@ Game::Game(QObject *parent) :
 
     QObject::connect(&m_lengthTimer, &QTimer::timeout, [&] {
         QSharedPointer<Round> r = currentRound();
-        if(r)
-            r->setLength(r->length().addSecs(1));
+        if(r) {
+            QTime length = r->length();
+            if(!length.isValid())
+                length = QTime(0,0,0);
+            r->setLength(length.addSecs(1));
+        }
     });
 }
 
 Game::~Game()
 {
+}
+
+void Game::save()
+{
+    Qp::update(Qp::sharedFrom<Game>(this));
+    Qp::update(currentRound());
 }
 
 QTime Game::length() const
@@ -93,6 +103,23 @@ void Game::setState(State state)
         r->setState(Round::UnkownState);
         return;
     }
+}
+
+void Game::togglePlayPause()
+{
+    State s = state();
+    if(s == Game::Running) {
+        setState(Game::Paused);
+    }
+    else if(s == Game::Paused) {
+        setState(Game::Running);
+    }
+}
+
+void Game::pause()
+{
+    if(state() == Game::Running)
+        setState(Game::Paused);
 }
 
 QPixmap Game::statePixmap() const

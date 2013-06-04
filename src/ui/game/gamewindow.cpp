@@ -33,6 +33,7 @@ GameWindow::GameWindow(QWidget *parent) :
     darkPalette.setColor(QPalette::HighlightedText, QColor(187,187,187));
     setPalette(darkPalette);
 
+    ui->splitter->setPalette(darkPalette);
     ui->tableView->setPalette(darkPalette);
     ui->tableView->setModel(m_gameOverViewModel);
     OverviewPlayerHeaderView *verticalHeaderView = new OverviewPlayerHeaderView(Qt::Vertical, this);
@@ -48,25 +49,29 @@ GameWindow::GameWindow(QWidget *parent) :
             ui->tableView->horizontalScrollBar(), &QScrollBar::setValue);
 
     ui->graphWidget->setPalette(darkPalette);
+    ui->graphAxis->setPalette(darkPalette);
+    ui->graphAxis->setGraph(ui->graphWidget);
+    ui->graphWidget->stackUnder(ui->graphAxis);
 
-//QPalette::Window	10	A general background color.
-//QPalette::Background	Window	This value is obsolete. Use Window instead.
-//QPalette::WindowText	0	A general foreground color.
-//QPalette::Foreground	WindowText	This value is obsolete. Use WindowText instead.
-//QPalette::Base	9	Used mostly as the background color for text entry widgets, but can also be used for other painting - such as the background of combobox drop down lists and toolbar handles. It is usually white or another light color.
-//QPalette::AlternateBase	16	Used as the alternate background color in views with alternating row colors (see QAbstractItemView::setAlternatingRowColors()).
-//QPalette::ToolTipBase	18	Used as the background color for QToolTip and QWhatsThis. Tool tips use the Inactive color group of QPalette, because tool tips are not active windows.
-//QPalette::ToolTipText	19	Used as the foreground color for QToolTip and QWhatsThis. Tool tips use the Inactive color group of QPalette, because tool tips are not active windows.
-//QPalette::Text	6	The foreground color used with Base. This is usually the same as the WindowText, in which case it must provide good contrast with Window and Base.
-//QPalette::Button	1	The general button background color. This background can be different from Window as some styles require a different background color for buttons.
-//QPalette::ButtonText	8	A foreground color used with the Button color.
-//QPalette::BrightText	7	A text color that is very different from WindowText, and contrasts well with e.g. Dark. Typically used for text that needs to be drawn where Text or WindowText would give poor contrast, such as on pressed push buttons. Note that text colors can be used for things other than just words; text colors are usually used for text, but it's quite common to use the text color roles for lines, icons, etc.
-//QPalette::Highlight	12	A color to indicate a selected item or the current item. By default, the highlight color is Qt::darkBlue.
-//QPalette::HighlightedText	13	A text color that contrasts with Highlight. By default, the highlighted text color is Qt::white.
+    ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
+
+    QTimer *lengthTimer = new QTimer(this);
+    connect(lengthTimer, &QTimer::timeout, [=]() {
+        ui->labelLength->setText(m_game->length().toString());
+        ui->labelClock->setText(QTime::currentTime().toString());
+    });
+
+    lengthTimer->start(1000);
+
+    ui->toolButtonState->setDefaultAction(ui->actionPlayPause);
 }
 
 GameWindow::~GameWindow()
 {
+    if(m_game) {
+        m_game->pause();
+        m_game->save();
+    }
     delete ui;
 }
 
@@ -82,7 +87,9 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
                                   (m_gameOverViewModel->rowCount()) * ui->tableView->rowHeight(0));
     ui->graphWidget->setGame(game);
-    ui->graphWidget->setOriginX(m_gameOverViewModel->extraColumnCount() * 40 + ui->tableView->verticalHeader()->width() - 1);
+    ui->graphAxis->setFixedWidth(m_gameOverViewModel->extraColumnCount() * 40 + ui->tableView->verticalHeader()->width());
+
+    enableActionsBasedOnGameState();
 }
 
 void GameWindow::wheelEvent(QWheelEvent *e)
@@ -91,4 +98,30 @@ void GameWindow::wheelEvent(QWheelEvent *e)
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() + e->pixelDelta().x());
     else
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() - e->pixelDelta().y());
+}
+
+void GameWindow::on_actionPlayPause_triggered()
+{
+    m_game->togglePlayPause();
+    m_game->save();
+    enableActionsBasedOnGameState();
+}
+
+void GameWindow::enableActionsBasedOnGameState()
+{
+    ui->actionPlayPause->setEnabled(true);
+
+    Game::State state = m_game->state();
+    if(state == Game::Running) {
+        ui->actionPlayPause->setText(tr("Pause"));
+        ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
+    }
+    else if(state == Game::Paused) {
+        ui->actionPlayPause->setText(tr("Play"));
+        ui->toolButtonState->setIcon(QIcon(":/statusbar/play.png"));
+    }
+    else {
+        ui->actionPlayPause->setText(tr("Pause"));
+        ui->actionPlayPause->setEnabled(false);
+    }
 }

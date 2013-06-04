@@ -18,14 +18,12 @@ public:
     void setGame(const QSharedPointer<Game> &game);
 
     int originX() const;
-    void setOriginX(int originX);
-
     int originY() const;
 
     int translateX(int x) const;
     int translateY(int y) const;
 
-    int pixelsPerPoint() const;
+    double pixelsPerPoint() const;
 
     int maxY() const;
     void setMaxY(int maxY);
@@ -42,7 +40,6 @@ private:
     QList<QList<int> > m_values;
 
     QSharedPointer<Game> m_game;
-    int m_originX;
 };
 
 #endif // GRAPH_H

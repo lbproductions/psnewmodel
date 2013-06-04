@@ -41,7 +41,7 @@ int GameOverviewModel::columnCount(const QModelIndex &parent) const
     if(!m_game)
         return 0;
 
-    return m_game->totalRoundCount() + m_extraColumnCount;
+    return m_game->totalRoundCount() + m_extraColumnCount + 1;
 }
 
 int GameOverviewModel::rowCount(const QModelIndex &parent) const
@@ -60,13 +60,13 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
-    if(index.column() >= m_game->rounds().size())
-        return QVariant();
-
     int row = index.row();
     int column = index.column();
     int roundIndex = column - m_extraColumnCount;
     int playerIndex = row - m_extraRowsCount;
+
+    if(roundIndex >= m_game->rounds().size())
+        return QVariant();
 
     if(row < m_extraRowsCount) {
 
@@ -143,7 +143,8 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
             return m_game->totalPoints(player);
         }
     }
-    else {
+    else if(playerIndex < m_game->players().size()
+            && roundIndex < m_game->rounds().size()) {
         QSharedPointer<Player> player = m_game->players().at(playerIndex);
         QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
 
@@ -163,13 +164,10 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
 {
     if(orientation == Qt::Horizontal) {
         if(role == Qt::DisplayRole) {
-            if(section == 0) {
-                return QVariant();
-            }
-            else {
-                int round = section - 1;
-                if(round % m_game->players().size() == 0)
-                    return round + 1;
+            int roundIndex = section - 1;
+            if(roundIndex < m_game->rounds().size()) {
+                if(roundIndex % m_game->players().size() == 0)
+                    return roundIndex + 1;
             }
         }
     }

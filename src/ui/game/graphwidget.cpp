@@ -11,8 +11,7 @@
 GraphWidget::GraphWidget(QWidget *parent) :
     QWidget(parent),
     m_maxY(std::numeric_limits<int>::min()),
-    m_minY(std::numeric_limits<int>::max()),
-    m_originX(0)
+    m_minY(std::numeric_limits<int>::max())
 {
 }
 
@@ -53,13 +52,13 @@ void GraphWidget::setGame(const QSharedPointer<Game> &game)
         m_values.append(values);
     }
 
-    m_maxY /= 10;
-    m_maxY += 1;
-    m_maxY *= 10;
+    m_maxY += 5;
+    m_minY -= 5;
+}
 
-    m_minY /= 10;
-    m_minY -= 1;
-    m_minY *= 10;
+int GraphWidget::originX() const
+{
+    return 0;
 }
 
 void GraphWidget::paintEvent(QPaintEvent *e)
@@ -72,17 +71,18 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     painter.setBrush(palette().color(QPalette::Base));
     painter.drawRect(QRect(0,0,width(),height()));
 
-    QPen pen(palette().highlight().color());
-    pen.setWidth(1);
-    painter.setPen(pen);
-    painter.drawLine(QPointF(originX(), 0), QPointF(originX(), height()));
-
+    QPen pen;
     pen.setWidth(3);
     pen.setColor(palette().highlightedText().color());
     painter.setPen(pen);
     painter.drawLine(QPointF(originX(), originY()), QPointF(width(), originY()));
 
-    for(int y = 10; y < maxY(); y += 10) {
+    int y = minY();
+    y /= 10;
+    y += 1;
+    y *= 10;
+
+    for(; y < maxY(); y += 10) {
         if((y/10) % 5 == 0) {
             pen.setWidth(2);
             pen.setColor(palette().highlightedText().color());
@@ -93,21 +93,6 @@ void GraphWidget::paintEvent(QPaintEvent *e)
             pen.setColor(palette().highlight().color());
             painter.setPen(pen);
         }
-        painter.drawText(QPoint(originX() - 25, translateY(y) + 5), QString::number(y));
-        painter.drawLine(QPointF(originX(), translateY(y)), QPointF(width(), translateY(y)));
-    }
-    for(int y = -10; y > minY(); y -= 10) {
-        if((y/10) % 5 == 0) {
-            pen.setWidth(2);
-            pen.setColor(palette().highlightedText().color());
-            painter.setPen(pen);
-        }
-        else {
-            pen.setWidth(1);
-            pen.setColor(palette().highlight().color());
-            painter.setPen(pen);
-        }
-        painter.drawText(QPoint(originX() - 32, translateY(y) + 5), QString::number(y));
         painter.drawLine(QPointF(originX(), translateY(y)), QPointF(width(), translateY(y)));
     }
 
@@ -150,16 +135,6 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     }
 }
 
-int GraphWidget::originX() const
-{
-    return m_originX;
-}
-
-void GraphWidget::setOriginX(int originX)
-{
-    m_originX = originX;
-}
-
 int GraphWidget::originY() const
 {
     return qAbs(maxY()) * pixelsPerPoint();
@@ -167,7 +142,7 @@ int GraphWidget::originY() const
 
 int GraphWidget::translateX(int x) const
 {
-    return originX() + x * 40;
+    return x * 40 - 1;
 }
 
 int GraphWidget::translateY(int y) const
@@ -175,10 +150,10 @@ int GraphWidget::translateY(int y) const
     return -pixelsPerPoint() * y + originY();
 }
 
-int GraphWidget::pixelsPerPoint() const
+double GraphWidget::pixelsPerPoint() const
 {
     int range = maxY() - minY();
-    return height() / range;
+    return (double) height() / (double) range;
 }
 
 int GraphWidget::maxY() const

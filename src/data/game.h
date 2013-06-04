@@ -58,6 +58,8 @@ public:
     explicit Game(QObject *parent = 0);
     ~Game();
 
+    void save();
+
     QString name() const;
     void setName(const QString &name);
 
@@ -71,6 +73,8 @@ public:
 
     State state() const;
     void setState(State state);
+    void togglePlayPause();
+    void pause();
 
     QPixmap statePixmap() const;
 

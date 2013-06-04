@@ -23,6 +23,11 @@ public:
 
     void wheelEvent(QWheelEvent *e);
 
+private slots:
+    void on_actionPlayPause_triggered();
+
+    void enableActionsBasedOnGameState();
+
 private:
     Ui::GameWindow *ui;
 

@@ -40,7 +40,9 @@ SOURCES += main.cpp \
     ui/game/overviewplayerheaderview.cpp \
     ui/game/overviewhorizontalheaderview.cpp \
     ui/game/overviewdelegate.cpp \
-    ui/game/graphwidget.cpp
+    ui/game/graphwidget.cpp \
+    ui/widgets/scrollarea.cpp \
+    ui/game/graphaxis.cpp
 
 
 HEADERS  += \
@@ -65,7 +67,9 @@ HEADERS  += \
     ui/game/overviewplayerheaderview.h \
     ui/game/overviewhorizontalheaderview.h \
     ui/game/overviewdelegate.h \
-    ui/game/graphwidget.h
+    ui/game/graphwidget.h \
+    ui/widgets/scrollarea.h \
+    ui/game/graphaxis.h
 
 
 FORMS += \
