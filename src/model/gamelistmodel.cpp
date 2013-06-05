@@ -2,6 +2,7 @@
 
 #include <data/place.h>
 #include <data/player.h>
+#include <misc/tools.h>
 
 GameListModel::GameListModel(QObject *parent) :
     QpAbstractObjectListModel<Game>(parent)
@@ -82,7 +83,7 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case LengthColumn:
             return game->length();
         case PercentageComplete:
-            return percentageString(game->completedPercentage());
+            return Tools::percentageString(game->completedPercentage());
         case PlayerCountColumn:
             return game->players().size();
         case PlayersColumn:
@@ -126,14 +127,6 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
-}
-
-QVariant GameListModel::percentageString(double percentage) const
-{
-    if(percentage < 0)
-        return QVariant();
-
-    return QString("%1 %").arg(percentage * 100, 4, 'f', 2);
 }
 
 bool playersAlphabetically(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)

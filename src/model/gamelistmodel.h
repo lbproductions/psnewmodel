@@ -38,7 +38,6 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
 private:
-    QVariant percentageString(double percentage) const;
     QVariant playersString(const QList<QSharedPointer<Player> > &players) const;
 };
 

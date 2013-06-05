@@ -111,6 +111,11 @@ void Drink::setType(const Type &type)
     m_type = type;
 }
 
+QString Drink::typeString() const
+{
+    return typeStringFromType(type());
+}
+
 QString Drink::name() const
 {
     return m_name;
@@ -119,4 +124,36 @@ QString Drink::name() const
 void Drink::setName(const QString &name)
 {
     m_name = name;
+}
+
+
+QStringList Drink::typeStrings()
+{
+    return QStringList() << tr("Beer") <<
+                            tr("Mixed beer") <<
+                            tr("Long drink") <<
+                            tr("Liquor") <<
+                            tr("Wine");
+}
+
+QString Drink::typeStringFromType(Drink::Type type)
+{
+    int typeIndex = static_cast<int>(type);
+    typeIndex -= 1; // UnkownType
+    QStringList types = typeStrings();
+    if(typeIndex < 0 || typeIndex >= types.size())
+        return tr("Unkown solo");
+
+    return types.at(typeIndex);
+}
+
+Drink::Type Drink::typeFromString(const QString &typeString)
+{
+    int typeIndex = typeStrings().indexOf(typeString);
+    if(typeIndex < 0)
+        return Drink::UnkownType;
+
+    typeIndex += 1; // UnkownType
+    return static_cast<Drink::Type>(typeIndex);
+
 }

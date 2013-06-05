@@ -306,6 +306,9 @@ QFrame#frameSidebar {
          </property>
          <item>
           <widget class="QTreeView" name="treeViewDrinks">
+           <property name="contextMenuPolicy">
+            <enum>Qt::ActionsContextMenu</enum>
+           </property>
            <property name="frameShape">
             <enum>QFrame::NoFrame</enum>
            </property>
@@ -320,33 +323,6 @@ QFrame#frameSidebar {
      </widget>
     </item>
    </layout>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>805</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuLibrary">
-    <property name="title">
-     <string>Library</string>
-    </property>
-    <addaction name="actionPlayers"/>
-    <addaction name="actionGames"/>
-    <addaction name="actionPlaces"/>
-    <addaction name="actionDrinks"/>
-   </widget>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-    <addaction name="actionInformation"/>
-   </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuLibrary"/>
   </widget>
   <widget class="QStatusBar" name="statusBar">
    <property name="minimumSize">
@@ -425,6 +401,11 @@ QFrame#frameSidebar {
    </property>
   </action>
   <action name="actionPlayerInformation">
+   <property name="text">
+    <string>Information</string>
+   </property>
+  </action>
+  <action name="actionDrinkInformation">
    <property name="text">
     <string>Information</string>
    </property>

@@ -48,7 +48,9 @@ SOURCES += main.cpp \
     ui/widgets/bubbledialog.cpp \
     ui/game/schmeissereidialog.cpp \
     ui/game/statisticswidget.cpp \
-    ui/widgets/shadowframe.cpp
+    ui/widgets/shadowframe.cpp \
+    ui/drinkinformationdialog.cpp \
+    ui/widgets/menubar.cpp
 
 
 HEADERS  += \
@@ -81,7 +83,9 @@ HEADERS  += \
     ui/widgets/bubbledialog.h \
     ui/game/schmeissereidialog.h \
     ui/game/statisticswidget.h \
-    ui/widgets/shadowframe.h
+    ui/widgets/shadowframe.h \
+    ui/drinkinformationdialog.h \
+    ui/widgets/menubar.h
 
 
 FORMS += \
@@ -91,7 +95,8 @@ FORMS += \
     ui/game/newrounddialog.ui \
     ui/widgets/bubbledialog.ui \
     ui/game/schmeissereidialog.ui \
-    ui/game/statisticswidget.ui
+    ui/game/statisticswidget.ui \
+    ui/drinkinformationdialog.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

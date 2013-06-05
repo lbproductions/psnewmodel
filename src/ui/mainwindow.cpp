@@ -2,9 +2,13 @@
 #include "ui_mainwindow.h"
 
 #include "playerinformationdialog.h"
+#include "drinkinformationdialog.h"
+#include "game/gamewindow.h"
 
+#include <ui/widgets/menubar.h>
 #include <model/playerslistmodel.h>
 #include <model/gamelistmodel.h>
+#include <model/drinkslistmodel.h>
 #include <misc/tools.h>
 
 #include <QApplication>
@@ -16,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
     QActionGroup *actionGroup = new QActionGroup(this);
     actionGroup->addAction(ui->actionDrinks);
@@ -23,6 +28,7 @@ MainWindow::MainWindow(QWidget *parent) :
     actionGroup->addAction(ui->actionPlaces);
     actionGroup->addAction(ui->actionPlayers);
     actionGroup->setExclusive(true);
+    ui->actionPlayers->setChecked(true);
 
     ui->toolButtonDrinks->setDefaultAction(ui->actionDrinks);
     ui->toolButtonGames->setDefaultAction(ui->actionGames);
@@ -36,6 +42,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionInformation, &QAction::triggered,
             ui->actionPlayerInformation, &QAction::trigger);
+    connect(ui->actionInformation, &QAction::triggered,
+            ui->actionDrinkInformation, &QAction::trigger);
 
     PlayersListModel *modelPlayer = new PlayersListModel(this);
     ui->treeViewPlayers->setModel(modelPlayer);
@@ -43,11 +51,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
     GameListModel *modelGames = new GameListModel(this);
     ui->treeViewGames->setModel(modelGames);
+    connect(ui->treeViewGames, &QTreeView::doubleClicked,
+            this, &MainWindow::onGameDoubleClicked);
 
-    ui->actionPlayers->setChecked(true);
+    DrinksListModel *modelDrinks = new DrinksListModel(this);
+    ui->treeViewDrinks->setModel(modelDrinks);
+    ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
 
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
+    MenuBar::instance()->addAction(tr("&File"), ui->actionInformation, this);
+    MenuBar::instance()->addAction(tr("&View"), ui->actionPlayers, this);
+    MenuBar::instance()->addAction(tr("&View"), ui->actionGames, this);
+    MenuBar::instance()->addAction(tr("&View"), ui->actionPlaces, this);
+    MenuBar::instance()->addAction(tr("&View"), ui->actionDrinks, this);
+    MenuBar::instance()->menu(tr("&View"))->addSeparator();
 }
 
 MainWindow::~MainWindow()
@@ -69,6 +87,7 @@ void MainWindow::saveWindowState()
     settings.setValue("mainwindow/windowState", saveState());
     settings.setValue("mainwindow/treeviewplayers/state", ui->treeViewPlayers->header()->saveState());
     settings.setValue("mainwindow/treeviewgames/state", ui->treeViewGames->header()->saveState());
+    settings.setValue("mainwindow/treeviewdrinks/state", ui->treeViewDrinks->header()->saveState());
     settings.setValue("mainwindow/splitter", ui->splitter->saveState());
 }
 
@@ -79,6 +98,7 @@ void MainWindow::restoreWindowState()
     restoreState(settings.value("mainwindow/windowState").toByteArray());
     ui->treeViewPlayers->header()->restoreState(settings.value("mainwindow/treeviewplayers/state").toByteArray());
     ui->treeViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
+    ui->treeViewDrinks->header()->restoreState(settings.value("mainwindow/treeviewdrinks/state").toByteArray());
     ui->splitter->restoreState(settings.value("mainwindow/splitter").toByteArray());
 }
 
@@ -114,4 +134,32 @@ void MainWindow::on_actionPlayerInformation_triggered()
     PlayerInformationDialog dialog;
     dialog.setPlayer(player);
     dialog.exec();
+}
+
+void MainWindow::on_actionDrinkInformation_triggered()
+{
+    if(ui->stackedWidget->currentWidget() != ui->pageDrinks)
+        return;
+
+    QSharedPointer<Drink> drink = Tools::selectedObjectFrom<Drink>(ui->treeViewDrinks);
+    if(!drink)
+        return;
+
+    DrinkInformationDialog dialog;
+    dialog.setDrink(drink);
+    dialog.exec();
+}
+
+void MainWindow::onGameDoubleClicked(const QModelIndex &)
+{
+    if(ui->stackedWidget->currentWidget() != ui->pageGames)
+        return;
+
+    QSharedPointer<Game> game = Tools::selectedObjectFrom<Game>(ui->treeViewGames);
+    if(!game)
+        return;
+
+    GameWindow *window = new GameWindow;
+    window->setGame(game);
+    window->show();
 }

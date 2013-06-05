@@ -12,6 +12,10 @@ public:
     static QSharedPointer<T> selectedObjectFrom(QAbstractItemView *view);
 
     static void setStyleSheetFromResource(const QString &resource, QWidget *widget, const QString &additionalStyles = QString());
+
+    static QVariant percentageString(double percentage);
+    static QVariant ifPositive(int number);
+    static QVariant scaledPixmap(const QPixmap &pm, int h = 16, int w = 16);
 };
 
 template<class T>

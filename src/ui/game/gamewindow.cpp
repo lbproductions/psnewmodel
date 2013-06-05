@@ -8,6 +8,7 @@
 #include "schmeissereidialog.h"
 #include "statisticswidget.h"
 
+#include <ui/widgets/menubar.h>
 #include <ui/widgets/bubbledialog.h>
 #include <data/game.h>
 #include <model/gameoverviewmodel.h>
@@ -24,6 +25,8 @@ GameWindow::GameWindow(QWidget *parent) :
     m_gameOverViewModel(new GameOverviewModel(this))
 {
     ui->setupUi(this);
+
+    setAttribute(Qt::WA_DeleteOnClose, true);
     QPalette darkPalette = palette();
     darkPalette.setColor(QPalette::Window, QColor(71,71,71));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
@@ -79,6 +82,10 @@ GameWindow::GameWindow(QWidget *parent) :
 
     enableActionsBasedOnState();
     setSidebarToggleToHide();
+    MenuBar::instance()->addAction(tr("&Game"), ui->actionPlayPause, this);
+    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_round, this);
+    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
+    MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
 }
 
 GameWindow::~GameWindow()

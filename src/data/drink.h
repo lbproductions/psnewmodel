@@ -43,6 +43,7 @@ public:
 
     Type type() const;
     void setType(const Type &type);
+    QString typeString() const;
 
     double volume() const;
     void setVolume(double volume);
@@ -60,6 +61,9 @@ public:
 
     QList<QSharedPointer<Player> > playersSortedByCount() const;
 
+    static QStringList typeStrings();
+    static QString typeStringFromType(Type type);
+    static Type typeFromString(const QString &typeString);
 
 private:
     void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);

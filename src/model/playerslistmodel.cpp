@@ -1,6 +1,7 @@
 #include "playerslistmodel.h"
 
 #include <data/game.h>
+#include <misc/tools.h>
 
 PlayersListModel::PlayersListModel(QObject *parent) :
     QpAbstractObjectListModel<Player>(parent)
@@ -95,9 +96,9 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
         case GenderColumn:
             return player->genderString();
         case HeightColumn:
-            return ifPositive(player->height());
+            return Tools::ifPositive(player->height());
         case WeightColumn:
-            return ifPositive(player->weight());
+            return Tools::ifPositive(player->weight());
         case GameCountColumn:
             return player->games().size();
         case GamePointsColumn:
@@ -119,19 +120,19 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
         case ContraCountColumn:
             return player->contraRounds().size();
         case ContraPercentageColumn:
-            return percentageString(player->contraPercentage());
+            return Tools::percentageString(player->contraPercentage());
         case ContraWinsColumn:
             return player->contraWins().size();
         case ContraWinsPercentageColumn:
-            return percentageString(player->contraWinsPercentage());
+            return Tools::percentageString(player->contraWinsPercentage());
         case ReCountColumn:
             return player->re1Rounds().size() + player->re2Rounds().size();
         case RePercentageColumn:
-            return percentageString(player->rePercentage());
+            return Tools::percentageString(player->rePercentage());
         case ReWinsColumn:
             return player->reWins().size();
         case ReWinsPercentageColumn:
-            return percentageString(player->reWinsPercentage());
+            return Tools::percentageString(player->reWinsPercentage());
         case HochzeitenCountColumn:
             return player->hochzeitRounds().size();
         case SchmeissereienCountColumn:
@@ -153,7 +154,7 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
 
         switch(index.column()) {
         case AvatarColumn:
-            return scaledPixmap(player->avatar());
+            return Tools::scaledPixmap(player->avatar());
         case ColorColumn:
             return player->color();
         default:
@@ -162,28 +163,4 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
-}
-
-QVariant PlayersListModel::percentageString(double percentage) const
-{
-    if(percentage < 0)
-        return QVariant();
-
-    return QString("%1 %").arg(percentage * 100, 4, 'f', 2);
-}
-
-QVariant PlayersListModel::ifPositive(int number) const
-{
-    if(number > 0)
-        return number;
-
-    return QVariant();
-}
-
-QVariant PlayersListModel::scaledPixmap(const QPixmap &pm) const
-{
-    if(pm.isNull())
-        return QVariant();
-
-    return pm.scaled(16,16);
 }

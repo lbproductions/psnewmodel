@@ -43,14 +43,11 @@ int main(int argc, char *argv[])
     Qp::registerClass<League>();
     Qp::adjustDatabaseSchema();
 
-//    QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
+    QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
-//    QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
+    QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
-//    MainWindow w;
-    GameWindow gw;
-    gw.setGame(games.last());
-    gw.show();
 
+    new MainWindow;
     return a.exec();
 }
