@@ -1,0 +1,20 @@
+QPushButton {
+    background: transparent;
+    border-image: url(:/pushbutton/dark-background.png) 0px 6px 0px 6px;
+    border-top: 0px transparent;
+    border-right: 6px transparent;
+    border-bottom: 0px transparent;
+    border-left: 6px transparent;
+    font-weight: bold;
+    color: white;
+    height: 36px;
+}
+QPushButton:pressed {
+    border-image: url(:/pushbutton/dark-background_pressed.png) 4px 6px 3px 6px;
+}
+QPushButton:checked {
+    border-image: url(:/pushbutton/dark-background_checked.png) 4px 6px 3px 6px;
+}
+QPushButton:checked:pressed {
+    border-image: url(:/pushbutton/dark-background_checked_pressed.png) 4px 6px 3px 6px;
+}

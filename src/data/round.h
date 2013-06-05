@@ -30,7 +30,7 @@ class Round : public QObject
     Q_PROPERTY(int winnerParty READ _winnerParty WRITE _setWinnerParty)
     Q_PROPERTY(int state READ _state WRITE _setState)
 
-    Q_PROPERTY(QMap<int COMMA int> points READ _points WRITE setPoints)
+    Q_PROPERTY(QMap<int COMMA int> points READ _points WRITE _setPoints)
 
     Q_PROPERTY(QSharedPointer<Game> game READ game WRITE setGame)
     Q_PROPERTY(QList<QSharedPointer<LiveDrink> > drinks READ drinks WRITE setDrinks)
@@ -108,6 +108,7 @@ public:
     void setNumber(int number);
 
     QDateTime startTime() const;
+    void setStartTime(const QDateTime &startTime);
 
     QTime length() const;
     void setLength(const QTime &length);
@@ -120,6 +121,7 @@ public:
 
     int points() const;
     int points(QSharedPointer<Player> player) const;
+    void setPoints(QSharedPointer<Player> player, int points);
     int totalPoints(QSharedPointer<Player> player) const;
     QList<QSharedPointer<Player> > playersSortedByPlacement() const;
     int placement(QSharedPointer<Player> player) const;
@@ -133,6 +135,7 @@ public:
 
     SoloType soloType() const;
     void setSoloType(const SoloType &soloType);
+    QString soloTypeString() const;
 
     bool isSolo() const;
 
@@ -178,14 +181,19 @@ public:
     QSharedPointer<Player> contra3Player() const;
     void setContra3Player(QSharedPointer<Player> arg);
 
+    static QStringList soloTypeStrings();
+    static QString soloTypeStringFromType(SoloType type);
+    static SoloType soloTypeFromString(const QString &typeString);
+
 private:
+    friend class Game;
+
     void setDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
     void setGame(const QSharedPointer<Game> &game);
-    void setStartTime(const QDateTime &startTime);
     void setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien);
 
     QMap<int, int> _points() const;
-    void setPoints(const QMap<int, int> &_points);
+    void _setPoints(const QMap<int, int> &_points);
 
     int cardMixerPosition() const;
 

@@ -2,7 +2,7 @@
 
 #include <QFile>
 
-void Tools::setStyleSheetFromResource(const QString &resource, QWidget *widget)
+void Tools::setStyleSheetFromResource(const QString &resource, QWidget *widget, const QString &additionalStyles)
 {
     QFile file(resource);
     Q_ASSERT_X(file.exists(),
@@ -10,6 +10,6 @@ void Tools::setStyleSheetFromResource(const QString &resource, QWidget *widget)
                QString("Stylesheet not found: '%1'")
                .arg(resource).toLatin1());
     Q_ASSERT(file.open(QFile::ReadOnly));
-    widget->setStyleSheet(QLatin1String(file.readAll()));
+    widget->setStyleSheet(QString(file.readAll()).append(additionalStyles));
     file.close();
 }

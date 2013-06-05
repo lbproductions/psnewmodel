@@ -54,6 +54,8 @@ void GraphWidget::setGame(const QSharedPointer<Game> &game)
 
     m_maxY += 5;
     m_minY -= 5;
+
+    update();
 }
 
 int GraphWidget::originX() const

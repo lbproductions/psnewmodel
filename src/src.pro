@@ -42,7 +42,10 @@ SOURCES += main.cpp \
     ui/game/overviewdelegate.cpp \
     ui/game/graphwidget.cpp \
     ui/widgets/scrollarea.cpp \
-    ui/game/graphaxis.cpp
+    ui/game/graphaxis.cpp \
+    ui/game/newrounddialog.cpp \
+    ui/widgets/playerscombobox.cpp \
+    ui/widgets/bubbledialog.cpp
 
 
 HEADERS  += \
@@ -69,19 +72,27 @@ HEADERS  += \
     ui/game/overviewdelegate.h \
     ui/game/graphwidget.h \
     ui/widgets/scrollarea.h \
-    ui/game/graphaxis.h
+    ui/game/graphaxis.h \
+    ui/game/newrounddialog.h \
+    ui/widgets/playerscombobox.h \
+    ui/widgets/bubbledialog.h
 
 
 FORMS += \
     ui/mainwindow.ui \
     ui/playerinformationdialog.ui \
-    ui/game/gamewindow.ui
+    ui/game/gamewindow.ui \
+    ui/game/newrounddialog.ui \
+    ui/widgets/bubbledialog.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
     resource/statusbar/statusbar.qrc \
     resource/general/general.qrc \
-    resource/stylesheets/stylesheets.qrc
+    resource/stylesheets/stylesheets.qrc \
+    resource/pushbutton/pushbutton.qrc
 
 OTHER_FILES += \
-    resource/stylesheets/imagewell.qss
+    resource/stylesheets/imagewell.qss \
+    resource/stylesheets/pushbutton-dark.qss \
+    resource/stylesheets/bubble.qss

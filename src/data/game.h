@@ -104,6 +104,8 @@ public:
     QList<QSharedPointer<LiveDrink> > drinks() const;
     QList<QSharedPointer<LiveDrink> > drinks(QSharedPointer<Player> player) const;
 
+    void startNextRound();
+
     int totalRoundCount() const;
     int finishedRoundCount() const;
     double completedPercentage() const;
@@ -123,6 +125,7 @@ private:
     void setSite(QSharedPointer<Place> site);
     void setPlayers(const QList<QSharedPointer<Player> > &players);
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
+    void addRound(QSharedPointer<Round> round);
     void setLeagues(const QList<QSharedPointer<League> > &arg);
 
     int _type() const;

@@ -11,7 +11,7 @@ public:
     template<class T>
     static QSharedPointer<T> selectedObjectFrom(QAbstractItemView *view);
 
-    static void setStyleSheetFromResource(const QString &resource, QWidget *widget);
+    static void setStyleSheetFromResource(const QString &resource, QWidget *widget, const QString &additionalStyles = QString());
 };
 
 template<class T>

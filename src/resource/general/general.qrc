@@ -5,5 +5,7 @@
         <file>state-running.png</file>
         <file>imagewell-background.png</file>
         <file>imagewell-background2.png</file>
+        <file>bubble-background.png</file>
+        <file>bubble-arrow.png</file>
     </qresource>
 </RCC>

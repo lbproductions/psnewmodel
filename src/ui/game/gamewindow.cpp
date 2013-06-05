@@ -4,13 +4,17 @@
 #include "overviewplayerheaderview.h"
 #include "overviewhorizontalheaderview.h"
 #include "overviewdelegate.h"
+#include "newrounddialog.h"
 
+#include <ui/widgets/bubbledialog.h>
 #include <data/game.h>
 #include <model/gameoverviewmodel.h>
+#include <misc/tools.h>
 
 #include <QPersistence.h>
 #include <QScrollBar>
 #include <QWheelEvent>
+#include <QWindow>
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -64,6 +68,7 @@ GameWindow::GameWindow(QWidget *parent) :
     lengthTimer->start(1000);
 
     ui->toolButtonState->setDefaultAction(ui->actionPlayPause);
+    ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
 }
 
 GameWindow::~GameWindow()
@@ -110,9 +115,11 @@ void GameWindow::on_actionPlayPause_triggered()
 void GameWindow::enableActionsBasedOnGameState()
 {
     ui->actionPlayPause->setEnabled(true);
+    ui->actionAdd_round->setEnabled(false);
 
     Game::State state = m_game->state();
     if(state == Game::Running) {
+        ui->actionAdd_round->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
         ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
     }
@@ -124,4 +131,13 @@ void GameWindow::enableActionsBasedOnGameState()
         ui->actionPlayPause->setText(tr("Pause"));
         ui->actionPlayPause->setEnabled(false);
     }
+}
+
+void GameWindow::on_actionAdd_round_triggered()
+{
+    NewRoundDialog dialog;
+    dialog.setDoppelkopfRound(m_game->currentRound());
+    dialog.exec();
+
+    ui->graphWidget->setGame(m_game);
 }

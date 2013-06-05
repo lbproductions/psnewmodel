@@ -19,7 +19,7 @@ bool PlayerStatistics::isAllGames() const
 
 QSharedPointer<Player> PlayerStatistics::player() const
 {
-    return Qp::sharedFrom<Player>(m_player);
+    return Qp::sharedFrom(m_player);
 }
 
 void PlayerStatistics::setPlayer(Player *player)

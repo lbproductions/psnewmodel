@@ -61,7 +61,7 @@ QMap<int, int> Round::_points() const
     return m_points;
 }
 
-void Round::setPoints(const QMap<int, int> &points)
+void Round::_setPoints(const QMap<int, int> &points)
 {
     m_points = points;
 }
@@ -92,6 +92,13 @@ int Round::points() const
 int Round::points(QSharedPointer<Player> player) const
 {
     return _points().value(Qp::primaryKey(player));
+}
+
+void Round::setPoints(QSharedPointer<Player> player, int points)
+{
+    QMap<int,int> ps = _points();
+    ps.insert(Qp::primaryKey(player), points);
+    _setPoints(ps);
 }
 
 int Round::totalPoints(QSharedPointer<Player> player) const
@@ -286,6 +293,11 @@ void Round::setSoloType(const SoloType &soloType)
     m_soloType = soloType;
 }
 
+QString Round::soloTypeString() const
+{
+    return soloTypeStringFromType(soloType());
+}
+
 bool Round::isSolo() const
 {
     return soloType() != NoSolo && soloType() != UnkownSoloType;
@@ -388,24 +400,41 @@ QList<QSharedPointer<Player> > Round::losers() const
 QList<QSharedPointer<Player> > Round::rePlayers() const
 {
     QList<QSharedPointer<Player> > result;
-    result.append(re1Player());
+    QSharedPointer<Player> p = re1Player();
+    if(!p)
+        return QList<QSharedPointer<Player> >();
+    result.append(p);
 
     if(isSolo())
         return result;
 
-    result.append(re2Player());
+    p = re2Player();
+    if(!p)
+        return result;
+    result.append(p);
     return result;
 }
 
 QList<QSharedPointer<Player> > Round::contraPlayers() const
 {    
     QList<QSharedPointer<Player> > result;
-    result << contra1Player() << contra2Player();
+    QSharedPointer<Player> p = contra1Player();
+    if(!p)
+        return QList<QSharedPointer<Player> >();
+    result.append(p);
+
+    p = contra2Player();
+    if(!p)
+        return result;
+    result.append(p);
 
     if(!isSolo())
         return result;
 
-    result.append(contra3Player());
+    p = contra3Player();
+    if(!p)
+        return result;
+    result.append(p);
     return result;
 }
 
@@ -447,4 +476,37 @@ QSharedPointer<Player> Round::contra3Player() const
 void Round::setContra3Player(QSharedPointer<Player> arg)
 {
     m_contra3Player.relate(arg);
+}
+
+QStringList Round::soloTypeStrings()
+{
+    return QStringList() << tr("Fleischlos") <<
+                            tr("Buben") <<
+                            tr("Damen") <<
+                            tr("Trumpf") <<
+                            tr("Stille Hochzeit") <<
+                            tr("Sitzengelassene Hochzeit") <<
+                            tr("Falsch gespielt") <<
+                            tr("Farb");
+}
+
+QString Round::soloTypeStringFromType(Round::SoloType type)
+{
+    int typeIndex = static_cast<int>(type);
+    typeIndex -= 2; // UnkownSolo and NoSolo
+    QStringList types = soloTypeStrings();
+    if(typeIndex < 0 || typeIndex >= types.size())
+        return tr("Unkown solo");
+
+    return types.at(typeIndex);
+}
+
+Round::SoloType Round::soloTypeFromString(const QString &typeString)
+{
+    int typeIndex = soloTypeStrings().indexOf(typeString);
+    if(typeIndex < 0)
+        return Round::NoSolo;
+
+    typeIndex += 2; // UnkownSolo and NoSolo
+    return static_cast<Round::SoloType>(typeIndex);
 }

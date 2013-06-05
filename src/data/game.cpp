@@ -39,7 +39,7 @@ Game::~Game()
 
 void Game::save()
 {
-    Qp::update(Qp::sharedFrom<Game>(this));
+    Qp::update(Qp::sharedFrom(this));
     Qp::update(currentRound());
 }
 
@@ -300,6 +300,23 @@ QList<QSharedPointer<LiveDrink> > Game::drinks(QSharedPointer<Player> player) co
     return result;
 }
 
+void Game::startNextRound()
+{
+    QSharedPointer<Round> round = currentRound();
+    round->setState(Round::Finished);
+    Qp::update(round);
+
+    int nextNumber = round->number() + 1;
+
+    round = Qp::create<Round>();
+    round->setGame(Qp::sharedFrom(this));
+    round->setStartTime(QDateTime::currentDateTime());
+    round->setNumber(nextNumber);
+    round->setState(Round::Running);
+    addRound(round);
+    save();
+}
+
 int Game::totalRoundCount() const
 {
     return players().size() * 6;
@@ -472,6 +489,11 @@ void Game::setRounds(const QList<QSharedPointer<Round> > &rounds)
 {
     m_rounds.clear();
     m_rounds.relate(rounds);
+}
+
+void Game::addRound(QSharedPointer<Round> round)
+{
+    m_rounds.relate(round);
 }
 
 void Game::setMitPflichtSolo(bool arg)

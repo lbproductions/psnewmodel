@@ -28,6 +28,8 @@ private slots:
 
     void enableActionsBasedOnGameState();
 
+    void on_actionAdd_round_triggered();
+
 private:
     Ui::GameWindow *ui;
 

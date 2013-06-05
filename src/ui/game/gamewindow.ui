@@ -15,7 +15,7 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#statusBar {
-background: url(:/statusbar/background-dark.png) repeat-x;
+background: url(:/statusbar/dark-background.png) repeat-x;
 }
 QTableCornerButton::section {
 border: none;
@@ -252,6 +252,26 @@ background: none;
         </widget>
        </item>
        <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>40</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonAddRound">
+         <property name="text">
+          <string>Add Round</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -290,6 +310,7 @@ background: none;
      <string>Game</string>
     </property>
     <addaction name="actionPlayPause"/>
+    <addaction name="actionAdd_round"/>
    </widget>
    <addaction name="menuGame"/>
   </widget>
@@ -303,6 +324,14 @@ background: none;
    </property>
    <property name="shortcut">
     <string>Ctrl+P</string>
+   </property>
+  </action>
+  <action name="actionAdd_round">
+   <property name="text">
+    <string>Add round</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
    </property>
   </action>
  </widget>

@@ -1,8 +1,8 @@
 <RCC>
     <qresource prefix="/statusbar">
         <file>background.png</file>
-        <file>background-dark.png</file>
         <file>pause.png</file>
         <file>play.png</file>
+        <file>dark-background.png</file>
     </qresource>
 </RCC>
