@@ -5,6 +5,7 @@
 #include "overviewhorizontalheaderview.h"
 #include "overviewdelegate.h"
 #include "newrounddialog.h"
+#include "schmeissereidialog.h"
 
 #include <ui/widgets/bubbledialog.h>
 #include <data/game.h>
@@ -60,15 +61,13 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 
     QTimer *lengthTimer = new QTimer(this);
-    connect(lengthTimer, &QTimer::timeout, [=]() {
-        ui->labelLength->setText(m_game->length().toString());
-        ui->labelClock->setText(QTime::currentTime().toString());
-    });
-
+    connect(lengthTimer, &QTimer::timeout,
+            this, &GameWindow::updateTimes);
     lengthTimer->start(1000);
 
     ui->toolButtonState->setDefaultAction(ui->actionPlayPause);
     ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
+    ui->toolButtonAddSchmeisserei->setDefaultAction(ui->actionAdd_schmeisserei);
 }
 
 GameWindow::~GameWindow()
@@ -95,6 +94,7 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->graphAxis->setFixedWidth(m_gameOverViewModel->extraColumnCount() * 40 + ui->tableView->verticalHeader()->width());
 
     enableActionsBasedOnGameState();
+    updateTimes();
 }
 
 void GameWindow::wheelEvent(QWheelEvent *e)
@@ -116,10 +116,12 @@ void GameWindow::enableActionsBasedOnGameState()
 {
     ui->actionPlayPause->setEnabled(true);
     ui->actionAdd_round->setEnabled(false);
+    ui->actionAdd_schmeisserei->setEnabled(false);
 
     Game::State state = m_game->state();
     if(state == Game::Running) {
         ui->actionAdd_round->setEnabled(true);
+        ui->actionAdd_schmeisserei->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
         ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
     }
@@ -136,8 +138,23 @@ void GameWindow::enableActionsBasedOnGameState()
 void GameWindow::on_actionAdd_round_triggered()
 {
     NewRoundDialog dialog;
-    dialog.setDoppelkopfRound(m_game->currentRound());
+    dialog.setRound(m_game->currentRound());
     dialog.exec();
 
     ui->graphWidget->setGame(m_game);
+}
+
+void GameWindow::on_actionAdd_schmeisserei_triggered()
+{
+    SchmeissereiDialog dialog;
+    dialog.setRound(m_game->currentRound());
+    dialog.exec();
+}
+
+void GameWindow::updateTimes()
+{
+    ui->labelClock->setText(QTime::currentTime().toString());
+
+    if(m_game)
+        ui->labelLength->setText(m_game->length().toString());
 }

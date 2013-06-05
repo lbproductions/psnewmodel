@@ -54,7 +54,7 @@ NewRoundDialog::~NewRoundDialog()
     delete ui;
 }
 
-void NewRoundDialog::setDoppelkopfRound(QSharedPointer<Round> round)
+void NewRoundDialog::setRound(QSharedPointer<Round> round)
 {
     if(!round || m_doppelkopfRound == round)
         return;

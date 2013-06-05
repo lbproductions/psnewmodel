@@ -171,6 +171,7 @@ public:
     QList<QSharedPointer<Player> > losers() const;
 
     QList<QSharedPointer<Schmeisserei> > schmeissereien() const;
+    void addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei);
 
     QSharedPointer<Player> contra1Player() const;
     void setContra1Player(QSharedPointer<Player> arg);

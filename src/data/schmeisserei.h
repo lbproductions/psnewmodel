@@ -36,12 +36,17 @@ public:
 
     Type type() const;
     void setType(const Type &type);
+    QString typeString() const;
 
     QSharedPointer<Round> round() const;
     void setRound(const QSharedPointer<Round> &round);
 
     QSharedPointer<Player> player() const;
     void setPlayer(const QSharedPointer<Player> &player);
+
+    static QStringList typeStrings();
+    static QString typeStringFromType(Type type);
+    static Type typeFromString(const QString &typeString);
 
 private:
     int _type() const;

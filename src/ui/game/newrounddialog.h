@@ -18,7 +18,7 @@ public:
     ~NewRoundDialog();
 
     QSharedPointer<Round> doppelkopfRound() const;
-    void setDoppelkopfRound(QSharedPointer<Round> doppelkopfRound);
+    void setRound(QSharedPointer<Round> doppelkopfRound);
 
 private slots:
     void setCurrentPage(int);

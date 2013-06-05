@@ -30,6 +30,10 @@ private slots:
 
     void on_actionAdd_round_triggered();
 
+    void on_actionAdd_schmeisserei_triggered();
+
+    void updateTimes();
+
 private:
     Ui::GameWindow *ui;
 

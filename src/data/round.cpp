@@ -368,6 +368,12 @@ QList<QSharedPointer<Schmeisserei> > Round::schmeissereien() const
     return m_schmeissereien.resolveList();
 }
 
+void Round::addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
+{
+    m_schmeissereien.relate(schmeisserei);
+    schmeisserei->setRound(Qp::sharedFrom(this));
+}
+
 void Round::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
 {
     m_schmeissereien.relate(schmeissereien);

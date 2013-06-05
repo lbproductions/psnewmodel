@@ -53,4 +53,37 @@ void Schmeisserei::setType(const Type &type)
     m_type = type;
 }
 
+QString Schmeisserei::typeString() const
+{
+    return typeStringFromType(type());
+}
 
+QStringList Schmeisserei::typeStrings()
+{
+    return QStringList() << tr("5 Könige") <<
+                            tr("Trumpfabgabe nicht genommen") <<
+                            tr("Weniger als 3 Trumpf") <<
+                            tr("Mehr als 90 Punkte");
+}
+
+QString Schmeisserei::typeStringFromType(Schmeisserei::Type type)
+{
+    int typeIndex = static_cast<int>(type);
+    typeIndex -= 1; // UnkownType
+    QStringList types = typeStrings();
+    if(typeIndex < 0 || typeIndex >= types.size())
+        return tr("Unkown solo");
+
+    return types.at(typeIndex);
+}
+
+Schmeisserei::Type Schmeisserei::typeFromString(const QString &typeString)
+{
+    int typeIndex = typeStrings().indexOf(typeString);
+    if(typeIndex < 0)
+        return Schmeisserei::UnkownType;
+
+    typeIndex += 1; // UnkownType
+    return static_cast<Schmeisserei::Type>(typeIndex);
+
+}

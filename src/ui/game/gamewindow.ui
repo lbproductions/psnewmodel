@@ -272,6 +272,13 @@ background: none;
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="toolButtonAddSchmeisserei">
+         <property name="text">
+          <string>Add Schmeisserei</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -311,6 +318,7 @@ background: none;
     </property>
     <addaction name="actionPlayPause"/>
     <addaction name="actionAdd_round"/>
+    <addaction name="actionAdd_schmeisserei"/>
    </widget>
    <addaction name="menuGame"/>
   </widget>
@@ -332,6 +340,14 @@ background: none;
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionAdd_schmeisserei">
+   <property name="text">
+    <string>Add schmeisserei</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>
