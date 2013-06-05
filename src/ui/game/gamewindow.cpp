@@ -6,6 +6,7 @@
 #include "overviewdelegate.h"
 #include "newrounddialog.h"
 #include "schmeissereidialog.h"
+#include "statisticswidget.h"
 
 #include <ui/widgets/bubbledialog.h>
 #include <data/game.h>
@@ -60,6 +61,8 @@ GameWindow::GameWindow(QWidget *parent) :
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 
+    ui->widgetStatisticsFrame->setWidget(new StatisticsWidget(ui->widgetStatisticsFrame));
+
     QTimer *lengthTimer = new QTimer(this);
     connect(lengthTimer, &QTimer::timeout,
             this, &GameWindow::updateTimes);
@@ -68,6 +71,14 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->toolButtonState->setDefaultAction(ui->actionPlayPause);
     ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
     ui->toolButtonAddSchmeisserei->setDefaultAction(ui->actionAdd_schmeisserei);
+    ui->toolButtonToggleSidebar->setDefaultAction(ui->actionToggleSidebar);
+    ui->toolButtonToggleSidebar->setText(QString());
+
+    connect(ui->splitter, SIGNAL(splitterMoved(int,int)),
+            this, SLOT(setSidebarToggleActionBasedUponSidebarState()));
+
+    enableActionsBasedOnState();
+    setSidebarToggleToHide();
 }
 
 GameWindow::~GameWindow()
@@ -93,7 +104,7 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->graphWidget->setGame(game);
     ui->graphAxis->setFixedWidth(m_gameOverViewModel->extraColumnCount() * 40 + ui->tableView->verticalHeader()->width());
 
-    enableActionsBasedOnGameState();
+    enableActionsBasedOnState();
     updateTimes();
 }
 
@@ -109,30 +120,35 @@ void GameWindow::on_actionPlayPause_triggered()
 {
     m_game->togglePlayPause();
     m_game->save();
-    enableActionsBasedOnGameState();
+    enableActionsBasedOnState();
 }
 
-void GameWindow::enableActionsBasedOnGameState()
+void GameWindow::enableActionsBasedOnState()
 {
-    ui->actionPlayPause->setEnabled(true);
+    ui->actionPlayPause->setEnabled(false);
     ui->actionAdd_round->setEnabled(false);
     ui->actionAdd_schmeisserei->setEnabled(false);
+
+    if(!m_game)
+        return;
 
     Game::State state = m_game->state();
     if(state == Game::Running) {
         ui->actionAdd_round->setEnabled(true);
         ui->actionAdd_schmeisserei->setEnabled(true);
+        ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
         ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
     }
     else if(state == Game::Paused) {
+        ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Play"));
         ui->toolButtonState->setIcon(QIcon(":/statusbar/play.png"));
     }
     else {
         ui->actionPlayPause->setText(tr("Pause"));
-        ui->actionPlayPause->setEnabled(false);
     }
+
 }
 
 void GameWindow::on_actionAdd_round_triggered()
@@ -157,4 +173,59 @@ void GameWindow::updateTimes()
 
     if(m_game)
         ui->labelLength->setText(m_game->length().toString());
+}
+
+void GameWindow::on_actionToggleSidebar_triggered()
+{
+    if(ui->widgetStatisticsFrame->isVisible()) {
+        QList<int> sizes = ui->splitter->sizes();
+        if(sizes.last() == 0) {
+            sizes[sizes.size() - 1] = 100;
+            ui->splitter->setSizes(sizes);
+            setSidebarToggleToHide();
+        }
+        else {
+            ui->widgetStatisticsFrame->hide();
+            setSidebarToggleToShow();
+        }
+    }
+    else {
+        ui->widgetStatisticsFrame->show();
+        setSidebarToggleToHide();
+    }
+}
+
+void GameWindow::setSidebarToggleActionBasedUponSidebarState()
+{
+    if(ui->widgetStatisticsFrame->isVisible()
+            && ui->splitter->sizes().last() > 0) {
+        setSidebarToggleToHide();
+    }
+    else {
+        setSidebarToggleToShow();
+    }
+}
+
+void GameWindow::setSidebarToggleToHide()
+{
+    ui->actionToggleSidebar->setText(tr("Hide sidebar"));
+    ui->toolButtonToggleSidebar->setText(QString());
+    ui->toolButtonToggleSidebar->setStyleSheet("QToolButton#toolButtonToggleSidebar {"
+                                               "border-image: url(:/statusbar/sidebar-right.png);"
+                                               "}"
+                                               "QToolButton#toolButtonToggleSidebar:pressed {"
+                                               "border-image: url(:/statusbar/sidebar-right-pressed.png);"
+                                               "}");
+}
+
+void GameWindow::setSidebarToggleToShow()
+{
+    ui->actionToggleSidebar->setText(tr("Show sidebar"));
+    ui->toolButtonToggleSidebar->setText(QString());
+    ui->toolButtonToggleSidebar->setStyleSheet("QToolButton#toolButtonToggleSidebar {"
+                                               "border-image: url(:/statusbar/sidebar-left.png);"
+                                               "}"
+                                               "QToolButton#toolButtonToggleSidebar:pressed {"
+                                               "border-image: url(:/statusbar/sidebar-left-pressed.png);"
+                                               "}");
 }

@@ -28,9 +28,12 @@ color:white;
 color:white;
 font-size: 19px;
 }
-QToolButton#toolButtonState {
+QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar {
 border: none;
 background: none;
+}
+QSplitter:handle {
+background-color: rgb(108,108,108);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -43,8 +46,17 @@ background: none;
     </property>
     <item>
      <widget class="QSplitter" name="splitter">
+      <property name="frameShape">
+       <enum>QFrame::Box</enum>
+      </property>
+      <property name="lineWidth">
+       <number>0</number>
+      </property>
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="handleWidth">
+       <number>1</number>
       </property>
       <widget class="QWidget" name="verticalLayoutWidget">
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -117,12 +129,12 @@ background: none;
           <property name="widgetResizable">
            <bool>true</bool>
           </property>
-          <widget class="QWidget" name="scrollAreaWidgetContents">
+          <widget class="GraphAxis" name="scrollAreaWidgetContents">
            <property name="geometry">
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>593</width>
+             <width>597</width>
              <height>330</height>
             </rect>
            </property>
@@ -155,37 +167,7 @@ background: none;
         </item>
        </layout>
       </widget>
-      <widget class="QWidget" name="widget" native="true">
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="QLabel" name="label">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>TextLabel</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <spacer name="verticalSpacer">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>20</width>
-            <height>40</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
+      <widget class="ShadowFrame" name="widgetStatisticsFrame" native="true"/>
      </widget>
     </item>
     <item>
@@ -292,6 +274,34 @@ background: none;
         </spacer>
        </item>
        <item>
+        <widget class="QToolButton" name="toolButtonToggleSidebar">
+         <property name="minimumSize">
+          <size>
+           <width>17</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>17</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>17</width>
+           <height>16</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonTextOnly</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QLabel" name="labelClock">
          <property name="text">
           <string/>
@@ -320,7 +330,14 @@ background: none;
     <addaction name="actionAdd_round"/>
     <addaction name="actionAdd_schmeisserei"/>
    </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+    <addaction name="actionToggleSidebar"/>
+   </widget>
    <addaction name="menuGame"/>
+   <addaction name="menuView"/>
   </widget>
   <action name="actionPlayPause">
    <property name="icon">
@@ -350,6 +367,15 @@ background: none;
     <string>Ctrl+A</string>
    </property>
   </action>
+  <action name="actionToggleSidebar">
+   <property name="icon">
+    <iconset resource="../../resource/statusbar/statusbar.qrc">
+     <normaloff>:/statusbar/sidebar-left.png</normaloff>:/statusbar/sidebar-left.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hide sidebar</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -368,6 +394,12 @@ background: none;
    <class>GraphAxis</class>
    <extends>QWidget</extends>
    <header location="global">ui/game/graphaxis.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ShadowFrame</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/widgets/shadowframe.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

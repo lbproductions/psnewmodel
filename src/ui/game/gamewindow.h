@@ -26,11 +26,16 @@ public:
 private slots:
     void on_actionPlayPause_triggered();
 
-    void enableActionsBasedOnGameState();
+    void enableActionsBasedOnState();
 
     void on_actionAdd_round_triggered();
 
     void on_actionAdd_schmeisserei_triggered();
+
+    void on_actionToggleSidebar_triggered();
+    void setSidebarToggleActionBasedUponSidebarState();
+    void setSidebarToggleToHide();
+    void setSidebarToggleToShow();
 
     void updateTimes();
 

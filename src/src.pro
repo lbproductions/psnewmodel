@@ -46,7 +46,9 @@ SOURCES += main.cpp \
     ui/game/newrounddialog.cpp \
     ui/widgets/playerscombobox.cpp \
     ui/widgets/bubbledialog.cpp \
-    ui/game/schmeissereidialog.cpp
+    ui/game/schmeissereidialog.cpp \
+    ui/game/statisticswidget.cpp \
+    ui/widgets/shadowframe.cpp
 
 
 HEADERS  += \
@@ -77,7 +79,9 @@ HEADERS  += \
     ui/game/newrounddialog.h \
     ui/widgets/playerscombobox.h \
     ui/widgets/bubbledialog.h \
-    ui/game/schmeissereidialog.h
+    ui/game/schmeissereidialog.h \
+    ui/game/statisticswidget.h \
+    ui/widgets/shadowframe.h
 
 
 FORMS += \
@@ -86,7 +90,8 @@ FORMS += \
     ui/game/gamewindow.ui \
     ui/game/newrounddialog.ui \
     ui/widgets/bubbledialog.ui \
-    ui/game/schmeissereidialog.ui
+    ui/game/schmeissereidialog.ui \
+    ui/game/statisticswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

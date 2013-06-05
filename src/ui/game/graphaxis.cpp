@@ -5,7 +5,8 @@
 #include <QPainter>
 
 GraphAxis::GraphAxis(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    m_graph(nullptr)
 {
 }
 
@@ -23,6 +24,9 @@ void GraphAxis::paintEvent(QPaintEvent *e)
     pen.setWidth(1);
     painter.setPen(pen);
     painter.drawLine(QPointF(width() - 1, 0), QPointF(width() - 1, height()));
+
+    if(!m_graph)
+        return;
 
     int y = m_graph->minY();
     y /= 10;
