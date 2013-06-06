@@ -62,6 +62,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
+    MenuBar::instance()->addAction(tr("&File"), ui->actionNew_Game, this);
     MenuBar::instance()->addAction(tr("&File"), ui->actionInformation, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionPlayers, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionGames, this);
@@ -164,5 +165,11 @@ void MainWindow::on_treeViewGames_doubleClicked(const QModelIndex &)
 
     GameWindow *window = new GameWindow;
     window->setGame(game);
+    window->show();
+}
+
+void MainWindow::on_actionNew_Game_triggered()
+{
+    GameWindow *window = new GameWindow;
     window->show();
 }

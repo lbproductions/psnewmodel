@@ -16,8 +16,9 @@ public:
     ~MainWindow();
     
     void closeEvent(QCloseEvent *event);
-
 private slots:
+    void on_actionNew_Game_triggered();
+
     void on_actionPlayers_triggered();
     void on_actionGames_triggered();
     void on_actionPlaces_triggered();

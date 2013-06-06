@@ -13,6 +13,7 @@ Round::Round(QObject *parent) :
     QObject(parent),
     m_number(-1),
     m_state(Round::UnkownState),
+    m_length(QTime(0,0,0)),
     m_soloType(UnkownSoloType),
     m_soloIsPflicht(false),
     m_winnerParty(UnknownWinnerParty),
@@ -240,6 +241,9 @@ QTime Round::length() const
 
 void Round::setLength(const QTime &length)
 {
+    if(m_length.second() == 59)
+        Qp::update(Qp::sharedFrom(this));
+
     m_length = length;
 }
 

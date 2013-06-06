@@ -410,6 +410,14 @@ QFrame#frameSidebar {
     <string>Information</string>
    </property>
   </action>
+  <action name="actionNew_Game">
+   <property name="text">
+    <string>New Game...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>

@@ -52,6 +52,7 @@ GameWindow::GameWindow(QWidget *parent) :
 
     ui->comboBoxSite->addPlaces(Qp::readAll<Place>());
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+    ui->listWidgetPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     ui->tableView->hide();
     ui->splitter->setPalette(darkPalette);
@@ -98,6 +99,7 @@ GameWindow::GameWindow(QWidget *parent) :
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_round, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
+    updateTimes();
 }
 
 GameWindow::~GameWindow()
@@ -317,6 +319,8 @@ void GameWindow::on_buttonBox_accepted()
         game->addPlayer(p);
     }
 
+    game->setType(Game::Doppelkopf);
     game->startNextRound();
+    game->setState(Game::Running);
     setGame(game);
 }

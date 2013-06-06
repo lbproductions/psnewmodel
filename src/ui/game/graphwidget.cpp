@@ -69,7 +69,7 @@ void GraphWidget::paintEvent(QPaintEvent *e)
 
     QPainter painter(this);
 
-    if(!m_game) {
+    if(!m_game || m_game->rounds().isEmpty()) {
         m_maxY = 55;
         m_minY = -55;
     }

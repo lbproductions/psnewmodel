@@ -85,6 +85,9 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
                     return colorFromPoints(round->points(player));
 
                 if(role == MitspielerColorRole) {
+                    if(round->isSolo())
+                        return QVariant();
+
                     QSharedPointer<Player> mitspieler = round->re1Player();
                     if(mitspieler == player)
                         mitspieler = round->re2Player();
@@ -147,6 +150,9 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
             && roundIndex < m_game->rounds().size()) {
         QSharedPointer<Player> player = m_game->players().at(playerIndex);
         QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
+
+        if(round->state() != Round::Finished)
+            return QVariant();
 
         if(round->playingPlayers().contains(player)) {
             if(role == Qt::DisplayRole)

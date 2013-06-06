@@ -21,7 +21,7 @@ QList<QSharedPointer<Place> > PlacesComboBox::places() const
 
 QSharedPointer<Place> PlacesComboBox::currentPlace() const
 {
-    int index = currentIndex() - 1;
+    int index = currentIndex();
     if(index < 0 || index >= m_places.size())
         return QSharedPointer<Place>();
 
