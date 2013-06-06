@@ -69,6 +69,11 @@ void GraphWidget::paintEvent(QPaintEvent *e)
 
     QPainter painter(this);
 
+    if(!m_game) {
+        m_maxY = 55;
+        m_minY = -55;
+    }
+
     painter.setPen(QPen(QColor(0,0,0,0)));
     painter.setBrush(palette().color(QPalette::Base));
     painter.drawRect(QRect(0,0,width(),height()));
@@ -80,9 +85,12 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     painter.drawLine(QPointF(originX(), originY()), QPointF(width(), originY()));
 
     int y = minY();
-    y /= 10;
-    y += 1;
-    y *= 10;
+    int nextInterval = ((y/10)+1)*10;
+    int previousInterval = ((y/10)-1)*10;
+    if(qAbs(previousInterval - y) <= 5)
+        y = nextInterval;
+    else
+        y = previousInterval;
 
     for(; y < maxY(); y += 10) {
         if((y/10) % 5 == 0) {
@@ -102,7 +110,13 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     pen.setColor(palette().highlight().color());
     painter.setPen(pen);
 
+    if(!m_game)
+        return;
+
     int playerCount = m_game->players().size();
+    if(playerCount == 0)
+        return;
+
     for(int x = playerCount; translateX(x) < width(); x+=playerCount) {
         painter.drawLine(QPointF(translateX(x), 0), QPointF(translateX(x), height()));
     }

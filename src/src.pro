@@ -50,7 +50,9 @@ SOURCES += main.cpp \
     ui/game/statisticswidget.cpp \
     ui/widgets/shadowframe.cpp \
     ui/drinkinformationdialog.cpp \
-    ui/widgets/menubar.cpp
+    ui/widgets/menubar.cpp \
+    ui/widgets/playerslistwidget.cpp \
+    ui/widgets/placescombobox.cpp
 
 
 HEADERS  += \
@@ -85,7 +87,9 @@ HEADERS  += \
     ui/game/statisticswidget.h \
     ui/widgets/shadowframe.h \
     ui/drinkinformationdialog.h \
-    ui/widgets/menubar.h
+    ui/widgets/menubar.h \
+    ui/widgets/playerslistwidget.h \
+    ui/widgets/placescombobox.h
 
 
 FORMS += \

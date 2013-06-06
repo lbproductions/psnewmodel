@@ -37,3 +37,4 @@ QVariant Tools::scaledPixmap(const QPixmap &pm, int h, int w)
 
     return pm.scaled(h,w);
 }
+

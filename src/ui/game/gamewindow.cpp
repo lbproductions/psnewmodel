@@ -8,10 +8,13 @@
 #include "schmeissereidialog.h"
 #include "statisticswidget.h"
 
+#include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
 #include <ui/widgets/bubbledialog.h>
 #include <data/game.h>
+#include <data/place.h>
 #include <model/gameoverviewmodel.h>
+#include <data/player.h>
 #include <misc/tools.h>
 
 #include <QPersistence.h>
@@ -22,7 +25,8 @@
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
-    m_gameOverViewModel(new GameOverviewModel(this))
+    m_gameOverViewModel(new GameOverviewModel(this)),
+    m_extraWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -42,6 +46,14 @@ GameWindow::GameWindow(QWidget *parent) :
     darkPalette.setColor(QPalette::HighlightedText, QColor(187,187,187));
     setPalette(darkPalette);
 
+    // This has a bug in 5.0
+    // TODO: enable in Qt 5.1 final: https://bugreports.qt-project.org/browse/QTBUG-31061
+//    ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
+
+    ui->comboBoxSite->addPlaces(Qp::readAll<Place>());
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+    ui->tableView->hide();
     ui->splitter->setPalette(darkPalette);
     ui->tableView->setPalette(darkPalette);
     ui->tableView->setModel(m_gameOverViewModel);
@@ -104,6 +116,8 @@ QSharedPointer<Game> GameWindow::game() const
 
 void GameWindow::setGame(const QSharedPointer<Game> &game)
 {
+    ui->widgetCreateGame->hide();
+    ui->tableView->show();
     m_game = game;
     m_gameOverViewModel->setGame(game);
     ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
@@ -121,6 +135,17 @@ void GameWindow::wheelEvent(QWheelEvent *e)
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() + e->pixelDelta().x());
     else
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() - e->pixelDelta().y());
+}
+
+void GameWindow::mousePressEvent(QMouseEvent *e)
+{
+    if(extraWidget()) {
+        if(extraWidget() != QApplication::widgetAt(e->pos())) {
+            extraWidget()->close();
+            extraWidget()->deleteLater();
+            setExtraWidget(nullptr);
+        }
+    }
 }
 
 void GameWindow::on_actionPlayPause_triggered()
@@ -235,4 +260,63 @@ void GameWindow::setSidebarToggleToShow()
                                                "QToolButton#toolButtonToggleSidebar:pressed {"
                                                "border-image: url(:/statusbar/sidebar-left-pressed.png);"
                                                "}");
+}
+
+void GameWindow::on_pushButtonAddPlayers_clicked()
+{
+    if(extraWidget()) {
+        if(extraWidget()->metaObject()->className() == PlayersListWidget::staticMetaObject.className())
+            return;
+        else
+            extraWidget()->close();
+    }
+
+    PlayersListWidget *list = new PlayersListWidget(this);
+    setExtraWidget(list);
+    list->setMinimumWidth(200);
+    list->setMinimumHeight(400);
+    list->move(ui->pushButtonAddPlayers->pos().x() + ui->pushButtonAddPlayers->width(),
+               ui->pushButtonAddPlayers->pos().y() - list->minimumHeight() / 2);
+    list->setPlayers(Qp::readAll<Player>());
+
+    foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->players())
+        list->removePlayer(p);
+
+    connect(list, &PlayersListWidget::playerActivated,
+            this, &GameWindow::addPlayerToGame);
+
+    list->show();
+}
+
+void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
+{
+    PlayersListWidget *list = static_cast<PlayersListWidget *>(sender());
+    list->removePlayer(player);
+    ui->listWidgetPlayers->addPlayer(player);
+    if(ui->listWidgetPlayers->count() >= 4)
+        ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+}
+
+QWidget *GameWindow::extraWidget() const
+{
+    return m_extraWidget;
+}
+
+void GameWindow::setExtraWidget(QWidget *extraWidget)
+{
+    m_extraWidget = extraWidget;
+}
+
+void GameWindow::on_buttonBox_accepted()
+{
+    QSharedPointer<Game> game = Qp::create<Game>();
+    game->setMitPflichtSolo(ui->checkBoxMitPflichtSoli->isChecked());
+    game->setSite(ui->comboBoxSite->currentPlace());
+
+    foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->players()) {
+        game->addPlayer(p);
+    }
+
+    game->startNextRound();
+    setGame(game);
 }

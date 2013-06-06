@@ -48,15 +48,17 @@ MainWindow::MainWindow(QWidget *parent) :
     PlayersListModel *modelPlayer = new PlayersListModel(this);
     ui->treeViewPlayers->setModel(modelPlayer);
     ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
+    connect(ui->treeViewPlayers, &QTreeView::doubleClicked,
+            this, &MainWindow::on_actionPlayerInformation_triggered);
 
     GameListModel *modelGames = new GameListModel(this);
     ui->treeViewGames->setModel(modelGames);
-    connect(ui->treeViewGames, &QTreeView::doubleClicked,
-            this, &MainWindow::onGameDoubleClicked);
 
     DrinksListModel *modelDrinks = new DrinksListModel(this);
     ui->treeViewDrinks->setModel(modelDrinks);
     ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
+    connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
+            this, &MainWindow::on_actionDrinkInformation_triggered);
 
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
@@ -127,12 +129,13 @@ void MainWindow::on_actionPlayerInformation_triggered()
     if(ui->stackedWidget->currentWidget() != ui->pagePlayers)
         return;
 
-    QSharedPointer<Player> player = Tools::selectedObjectFrom<Player>(ui->treeViewPlayers);
-    if(!player)
+    QModelIndexList list = ui->treeViewPlayers->selectionModel()->selectedIndexes();
+    if(list.isEmpty())
         return;
 
     PlayerInformationDialog dialog;
-    dialog.setPlayer(player);
+    dialog.setPlayerFromModel(static_cast<PlayersListModel*>(ui->treeViewPlayers->model()),
+                              list.first().row());
     dialog.exec();
 }
 
@@ -150,7 +153,7 @@ void MainWindow::on_actionDrinkInformation_triggered()
     dialog.exec();
 }
 
-void MainWindow::onGameDoubleClicked(const QModelIndex &)
+void MainWindow::on_treeViewGames_doubleClicked(const QModelIndex &)
 {
     if(ui->stackedWidget->currentWidget() != ui->pageGames)
         return;

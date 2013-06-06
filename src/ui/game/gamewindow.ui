@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>Doppelkopf Game</string>
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget#statusBar {
@@ -98,6 +98,89 @@ background-color: rgb(108,108,108);
          </widget>
         </item>
         <item>
+         <widget class="QWidget" name="widgetCreateGame" native="true">
+          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1">
+           <property name="spacing">
+            <number>-1</number>
+           </property>
+           <property name="margin">
+            <number>0</number>
+           </property>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_2">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <item>
+              <widget class="PlayersListWidget" name="listWidgetPlayers">
+               <property name="frameShape">
+                <enum>QFrame::NoFrame</enum>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="pushButtonAddPlayers">
+               <property name="text">
+                <string>Add Players</string>
+               </property>
+               <property name="flat">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QVBoxLayout" name="verticalLayout_4">
+             <property name="rightMargin">
+              <number>12</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
+             <item>
+              <layout class="QFormLayout" name="formLayout">
+               <property name="margin">
+                <number>12</number>
+               </property>
+               <item row="0" column="0">
+                <widget class="QLabel" name="label">
+                 <property name="text">
+                  <string>Site:</string>
+                 </property>
+                </widget>
+               </item>
+               <item row="0" column="1">
+                <widget class="PlacesComboBox" name="comboBoxSite"/>
+               </item>
+               <item row="1" column="0" colspan="2">
+                <widget class="QCheckBox" name="checkBoxMitPflichtSoli">
+                 <property name="text">
+                  <string>Mit Pflichtsoli</string>
+                 </property>
+                 <property name="checked">
+                  <bool>true</bool>
+                 </property>
+                </widget>
+               </item>
+              </layout>
+             </item>
+             <item>
+              <widget class="QDialogButtonBox" name="buttonBox">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="standardButtons">
+                <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="Line" name="line">
           <property name="styleSheet">
            <string notr="true">QWidget {
@@ -135,7 +218,7 @@ background-color: rgb(108,108,108);
              <x>0</x>
              <y>0</y>
              <width>597</width>
-             <height>352</height>
+             <height>126</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
@@ -375,6 +458,16 @@ background-color: rgb(108,108,108);
    <extends>QWidget</extends>
    <header location="global">ui/widgets/shadowframe.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PlayersListWidget</class>
+   <extends>QListWidget</extends>
+   <header location="global">ui/widgets/playerslistwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PlacesComboBox</class>
+   <extends>QComboBox</extends>
+   <header location="global">ui/widgets/placescombobox.h</header>
   </customwidget>
  </customwidgets>
  <resources>

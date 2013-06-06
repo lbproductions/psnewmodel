@@ -166,7 +166,8 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
         if(role == Qt::DisplayRole) {
             int roundIndex = section - 1;
             if(roundIndex < m_game->rounds().size()) {
-                if(roundIndex % m_game->players().size() == 0)
+                if(m_game->players().size() > 0 &&
+                        roundIndex % m_game->players().size() == 0)
                     return roundIndex + 1;
             }
         }

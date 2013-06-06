@@ -34,8 +34,12 @@ QPixmap ImageWell::pixmap() const
 void ImageWell::setPixmap(const QPixmap &pixmap)
 {
     m_pixmap = pixmap;
-    if(pixmap.isNull())
+    if(pixmap.isNull()) {
+        QPixmap pm(48,48);
+        pm.fill(QColor(240,240,240));
+        setPixmap(pm);
         return;
+    }
 
     m_pixmapLabel->setPixmap(m_pixmap.scaled(48, 48));
 

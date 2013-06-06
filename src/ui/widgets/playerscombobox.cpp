@@ -42,8 +42,7 @@ int PlayersComboBox::indexOf(QSharedPointer<Player> player) const
 void PlayersComboBox::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
     clear();
-    m_players = players;
-    addPlayers(m_players);
+    addPlayers(players);
 }
 
 void PlayersComboBox::addPlayers(const QList<QSharedPointer<Player> > &players)

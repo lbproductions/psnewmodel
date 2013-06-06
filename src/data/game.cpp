@@ -208,6 +208,11 @@ QList<QSharedPointer<Player> > Game::players() const
     return m_players.resolveList();
 }
 
+void Game::addPlayer(QSharedPointer<Player> player)
+{
+    m_players.relate(player);
+}
+
 QSharedPointer<Player> Game::currentCardMixer() const
 {
     if(isComplete())
@@ -302,11 +307,14 @@ QList<QSharedPointer<LiveDrink> > Game::drinks(QSharedPointer<Player> player) co
 
 void Game::startNextRound()
 {
-    QSharedPointer<Round> round = currentRound();
-    round->setState(Round::Finished);
-    Qp::update(round);
+    int nextNumber = 0;
 
-    int nextNumber = round->number() + 1;
+    QSharedPointer<Round> round = currentRound();
+    if(round) {
+        nextNumber = round->number() + 1;
+        round->setState(Round::Finished);
+        Qp::update(round);
+    }
 
     round = Qp::create<Round>();
     round->setGame(Qp::sharedFrom(this));

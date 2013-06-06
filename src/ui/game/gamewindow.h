@@ -9,6 +9,7 @@ class GameWindow;
 
 class Game;
 class GameOverviewModel;
+class Player;
 
 class GameWindow : public QMainWindow
 {
@@ -22,6 +23,8 @@ public:
     void setGame(const QSharedPointer<Game> &game);
 
     void wheelEvent(QWheelEvent *e);
+
+    void mousePressEvent(QMouseEvent *e);
 
 private slots:
     void on_actionPlayPause_triggered();
@@ -39,11 +42,22 @@ private slots:
 
     void updateTimes();
 
+    void on_pushButtonAddPlayers_clicked();
+
+    void addPlayerToGame(QSharedPointer<Player> player);
+
+    QWidget *extraWidget() const;
+    void setExtraWidget(QWidget *extraWidget);
+
+    void on_buttonBox_accepted();
+
 private:
     Ui::GameWindow *ui;
 
     QSharedPointer<Game> m_game;
     GameOverviewModel *m_gameOverViewModel;
+
+    QWidget *m_extraWidget;
 };
 
 #endif // GAMEWINDOW_H

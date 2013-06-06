@@ -48,6 +48,9 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
 
-    new MainWindow;
+    GameWindow *gw = new GameWindow();
+    gw->show();
+
+//    new MainWindow;
     return a.exec();
 }

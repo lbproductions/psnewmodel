@@ -25,6 +25,7 @@ public:
     void setCurrentPlayer(QSharedPointer<Player> player);
 
     void removePlayer(QSharedPointer<Player> player);
+
 private:
     QList<QSharedPointer<Player> > m_players;
     QMultiHash<QSharedPointer<Player>, int> m_indexes;

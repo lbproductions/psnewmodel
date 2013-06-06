@@ -84,10 +84,12 @@ public:
     QTime length() const;
 
     QSharedPointer<Place> site() const;
+    void setSite(QSharedPointer<Place> site);
 
     QList<QSharedPointer<League> > leagues() const;
 
     QList<QSharedPointer<Player> > players() const;
+    void addPlayer(QSharedPointer<Player> player);
     QSharedPointer<Player> currentCardMixer() const;
     QList<QSharedPointer<Player> > currentPlayingPlayers() const;
 
@@ -122,7 +124,6 @@ public:
 
 private:
     void setCreationTime(const QDateTime &creationTime);
-    void setSite(QSharedPointer<Place> site);
     void setPlayers(const QList<QSharedPointer<Player> > &players);
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
     void addRound(QSharedPointer<Round> round);

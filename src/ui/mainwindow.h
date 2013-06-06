@@ -26,10 +26,9 @@ private slots:
     void restoreWindowState();
 
     void on_actionPlayerInformation_triggered();
-
     void on_actionDrinkInformation_triggered();
 
-    void onGameDoubleClicked(const QModelIndex &);
+    void on_treeViewGames_doubleClicked(const QModelIndex &index);
 
 private:
     Ui::MainWindow *ui;
