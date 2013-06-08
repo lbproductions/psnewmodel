@@ -3,7 +3,7 @@
 
 #include <QHeaderView>
 
-class GameOverviewModel;
+class GameInformationModel;
 
 class OverviewPlayerHeaderView : public QHeaderView
 {
@@ -11,8 +11,8 @@ class OverviewPlayerHeaderView : public QHeaderView
 public:
     explicit OverviewPlayerHeaderView(Qt::Orientation orientation, QWidget *parent = 0);
 
-    GameOverviewModel *model() const;
-    void setGameModel(GameOverviewModel *model);
+    GameInformationModel *model() const;
+    void setGameModel(GameInformationModel *model);
 
 protected:
     QSize sizeHint() const Q_DECL_OVERRIDE;
@@ -20,7 +20,7 @@ protected:
     void paintSection(QPainter * painter, const QRect & rect, int logicalIndex) const Q_DECL_OVERRIDE;
     
 private:
-    GameOverviewModel *m_model;
+    GameInformationModel *m_model;
 };
 
 #endif // OVERVIEWPLAYERHEADERVIEW_H

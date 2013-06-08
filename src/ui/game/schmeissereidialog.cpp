@@ -18,6 +18,7 @@ SchmeissereiDialog::SchmeissereiDialog(QWidget *parent) :
             this, &SchmeissereiDialog::reject);
     connect(ui->comboBoxPlayer, SIGNAL(currentIndexChanged(int)),
             this, SLOT(checkContents()));
+    checkContents();
 }
 
 SchmeissereiDialog::~SchmeissereiDialog()

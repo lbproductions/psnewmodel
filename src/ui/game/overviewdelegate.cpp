@@ -39,21 +39,16 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->drawText(option.rect, text, to);
     }
 
-    if(index.row() == GameOverviewModel::HochzeitenRow
-            || index.row() == GameOverviewModel::TrumpfabgabenRow
-            || index.row() == GameOverviewModel::SoliRow) {
+    color = index.data(GameOverviewModel::MitspielerColorRole).value<QColor>();
+    if(color.isValid()) {
+        painter->setBrush(color);
+        painter->drawRect(QRect(option.rect.topLeft() + QPoint(16,8), option.rect.topLeft() + QPoint(32,24)));
+    }
 
-        QColor color = index.data(GameOverviewModel::MitspielerColorRole).value<QColor>();
-        if(color.isValid()) {
-            painter->setBrush(color);
-            painter->drawRect(QRect(option.rect.topLeft() + QPoint(16,8), option.rect.topLeft() + QPoint(32,24)));
-        }
-
-        color = index.data(Qt::DecorationRole).value<QColor>();
-        if(color.isValid()) {
-            painter->setBrush(color);
-            painter->drawRect(QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19)));
-        }
+    color = index.data(Qt::DecorationRole).value<QColor>();
+    if(color.isValid()) {
+        painter->setBrush(color);
+        painter->drawRect(QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19)));
     }
 
     painter->restore();

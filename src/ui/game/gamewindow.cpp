@@ -14,13 +14,14 @@
 #include <data/game.h>
 #include <data/place.h>
 #include <model/gameoverviewmodel.h>
+#include <model/gameinformationmodel.h>
 #include <data/player.h>
 #include <misc/tools.h>
 
 #include <QPersistence.h>
 #include <QScrollBar>
 #include <QWheelEvent>
-#include <QWindow>
+#include <QPushButton>
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -50,28 +51,36 @@ GameWindow::GameWindow(QWidget *parent) :
     // TODO: enable in Qt 5.1 final: https://bugreports.qt-project.org/browse/QTBUG-31061
     //    ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
 
+    ui->tableViewInformation->hide();
+    ui->tableViewOverview->hide();
+
     ui->comboBoxSite->addPlaces(Qp::readAll<Place>());
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->listWidgetPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listWidgetPlayers->setPalette(darkPalette);
-    ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width() + 6);
+    ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width());
 
-
-    ui->tableView->hide();
     ui->splitter->setPalette(darkPalette);
-    ui->tableView->setPalette(darkPalette);
-    ui->tableView->setModel(m_gameOverViewModel);
-    OverviewPlayerHeaderView *verticalHeaderView = new OverviewPlayerHeaderView(Qt::Vertical, this);
-    verticalHeaderView->setGameModel(m_gameOverViewModel);
-    OverviewHorizontalHeaderView *horizontalHeaderView = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
+    ui->tableViewOverview->setPalette(darkPalette);
+    ui->tableViewOverview->setModel(m_gameOverViewModel);
     OverviewDelegate *delegate = new OverviewDelegate(this);
     delegate->setGameModel(m_gameOverViewModel);
-    ui->tableView->setVerticalHeader(verticalHeaderView);
-    ui->tableView->setHorizontalHeader(horizontalHeaderView);
-    ui->tableView->setItemDelegate(delegate);
+    ui->tableViewOverview->setItemDelegate(delegate);
+    OverviewHorizontalHeaderView *horizontalHeaderView = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
+    ui->tableViewOverview->setHorizontalHeader(horizontalHeaderView);
+
+    m_informationModel = new GameInformationModel(this);
+    ui->tableViewInformation->setItemDelegate(delegate);
+    ui->tableViewInformation->setPalette(darkPalette);
+    ui->tableViewInformation->setModel(m_informationModel);
+    OverviewPlayerHeaderView *verticalHeaderView = new OverviewPlayerHeaderView(Qt::Vertical, this);
+    verticalHeaderView->setGameModel(m_informationModel);
+    ui->tableViewInformation->setVerticalHeader(verticalHeaderView);
+    OverviewHorizontalHeaderView *horizontalHeaderView2 = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
+    ui->tableViewInformation->setHorizontalHeader(horizontalHeaderView2);
 
     connect(ui->scrollAreaGraph->horizontalScrollBar(), &QScrollBar::valueChanged,
-            ui->tableView->horizontalScrollBar(), &QScrollBar::setValue);
+            ui->tableViewOverview->horizontalScrollBar(), &QScrollBar::setValue);
 
     ui->graphWidget->setPalette(darkPalette);
     ui->graphAxis->setPalette(darkPalette);
@@ -122,13 +131,16 @@ QSharedPointer<Game> GameWindow::game() const
 void GameWindow::setGame(const QSharedPointer<Game> &game)
 {
     ui->widgetCreateGame->hide();
-    ui->tableView->show();
+    ui->tableViewOverview->show();
+    ui->tableViewInformation->show();
     m_game = game;
     m_gameOverViewModel->setGame(game);
-    ui->tableView->setFixedHeight(ui->tableView->horizontalHeader()->height() +
-                                  (m_gameOverViewModel->rowCount()) * ui->tableView->rowHeight(0));
+    m_informationModel->setGame(game);
+    ui->tableViewOverview->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
+                                  (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
     ui->graphWidget->setGame(game);
-    ui->graphAxis->setFixedWidth(m_gameOverViewModel->extraColumnCount() * 40 + ui->tableView->verticalHeader()->width());
+    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
+    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
 
     enableActionsBasedOnState();
     updateTimes();

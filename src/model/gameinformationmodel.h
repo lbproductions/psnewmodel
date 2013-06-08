@@ -1,5 +1,5 @@
-#ifndef GAMEOVERVIEWMODEL_H
-#define GAMEOVERVIEWMODEL_H
+#ifndef GAMEINFORMATIONMODEL_H
+#define GAMEINFORMATIONMODEL_H
 
 #include <QAbstractTableModel>
 
@@ -7,23 +7,11 @@
 
 class Game;
 
-class GameOverviewModel : public QAbstractTableModel
+class GameInformationModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
-    enum ExtraRows {
-        HochzeitenRow,
-        TrumpfabgabenRow,
-        SoliRow
-    };
-    static const int ExtraRowsCount;
-
-    enum Roles {
-        MitspielerColorRole = Qt::UserRole + 1,
-        SoloTypeRole
-    };
-
-    explicit GameOverviewModel(QObject *parent = 0);
+    explicit GameInformationModel(QObject *parent = 0);
 
     QSharedPointer<Game> game() const;
     void setGame(const QSharedPointer<Game> &game);
@@ -34,13 +22,8 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
-
 private:
     QSharedPointer<Game> m_game;
-
-
-    static QColor colorFromPoints(int points);
-    
 };
 
-#endif // GAMEOVERVIEWMODEL_H
+#endif // GAMEINFORMATIONMODEL_H

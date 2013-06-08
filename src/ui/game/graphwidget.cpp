@@ -32,24 +32,28 @@ void GraphWidget::setGame(const QSharedPointer<Game> &game)
 {
     m_game = game;
 
-    m_values.clear();
+    m_rounds.clear();
     m_maxY = std::numeric_limits<int>::min();
     m_minY = std::numeric_limits<int>::max();
 
     QList<QSharedPointer<Round> > rounds = m_game->rounds();
+    QList<QSharedPointer<Player> > players = m_game->players();
 
-    foreach(QSharedPointer<Player> p, m_game->players()) {
-        QList<int> values;
-        foreach(QSharedPointer<Round> r, rounds) {
+    foreach(QSharedPointer<Round> r, rounds) {
+        if(r->state() != Round::Finished)
+            break;
+
+        QList<int> round;
+        foreach(QSharedPointer<Player> p, players) {
             if(r->state() != Round::Finished)
                 break;
 
             int y = r->totalPoints(p);
             setMaxY(qMax(y, maxY()));
             setMinY(qMin(y, minY()));
-            values.append(y);
+            round.append(y);
         }
-        m_values.append(values);
+        m_rounds.append(round);
     }
 
     m_maxY += 5;
@@ -113,11 +117,21 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     if(!m_game)
         return;
 
-    int playerCount = m_game->players().size();
+    QList<QSharedPointer<Player> > players = m_game->players();
+    int playerCount = players.size();
     if(playerCount == 0)
         return;
 
-    for(int x = playerCount; translateX(x) < width(); x+=playerCount) {
+    for(int x = 0; translateX(x) < width(); ++x) {
+        if(x % playerCount != 0) {
+            pen.setStyle(Qt::DotLine);
+            pen.setColor(palette().color(QPalette::Highlight).darker(130));
+        }
+        else {
+            pen.setStyle(Qt::SolidLine);
+            pen.setColor(palette().color(QPalette::Highlight));
+        }
+        painter.setPen(pen);
         painter.drawLine(QPointF(translateX(x), 0), QPointF(translateX(x), height()));
     }
 
@@ -126,28 +140,70 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     QFont f = painter.font();
     f.setPixelSize(18);
     painter.setFont(f);
+    pen.setStyle(Qt::SolidLine);
+    pen.setCapStyle(Qt::RoundCap);
+    pen.setWidth(3);
 
-    int p = 0;
-    foreach(QList<int> graph, m_values) {
-        pen.setColor(m_game->players().at(p)->color());
-        pen.setWidth(3);
+
+    QList<int> previousRound;
+    int roundNumber = 0;
+    foreach(QList<int> currentRound, m_rounds) {
+        for(int playerIndex = 0; playerIndex < currentRound.size(); ++playerIndex) {
+            pen.setColor(players.at(playerIndex)->color());
+            painter.setPen(pen);
+
+            int y = currentRound.at(playerIndex);
+            int previousY = 0;
+            if(!previousRound.isEmpty())
+                previousY = previousRound.at(playerIndex);
+
+            pen.setStyle(Qt::SolidLine);
+
+            for(int otherPlayerIndex = 0; otherPlayerIndex < playerIndex; ++otherPlayerIndex) {
+                int otherY = currentRound.at(otherPlayerIndex);
+                int otherPreviousY = 0;
+                if(!previousRound.isEmpty())
+                    otherPreviousY = previousRound.at(otherPlayerIndex);
+
+                if(otherY == y && otherPreviousY == previousY) {
+                    pen.setStyle(Qt::DotLine);
+                }
+            }
+            painter.setPen(pen);
+
+            painter.drawLine(QPoint(translateX(roundNumber), translateY(previousY)),
+                             QPoint(translateX(roundNumber + 1), translateY(y)));
+        }
+        previousRound = currentRound;
+        ++roundNumber;
+    }
+
+    QList<int> lastRound = m_rounds.last();
+    for(int playerIndex = 0; playerIndex < lastRound.size(); ++playerIndex) {
+        pen.setColor(Qt::white);
+        pen.setWidth(2);
         painter.setPen(pen);
-        int previousY = 0;
-        int count = graph.size();
-        for(int i = 0; i < count; ++i) {
-            int y = graph.at(i);
-            painter.drawLine(QPoint(translateX(i), translateY(previousY)),
-                             QPoint(translateX(i + 1), translateY(y)));
-            previousY = y;
+        int points = lastRound.at(playerIndex);
+        int yPos = translateY(points) + 5;
+        for(int otherPlayerIndex = 0; otherPlayerIndex < lastRound.size(); ++otherPlayerIndex) {
+            if(otherPlayerIndex == playerIndex)
+                continue;
 
-            if(i == count - 1) {
-                pen.setColor(Qt::white);
-                pen.setWidth(2);
-                painter.setPen(pen);
-                painter.drawText(QPoint(translateX(i + 1) + 5, translateY(y) + 5), QString::number(y));
+            int otherPoints = lastRound.at(otherPlayerIndex);
+            int diff = points - otherPoints;
+            if(diff != 0 && qAbs(diff) <= 3) {
+                if(points < otherPoints) {
+                    yPos += 5;
+                }
+                else {
+                    yPos -= 5;
+                }
             }
         }
-        ++p;
+
+        painter.drawText(QPoint(translateX(m_rounds.size()) + 5,
+                                yPos),
+                         QString::number(points));
     }
 }
 

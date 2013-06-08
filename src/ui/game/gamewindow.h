@@ -13,6 +13,7 @@ class Game;
 class GameOverviewModel;
 class Player;
 class PopupWidget;
+class GameInformationModel;
 
 class GameWindow : public QMainWindow
 {
@@ -61,6 +62,7 @@ private:
 
     QSharedPointer<Game> m_game;
     GameOverviewModel *m_gameOverViewModel;
+    GameInformationModel *m_informationModel;
 
     QPointer<PopupWidget> m_popupWidget;
 };

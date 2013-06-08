@@ -40,7 +40,7 @@ private:
     int m_maxY;
     int m_minY;
 
-    QList<QList<int> > m_values;
+    QList<QList<int> > m_rounds;
 
     QSharedPointer<Game> m_game;
 };

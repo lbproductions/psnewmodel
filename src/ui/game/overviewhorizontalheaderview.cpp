@@ -25,6 +25,7 @@ void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &
     if(!text.isEmpty()) {
         painter->setPen(QPen(palette.highlight().color()));
         painter->drawLine(rect.topLeft() - QPoint(1,0), rect.bottomLeft() - QPoint(1,0));
+        painter->drawLine(rect.topRight(), rect.topRight());
 
         painter->setPen(palette.color(QPalette::Text));
         QTextOption option;
