@@ -14,7 +14,10 @@
    <string>Doppelkopf Game</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget#statusBar {
+   <string notr="true">QWidget#line, QWidget#line_2 {
+	color: rgb(108,108,108);
+}
+QWidget#statusBar {
 background: url(:/statusbar/dark-background.png) repeat-x;
 }
 QTableCornerButton::section {
@@ -38,8 +41,9 @@ background-color: rgb(108,108,108);
 QPushButton#pushButtonAddPlayers {
 	color: white;
 	border: none;
-	border-top: 1px solid rgb(108,108,108);
-	border-right: 1px solid rgb(108,108,108);
+	border: 1px solid rgb(108,108,108);
+	border-left: none;
+	border-bottom: none;
 	height: 32px;
 	margin-right: 6px;
 }
@@ -53,6 +57,9 @@ QCheckBox {
 }
 QLabel {
 	color: white;
+}
+QWidget#widgetCreateGame {
+	border-bottom: 1px solid rgb(108,108,108);
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
@@ -118,81 +125,131 @@ QLabel {
         </item>
         <item>
          <widget class="QWidget" name="widgetCreateGame" native="true">
-          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1">
+          <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0">
            <property name="spacing">
-            <number>-1</number>
+            <number>0</number>
            </property>
-           <property name="margin">
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="topMargin">
+            <number>24</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <property name="bottomMargin">
             <number>0</number>
            </property>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <property name="spacing">
-              <number>0</number>
+            <widget class="Line" name="line_2">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
-             <item>
-              <widget class="PlayersListWidget" name="listWidgetPlayers">
-               <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="pushButtonAddPlayers">
-               <property name="text">
-                <string>Add Players</string>
-               </property>
-               <property name="flat">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
              <property name="rightMargin">
-              <number>12</number>
-             </property>
-             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item>
-              <layout class="QFormLayout" name="formLayout">
-               <property name="margin">
-                <number>12</number>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>0</number>
                </property>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Site:</string>
+               <item>
+                <widget class="PlayersListWidget" name="listWidgetPlayers">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>250</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
-                <widget class="PlacesComboBox" name="comboBoxSite"/>
-               </item>
-               <item row="1" column="0" colspan="2">
-                <widget class="QCheckBox" name="checkBoxMitPflichtSoli">
+               <item>
+                <widget class="QPushButton" name="pushButtonAddPlayers">
                  <property name="text">
-                  <string>Mit Pflichtsoli</string>
+                  <string>Add Players</string>
                  </property>
-                 <property name="checked">
-                  <bool>true</bool>
+                 <property name="flat">
+                  <bool>false</bool>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
              <item>
-              <widget class="QDialogButtonBox" name="buttonBox">
-               <property name="enabled">
-                <bool>true</bool>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <property name="rightMargin">
+                <number>12</number>
                </property>
-               <property name="standardButtons">
-                <set>QDialogButtonBox::Ok</set>
+               <property name="bottomMargin">
+                <number>0</number>
                </property>
-              </widget>
+               <item>
+                <layout class="QFormLayout" name="formLayout">
+                 <property name="horizontalSpacing">
+                  <number>6</number>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>12</number>
+                 </property>
+                 <property name="margin">
+                  <number>12</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Site:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="PlacesComboBox" name="comboBoxSite"/>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QCheckBox" name="checkBoxMitPflichtSoli">
+                   <property name="text">
+                    <string>Mit Pflichtsoli</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QDialogButtonBox" name="buttonBox">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="standardButtons">
+                  <set>QDialogButtonBox::Ok</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
@@ -237,7 +294,7 @@ QLabel {
              <x>0</x>
              <y>0</y>
              <width>597</width>
-             <height>126</height>
+             <height>99</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">

@@ -14,6 +14,7 @@ QSize OverviewPlayerHeaderView::sizeHint() const
 {
     QSize size = QHeaderView::sizeHint();
     size += QSize(40,0);
+    size.setHeight(30);
     return size;
 }
 
@@ -21,6 +22,7 @@ QSize OverviewPlayerHeaderView::sectionSizeFromContents(int logicalIndex) const
 {
     QSize size = QHeaderView::sectionSizeFromContents(logicalIndex);
     size += QSize(40,0);
+    size.setHeight(30);
     return size;
 }
 

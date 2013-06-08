@@ -12,6 +12,7 @@
 #include <misc/tools.h>
 
 #include <QApplication>
+#include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QSettings>
 
@@ -46,16 +47,23 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->actionDrinkInformation, &QAction::trigger);
 
     PlayersListModel *modelPlayer = new PlayersListModel(this);
-    ui->treeViewPlayers->setModel(modelPlayer);
+    QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
+    sortModel->setSourceModel(modelPlayer);
+    ui->treeViewPlayers->setModel(sortModel);
     ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
     connect(ui->treeViewPlayers, &QTreeView::doubleClicked,
             this, &MainWindow::on_actionPlayerInformation_triggered);
 
     GameListModel *modelGames = new GameListModel(this);
-    ui->treeViewGames->setModel(modelGames);
+    sortModel = new QSortFilterProxyModel(this);
+    sortModel->setSourceModel(modelGames);
+    ui->treeViewGames->setModel(sortModel);
+    ui->treeViewGames->setSortingEnabled(true);
 
     DrinksListModel *modelDrinks = new DrinksListModel(this);
-    ui->treeViewDrinks->setModel(modelDrinks);
+    sortModel = new QSortFilterProxyModel(this);
+    sortModel->setSourceModel(modelDrinks);
+    ui->treeViewDrinks->setModel(sortModel);
     ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
     connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
             this, &MainWindow::on_actionDrinkInformation_triggered);

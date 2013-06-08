@@ -1,5 +1,7 @@
 #include "playerslistwidget.h"
 
+#include "playerslistdelegate.h"
+
 #include <data/player.h>
 
 PlayersListWidget::PlayersListWidget(QWidget *parent) :
@@ -9,6 +11,8 @@ PlayersListWidget::PlayersListWidget(QWidget *parent) :
 //            this, &PlayersListWidget::indexActivated);
     connect(this, &QListWidget::activated,
             this, &PlayersListWidget::indexActivated);
+
+    setItemDelegate(new PlayersListDelegate(this));
 }
 
 void PlayersListWidget::clear()

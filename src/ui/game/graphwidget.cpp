@@ -191,3 +191,10 @@ void GraphWidget::setMinY(int minY)
 {
     m_minY = minY;
 }
+
+void GraphWidget::updateGraphs()
+{
+    if(!m_game)
+        return;
+    setGame(m_game);
+}

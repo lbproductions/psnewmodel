@@ -31,6 +31,9 @@ public:
     int minY() const;
     void setMinY(int minY);
 
+public slots:
+    void updateGraphs();
+
 private:
     void paintEvent(QPaintEvent *event);
 

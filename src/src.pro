@@ -45,14 +45,15 @@ SOURCES += main.cpp \
     ui/game/graphaxis.cpp \
     ui/game/newrounddialog.cpp \
     ui/widgets/playerscombobox.cpp \
-    ui/widgets/bubbledialog.cpp \
     ui/game/schmeissereidialog.cpp \
     ui/game/statisticswidget.cpp \
     ui/widgets/shadowframe.cpp \
     ui/drinkinformationdialog.cpp \
     ui/widgets/menubar.cpp \
     ui/widgets/playerslistwidget.cpp \
-    ui/widgets/placescombobox.cpp
+    ui/widgets/placescombobox.cpp \
+    ui/widgets/playerslistdelegate.cpp \
+    ui/widgets/popupwidget.cpp
 
 
 HEADERS  += \
@@ -82,14 +83,15 @@ HEADERS  += \
     ui/game/graphaxis.h \
     ui/game/newrounddialog.h \
     ui/widgets/playerscombobox.h \
-    ui/widgets/bubbledialog.h \
     ui/game/schmeissereidialog.h \
     ui/game/statisticswidget.h \
     ui/widgets/shadowframe.h \
     ui/drinkinformationdialog.h \
     ui/widgets/menubar.h \
     ui/widgets/playerslistwidget.h \
-    ui/widgets/placescombobox.h
+    ui/widgets/placescombobox.h \
+    ui/widgets/playerslistdelegate.h \
+    ui/widgets/popupwidget.h
 
 
 FORMS += \
@@ -97,7 +99,6 @@ FORMS += \
     ui/playerinformationdialog.ui \
     ui/game/gamewindow.ui \
     ui/game/newrounddialog.ui \
-    ui/widgets/bubbledialog.ui \
     ui/game/schmeissereidialog.ui \
     ui/game/statisticswidget.ui \
     ui/drinkinformationdialog.ui

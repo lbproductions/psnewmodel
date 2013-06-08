@@ -5,7 +5,8 @@
         <file>state-running.png</file>
         <file>imagewell-background.png</file>
         <file>imagewell-background2.png</file>
-        <file>bubble-background.png</file>
-        <file>bubble-arrow.png</file>
+        <file>popup-arrow.png</file>
+        <file>popup-border.png</file>
+        <file>popup-arrow-left.png</file>
     </qresource>
 </RCC>

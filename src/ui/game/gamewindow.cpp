@@ -10,7 +10,7 @@
 
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
-#include <ui/widgets/bubbledialog.h>
+#include <ui/widgets/popupwidget.h>
 #include <data/game.h>
 #include <data/place.h>
 #include <model/gameoverviewmodel.h>
@@ -26,7 +26,7 @@ GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
     m_gameOverViewModel(new GameOverviewModel(this)),
-    m_extraWidget(nullptr)
+    m_popupWidget(nullptr)
 {
     ui->setupUi(this);
 
@@ -48,11 +48,14 @@ GameWindow::GameWindow(QWidget *parent) :
 
     // This has a bug in 5.0
     // TODO: enable in Qt 5.1 final: https://bugreports.qt-project.org/browse/QTBUG-31061
-//    ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
+    //    ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
 
     ui->comboBoxSite->addPlaces(Qp::readAll<Place>());
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->listWidgetPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listWidgetPlayers->setPalette(darkPalette);
+    ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width() + 6);
+
 
     ui->tableView->hide();
     ui->splitter->setPalette(darkPalette);
@@ -141,12 +144,23 @@ void GameWindow::wheelEvent(QWheelEvent *e)
 
 void GameWindow::mousePressEvent(QMouseEvent *e)
 {
-    if(extraWidget()) {
-        if(extraWidget() != QApplication::widgetAt(e->pos())) {
-            extraWidget()->close();
-            extraWidget()->deleteLater();
-            setExtraWidget(nullptr);
+    if(popupWidget()) {
+        if(!popupWidget()->geometry().adjusted(30,30,-30,-30).contains(e->pos())) {
+            popupWidget()->close();
+            popupWidget()->deleteLater();
+            setPopupWidget(nullptr);
         }
+    }
+
+    QMainWindow::mousePressEvent(e);
+}
+
+void GameWindow::resizeEvent(QResizeEvent *)
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+        popupWidget()->deleteLater();
+        setPopupWidget(nullptr);
     }
 }
 
@@ -187,18 +201,44 @@ void GameWindow::enableActionsBasedOnState()
 
 void GameWindow::on_actionAdd_round_triggered()
 {
-    NewRoundDialog dialog;
-    dialog.setRound(m_game->currentRound());
-    dialog.exec();
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
 
-    ui->graphWidget->setGame(m_game);
+    PopupWidget *popup = new PopupWidget(this);
+
+    NewRoundDialog *dialog = new NewRoundDialog(popup);
+    dialog->setRound(m_game->currentRound());
+    dialog->setWindowFlags(Qt::Widget);
+
+    popup->setWidget(dialog);
+    popup->setMinimumWidth(600);
+    popup->setMinimumHeight(500);
+    popup->anchorTo(ui->toolButtonAddRound);
+    popup->show();
+    setPopupWidget(popup);
+
+    connect(dialog, &QDialog::accepted,
+            ui->graphWidget, &GraphWidget::updateGraphs);
 }
 
 void GameWindow::on_actionAdd_schmeisserei_triggered()
 {
-    SchmeissereiDialog dialog;
-    dialog.setRound(m_game->currentRound());
-    dialog.exec();
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    SchmeissereiDialog *dialog = new SchmeissereiDialog(popup);
+    dialog->setRound(m_game->currentRound());
+    dialog->setWindowFlags(Qt::Widget);
+
+    popup->setWidget(dialog);
+    popup->setMinimumWidth(300);
+    popup->setMinimumHeight(200);
+    popup->anchorTo(ui->toolButtonAddSchmeisserei);
+    popup->show();
+    setPopupWidget(popup);
 }
 
 void GameWindow::updateTimes()
@@ -266,19 +306,15 @@ void GameWindow::setSidebarToggleToShow()
 
 void GameWindow::on_pushButtonAddPlayers_clicked()
 {
-    if(extraWidget()) {
-        if(extraWidget()->metaObject()->className() == PlayersListWidget::staticMetaObject.className())
-            return;
-        else
-            extraWidget()->close();
+    if(popupWidget()) {
+        popupWidget()->close();
     }
 
-    PlayersListWidget *list = new PlayersListWidget(this);
-    setExtraWidget(list);
-    list->setMinimumWidth(200);
-    list->setMinimumHeight(400);
-    list->move(ui->pushButtonAddPlayers->pos().x() + ui->pushButtonAddPlayers->width(),
-               ui->pushButtonAddPlayers->pos().y() - list->minimumHeight() / 2);
+    PopupWidget *popup = new PopupWidget(this);
+
+    PlayersListWidget *list = new PlayersListWidget(popup);
+    list->setPalette(palette());
+    list->setAttribute(Qt::WA_MacShowFocusRect, false);
     list->setPlayers(Qp::readAll<Player>());
 
     foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->players())
@@ -287,7 +323,13 @@ void GameWindow::on_pushButtonAddPlayers_clicked()
     connect(list, &PlayersListWidget::playerActivated,
             this, &GameWindow::addPlayerToGame);
 
-    list->show();
+    popup->setWidget(list);
+    popup->setMinimumWidth(400);
+    popup->setMinimumHeight(500);
+    popup->setArrowPosition(PopupWidget::Left);
+    popup->anchorTo(ui->pushButtonAddPlayers);
+    popup->show();
+    setPopupWidget(popup);
 }
 
 void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
@@ -299,14 +341,14 @@ void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 }
 
-QWidget *GameWindow::extraWidget() const
+PopupWidget *GameWindow::popupWidget() const
 {
-    return m_extraWidget;
+    return m_popupWidget;
 }
 
-void GameWindow::setExtraWidget(QWidget *extraWidget)
+void GameWindow::setPopupWidget(PopupWidget *extraWidget)
 {
-    m_extraWidget = extraWidget;
+    m_popupWidget = extraWidget;
 }
 
 void GameWindow::on_buttonBox_accepted()

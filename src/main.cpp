@@ -10,6 +10,7 @@
 #include <data/league.h>
 
 #include <ui/mainwindow.h>
+#include <ui/widgets/popupwidget.h>
 #include <ui/game/gamewindow.h>
 
 #include <QSqlDatabase>
@@ -43,14 +44,21 @@ int main(int argc, char *argv[])
     Qp::registerClass<League>();
     Qp::adjustDatabaseSchema();
 
-    QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
+//    QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
-    QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
+//    QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
+
+//    QMainWindow window;
+//    window.setFixedSize(800,600);
+
+//    PopupWidget w;
+//    w.show();
 
 
-//    GameWindow *gw = new GameWindow();
-//    gw->show();
+    GameWindow *gw = new GameWindow();
+//    gw->setGame(games.last());
+    gw->show();
 
-    new MainWindow;
+//    new MainWindow;
     return a.exec();
 }

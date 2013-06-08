@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 
+#include <QPointer>
+
 namespace Ui {
 class GameWindow;
 }
@@ -10,6 +12,7 @@ class GameWindow;
 class Game;
 class GameOverviewModel;
 class Player;
+class PopupWidget;
 
 class GameWindow : public QMainWindow
 {
@@ -25,6 +28,8 @@ public:
     void wheelEvent(QWheelEvent *e);
 
     void mousePressEvent(QMouseEvent *e);
+
+    void resizeEvent(QResizeEvent *);
 
 private slots:
     void on_actionPlayPause_triggered();
@@ -46,8 +51,8 @@ private slots:
 
     void addPlayerToGame(QSharedPointer<Player> player);
 
-    QWidget *extraWidget() const;
-    void setExtraWidget(QWidget *extraWidget);
+    PopupWidget *popupWidget() const;
+    void setPopupWidget(PopupWidget *popupWidget);
 
     void on_buttonBox_accepted();
 
@@ -57,7 +62,7 @@ private:
     QSharedPointer<Game> m_game;
     GameOverviewModel *m_gameOverViewModel;
 
-    QWidget *m_extraWidget;
+    QPointer<PopupWidget> m_popupWidget;
 };
 
 #endif // GAMEWINDOW_H
