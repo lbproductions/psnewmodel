@@ -44,9 +44,9 @@ int main(int argc, char *argv[])
     Qp::registerClass<League>();
     Qp::adjustDatabaseSchema();
 
-//    QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
+    QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
-//    QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
+    QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
 //    QMainWindow window;
 //    window.setFixedSize(800,600);
@@ -55,10 +55,10 @@ int main(int argc, char *argv[])
 //    w.show();
 
 
-    GameWindow *gw = new GameWindow();
-    gw->setGame(games.at(98));
-    gw->show();
+//    GameWindow *gw = new GameWindow();
+//    gw->setGame(games.at(98));
+//    gw->show();
 
-//    new MainWindow;
+    new MainWindow;
     return a.exec();
 }

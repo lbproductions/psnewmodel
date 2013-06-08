@@ -4,6 +4,7 @@
 #include "../lib/QPersistence/src/abstractobjectlistmodel.h"
 
 #include <QAbstractItemView>
+#include <QSortFilterProxyModel>
 
 class Tools
 {
@@ -36,7 +37,12 @@ QSharedPointer<T> Tools::selectedObjectFrom(QAbstractItemView *view)
 template<class T>
 QSharedPointer<T> Tools::objectFrom(const QModelIndex &index, QAbstractItemView *view)
 {
-    return qSharedPointerCast<T>(static_cast<QpAbstractObjectListModelBase *>(view->model())->objectByIndexBase(index));
+    QpAbstractObjectListModelBase *model = qobject_cast<QpAbstractObjectListModelBase *>(view->model());
+    if(!model) {
+        model = static_cast<QpAbstractObjectListModelBase *>(static_cast<QSortFilterProxyModel *>(view->model())->sourceModel());
+    }
+
+    return qSharedPointerCast<T>(model->objectByIndexBase(index));
 }
 
 template<class T>
