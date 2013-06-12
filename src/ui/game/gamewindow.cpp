@@ -7,6 +7,7 @@
 #include "newrounddialog.h"
 #include "schmeissereidialog.h"
 #include "statisticswidget.h"
+#include "adddrinkswidget.h"
 
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
@@ -99,6 +100,7 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->toolButtonState->setDefaultAction(ui->actionPlayPause);
     ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
     ui->toolButtonAddSchmeisserei->setDefaultAction(ui->actionAdd_schmeisserei);
+    ui->toolButtonAddDrinks->setDefaultAction(ui->actionAdd_drinks);
     ui->toolButtonToggleSidebar->setDefaultAction(ui->actionToggleSidebar);
     ui->toolButtonToggleSidebar->setText(QString());
 
@@ -108,8 +110,10 @@ GameWindow::GameWindow(QWidget *parent) :
     enableActionsBasedOnState();
     setSidebarToggleToHide();
     MenuBar::instance()->addAction(tr("&Game"), ui->actionPlayPause, this);
+    MenuBar::instance()->menu(tr("&Game"))->addSeparator();
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_round, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
+    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_drinks, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
     updateTimes();
 }
@@ -148,6 +152,9 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
 
 void GameWindow::wheelEvent(QWheelEvent *e)
 {
+    if(popupWidget())
+        return;
+
     if(e->pixelDelta().x() > 0)
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() + e->pixelDelta().x());
     else
@@ -224,7 +231,7 @@ void GameWindow::on_actionAdd_round_triggered()
     dialog->setWindowFlags(Qt::Widget);
 
     popup->setWidget(dialog);
-    popup->setMinimumWidth(600);
+    popup->setMinimumWidth(500);
     popup->setMinimumHeight(500);
     popup->anchorTo(ui->toolButtonAddRound);
     popup->show();
@@ -252,6 +259,26 @@ void GameWindow::on_actionAdd_schmeisserei_triggered()
     popup->show();
     setPopupWidget(popup);
 }
+
+void GameWindow::on_actionAdd_drinks_triggered()
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    AddDrinksWidget *dialog = new AddDrinksWidget(popup);
+    dialog->setGame(m_game);
+    dialog->setPlayers(m_game->players());
+
+    popup->setWidget(dialog);
+    popup->setMinimumWidth(1000);
+    popup->setMinimumHeight(400);
+    popup->anchorTo(ui->toolButtonAddDrinks);
+    popup->show();
+    setPopupWidget(popup);
+}
+
 
 void GameWindow::updateTimes()
 {
@@ -327,10 +354,10 @@ void GameWindow::on_pushButtonAddPlayers_clicked()
     PlayersListWidget *list = new PlayersListWidget(popup);
     list->setPalette(palette());
     list->setAttribute(Qt::WA_MacShowFocusRect, false);
-    list->setPlayers(Qp::readAll<Player>());
+    list->add(Qp::readAll<Player>());
 
-    foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->players())
-        list->removePlayer(p);
+    foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->items())
+        list->remove(p);
 
     connect(list, &PlayersListWidget::playerActivated,
             this, &GameWindow::addPlayerToGame);
@@ -347,8 +374,8 @@ void GameWindow::on_pushButtonAddPlayers_clicked()
 void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
 {
     PlayersListWidget *list = static_cast<PlayersListWidget *>(sender());
-    list->removePlayer(player);
-    ui->listWidgetPlayers->addPlayer(player);
+    list->remove(player);
+    ui->listWidgetPlayers->add(player);
     if(ui->listWidgetPlayers->count() >= 4)
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 }
@@ -369,7 +396,7 @@ void GameWindow::on_buttonBox_accepted()
     game->setMitPflichtSolo(ui->checkBoxMitPflichtSoli->isChecked());
     game->setSite(ui->comboBoxSite->currentPlace());
 
-    foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->players()) {
+    foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->items()) {
         game->addPlayer(p);
     }
 

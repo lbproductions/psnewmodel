@@ -91,7 +91,7 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case SiteColumn:
             return game->site()->displayString();
         case DrinkCount:
-            return game->drinks().size();
+            return game->liveDrinks().size();
         case TotalPointsColumn:
             return game->totalPoints();
         case RoundCountColumn:

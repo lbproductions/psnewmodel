@@ -117,6 +117,9 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     if(!m_game)
         return;
 
+    if(m_rounds.isEmpty())
+        return;
+
     QList<QSharedPointer<Player> > players = m_game->players();
     int playerCount = players.size();
     if(playerCount == 0)

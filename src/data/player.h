@@ -17,6 +17,7 @@ class Game;
 class Point;
 class PlayerStatistics;
 class League;
+class Drink;
 
 class Player : public QObject
 {
@@ -99,12 +100,14 @@ public:
 
     QColor color() const;
     void setColor(const QColor &color);
+    QPixmap colorPixmap(int w = 16, int h = 16) const;
 
     QPixmap avatar() const;
     void setAvatar(const QPixmap &avatar);
 
     QList<QSharedPointer<Place> > places() const;
     QList<QSharedPointer<LiveDrink> > liveDrinks() const;
+    QList<QSharedPointer<Drink> > drinks() const;
 
     QList<QSharedPointer<League> > leagues() const;
 

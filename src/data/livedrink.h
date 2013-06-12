@@ -34,13 +34,15 @@ public:
     QDateTime time() const;
 
     QSharedPointer<Player> player() const;
+    void setPlayer(QSharedPointer<Player> player);
+
     QSharedPointer<Round> round() const;
+
     QSharedPointer<Drink> drink() const;
+    void setDrink(QSharedPointer<Drink> drink);
 
 private:
-    void setPlayer(QSharedPointer<Player> player);
     void setRound(QSharedPointer<Round> round);
-    void setDrink(QSharedPointer<Drink> drink);
     void setTime(const QDateTime &time);
 
     QDateTime m_time;

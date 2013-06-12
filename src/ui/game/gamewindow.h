@@ -57,6 +57,8 @@ private slots:
 
     void on_buttonBox_accepted();
 
+    void on_actionAdd_drinks_triggered();
+
 private:
     Ui::GameWindow *ui;
 

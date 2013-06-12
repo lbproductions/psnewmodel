@@ -339,7 +339,7 @@ QWidget#widgetCreateGame {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>653</width>
+             <width>667</width>
              <height>93</height>
             </rect>
            </property>
@@ -466,6 +466,13 @@ QWidget#widgetCreateGame {
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="toolButtonAddDrinks">
+         <property name="text">
+          <string>Add Drinks</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <spacer name="horizontalSpacer">
          <property name="orientation">
           <enum>Qt::Horizontal</enum>
@@ -527,23 +534,23 @@ QWidget#widgetCreateGame {
     <string>Play</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+P</string>
+    <string>Space</string>
    </property>
   </action>
   <action name="actionAdd_round">
    <property name="text">
-    <string>Add round</string>
+    <string>Add round...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+N</string>
+    <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionAdd_schmeisserei">
    <property name="text">
-    <string>Add schmeisserei</string>
+    <string>Add schmeisserei...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+A</string>
+    <string>Ctrl+S</string>
    </property>
   </action>
   <action name="actionToggleSidebar">
@@ -553,6 +560,14 @@ QWidget#widgetCreateGame {
    </property>
    <property name="text">
     <string>Hide sidebar</string>
+   </property>
+  </action>
+  <action name="actionAdd_drinks">
+   <property name="text">
+    <string>Add drinks...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+D</string>
    </property>
   </action>
  </widget>

@@ -155,5 +155,4 @@ Drink::Type Drink::typeFromString(const QString &typeString)
 
     typeIndex += 1; // UnkownType
     return static_cast<Drink::Type>(typeIndex);
-
 }

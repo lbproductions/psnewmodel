@@ -9,6 +9,7 @@
 #include "league.h"
 
 #include <QPersistence.h>
+#include <QPainter>
 
 Player::Player(QObject *parent) :
     QObject(parent),
@@ -56,6 +57,16 @@ QColor Player::color() const
 void Player::setColor(const QColor &color)
 {
     m_color = color;
+}
+
+QPixmap Player::colorPixmap(int w, int h) const
+{
+    QPixmap pixmap(w,h);
+    QPainter painter(&pixmap);
+    painter.setBrush(color());
+    painter.setPen(QColor(108,108,108));
+    painter.drawRect(QRect(0,0,w-1,h-1));
+    return pixmap;
 }
 
 int Player::height() const
@@ -137,6 +148,22 @@ void Player::setPlaces(const QList<QSharedPointer<Place> > &places)
 QList<QSharedPointer<LiveDrink> > Player::liveDrinks() const
 {
     return m_liveDrinks.resolveList();
+}
+
+QList<QSharedPointer<Drink> > Player::drinks() const
+{
+    QMap<QSharedPointer<Drink>, int> counts;
+
+    foreach(QSharedPointer<LiveDrink> drink, liveDrinks()) {
+        ++counts[drink->drink()];
+    }
+
+    QMultiMap<int, QSharedPointer<Drink> > helperMap;
+    for(auto it = counts.constBegin(); it != counts.constEnd(); ++it) {
+        helperMap.insert(it.value(), it.key());
+    }
+
+    return Qp::reversed(helperMap.values());
 }
 
 void Player::setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)

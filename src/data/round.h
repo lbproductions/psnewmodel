@@ -129,6 +129,7 @@ public:
     QSharedPointer<Game> game() const;
 
     QList<QSharedPointer<LiveDrink> > drinks() const;
+    void addDrink(QSharedPointer<LiveDrink> drink);
 
     QSharedPointer<Player> cardMixer() const;
     QList<QSharedPointer<Player> > playingPlayers() const;

@@ -14,6 +14,7 @@ class Place;
 class Player;
 class LiveDrink;
 class League;
+class Drink;
 
 class Game: public QObject
 {
@@ -103,8 +104,9 @@ public:
     int totalPoints() const;
     int totalPoints(QSharedPointer<Player> player) const;
 
-    QList<QSharedPointer<LiveDrink> > drinks() const;
-    QList<QSharedPointer<LiveDrink> > drinks(QSharedPointer<Player> player) const;
+    QMap<QSharedPointer<Drink>, int> drinkCounts(QSharedPointer<Player> player) const;
+    QList<QSharedPointer<LiveDrink> > liveDrinks() const;
+    QList<QSharedPointer<LiveDrink> > liveDrinks(QSharedPointer<Player> player) const;
 
     void startNextRound();
 

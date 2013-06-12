@@ -1,39 +1,24 @@
 #ifndef PLAYERSLISTWIDGET_H
 #define PLAYERSLISTWIDGET_H
 
-#include <QListWidget>
+#include "objectlistwidget.h"
 
-class Player;
+#include <data/player.h>
 
-class PlayersListWidget : public QListWidget
+class PlayersListWidget : public ObjectListWidget<Player>
 {
     Q_OBJECT
 public:
     explicit PlayersListWidget(QWidget *parent = 0);
 
-    QList<QSharedPointer<Player> > players() const;
-    void setPlayers(const QList<QSharedPointer<Player> > &players);
-
-    void clear();
-    QSharedPointer<Player> currentPlayer() const;
-
-    bool contains(QSharedPointer<Player> player) const;
-    int indexOf(QSharedPointer<Player> player) const;
-    void addPlayers(const QList<QSharedPointer<Player> > &players);
-    void addPlayer(QSharedPointer<Player> player);
-
-    void setCurrentPlayer(QSharedPointer<Player> player);
-    void removePlayer(QSharedPointer<Player> player);
-
 signals:
     void playerActivated(QSharedPointer<Player> player);
 
-private slots:
-    void indexActivated(const QModelIndex &index);
+protected:
+    QListWidgetItem *createItem(QSharedPointer<Player> object);
 
-private:
-    QList<QSharedPointer<Player> > m_players;
-    QMultiHash<QSharedPointer<Player>, int> m_indexes;
+private slots:
+    void onObjectActivated(QSharedPointer<QObject> object);
 
 };
 

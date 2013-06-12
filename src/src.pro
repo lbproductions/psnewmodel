@@ -54,7 +54,10 @@ SOURCES += main.cpp \
     ui/widgets/placescombobox.cpp \
     ui/widgets/playerslistdelegate.cpp \
     ui/widgets/popupwidget.cpp \
-    model/gameinformationmodel.cpp
+    model/gameinformationmodel.cpp \
+    ui/widgets/objectlistwidget.cpp \
+    ui/widgets/drinkslistwidget.cpp \
+    ui/game/adddrinkswidget.cpp
 
 
 HEADERS  += \
@@ -93,7 +96,10 @@ HEADERS  += \
     ui/widgets/placescombobox.h \
     ui/widgets/playerslistdelegate.h \
     ui/widgets/popupwidget.h \
-    model/gameinformationmodel.h
+    model/gameinformationmodel.h \
+    ui/widgets/objectlistwidget.h \
+    ui/widgets/drinkslistwidget.h \
+    ui/game/adddrinkswidget.h
 
 
 FORMS += \

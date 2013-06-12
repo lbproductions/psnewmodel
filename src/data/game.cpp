@@ -5,6 +5,7 @@
 #include "round.h"
 #include "livedrink.h"
 #include "league.h"
+#include "drink.h"
 
 #include <QTimer>
 
@@ -284,7 +285,19 @@ int Game::totalPoints(QSharedPointer<Player> player) const
     return round->totalPoints(player);
 }
 
-QList<QSharedPointer<LiveDrink> > Game::drinks() const
+QMap<QSharedPointer<Drink>, int> Game::drinkCounts(QSharedPointer<Player> player) const
+{
+    QMap<QSharedPointer<Drink>, int> result;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        foreach(QSharedPointer<LiveDrink> drink, round->drinks()) {
+            if(drink->player() == player)
+                ++result[drink->drink()];
+        }
+    }
+    return result;
+}
+
+QList<QSharedPointer<LiveDrink> > Game::liveDrinks() const
 {
     QList<QSharedPointer<LiveDrink> > result;
     foreach(QSharedPointer<Round> round, rounds()) {
@@ -293,7 +306,7 @@ QList<QSharedPointer<LiveDrink> > Game::drinks() const
     return result;
 }
 
-QList<QSharedPointer<LiveDrink> > Game::drinks(QSharedPointer<Player> player) const
+QList<QSharedPointer<LiveDrink> > Game::liveDrinks(QSharedPointer<Player> player) const
 {
     QList<QSharedPointer<LiveDrink> > result;
     foreach(QSharedPointer<Round> round, rounds()) {
