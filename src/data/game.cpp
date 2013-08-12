@@ -6,6 +6,8 @@
 #include "livedrink.h"
 #include "league.h"
 #include "drink.h"
+#include "old_offlineGameInformation.h"
+#include "old_dokoofflinegamebuddys.h"
 
 #include <QTimer>
 
@@ -18,7 +20,9 @@ Game::Game(QObject *parent) :
     m_site("site", this),
     m_players("players", this),
     m_rounds("rounds", this),
-    m_leagues("leagues",this)
+    m_leagues("leagues",this),
+    m_offlineGameInformation("offlineGameInformation", this),
+    m_dokoOfflineGameBuddys("dokoOfflineGameBuddys",this)
 {
     m_lengthTimer.setInterval(1000);
     m_lengthTimer.setSingleShot(false);
@@ -466,6 +470,16 @@ int Game::schmeissereiCount(int roundCount)
     return result;
 }
 
+QList<QSharedPointer<OLD_OfflineGameInformation> > Game::offlineGameInformation() const
+{
+    return m_offlineGameInformation.resolveList();
+}
+
+QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > Game::dokoOfflineGameBuddys() const
+{
+    return m_dokoOfflineGameBuddys.resolveList();
+}
+
 int Game::placement(QSharedPointer<Player> player, int roundNumber) const
 {
     QList<QSharedPointer<Round> > rs = rounds();
@@ -540,4 +554,14 @@ QList<QSharedPointer<League> > Game::leagues() const
 void Game::setLeagues(const QList<QSharedPointer<League> > &arg)
 {
     m_leagues.relate(arg);
+}
+
+void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)
+{
+    m_offlineGameInformation.relate(games);
+}
+
+void Game::setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games)
+{
+    m_dokoOfflineGameBuddys.relate(games);
 }

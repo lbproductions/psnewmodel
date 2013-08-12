@@ -5,6 +5,8 @@
 #include "round.h"
 #include "schmeisserei.h"
 
+#include "old_offlineGameInformation.h"
+
 #include <limits>
 
 PlayerStatistics::PlayerStatistics(QObject *parent) :
@@ -57,20 +59,27 @@ QList<QSharedPointer<Game> > PlayerStatistics::wins() const
         if(players.isEmpty())
             continue;
 
+        int pointsOfWinner = game->totalPoints(players.first());
         int count = players.size();
-        int previousPoints = std::numeric_limits<int>::min();
-        for(int i = 0; i < count; ++i) {
+        for(int i = 0; i < count; i++) {
             QSharedPointer<Player> player = players.at(i);
+
+            if(game->totalPoints(player) != pointsOfWinner) {
+                break;
+            }
+
             if(player == sharedPlayer) {
                 result.append(game);
                 break;
             }
-
-            int currentPoints = game->totalPoints(player);
-            if(currentPoints < previousPoints) {
-                break;
+        }
+    }
+    // TODO: Remove or change these loop into current data structure
+    foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
+       if(info->placement() == 1) {
+            if(!result.contains(info->game())){
+                result.append(info->game());
             }
-            previousPoints = currentPoints;
         }
     }
     return result;
@@ -85,20 +94,25 @@ QList<QSharedPointer<Game> > PlayerStatistics::losses() const
         if(players.isEmpty())
             continue;
 
+        int pointsOfLast = game->totalPoints(players.last());
         int count = players.size();
-        int previousPoints = std::numeric_limits<int>::max();
         for(int i = count - 1; i >= 0; --i) {
             QSharedPointer<Player> player = players.at(i);
+
+            if(game->totalPoints(player) != pointsOfLast) {
+                break;
+            }
+
             if(player == sharedPlayer) {
                 result.append(game);
                 break;
             }
-
-            int currentPoints = game->totalPoints(player);
-            if(currentPoints > previousPoints) {
-                break;
-            }
-            previousPoints = currentPoints;
+        }
+    }
+    // TODO: Remove or change these loop into current data structure
+    foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
+        if(info->placement() == info->game()->offlineGameInformation().size()) {
+            result.append(info->game());
         }
     }
     return result;
@@ -370,12 +384,21 @@ int PlayerStatistics::points() const
         int nenner = playerCount - 1;
         points += 100 * zaehler / nenner;
     }
+    // TODO: Remove or change these loop into current data structure
+    foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
+        int playerCount = info->game()->offlineGameInformation().size();
+        int zaehler = playerCount - info->placement();
+        int nenner = playerCount - 1;
+        points += 100 * zaehler / nenner;
+    }
+
     return points;
 }
 
 double PlayerStatistics::average() const
 {
-    return percentage(points(), games().size());
+    // TODO: Merge or change the offlineGameInformations
+    return percentage(points(), games().size()+player()->offlineGameInformation().size());
 }
 
 double PlayerStatistics::percentage(int value1, int value2)

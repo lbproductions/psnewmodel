@@ -46,9 +46,9 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionInformation, &QAction::triggered,
             ui->actionDrinkInformation, &QAction::trigger);
 
-    PlayersListModel *modelPlayer = new PlayersListModel(this);
+    m_playerListModel = new PlayersListModel(this);
     QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
-    sortModel->setSourceModel(modelPlayer);
+    sortModel->setSourceModel(m_playerListModel);
     ui->treeViewPlayers->setModel(sortModel);
     ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
     connect(ui->treeViewPlayers, &QTreeView::doubleClicked,
@@ -143,7 +143,7 @@ void MainWindow::on_actionPlayerInformation_triggered()
         return;
 
     PlayerInformationDialog dialog;
-    dialog.setPlayerFromModel(static_cast<PlayersListModel*>(ui->treeViewPlayers->model()),
+    dialog.setPlayerFromModel(m_playerListModel,
                               list.first().row());
     dialog.exec();
 }

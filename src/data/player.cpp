@@ -7,6 +7,7 @@
 #include "schmeisserei.h"
 #include "playerstatistics.h"
 #include "league.h"
+#include "old_offlineGameInformation.h"
 
 #include <QPersistence.h>
 #include <QPainter>
@@ -30,7 +31,8 @@ Player::Player(QObject *parent) :
     m_re2Rounds("re2Rounds",this),
     m_contra1Rounds("contra1Rounds",this),
     m_contra2Rounds("contra2Rounds",this),
-    m_contra3Rounds("contra3Rounds",this)
+    m_contra3Rounds("contra3Rounds",this),
+    m_offlineGameInformation("offlineGameInformation", this)
 {
     m_allGamesStatistics->setPlayer(this);
 }
@@ -107,6 +109,11 @@ QList<QSharedPointer<League> > Player::leagues() const
 void Player::setLeagues(const QList<QSharedPointer<League> > &arg)
 {
     m_leagues.relate(arg);
+}
+
+void Player::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)
+{
+    m_offlineGameInformation.relate(games);
 }
 
 
@@ -363,6 +370,11 @@ void Player::setHochzeitRounds(const QList<QSharedPointer<Round> > &hochzeitRoun
 QList<QSharedPointer<Schmeisserei> > Player::schmeissereien() const
 {
     return m_schmeissereien.resolveList();
+}
+
+QList<QSharedPointer<OLD_OfflineGameInformation> > Player::offlineGameInformation() const
+{
+    return m_offlineGameInformation.resolveList();
 }
 
 void Player::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)

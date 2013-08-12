@@ -18,6 +18,8 @@ public:
         GameCountColumn,
         LossesColumn,
         WinsColumn,
+        PointsColumn,
+        AverageColumn,
 
         LastGameColumn,
         LastWinColumn,

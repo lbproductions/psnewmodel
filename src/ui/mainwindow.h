@@ -7,6 +7,8 @@ namespace Ui {
 class MainWindow;
 }
 
+class PlayersListModel;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -33,6 +35,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
+    PlayersListModel* m_playerListModel;
 
     void saveWindowState();
 };

@@ -57,7 +57,9 @@ SOURCES += main.cpp \
     model/gameinformationmodel.cpp \
     ui/widgets/objectlistwidget.cpp \
     ui/widgets/drinkslistwidget.cpp \
-    ui/game/adddrinkswidget.cpp
+    ui/game/adddrinkswidget.cpp \
+    data/old_offlineGameInformation.cpp \
+    data/old_dokoofflinegamebuddys.cpp
 
 
 HEADERS  += \
@@ -99,7 +101,9 @@ HEADERS  += \
     model/gameinformationmodel.h \
     ui/widgets/objectlistwidget.h \
     ui/widgets/drinkslistwidget.h \
-    ui/game/adddrinkswidget.h
+    ui/game/adddrinkswidget.h \
+    data/old_offlineGameInformation.h \
+    data/old_dokoofflinegamebuddys.h
 
 
 FORMS += \

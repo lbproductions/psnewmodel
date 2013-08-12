@@ -8,6 +8,8 @@
 #include <data/round.h>
 #include <data/schmeisserei.h>
 #include <data/league.h>
+#include <data/old_offlineGameInformation.h>
+#include <data/old_dokoofflinegamebuddys.h>
 
 #include <ui/mainwindow.h>
 #include <ui/widgets/popupwidget.h>
@@ -42,6 +44,8 @@ int main(int argc, char *argv[])
     Qp::registerClass<Round>();
     Qp::registerClass<Schmeisserei>();
     Qp::registerClass<League>();
+    Qp::registerClass<OLD_OfflineGameInformation>();
+    Qp::registerClass<OLD_DokoOfflineGameBuddys>();
     Qp::adjustDatabaseSchema();
 
     QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
@@ -50,7 +54,7 @@ int main(int argc, char *argv[])
 
 
     GameWindow *gw = new GameWindow();
-    gw->setGame(games.at(98));
+    gw->setGame(games.last());
     gw->show();
 
 //    new MainWindow;
