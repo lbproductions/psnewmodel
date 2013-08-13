@@ -54,7 +54,7 @@ int main(int argc, char *argv[])
 
 
     GameWindow *gw = new GameWindow();
-    gw->setGame(games.last());
+    //gw->setGame(games.last());
     gw->show();
 
 //    new MainWindow;

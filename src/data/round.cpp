@@ -130,27 +130,37 @@ QList<QSharedPointer<Player> > Round::playersSortedByPlacement() const
         helperMap.insert(totalPoints(player), player);
     }
 
-    return Qp::reversed(helperMap.values());
+    if(game()->type() == Game::Doppelkopf || game()->type() == Game::Prognose) { // games with most point winning
+        return Qp::reversed(helperMap.values());
+    }
+    else{ // games with less points winning
+        return helperMap.values();
+    }
 }
 
 int Round::placement(QSharedPointer<Player> player) const
 {
-    int place = 0;
+    int place = 1;
     QList<QSharedPointer<Player> > ps = playersSortedByPlacement();
-    int points = std::numeric_limits<int>::max();
+    if(player->name() == "Stephan") {
+        qDebug() << game()->name();
+        qDebug() << game()->type();
+    }
+    int points = totalPoints(player);
     foreach(QSharedPointer<Player> p, ps) {
-        int pPoints = totalPoints(p);
-        if(pPoints < points) {
-            ++place;
-            points = pPoints;
+        if(game()->type() == Game::Doppelkopf || game()->type() == Game::Prognose) { // games with most point winning
+            if(totalPoints(p) > points) {
+                ++place;
+            }
         }
-
-        if(p == player)
-            return place;
+        else{
+            if(totalPoints(p) < points) {
+                ++place;
+            }
+        }
     }
 
-    Q_ASSERT(false);
-    return 0;
+    return place;
 }
 
 QSharedPointer<Player> Round::cardMixer() const
@@ -238,6 +248,16 @@ void Round::_setWinnerParty(int party)
     setWinnerParty(static_cast<Round::WinnerParty>(party));
 }
 
+int Round::_trumpfColor() const
+{
+    return static_cast<int>(trumpfColor());
+}
+
+void Round::_setTrumpfColor(int color)
+{
+    setTrumpfColor(static_cast<Round::TrumpfColor>(color));
+}
+
 
 QTime Round::length() const
 {
@@ -280,6 +300,16 @@ Round::WinnerParty Round::winnerParty() const
 void Round::setWinnerParty(const WinnerParty &winnerParty)
 {
     m_winnerParty = winnerParty;
+}
+
+Round::TrumpfColor Round::trumpfColor() const
+{
+    return m_trumpfColor;
+}
+
+void Round::setTrumpfColor(const Round::TrumpfColor &trumpfColor)
+{
+    m_trumpfColor = trumpfColor;
 }
 
 bool Round::isPflicht() const
