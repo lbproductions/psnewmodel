@@ -22,11 +22,13 @@ private slots:
     void enableGlobalActionsBasedOnCurrentWindow();
 
     void closeFocusWindow();
+
+public slots:
     void showLibrary();
 
 private:
     QHash<QString, QMenu *> m_menus;
-    QHash<QString, QHash<QString, QAction *>> m_actions;
+    QHash<QString, QHash<QString, QAction *> > m_actions;
     QHash<QWidget *, QHash<QAction *, QPointer<QAction> > > m_actionsPerWidget;
 
     QAction *m_actionCloseWindow;

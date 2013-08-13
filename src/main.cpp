@@ -14,6 +14,7 @@
 #include <ui/mainwindow.h>
 #include <ui/widgets/popupwidget.h>
 #include <ui/game/gamewindow.h>
+#include <ui/startwindow.h>
 
 #include <QSqlDatabase>
 #include <QPersistence.h>
@@ -53,9 +54,8 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
 
-    GameWindow *gw = new GameWindow();
-    //gw->setGame(games.last());
-    gw->show();
+    StartWindow* startWindow = new StartWindow();
+    startWindow->show();
 
 //    new MainWindow;
     return a.exec();
