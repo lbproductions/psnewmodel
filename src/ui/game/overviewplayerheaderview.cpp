@@ -1,11 +1,14 @@
 #include "overviewplayerheaderview.h"
 
 #include <model/gameinformationmodel.h>
+#include <data/game.h>
+#include <data/player.h>
 
 #include <QPainter>
 
 OverviewPlayerHeaderView::OverviewPlayerHeaderView(Qt::Orientation orientation, QWidget *parent) :
-    QHeaderView(orientation, parent)
+    QHeaderView(orientation, parent),
+    m_model(0)
 {
     setSectionResizeMode(QHeaderView::Fixed);
 }
@@ -44,10 +47,19 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     painter->drawLine(rect.topRight(), rect.bottomRight());
 
     painter->setPen(palette.color(QPalette::Text));
+    QString text = model()->headerData(logicalIndex, orientation()).toString();
+    if(m_model) {
+        if(m_model->game()) {
+            QSharedPointer<Game> game = m_model->game();
+            if(game->currentCardMixer()->name() == text) {
+                painter->setPen(Qt::red);
+            }
+        }
+    }
     QTextOption option;
     option.setAlignment(Qt::AlignLeft | Qt::AlignVCenter);
     QRect r = rect.adjusted(32,0,0,0);
-    painter->drawText(r, model()->headerData(logicalIndex, orientation()).toString(), option);
+    painter->drawText(r, text, option);
 
     QColor color = model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QColor>();
     if(color.isValid()) {

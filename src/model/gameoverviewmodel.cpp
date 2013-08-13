@@ -6,7 +6,7 @@
 
 #include <QDebug>
 
-const int GameOverviewModel::ExtraRowsCount(3);
+const int GameOverviewModel::ExtraRowsCount(4);
 
 GameOverviewModel::GameOverviewModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -127,6 +127,19 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
 
             if(role == SoloTypeRole)
                 return round->soloType();
+        }
+    }
+    if(extraRow == SchweinereienRow) {
+        QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
+        QSharedPointer<Player> player = round->schweinereiPlayer();
+
+        if(player) {
+            if(role == Qt::DecorationRole)
+                return player->color();
+
+            if(role == Qt::BackgroundColorRole)
+                return colorFromPoints(round->points(player));
+
         }
     }
     else if(playerIndex < m_game->players().size()

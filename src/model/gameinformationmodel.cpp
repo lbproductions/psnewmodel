@@ -72,6 +72,9 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
     else if(extraRow == GameOverviewModel::SoliRow) {
         return m_game->soloCount();
     }
+    else if(extraRow == GameOverviewModel::SchweinereienRow) {
+        return m_game->schweinereiCount();
+    }
     else if(row < m_game->players().size()) {
         QSharedPointer<Player> player = m_game->players().at(row);
         return m_game->totalPoints(player);
@@ -95,6 +98,9 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
     }
     else if(extraRow == GameOverviewModel::SoliRow) {
         return tr("Soli");
+    }
+    else if(extraRow == GameOverviewModel::SchweinereienRow) {
+        return tr("Schweinereien");
     }
     else {
         if(role == Qt::DisplayRole) {

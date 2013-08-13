@@ -14,7 +14,8 @@ public:
     enum ExtraRows {
         HochzeitenRow,
         TrumpfabgabenRow,
-        SoliRow
+        SoliRow,
+        SchweinereienRow
     };
     static const int ExtraRowsCount;
 
