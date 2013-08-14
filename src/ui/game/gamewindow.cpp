@@ -74,9 +74,9 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->tableViewInformation->setItemDelegate(delegate);
     ui->tableViewInformation->setPalette(darkPalette);
     ui->tableViewInformation->setModel(m_informationModel);
-    OverviewPlayerHeaderView *verticalHeaderView = new OverviewPlayerHeaderView(Qt::Vertical, this);
-    verticalHeaderView->setGameModel(m_informationModel);
-    ui->tableViewInformation->setVerticalHeader(verticalHeaderView);
+    m_verticalHeaderView = new OverviewPlayerHeaderView(Qt::Vertical, this);
+    m_verticalHeaderView->setGameModel(m_informationModel);
+    ui->tableViewInformation->setVerticalHeader(m_verticalHeaderView);
     OverviewHorizontalHeaderView *horizontalHeaderView2 = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
     ui->tableViewInformation->setHorizontalHeader(horizontalHeaderView2);
 
@@ -145,6 +145,8 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->graphWidget->setGame(game);
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
+
+    connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(onNewRoundStarted()));
 
     enableActionsBasedOnState();
     updateTimes();
@@ -237,8 +239,13 @@ void GameWindow::on_actionAdd_round_triggered()
     popup->show();
     setPopupWidget(popup);
 
-    connect(dialog, &QDialog::accepted,
-            ui->graphWidget, &GraphWidget::updateGraphs);
+    //connect(dialog, &QDialog::accepted,
+            //this, &GameWindow::onNewRoundStarted);
+}
+
+void GameWindow::onNewRoundStarted()
+{
+    ui->graphWidget->updateGraphs();
 }
 
 void GameWindow::on_actionAdd_schmeisserei_triggered()

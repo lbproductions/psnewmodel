@@ -135,6 +135,8 @@ class Game: public QObject
 
         QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation() const;
         QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys() const;
+    signals:
+        void newRoundStarted();
     private:
         void setCreationTime(const QDateTime &creationTime);
         void setPlayers(const QList<QSharedPointer<Player> > &players);

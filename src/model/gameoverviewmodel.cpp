@@ -22,6 +22,7 @@ void GameOverviewModel::setGame(const QSharedPointer<Game> &game)
 {
     beginResetModel();
     m_game = game;
+    connect(m_game.data(), SIGNAL(newRoundStarted()), this, SIGNAL(layoutChanged()));
     endResetModel();
 }
 

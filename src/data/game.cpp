@@ -340,6 +340,8 @@ void Game::startNextRound()
     round->setState(Round::Running);
     addRound(round);
     save();
+
+    emit newRoundStarted();
 }
 
 int Game::totalRoundCount() const

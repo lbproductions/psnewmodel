@@ -14,6 +14,7 @@ class GameOverviewModel;
 class Player;
 class PopupWidget;
 class GameInformationModel;
+class OverviewPlayerHeaderView;
 
 class GameWindow : public QMainWindow
 {
@@ -38,6 +39,7 @@ private slots:
     void enableActionsBasedOnState();
 
     void on_actionAdd_round_triggered();
+    void onNewRoundStarted();
 
     void on_actionAdd_schmeisserei_triggered();
 
@@ -67,6 +69,8 @@ private:
     GameInformationModel *m_informationModel;
 
     QPointer<PopupWidget> m_popupWidget;
+
+    OverviewPlayerHeaderView *m_verticalHeaderView;
 };
 
 #endif // GAMEWINDOW_H
