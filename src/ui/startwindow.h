@@ -2,6 +2,9 @@
 #define STARTWINDOW_H
 
 #include <QWidget>
+#include <QTreeWidget>
+
+class Game;
 
 class StartWindow : public QWidget
 {
@@ -11,9 +14,15 @@ class StartWindow : public QWidget
         
     signals:
         
-    public slots:
+    private slots:
         void onNewGameButtonPressed();
         void onLibraryButtonPressed();
+        void onGameTreeWidgetDoubleClicked(QTreeWidgetItem* item, int column);
+
+    private:
+        QList<QSharedPointer<Game> > m_games;
+
+        QTreeWidget* m_treeWidget;
         
 };
 
