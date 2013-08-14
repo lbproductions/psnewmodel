@@ -51,7 +51,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     if(m_model) {
         if(m_model->game()) {
             QSharedPointer<Game> game = m_model->game();
-            if(game->currentCardMixer()->name() == text) {
+            if(game->state() != Game::Finished && game->currentCardMixer()->name() == text) {
                 painter->setPen(Qt::red);
             }
         }
