@@ -113,6 +113,7 @@ class Game: public QObject
         int totalPoints() const;
         int totalPoints(QSharedPointer<Player> player) const;
 
+        void addDrink(QSharedPointer<LiveDrink> drink);
         QMap<QSharedPointer<Drink>, int> drinkCounts(QSharedPointer<Player> player) const;
         QList<QSharedPointer<LiveDrink> > liveDrinks() const;
         QList<QSharedPointer<LiveDrink> > liveDrinks(QSharedPointer<Player> player) const;
@@ -137,6 +138,8 @@ class Game: public QObject
         QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys() const;
     signals:
         void newRoundStarted();
+        void schmeissereiAdded();
+        void liveDrinkAdded();
     private:
         void setCreationTime(const QDateTime &creationTime);
         void setPlayers(const QList<QSharedPointer<Player> > &players);

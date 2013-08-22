@@ -289,6 +289,13 @@ int Game::totalPoints(QSharedPointer<Player> player) const
     return round->totalPoints(player);
 }
 
+void Game::addDrink(QSharedPointer<LiveDrink> drink)
+{
+    currentRound()->addDrink(drink);
+
+    emit liveDrinkAdded();
+}
+
 QMap<QSharedPointer<Drink>, int> Game::drinkCounts(QSharedPointer<Player> player) const
 {
     QMap<QSharedPointer<Drink>, int> result;
@@ -338,6 +345,7 @@ void Game::startNextRound()
     round->setStartTime(QDateTime::currentDateTime());
     round->setNumber(nextNumber);
     round->setState(Round::Running);
+    connect(round.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(schmeissereiAdded()));
     addRound(round);
     save();
 
@@ -452,7 +460,7 @@ int Game::schweinereiCount(int roundCount)
             break;
 
         --roundCount;
-        if(round->trumpfabgabePlayer()) {
+        if(round->schweinereiPlayer()) {
             ++result;
         }
     }

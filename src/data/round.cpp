@@ -407,6 +407,8 @@ void Round::addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
 {
     m_schmeissereien.relate(schmeisserei);
     schmeisserei->setRound(Qp::sharedFrom(this));
+
+    emit schmeissereiAdded();
 }
 
 void Round::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)

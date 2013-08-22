@@ -205,6 +205,9 @@ class Round : public QObject
         static QString soloTypeStringFromType(SoloType type);
         static SoloType soloTypeFromString(const QString &typeString);
 
+    signals:
+        void schmeissereiAdded();
+
     private:
         friend class Game;
 
