@@ -29,7 +29,8 @@ public:
         MoreThan4Kings,
         NoTrumpfabgabeTaker,
         LessThan3Trumpf,
-        MoreThan90Points
+        MoreThan90Points,
+        NothingOverFox
     };
 
     explicit Schmeisserei(QObject *parent = 0);
