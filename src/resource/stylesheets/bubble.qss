@@ -1,0 +1,7 @@
+QFrame {
+margin:0px;
+margin-bottom: 12px;
+padding: 0px;
+border-width: 7px;
+border-image: url(":/general/bubble-background.png") 7 fill repeat;
+}

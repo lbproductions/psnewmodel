@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/gamewindow">
+        <file>bubenSolo.png</file>
+        <file>damenSolo.png</file>
+        <file>fleischlos.png</file>
+        <file>stilleHochzeit.png</file>
+        <file>sitzengelasseneHochzeit.png</file>
+    </qresource>
+</RCC>
