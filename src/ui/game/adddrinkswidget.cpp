@@ -55,17 +55,18 @@ QWidget *AddDrinksWidget::createPlayerWidget(QSharedPointer<Player> player)
         QSharedPointer<LiveDrink> ld = Qp::create<LiveDrink>();
         ld->setPlayer(player);
         ld->setDrink(drinksListWidget->current());
-        m_game->currentRound()->addDrink(ld);
+        m_game->addDrink(ld);
         Qp::update(ld);
         Qp::update(m_game->currentRound());
     });
 
-    QVBoxLayout *liveDrinksLayout = new QVBoxLayout();
+    //QVBoxLayout *liveDrinksLayout = new QVBoxLayout();
     if(m_game) {
         QList<QSharedPointer<LiveDrink> > liveDrinks = m_game->liveDrinks(player);
         if(!liveDrinks.isEmpty())
             drinksListWidget->setCurrent(liveDrinks.last()->drink());
 
+        /*
         // LiveDrinks list
         QMap<QSharedPointer<Drink>, int> drinkCounts = m_game->drinkCounts(player);
         for(auto it = drinkCounts.constBegin(); it != drinkCounts.constEnd(); ++it) {
@@ -74,6 +75,7 @@ QWidget *AddDrinksWidget::createPlayerWidget(QSharedPointer<Player> player)
                                             .arg(it.key()->name()));
             liveDrinksLayout->addWidget(drinkLabel);
         }
+        */
     }
 
 
@@ -87,7 +89,7 @@ QWidget *AddDrinksWidget::createPlayerWidget(QSharedPointer<Player> player)
 
     layout->addWidget(drinksListWidget);
     layout->addLayout(labelLayout);
-    layout->addLayout(liveDrinksLayout);
+    //layout->addLayout(liveDrinksLayout);
 
     return widget;
 }
