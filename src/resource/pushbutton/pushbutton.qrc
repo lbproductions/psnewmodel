@@ -1,8 +1,0 @@
-<RCC>
-    <qresource prefix="/pushbutton">
-        <file>dark-background_checked_pressed.png</file>
-        <file>dark-background_checked.png</file>
-        <file>dark-background_pressed.png</file>
-        <file>dark-background.png</file>
-    </qresource>
-</RCC>

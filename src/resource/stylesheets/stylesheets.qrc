@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/stylesheets">
-        <file>imagewell.qss</file>
-        <file>pushbutton-dark.qss</file>
-        <file>bubble.qss</file>
-    </qresource>
-</RCC>

@@ -3,6 +3,7 @@
 #include "graphwidget.h"
 
 #include <QPainter>
+#include <QDebug>
 
 GraphAxis::GraphAxis(QWidget *parent) :
     QWidget(parent),
@@ -29,9 +30,12 @@ void GraphAxis::paintEvent(QPaintEvent *e)
         return;
 
     int y = m_graph->minY();
+    qDebug() << "minY: " << y;
+
     y /= 10;
-    y += 1;
+    y -= 1;
     y *= 10;
+
 
     QTextOption to;
     to.setAlignment(Qt::AlignRight);
@@ -61,4 +65,6 @@ GraphWidget *GraphAxis::graph() const
 void GraphAxis::setGraph(GraphWidget *graph)
 {
     m_graph = graph;
+
+    connect(m_graph, SIGNAL(graphUpdated()), this, SLOT(repaint()));
 }

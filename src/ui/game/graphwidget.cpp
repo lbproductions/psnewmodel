@@ -89,7 +89,7 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     painter.drawLine(QPointF(originX(), originY()), QPointF(width(), originY()));
 
     int y = minY();
-    int nextInterval = ((y/10)+1)*10;
+    int nextInterval = ((y/10)-1)*10;
     int previousInterval = ((y/10)-1)*10;
     if(qAbs(previousInterval - y) <= 5)
         y = nextInterval;
@@ -256,4 +256,6 @@ void GraphWidget::updateGraphs()
     if(!m_game)
         return;
     setGame(m_game);
+
+    emit graphUpdated();
 }
