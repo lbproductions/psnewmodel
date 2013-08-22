@@ -8,13 +8,6 @@ PlayersComboBox::PlayersComboBox(QWidget *parent) :
     addItem(tr("---"));
 }
 
-void PlayersComboBox::clear()
-{
-    m_players.clear();
-    m_indexes.clear();
-    QComboBox::clear();
-}
-
 QList<QSharedPointer<Player> > PlayersComboBox::players() const
 {
     return m_players;
@@ -31,18 +24,7 @@ QSharedPointer<Player> PlayersComboBox::currentPlayer() const
 
 bool PlayersComboBox::contains(QSharedPointer<Player> player) const
 {
-    return m_indexes.contains(player);
-}
-
-int PlayersComboBox::indexOf(QSharedPointer<Player> player) const
-{
-    return m_indexes.value(player, -1);
-}
-
-void PlayersComboBox::setPlayers(const QList<QSharedPointer<Player> > &players)
-{
-    clear();
-    addPlayers(players);
+    return m_players.contains(player);
 }
 
 void PlayersComboBox::addPlayers(const QList<QSharedPointer<Player> > &players)
@@ -57,9 +39,7 @@ void PlayersComboBox::addPlayer(QSharedPointer<Player> player)
         return;
 
     m_players.append(player);
-    m_indexes.insert(player, m_players.size());
-    addItem(QIcon(player->avatar()),
-            player->name());
+    addItem(QIcon(player->avatar()), player->name());
 }
 
 void PlayersComboBox::setCurrentPlayer(QSharedPointer<Player> player)
@@ -67,16 +47,11 @@ void PlayersComboBox::setCurrentPlayer(QSharedPointer<Player> player)
     if(!contains(player))
         return;
 
-    setCurrentIndex(indexOf(player));
+    setCurrentIndex(findText(player->name()));
 }
 
 void PlayersComboBox::removePlayer(QSharedPointer<Player> player)
 {
-    while(contains(player)) {
-        int index = indexOf(player);
-        removeItem(index);
-        m_indexes.remove(player, index);
-    }
-
+    removeItem(findText(player->name()));
     m_players.removeAll(player);
 }
