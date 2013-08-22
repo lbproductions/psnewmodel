@@ -3,6 +3,7 @@
 
 #include <data/round.h>
 #include <data/game.h>
+#include <data/player.h>
 #include <misc/tools.h>
 
 #include <QFile>
@@ -211,7 +212,8 @@ void NewRoundDialog::checkSoloRoundContents()
         ui->checkBoxSoloPflicht->setEnabled(true);
     }
 
-    if(ui->comboBoxSoloType->currentText() == "Trumpf") {
+    if(ui->comboBoxSoloType->currentText() == "Trumpf" || ui->comboBoxSoloType->currentText() == "Stille Hochzeit"
+       || ui->comboBoxSoloType->currentText() == "Sitzengelassene Hochzeit" || ui->comboBoxSoloType->currentText() == "Falsch gespielt") {
         ui->comboBoxSoloSchweine->setEnabled(true);
         ui->comboBoxSoloHochzeit->setEnabled(true);
     }
@@ -245,13 +247,18 @@ void NewRoundDialog::checkSoloRoundContents()
 
 void NewRoundDialog::checkTrumpfabgabeRoundContents()
 {
+    qDebug() << "NewRoundDialog::checkTrumpfabgabeRoundContents()";
+    qDebug() << "Adding players to ui->comboBoxTrumpfabgabePlayer";
     ui->comboBoxTrumpfabgabePlayer->addPlayers(m_doppelkopfRound->playingPlayers());
+    qDebug() << "Adding players to ui->comboBoxTrumpfabgabeAccept";
     ui->comboBoxTrumpfabgabeAccept->addPlayers(m_doppelkopfRound->playingPlayers());
 
     if(ui->comboBoxTrumpfabgabePlayer->currentPlayer()) {
+        qDebug() << "Removing currentPlayer from ui->comboBoxTrumpfabgabePlayer";
         ui->comboBoxTrumpfabgabeAccept->removePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
     }
     if(ui->comboBoxTrumpfabgabeAccept->currentPlayer()) {
+        qDebug() << "Removing currentPlayer from ui->comboBoxTrumpfabgabeAccept";
         ui->comboBoxTrumpfabgabePlayer->removePlayer(ui->comboBoxTrumpfabgabeAccept->currentPlayer());
     }
 
@@ -275,6 +282,8 @@ void NewRoundDialog::checkTrumpfabgabeRoundContents()
             ui->comboBoxTrumpfabgabeWinner->setCurrentIndex(ui->comboBoxTrumpfabgabeWinner->findText("Contra"));
         }
     }
+
+    qDebug() << "########### END CHECKING #######";
 }
 
 void NewRoundDialog::save()
