@@ -20,6 +20,7 @@ void GameInformationModel::setGame(const QSharedPointer<Game> &game)
     beginResetModel();
     m_game = game;
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SIGNAL(layoutChanged()));
+    connect(m_game.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(layoutChanged()));
     endResetModel();
 }
 
@@ -58,27 +59,33 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
-    if(role != Qt::DisplayRole)
-        return QVariant();
+    if(role == GameOverviewModel::TotalPointsRole) {
+        return true;
+    }
+    else if(role == Qt::DisplayRole) {
 
-    int row = index.row();
-    int extraRow = row - m_game->players().size();
+        int row = index.row();
+        int extraRow = row - m_game->players().size();
 
-    if(extraRow == GameOverviewModel::HochzeitenRow) {
-        return m_game->hochzeitCount();
-    }
-    else if(extraRow == GameOverviewModel::TrumpfabgabenRow) {
-        return m_game->trumpfabgabeCount();
-    }
-    else if(extraRow == GameOverviewModel::SoliRow) {
-        return m_game->soloCount();
-    }
-    else if(extraRow == GameOverviewModel::SchweinereienRow) {
-        return m_game->schweinereiCount();
-    }
-    else if(row < m_game->players().size()) {
-        QSharedPointer<Player> player = m_game->players().at(row);
-        return m_game->totalPoints(player);
+        if(extraRow == GameOverviewModel::HochzeitenRow) {
+            return m_game->hochzeitCount();
+        }
+        else if(extraRow == GameOverviewModel::TrumpfabgabenRow) {
+            return m_game->trumpfabgabeCount();
+        }
+        else if(extraRow == GameOverviewModel::SoliRow) {
+            return m_game->soloCount();
+        }
+        else if(extraRow == GameOverviewModel::SchweinereienRow) {
+            return m_game->schweinereiCount();
+        }
+        else if(extraRow == GameOverviewModel::SchmeissereiRow) {
+            return m_game->schmeissereiCount();
+        }
+        else if(row < m_game->players().size()) {
+            QSharedPointer<Player> player = m_game->players().at(row);
+            return m_game->totalPoints(player);
+        }
     }
 
     return QVariant();
@@ -102,6 +109,9 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
     }
     else if(extraRow == GameOverviewModel::SchweinereienRow) {
         return tr("Schweinereien");
+    }
+    else if(extraRow == GameOverviewModel::SchmeissereiRow) {
+        return tr("Schmeissereien");
     }
     else {
         if(role == Qt::DisplayRole) {

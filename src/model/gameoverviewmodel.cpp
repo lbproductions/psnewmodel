@@ -3,10 +3,11 @@
 #include <data/game.h>
 #include <data/round.h>
 #include <data/player.h>
+#include <data/schmeisserei.h>
 
 #include <QDebug>
 
-const int GameOverviewModel::ExtraRowsCount(4);
+const int GameOverviewModel::ExtraRowsCount(5);
 
 GameOverviewModel::GameOverviewModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -42,8 +43,14 @@ int GameOverviewModel::columnCount(const QModelIndex &parent) const
     if(!m_game)
         return 0;
 
-    return m_game->totalRoundCount() + 1;
-}
+    // TODO: Find a way to paint the area outside the table with correct color
+    if(m_game->totalRoundCount() > 44) {
+        return m_game->totalRoundCount();
+    }
+    else{
+       return 44;
+    }
+ }
 
 int GameOverviewModel::rowCount(const QModelIndex &parent) const
 {
@@ -128,6 +135,9 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
 
             if(role == SoloTypeRole)
                 return round->soloType();
+            if(role == PflichtSoloRole) {
+                return round->isPflicht();
+            }
         }
     }
     if(extraRow == SchweinereienRow) {
@@ -141,6 +151,15 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
             if(role == Qt::BackgroundColorRole)
                 return colorFromPoints(round->points(player));
 
+        }
+    }
+    if(extraRow == SchmeissereiRow) {
+        QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
+        QList<QSharedPointer<Schmeisserei> > schmeissereien = round->schmeissereien();
+
+        if(schmeissereien.size() > 0 && schmeissereien.first()){
+            if(role == Qt::DecorationRole)
+                return schmeissereien.first()->player()->color();
         }
     }
     else if(playerIndex < m_game->players().size()
@@ -157,6 +176,10 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
 
             if(role == Qt::BackgroundColorRole)
                 return colorFromPoints(round->points(player));
+            // TODO: could be better in performance
+            if(role == IsReRole) {
+                return round->rePlayers().contains(player);
+            }
         }
     }
 

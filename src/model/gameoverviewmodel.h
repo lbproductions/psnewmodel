@@ -15,13 +15,17 @@ public:
         HochzeitenRow,
         TrumpfabgabenRow,
         SoliRow,
-        SchweinereienRow
+        SchweinereienRow,
+        SchmeissereiRow
     };
     static const int ExtraRowsCount;
 
     enum Roles {
         MitspielerColorRole = Qt::UserRole + 1,
-        SoloTypeRole
+        SoloTypeRole,
+        IsReRole,
+        TotalPointsRole,
+        PflichtSoloRole
     };
 
     explicit GameOverviewModel(QObject *parent = 0);
