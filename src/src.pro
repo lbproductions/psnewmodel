@@ -122,9 +122,11 @@ RESOURCES += \
     resource/statusbar/statusbar.qrc \
     resource/general/general.qrc \
     resource/stylesheets/stylesheets.qrc \
-    resource/pushbutton/pushbutton.qrc
+    resource/pushbutton/pushbutton.qrc \
+    resource/gamewindow/gamewindow.qrc
 
 OTHER_FILES += \
     resource/stylesheets/imagewell.qss \
     resource/stylesheets/pushbutton-dark.qss \
-    resource/stylesheets/bubble.qss
+    resource/stylesheets/bubble.qss \
+    resource/gamewindow/bubenSolo.png

@@ -90,7 +90,8 @@ GameWindow::GameWindow(QWidget *parent) :
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 
-    ui->widgetStatisticsFrame->setWidget(new StatisticsWidget(ui->widgetStatisticsFrame));
+    m_statsWidget = new StatisticsWidget(ui->widgetStatisticsFrame);
+    ui->widgetStatisticsFrame->setWidget(m_statsWidget);
 
     QTimer *lengthTimer = new QTimer(this);
     connect(lengthTimer, &QTimer::timeout,
@@ -145,6 +146,8 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->graphWidget->setGame(game);
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
+
+    m_statsWidget->setGame(game);
 
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(onNewRoundStarted()));
 

@@ -1,6 +1,8 @@
 #include "overviewdelegate.h"
 
 #include <model/gameoverviewmodel.h>
+#include <data/game.h>
+#include <data/round.h>
 
 #include <QPainter>
 #include <QTextOption>
@@ -31,11 +33,34 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->drawRect(r);
     }
 
+    // Draw white dividing line
+    if(m_model) {
+        if(m_model->game()) {
+            QSharedPointer<Game> game = m_model->game();
+            if(game->players().size() == index.row()) {
+                QPen pen = painter->pen();
+                pen.setColor(Qt::white);
+                painter->setPen(pen);
+                painter->drawLine(r.topLeft().x(), r.topLeft().y(), r.topRight().x(), r.topRight().y());
+                pen.setColor(palette.highlight().color());
+                painter->setPen(pen);
+            }
+        }
+    }
+
+    // draw box text
     QString text = index.data().toString();
     if(!text.isEmpty()) {
         painter->setPen(palette.color(QPalette::Text));
+        QFont font = painter->font();
+        font.setPointSize(13);
+        if(index.data(GameOverviewModel::TotalPointsRole).toBool()) {
+            font.setBold(true);
+        }
+        painter->setFont(font);
         QTextOption to;
         to.setAlignment(Qt::AlignCenter);
+
         painter->drawText(option.rect, text, to);
     }
 
@@ -48,7 +73,61 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     color = index.data(Qt::DecorationRole).value<QColor>();
     if(color.isValid()) {
         painter->setBrush(color);
+        if(index.data(GameOverviewModel::PflichtSoloRole).toBool()) {
+            QPen pen = painter->pen();
+            pen.setBrush(Qt::white);
+            painter->setPen(pen);
+        }
         painter->drawRect(QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19)));
+    }
+
+
+    // draw solo icons
+    if(!index.data(GameOverviewModel::SoloTypeRole).isNull()) {
+        int type = index.data(GameOverviewModel::SoloTypeRole).toInt();
+        painter->setPen(palette.color(QPalette::Text));
+        QRect pixmapRect = QRect(option.rect.bottomRight() - QPoint(25,25), option.rect.bottomRight());
+        if(type == Round::BubenSolo) {
+            static QPixmap pixmap = QPixmap(":/gamewindow/bubenSolo.png").scaledToHeight(pixmapRect.height());
+            painter->drawPixmap(pixmapRect, pixmap);
+        }
+        else if(type == Round::DamenSolo) {
+            static QPixmap pixmap = QPixmap(":/gamewindow/damenSolo.png").scaledToHeight(pixmapRect.height());
+            painter->drawPixmap(pixmapRect, pixmap);
+        }
+        else if(type == Round::StilleHochzeit) {
+            static QPixmap pixmap = QPixmap(":/gamewindow/stilleHochzeit.png").scaledToHeight(pixmapRect.height());
+            painter->drawPixmap(pixmapRect, pixmap);
+        }
+        else if(type == Round::Fleischlos) {
+            static QPixmap pixmap = QPixmap(":/gamewindow/fleischlos.png").scaledToHeight(pixmapRect.height());
+            painter->drawPixmap(pixmapRect, pixmap);
+        }
+        else if(type == Round::TrumpfSolo) {
+            painter->drawText(QRect(option.rect.bottomRight() - QPoint(15,15), option.rect.bottomRight()), "T");
+        }
+        else if(type == Round::FarbSolo) {
+            painter->drawText(QRect(option.rect.bottomRight() - QPoint(15,15), option.rect.bottomRight()), "F");
+        }
+        else if(type == Round::FalschGespielt) {
+            painter->drawText(QRect(option.rect.bottomRight() - QPoint(15,15), option.rect.bottomRight()), "S");
+        }
+        else if(type == Round::SitzenGelasseneHochzeit) {
+            static QPixmap pixmap = QPixmap(":/gamewindow/sitzengelasseneHochzeit.png").scaledToHeight(pixmapRect.height());
+            painter->drawPixmap(pixmapRect, pixmap);
+        }
+
+    }
+
+    // Draw re-triangle
+    if(index.data(GameOverviewModel::IsReRole).toBool()) {
+        painter->setBrush(Qt::white);
+        painter->setPen(Qt::transparent);
+        QPolygonF polygon;
+        polygon << option.rect.topRight() <<
+                   QPointF(option.rect.topRight().x()-5, option.rect.topRight().y()) <<
+                   QPointF(option.rect.topRight().x(), option.rect.topRight().y()+5);
+        painter->drawPolygon(polygon);
     }
 
     painter->restore();

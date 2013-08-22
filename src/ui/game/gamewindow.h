@@ -15,6 +15,7 @@ class Player;
 class PopupWidget;
 class GameInformationModel;
 class OverviewPlayerHeaderView;
+class StatisticsWidget;
 
 class GameWindow : public QMainWindow
 {
@@ -71,6 +72,7 @@ private:
     QPointer<PopupWidget> m_popupWidget;
 
     OverviewPlayerHeaderView *m_verticalHeaderView;
+    StatisticsWidget* m_statsWidget;
 };
 
 #endif // GAMEWINDOW_H

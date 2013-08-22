@@ -31,7 +31,7 @@ color:white;
 color:white;
 font-size: 19px;
 }
-QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar {
+QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar,  QToolButton#toolButtonAddRound, QToolButton#toolButtonAddDrinks, QToolButton#toolButtonAddSchmeisserei{
 border: none;
 background: none;
 }
@@ -66,7 +66,16 @@ QWidget#widgetCreateGame {
     <property name="spacing">
      <number>0</number>
     </property>
-    <property name="margin">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
@@ -260,7 +269,16 @@ QWidget#widgetCreateGame {
                  <property name="verticalSpacing">
                   <number>12</number>
                  </property>
-                 <property name="margin">
+                 <property name="leftMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="bottomMargin">
                   <number>12</number>
                  </property>
                  <item row="0" column="0">
@@ -347,7 +365,16 @@ QWidget#widgetCreateGame {
             <property name="spacing">
              <number>0</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -454,21 +481,54 @@ QWidget#widgetCreateGame {
        <item>
         <widget class="QToolButton" name="toolButtonAddRound">
          <property name="text">
-          <string>Add Round</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resource/statusbar/statusbar.qrc">
+           <normaloff>:/statusbar/newround.png</normaloff>:/statusbar/newround.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+         <property name="toolButtonStyle">
+          <enum>Qt::ToolButtonIconOnly</enum>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="toolButtonAddSchmeisserei">
          <property name="text">
-          <string>Add Schmeisserei</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resource/statusbar/statusbar.qrc">
+           <normaloff>:/statusbar/schmeisserei.png</normaloff>:/statusbar/schmeisserei.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QToolButton" name="toolButtonAddDrinks">
          <property name="text">
-          <string>Add Drinks</string>
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resource/statusbar/statusbar.qrc">
+           <normaloff>:/statusbar/drink.png</normaloff>:/statusbar/drink.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
          </property>
         </widget>
        </item>
@@ -538,6 +598,10 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionAdd_round">
+   <property name="icon">
+    <iconset resource="../../resource/statusbar/statusbar.qrc">
+     <normaloff>:/statusbar/newround.png</normaloff>:/statusbar/newround.png</iconset>
+   </property>
    <property name="text">
     <string>Add round...</string>
    </property>
@@ -546,6 +610,10 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionAdd_schmeisserei">
+   <property name="icon">
+    <iconset resource="../../resource/statusbar/statusbar.qrc">
+     <normaloff>:/statusbar/schmeisserei.png</normaloff>:/statusbar/schmeisserei.png</iconset>
+   </property>
    <property name="text">
     <string>Add schmeisserei...</string>
    </property>
@@ -563,6 +631,10 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionAdd_drinks">
+   <property name="icon">
+    <iconset resource="../../resource/statusbar/statusbar.qrc">
+     <normaloff>:/statusbar/drink.png</normaloff>:/statusbar/drink.png</iconset>
+   </property>
    <property name="text">
     <string>Add drinks...</string>
    </property>
