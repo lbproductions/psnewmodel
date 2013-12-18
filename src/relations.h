@@ -29,6 +29,10 @@ private:
         mutable bool resolved;
         mutable QList<QWeakPointer<T> > relatedList;
         mutable QWeakPointer<T> related;
+        QpMetaProperty metaProperty;
+        QpMetaProperty::Cardinality cardinality;
+
+        bool isToMany() const;
     };
 
     QList<QSharedPointer<T> > resolveFromDatabase() const;
