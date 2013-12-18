@@ -97,10 +97,10 @@ int Round::points() const
 
 int Round::points(QSharedPointer<Player> player) const
 {
-    auto it = m_pointsPerPlayer.find(player);
-    if(it == m_pointsPerPlayer.end()) {
+    auto it = m_pointsCached.find(player);
+    if(it == m_pointsCached.end()) {
         int points = _points().value(Qp::primaryKey(player));
-        m_pointsPerPlayer.insert(player, points);
+        m_pointsCached.insert(player, points);
         return points;
     }
 
@@ -111,7 +111,7 @@ void Round::setPoints(QSharedPointer<Player> player, int points)
 {
     QMap<int,int> ps = _points();
     ps.insert(Qp::primaryKey(player), points);
-    m_pointsPerPlayer.insert(player, points);
+    m_pointsCached.insert(player, points);
     _setPoints(ps);
 }
 

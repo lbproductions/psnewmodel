@@ -242,7 +242,7 @@ class Round : public QObject
         bool m_soloIsPflicht;
         WinnerParty m_winnerParty;
         QMap<int, int> m_points;
-        mutable QMap<QSharedPointer<Player>, int> m_pointsPerPlayer; // a cache, because Qp:primaryKey is slow
+        mutable QMap<QSharedPointer<Player>, int> m_pointsCached; // a cache, because Qp:primaryKey is slow
         TrumpfColor m_trumpfColor;
 
         QpWeakRelation<Game> m_game;
