@@ -12,7 +12,8 @@ GameListModel::GameListModel(QObject *parent) :
 int GameListModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return metaObject()->enumerator(0).keyCount();
+    int index = metaObject()->indexOfEnumerator("Columns");
+    return metaObject()->enumerator(index).keyCount();
 }
 
 QVariant GameListModel::headerData(int section, Qt::Orientation orientation, int role) const

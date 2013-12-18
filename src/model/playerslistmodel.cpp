@@ -11,7 +11,8 @@ PlayersListModel::PlayersListModel(QObject *parent) :
 int PlayersListModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return metaObject()->enumerator(0).keyCount();
+    int index = metaObject()->indexOfEnumerator("Columns");
+    return metaObject()->enumerator(index).keyCount();
 }
 
 QVariant PlayersListModel::headerData(int section, Qt::Orientation orientation, int role) const

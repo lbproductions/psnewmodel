@@ -10,7 +10,8 @@ DrinksListModel::DrinksListModel(QObject *parent) :
 int DrinksListModel::columnCount(const QModelIndex &parent) const
 {
     Q_UNUSED(parent);
-    return metaObject()->enumerator(0).keyCount();
+    int index = metaObject()->indexOfEnumerator("Columns");
+    return metaObject()->enumerator(index).keyCount();
 }
 
 QVariant DrinksListModel::headerData(int section, Qt::Orientation orientation, int role) const
