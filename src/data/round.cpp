@@ -97,28 +97,35 @@ int Round::points() const
 
 int Round::points(QSharedPointer<Player> player) const
 {
-    return _points().value(Qp::primaryKey(player));
+    auto it = m_pointsPerPlayer.find(player);
+    if(it == m_pointsPerPlayer.end()) {
+        int points = _points().value(Qp::primaryKey(player));
+        m_pointsPerPlayer.insert(player, points);
+        return points;
+    }
+
+    return it.value();
 }
 
 void Round::setPoints(QSharedPointer<Player> player, int points)
 {
     QMap<int,int> ps = _points();
     ps.insert(Qp::primaryKey(player), points);
+    m_pointsPerPlayer.insert(player, points);
     _setPoints(ps);
 }
 
 int Round::totalPoints(QSharedPointer<Player> player) const
 {
-    int ps = points(player);
+    int result = 0;
 
-    int previousRoundNumber = number() - 1;
     QList<QSharedPointer<Round> > rounds = game()->rounds();
-    if(previousRoundNumber < 0 || previousRoundNumber >= rounds.size())
-        return ps;
+    int n = number();
+    for(int i = 0; i <= n; ++i) {
+        result += rounds.at(i)->points(player);
+    }
 
-    ps += rounds.at(previousRoundNumber)->totalPoints(player);
-
-    return ps;
+    return result;
 }
 
 QList<QSharedPointer<Player> > Round::playersSortedByPlacement() const
