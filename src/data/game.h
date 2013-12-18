@@ -173,8 +173,8 @@ class Game: public QObject
         QpStrongRelation<Round> m_rounds;
         QpWeakRelation<League> m_leagues;
 
-        QpWeakRelation<OLD_OfflineGameInformation> m_offlineGameInformation;
-        QpWeakRelation<OLD_DokoOfflineGameBuddys> m_dokoOfflineGameBuddys;
+        QpStrongRelation<OLD_OfflineGameInformation> m_offlineGameInformation;
+        QpStrongRelation<OLD_DokoOfflineGameBuddys> m_dokoOfflineGameBuddys;
 
         QTimer m_lengthTimer;
 };
