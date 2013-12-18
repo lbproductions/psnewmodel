@@ -1,5 +1,7 @@
 #include <QApplication>
 
+#include "local_dbconfig.h"
+
 #include <data/drink.h>
 #include <data/game.h>
 #include <data/livedrink.h>
@@ -35,7 +37,7 @@ int main(int argc, char *argv[])
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
     //db.setDatabaseName(a.arguments().at(1));
-    db.setDatabaseName("/Users/niclasraabe/Dropbox/Public/projectstatsNewDB.db");
+    db.setDatabaseName(DBPATH);
     //db.setDatabaseName("projectstatsNewDB.db");
     db.open();
 

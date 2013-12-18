@@ -151,7 +151,8 @@ HEADERS  += \
     ui/game/gamestatswidget.h \
     ui/widgets/biggestdistancewidget.h \
     ui/game/settingswidget.h \
-    misc/settings.h
+    misc/settings.h \
+    local_dbconfig.h
 
 
 FORMS += \
