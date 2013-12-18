@@ -53,9 +53,7 @@ GameWindow::GameWindow(QWidget *parent) :
     darkPalette.setColor(QPalette::HighlightedText, QColor(187,187,187));
     setPalette(darkPalette);
 
-    // This has a bug in 5.0
-    // TODO: enable in Qt 5.1 final: https://bugreports.qt-project.org/browse/QTBUG-31061
-        ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
+    ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
 
     ui->tableViewInformation->hide();
     ui->tableViewOverview->hide();

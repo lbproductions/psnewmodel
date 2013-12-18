@@ -18,7 +18,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow),
+    m_playerListModel(nullptr)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose, true);
@@ -46,24 +47,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionInformation, &QAction::triggered,
             ui->actionDrinkInformation, &QAction::trigger);
 
-    m_playerListModel = new PlayersListModel(this);
-    QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
-    sortModel->setSourceModel(m_playerListModel);
-    ui->treeViewPlayers->setModel(sortModel);
     ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
     connect(ui->treeViewPlayers, &QTreeView::doubleClicked,
             this, &MainWindow::on_actionPlayerInformation_triggered);
 
-    GameListModel *modelGames = new GameListModel(this);
-    sortModel = new QSortFilterProxyModel(this);
-    sortModel->setSourceModel(modelGames);
-    ui->treeViewGames->setModel(sortModel);
-    ui->treeViewGames->setSortingEnabled(true);
-
-    DrinksListModel *modelDrinks = new DrinksListModel(this);
-    sortModel = new QSortFilterProxyModel(this);
-    sortModel->setSourceModel(modelDrinks);
-    ui->treeViewDrinks->setModel(sortModel);
     ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
     connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
             this, &MainWindow::on_actionDrinkInformation_triggered);
@@ -77,6 +64,8 @@ MainWindow::MainWindow(QWidget *parent) :
     MenuBar::instance()->addAction(tr("&View"), ui->actionPlaces, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionDrinks, this);
     MenuBar::instance()->menu(tr("&View"))->addSeparator();
+
+    on_actionPlayers_triggered();
 }
 
 MainWindow::~MainWindow()
@@ -117,11 +106,25 @@ void MainWindow::restoreWindowState()
 
 void MainWindow::on_actionPlayers_triggered()
 {
+    if(!ui->treeViewPlayers->model()) {
+        m_playerListModel = new PlayersListModel(this);
+        QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
+        sortModel->setSourceModel(m_playerListModel);
+        ui->treeViewPlayers->setModel(sortModel);
+    }
+
     ui->stackedWidget->setCurrentWidget(ui->pagePlayers);
 }
 
 void MainWindow::on_actionGames_triggered()
 {
+    if(!ui->treeViewGames->model()) {
+        GameListModel *modelGames = new GameListModel(this);
+        QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
+        sortModel->setSourceModel(modelGames);
+        ui->treeViewGames->setModel(sortModel);
+    }
+
     ui->stackedWidget->setCurrentWidget(ui->pageGames);
 }
 
@@ -132,6 +135,13 @@ void MainWindow::on_actionPlaces_triggered()
 
 void MainWindow::on_actionDrinks_triggered()
 {
+    if(!ui->treeViewDrinks->model()) {
+        DrinksListModel *modelDrinks = new DrinksListModel(this);
+        QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
+        sortModel->setSourceModel(modelDrinks);
+        ui->treeViewDrinks->setModel(sortModel);
+    }
+
     ui->stackedWidget->setCurrentWidget(ui->pageDrinks);
 }
 
