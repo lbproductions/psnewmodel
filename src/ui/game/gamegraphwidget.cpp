@@ -1,4 +1,4 @@
-#include "graphwidget.h"
+#include "gamegraphwidget.h"
 
 #include <data/game.h>
 #include <data/round.h>
@@ -8,14 +8,12 @@
 #include <limits>
 #include <QPainter>
 
-GraphWidget::GraphWidget(QWidget *parent) :
-    QWidget(parent),
-    m_maxY(std::numeric_limits<int>::min()),
-    m_minY(std::numeric_limits<int>::max())
+GameGraphWidget::GameGraphWidget(QWidget *parent) :
+    GraphWidget(parent)
 {
 }
 
-QSize GraphWidget::sizeHint() const
+QSize GameGraphWidget::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
     if(m_game)
@@ -23,12 +21,12 @@ QSize GraphWidget::sizeHint() const
     return size;
 }
 
-QSharedPointer<Game> GraphWidget::game() const
+QSharedPointer<Game> GameGraphWidget::game() const
 {
     return m_game;
 }
 
-void GraphWidget::setGame(const QSharedPointer<Game> &game)
+void GameGraphWidget::setGame(const QSharedPointer<Game> &game)
 {
     m_game = game;
 
@@ -62,12 +60,7 @@ void GraphWidget::setGame(const QSharedPointer<Game> &game)
     update();
 }
 
-int GraphWidget::originX() const
-{
-    return 0;
-}
-
-void GraphWidget::paintEvent(QPaintEvent *e)
+void GameGraphWidget::paintEvent(QPaintEvent *e)
 {
     QWidget::paintEvent(e);
 
@@ -210,48 +203,7 @@ void GraphWidget::paintEvent(QPaintEvent *e)
     }
 }
 
-int GraphWidget::originY() const
-{
-    return qAbs(maxY()) * pixelsPerPoint();
-}
-
-int GraphWidget::translateX(int x) const
-{
-    return x * 40 - 1;
-}
-
-int GraphWidget::translateY(int y) const
-{
-    return -pixelsPerPoint() * y + originY();
-}
-
-double GraphWidget::pixelsPerPoint() const
-{
-    int range = maxY() - minY();
-    return (double) height() / (double) range;
-}
-
-int GraphWidget::maxY() const
-{
-    return m_maxY;
-}
-
-void GraphWidget::setMaxY(int maxY)
-{
-    m_maxY = maxY;
-}
-
-int GraphWidget::minY() const
-{
-    return m_minY;
-}
-
-void GraphWidget::setMinY(int minY)
-{
-    m_minY = minY;
-}
-
-void GraphWidget::updateGraphs()
+void GameGraphWidget::updateGraphs()
 {
     if(!m_game)
         return;

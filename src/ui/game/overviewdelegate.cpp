@@ -37,14 +37,17 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if(m_model) {
         if(m_model->game()) {
             QSharedPointer<Game> game = m_model->game();
+            QPen pen = painter->pen();
+            pen.setColor(Qt::white);
+            painter->setPen(pen);
             if(game->players().size() == index.row()) {
-                QPen pen = painter->pen();
-                pen.setColor(Qt::white);
-                painter->setPen(pen);
                 painter->drawLine(r.topLeft().x(), r.topLeft().y(), r.topRight().x(), r.topRight().y());
-                pen.setColor(palette.highlight().color());
-                painter->setPen(pen);
             }
+            if(index.column() == game->totalRoundCount()) {
+                painter->drawLine(r.topLeft(), r.bottomLeft());
+            }
+            pen.setColor(palette.highlight().color());
+            painter->setPen(pen);
         }
     }
 
@@ -121,12 +124,13 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     // Draw re-triangle
     if(index.data(GameOverviewModel::IsReRole).toBool()) {
+        int triangleSize = 7;
         painter->setBrush(Qt::white);
         painter->setPen(Qt::transparent);
         QPolygonF polygon;
         polygon << option.rect.topRight() <<
-                   QPointF(option.rect.topRight().x()-5, option.rect.topRight().y()) <<
-                   QPointF(option.rect.topRight().x(), option.rect.topRight().y()+5);
+                   QPointF(option.rect.topRight().x()-triangleSize, option.rect.topRight().y()) <<
+                   QPointF(option.rect.topRight().x(), option.rect.topRight().y()+triangleSize);
         painter->drawPolygon(polygon);
     }
 
@@ -142,3 +146,4 @@ void OverviewDelegate::setGameModel(GameOverviewModel *model)
 {
     m_model = model;
 }
+

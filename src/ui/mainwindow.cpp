@@ -83,6 +83,8 @@ MainWindow::~MainWindow()
 {
     saveWindowState();
     delete ui;
+
+
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

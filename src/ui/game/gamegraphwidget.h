@@ -1,35 +1,20 @@
 #ifndef GRAPH_H
 #define GRAPH_H
 
-#include <QWidget>
-
+#include <ui/widgets/graphwidget.h>
 
 class Game;
 
-class GraphWidget : public QWidget
+class GameGraphWidget : public GraphWidget
 {
     Q_OBJECT
 public:
-    explicit GraphWidget(QWidget *parent = 0);
+    explicit GameGraphWidget(QWidget *parent = 0);
 
     QSize sizeHint() const;
 
     QSharedPointer<Game> game() const;
     void setGame(const QSharedPointer<Game> &game);
-
-    int originX() const;
-    int originY() const;
-
-    int translateX(int x) const;
-    int translateY(int y) const;
-
-    double pixelsPerPoint() const;
-
-    int maxY() const;
-    void setMaxY(int maxY);
-
-    int minY() const;
-    void setMinY(int minY);
 
 public slots:
     void updateGraphs();
@@ -39,9 +24,6 @@ signals:
 
 private:
     void paintEvent(QPaintEvent *event);
-
-    int m_maxY;
-    int m_minY;
 
     QList<QList<int> > m_rounds;
 

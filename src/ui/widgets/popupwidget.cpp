@@ -38,6 +38,9 @@ void PopupWidget::paintEvent(QPaintEvent *e)
     else if(m_arrowPosition == Left) {
         painter.drawPixmap(7, height() / 2 - 32 / 2, 32, 53, QPixmap(":/general/popup-arrow-left.png"));
     }
+    else if(m_arrowPosition == Top) {
+        painter.drawPixmap(width() / 2 - 53/2, 0, 53, 32, QPixmap(":/general/popup-arrow-top.png"));
+    }
 }
 
 QWidget *PopupWidget::widget() const

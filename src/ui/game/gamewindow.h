@@ -49,6 +49,8 @@ private slots:
     void setSidebarToggleToHide();
     void setSidebarToggleToShow();
 
+    void on_TableViewOverviewDoubleClicked(const QModelIndex &index);
+
     void updateTimes();
 
     void on_pushButtonAddPlayers_clicked();
@@ -62,7 +64,15 @@ private slots:
 
     void on_actionAdd_drinks_triggered();
 
-private:
+    void on_toolButtonSetComment_clicked();
+
+    void on_toolButtonStop_clicked();
+
+    void on_toolButtonSettings_clicked();
+
+    void updateSizes();
+
+    private:
     Ui::GameWindow *ui;
 
     QSharedPointer<Game> m_game;

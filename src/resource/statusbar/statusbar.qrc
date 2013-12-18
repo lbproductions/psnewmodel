@@ -11,5 +11,8 @@
         <file>drink.png</file>
         <file>schmeisserei.png</file>
         <file>newround.png</file>
+        <file>comment.png</file>
+        <file>stop.png</file>
+        <file>settings.png</file>
     </qresource>
 </RCC>

@@ -92,6 +92,8 @@ class Game: public QObject
         void setMitPflichtSolo(bool arg);
 
         QTime length() const;
+        QTime averageRoundLength() const;
+        QTime predictedTimeToPlay() const;
 
         QSharedPointer<Place> site() const;
         void setSite(QSharedPointer<Place> site);
@@ -112,6 +114,9 @@ class Game: public QObject
         int leadingRoundCount(QSharedPointer<Player> player) const;
         int totalPoints() const;
         int totalPoints(QSharedPointer<Player> player) const;
+        int roundsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo);
+        int winsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo);
+        int pointsToLeader(QSharedPointer<Player> player);
 
         void addDrink(QSharedPointer<LiveDrink> drink);
         QMap<QSharedPointer<Drink>, int> drinkCounts(QSharedPointer<Player> player) const;
@@ -124,6 +129,7 @@ class Game: public QObject
         int finishedRoundCount() const;
         double completedPercentage() const;
         bool isComplete() const;
+        int roundsToPlay() const;
 
         bool hasPflichtSolo(QSharedPointer<Player> player) const;
 
@@ -134,12 +140,16 @@ class Game: public QObject
         int schweinereiCount(int roundCount = std::numeric_limits<int>::max());
         int schmeissereiCount(int roundCount = std::numeric_limits<int>::max());
 
+        int reWinsCount();
+        int contraWinCount();
+
         QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation() const;
         QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys() const;
     signals:
         void newRoundStarted();
         void schmeissereiAdded();
         void liveDrinkAdded();
+        void stateChanged();
     private:
         void setCreationTime(const QDateTime &creationTime);
         void setPlayers(const QList<QSharedPointer<Player> > &players);

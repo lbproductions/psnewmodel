@@ -9,7 +9,8 @@ class PopupWidget : public QFrame
 public:
     enum ArrowPosition {
         Left,
-        Bottom
+        Bottom,
+        Top
     };
 
     explicit PopupWidget(QWidget *parent = 0);

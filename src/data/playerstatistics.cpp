@@ -75,10 +75,12 @@ QList<QSharedPointer<Game> > PlayerStatistics::wins() const
         }
     }
     // TODO: Remove or change these loop into current data structure
-    foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
-       if(info->placement() == 1) {
-            if(!result.contains(info->game())){
-                result.append(info->game());
+    if(isAllGames()) {
+        foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
+            if(info->placement() == 1) {
+                if(!result.contains(info->game())){
+                    result.append(info->game());
+                }
             }
         }
     }
@@ -110,9 +112,11 @@ QList<QSharedPointer<Game> > PlayerStatistics::losses() const
         }
     }
     // TODO: Remove or change these loop into current data structure
-    foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
-        if(info->placement() == info->game()->offlineGameInformation().size()) {
-            result.append(info->game());
+    if(isAllGames()) {
+        foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
+            if(info->placement() == info->game()->offlineGameInformation().size()) {
+                result.append(info->game());
+            }
         }
     }
     return result;
@@ -147,23 +151,29 @@ QList<QSharedPointer<Round> > PlayerStatistics::rounds() const
     if(isAllGames())
         return player()->rounds();
 
-    QList<QSharedPointer<Round> > result;
-    QSharedPointer<Player> sharedPlayer = player();
-    foreach(QSharedPointer<Game> game, games()) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->playingPlayers().contains(sharedPlayer))
-                result.append(round);
-        }
-    }
+    QList<QSharedPointer<Round> > result1 = reRounds();
+    result1.append(contraRounds());
 
-    return result;
+    return result1;
 }
 
 QList<QSharedPointer<Round> > PlayerStatistics::winRounds() const
 {
+    /*
+    QList<QSharedPointer<Round> > result;
+    foreach(QSharedPointer<Game> game, games()) {
+        foreach(QSharedPointer<Round> round, game->rounds()) {
+            if(round->points(player()) > 0) {
+                result.append(round);
+            }
+        }
+    }
+    return result;
+    */
     QList<QSharedPointer<Round> > result = reWins();
     result.append(contraWins());
     return result;
+
 }
 
 QList<QSharedPointer<Round> > PlayerStatistics::reRounds() const
@@ -175,8 +185,7 @@ QList<QSharedPointer<Round> > PlayerStatistics::reRounds() const
     QSharedPointer<Player> sharedPlayer = player();
     foreach(QSharedPointer<Game> game, games()) {
         foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->re1Player() == sharedPlayer
-                    || (!round->isSolo() || round->re2Player() == sharedPlayer)) {
+            if(round->re1Player() == sharedPlayer || (!round->isSolo() && round->re2Player() == sharedPlayer)) {
                 result.append(round);
             }
         }
@@ -206,8 +215,8 @@ QList<QSharedPointer<Round> > PlayerStatistics::contraRounds() const
     foreach(QSharedPointer<Game> game, games()) {
         foreach(QSharedPointer<Round> round, game->rounds()) {
             if(round->contra1Player() == sharedPlayer
-                    || round->contra2Player() == sharedPlayer
-                    || (round->isSolo() && round->contra3Player() == sharedPlayer)) {
+               || round->contra2Player() == sharedPlayer
+               || (round->isSolo() && round->contra3Player() == sharedPlayer)) {
                 result.append(round);
             }
         }
@@ -321,7 +330,7 @@ QList<QSharedPointer<Round> > PlayerStatistics::schweinereiRounds() const
 
 double PlayerStatistics::roundWinsPercentage() const
 {
-    return percentage(winRounds().size(), rounds().size());
+    return percentage(winRounds().size() * 100, rounds().size());
 }
 
 double PlayerStatistics::rePercentage() const
@@ -346,7 +355,11 @@ double PlayerStatistics::contraWinsPercentage() const
 
 double PlayerStatistics::averagePointsPerRound() const
 {
-    return percentage(winRounds().size(), rounds().size());
+    int points = 0;
+    foreach(QSharedPointer<Round> round, winRounds()) {
+        points += round->points(player());
+    }
+    return percentage(points, winRounds().size());
 }
 
 double PlayerStatistics::averagePlacement() const
@@ -385,11 +398,13 @@ int PlayerStatistics::points() const
         points += 100 * zaehler / nenner;
     }
     // TODO: Remove or change these loop into current data structure
-    foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
-        int playerCount = info->game()->offlineGameInformation().size();
-        int zaehler = playerCount - info->placement();
-        int nenner = playerCount - 1;
-        points += 100 * zaehler / nenner;
+    if(isAllGames()) {
+        foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
+            int playerCount = info->game()->offlineGameInformation().size();
+            int zaehler = playerCount - info->placement();
+            int nenner = playerCount - 1;
+            points += 100 * zaehler / nenner;
+        }
     }
 
     return points;
@@ -398,13 +413,20 @@ int PlayerStatistics::points() const
 double PlayerStatistics::average() const
 {
     // TODO: Merge or change the offlineGameInformations
-    return percentage(points(), games().size()+player()->offlineGameInformation().size());
+    if(isAllGames()) {
+        return percentage(points(), games().size()+player()->offlineGameInformation().size());
+    }
+    else{
+        return percentage(points(), games().size());
+    }
 }
 
 double PlayerStatistics::percentage(int value1, int value2)
 {
     if(value2 == 0)
-        return -1.0;
+        return 0;
 
-    return (double) value1 / (double) value2;
+    double number = (double) value1 / (double) value2;
+
+    return static_cast<double>(static_cast<int>(number*100+0.5))/100.0;
 }

@@ -36,13 +36,22 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     QPalette palette = parentWidget()->palette();
 
     bool cardMixerMode = false;
+    bool hasPflichtSolo = false;
     bool border = false;
+
     QString text = model()->headerData(logicalIndex, orientation()).toString();
+    QColor color = model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QColor>();
+
     if(m_model) {
         if(m_model->game()) {
             QSharedPointer<Game> game = m_model->game();
             if(game->state() != Game::Finished && game->currentCardMixer() && game->currentCardMixer()->name() == text) {
                 cardMixerMode = true;
+            }
+            foreach(QSharedPointer<Player> player, game->players()) {
+                if(player->name() == text) {
+                    hasPflichtSolo = game->hasPflichtSolo(player);
+                }
             }
             if(game->players().size() == logicalIndex+1)
                 border = true;
@@ -54,8 +63,9 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     pen.setColor(QColor(0,0,0,0));
     painter->setPen(pen);
     painter->setBrush(palette.color(QPalette::Base));
-    if(cardMixerMode) {
-        painter->setBrush(QColor(85,55,55));
+    if(cardMixerMode && color.isValid()) {
+        //painter->setBrush(QColor(120,70,0));
+        painter->setBrush(color.darker(250));
     }
     painter->drawRect(rect);
 
@@ -83,7 +93,6 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     painter->drawText(r, text, option);
 
     // player color
-    QColor color = model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QColor>();
     if(color.isValid()) {
         painter->setPen(QPen(palette.highlight().color()));
         painter->setBrush(color);
@@ -91,11 +100,23 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
                                 rect.topLeft() + QPoint(9, 6) + QPoint(16,16)));
     }
 
-    if(cardMixerMode) {
+
+    if(cardMixerMode && hasPflichtSolo) {
+        QRect cRect = rect.adjusted(0,0,-5,0);
+        static QPixmap pixmap = QPixmap(":/sidebar/games_green.png").scaledToHeight(cRect.height()-10);
+        int offset = rect.height() - pixmap.height();
+        painter->drawPixmap(rect.topRight().x()-pixmap.width()-5, cRect.topRight().y()+offset/2, pixmap);
+    }
+    else if(cardMixerMode) {
         QRect cRect = rect.adjusted(0,0,-5,0);
         static QPixmap pixmap = QPixmap(":/sidebar/games.png").scaledToHeight(cRect.height()-10);
         int offset = rect.height() - pixmap.height();
         painter->drawPixmap(rect.topRight().x()-pixmap.width()-5, cRect.topRight().y()+offset/2, pixmap);
+    }
+    else if(hasPflichtSolo) {
+        QRect cRect = rect.adjusted(0,0,-15,0);
+        painter->setBrush(Qt::green);
+        painter->drawEllipse(QPoint(cRect.topRight().x(), cRect.topRight().y()+cRect.height()/2), 7, 7);
     }
 
     painter->restore();

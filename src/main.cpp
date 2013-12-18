@@ -26,13 +26,17 @@ int main(int argc, char *argv[])
     a.setApplicationName("psnewmodel");
     a.setOrganizationName("lbproductions");
 
+    /*
     if(a.arguments().size() != 2) {
         qDebug() << "Usage: psnewmodel <sqlite_database>";
         return 0;
     }
+    */
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    db.setDatabaseName(a.arguments().at(1));
+    //db.setDatabaseName(a.arguments().at(1));
+    db.setDatabaseName("/Users/niclasraabe/Dropbox/Public/projectstatsNewDB.db");
+    //db.setDatabaseName("projectstatsNewDB.db");
     db.open();
 
     Qp::registerMappableTypes<int, int>();
@@ -53,10 +57,42 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
+    /*
+    foreach(QSharedPointer<Game> game, games) {
+        if(game->type() == Game::Doppelkopf) {
+            foreach(QSharedPointer<Round> round, game->rounds()) {
+                if(Qp::primaryKey(round)>=3509) {
+                    if(round->state() == Round::Finished && !round->contra1Player() && round->re1Player()) {
+                        int contraPlayers = 0;
+                        foreach(QSharedPointer<Player> player, round->playingPlayers()) {
+                            if(!round->isRe(player)) {
+                                switch(contraPlayers){
+                                    case 0:
+                                        round->setContra1Player(player);
+                                        break;
+                                    case 1:
+                                        round->setContra2Player(player);
+                                        break;
+                                    case 2:
+                                        round->setContra3Player(player);
+                                        break;
+                                }
+                                contraPlayers++;
+                            }
+                        }
+                        Qp::update(round);
+                    }
+                }
+            }
+        }
+    }
+    */
+    //qDebug() << "Contra-Count: " << count;
+
 
     StartWindow* startWindow = new StartWindow();
     startWindow->show();
 
-//    new MainWindow;
+    //    new MainWindow;
     return a.exec();
 }

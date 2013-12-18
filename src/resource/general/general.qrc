@@ -8,5 +8,8 @@
         <file>popup-arrow.png</file>
         <file>popup-border.png</file>
         <file>popup-arrow-left.png</file>
+        <file>popup-arrow-top.png</file>
+        <file>logo.png</file>
+        <file>icon.icns</file>
     </qresource>
 </RCC>

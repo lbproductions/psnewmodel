@@ -5,6 +5,7 @@
 #include <QTreeWidget>
 
 class Game;
+class League;
 
 class StartWindow : public QWidget
 {
@@ -18,11 +19,15 @@ class StartWindow : public QWidget
         void onNewGameButtonPressed();
         void onLibraryButtonPressed();
         void onGameTreeWidgetDoubleClicked(QTreeWidgetItem* item, int column);
+        void onLeagueTreeWidgetDoubleClicked(QTreeWidgetItem* item, int column);
+        void onNewLeagueButtonPressed();
 
     private:
         QList<QSharedPointer<Game> > m_games;
+        QList<QSharedPointer<League> > m_leagues;
 
         QTreeWidget* m_treeWidget;
+        QTreeWidget* m_leagueTreeWidget;
         
 };
 

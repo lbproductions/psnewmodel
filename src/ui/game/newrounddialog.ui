@@ -30,7 +30,16 @@ QDialog { background: rgb(51,51,51)}</string>
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -445,7 +454,16 @@ p, li { white-space: pre-wrap; }
    <item>
     <widget class="QWidget" name="widget" native="true">
      <layout class="QVBoxLayout" name="verticalLayout_2">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <property name="rightMargin">
+       <number>0</number>
+      </property>
+      <property name="bottomMargin">
        <number>0</number>
       </property>
       <item>

@@ -140,6 +140,9 @@ QList<QSharedPointer<Player> > Round::playersSortedByPlacement() const
 
 int Round::placement(QSharedPointer<Player> player) const
 {
+    if(!game()->players().contains(player))
+        return -1;
+
     int place = 1;
     QList<QSharedPointer<Player> > ps = playersSortedByPlacement();
     int points = totalPoints(player);
@@ -157,6 +160,18 @@ int Round::placement(QSharedPointer<Player> player) const
     }
 
     return place;
+}
+
+int Round::pointsToLeader(QSharedPointer<Player> player)
+{
+    if(!playersSortedByPlacement().contains(player)) {
+        return 0;
+    }
+
+    int leaderPoints = totalPoints(playersSortedByPlacement().first());
+    int playerPoints = totalPoints(player);
+
+    return leaderPoints - playerPoints;
 }
 
 QSharedPointer<Player> Round::cardMixer() const
@@ -346,6 +361,11 @@ QSharedPointer<Player> Round::re2Player() const
 void Round::setRe2Player(const QSharedPointer<Player> &re2Player)
 {
     m_re2Player.relate(re2Player);
+}
+
+bool Round::isRe(QSharedPointer<Player> player) const
+{
+    return rePlayers().contains(player);
 }
 
 QSharedPointer<Player> Round::re1Player() const

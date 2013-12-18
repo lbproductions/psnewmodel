@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>SettingsWidget</class>
+ <widget class="QWidget" name="SettingsWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>282</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>Players</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <item>
+         <widget class="QRadioButton" name="radioButtonPosition">
+          <property name="text">
+           <string>Sort by position</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonPlacement">
+          <property name="text">
+           <string>Sort by placement</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="QRadioButton" name="radioButtonTotalPoints">
+          <property name="text">
+           <string>Show total points</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_2</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonPointsToLeader">
+          <property name="text">
+           <string>Show points to leader</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_2</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_5">
+        <item>
+         <widget class="QRadioButton" name="radioButtonTableRoundPoints">
+          <property name="text">
+           <string>Show round points</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_3</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonTableTotalPoints">
+          <property name="text">
+           <string>Show total points</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_3</string>
+          </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonTableDeficit">
+          <property name="text">
+           <string>Show deficit to leader</string>
+          </property>
+          <attribute name="buttonGroup">
+           <string notr="true">buttonGroup_3</string>
+          </attribute>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="Line" name="line_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QCheckBox" name="checkBoxShowExtraRows">
+        <property name="text">
+         <string>Show extra rows</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+ <buttongroups>
+  <buttongroup name="buttonGroup"/>
+  <buttongroup name="buttonGroup_2"/>
+  <buttongroup name="buttonGroup_3"/>
+ </buttongroups>
+</ui>

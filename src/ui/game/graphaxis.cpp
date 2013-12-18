@@ -1,6 +1,6 @@
 #include "graphaxis.h"
 
-#include "graphwidget.h"
+#include <ui/widgets/graphwidget.h>
 
 #include <QPainter>
 #include <QDebug>
@@ -30,7 +30,6 @@ void GraphAxis::paintEvent(QPaintEvent *e)
         return;
 
     int y = m_graph->minY();
-    qDebug() << "minY: " << y;
 
     y /= 10;
     y -= 1;

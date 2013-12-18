@@ -54,12 +54,29 @@ QTime Game::length() const
     foreach(QSharedPointer<Round> r, rounds()) {
         QTime t = r->length();
         int secs = t.hour() * 60 * 60
-                + t.minute() * 60
-                + t.second();
+                   + t.minute() * 60
+                   + t.second();
         time = time.addSecs(secs);
     }
     return time;
 }
+
+QTime Game::averageRoundLength() const
+{
+    int lengthSecs = QTime(0,0,0).secsTo(length());
+    if(finishedRoundCount() > 0)
+        return QTime(0,0,0).addSecs(lengthSecs/finishedRoundCount());
+    else
+        return QTime(0,0,0);
+}
+
+QTime Game::predictedTimeToPlay() const
+{
+    int averageLength = QTime(0,0,0).secsTo(averageRoundLength());
+    return QTime(0,0,0).addSecs(averageLength*roundsToPlay());
+}
+
+
 
 Game::State Game::state() const
 {
@@ -68,15 +85,15 @@ Game::State Game::state() const
         return UnkownState;
 
     switch(r->state()) {
-    case Round::Finished:
-        return Finished;
-    case Round::Running:
-        return Running;
-    case Round::Paused:
-        return Paused;
-    case Round::UnkownState:
-    default:
-        return UnkownState;
+        case Round::Finished:
+            return Finished;
+        case Round::Running:
+            return Running;
+        case Round::Paused:
+            return Paused;
+        case Round::UnkownState:
+        default:
+            return UnkownState;
     }
 
     return UnkownState;
@@ -94,20 +111,26 @@ void Game::setState(State state)
         return;
 
     switch(state) {
-    case Finished:
-        r->setState(Round::Finished);
-        return;
-    case Running:
-        r->setState(Round::Running);
-        return;
-    case Paused:
-        r->setState(Round::Paused);
-        return;
-    case UnkownState:
-    default:
-        r->setState(Round::UnkownState);
-        return;
+        case Finished:
+            r->setState(Round::Finished);
+            Qp::remove<Round>(r);
+            emit stateChanged();
+            return;
+        case Running:
+            r->setState(Round::Running);
+            emit stateChanged();
+            return;
+        case Paused:
+            r->setState(Round::Paused);
+            emit stateChanged();
+            return;
+        case UnkownState:
+        default:
+            r->setState(Round::UnkownState);
+            return;
     }
+
+    emit stateChanged();
 }
 
 void Game::togglePlayPause()
@@ -134,15 +157,15 @@ QPixmap Game::statePixmap() const
     static const QPixmap FinishedStatePixmap(":/general/state-finished.png");
 
     switch(state()) {
-    case Finished:
-        return FinishedStatePixmap;
-    case Running:
-        return RunningStatePixmap;
-    case Paused:
-        return PausedStatePixmap;
-    case UnkownState:
-    default:
-        break;
+        case Finished:
+            return FinishedStatePixmap;
+        case Running:
+            return RunningStatePixmap;
+        case Paused:
+            return PausedStatePixmap;
+        case UnkownState:
+        default:
+            break;
     }
 
     return QPixmap();
@@ -289,6 +312,53 @@ int Game::totalPoints(QSharedPointer<Player> player) const
     return round->totalPoints(player);
 }
 
+int Game::roundsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo)
+{
+    int count = 0;
+
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->state() == Round::Finished) {
+            if(round->playingPlayers().contains(playerOne) && round->playingPlayers().contains(playerTwo)) {
+                if((round->rePlayers().contains(playerOne) && round->rePlayers().contains(playerTwo)) ||
+                   (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
+                    count++;
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
+int Game::winsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo)
+{
+    int count = 0;
+
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->state() == Round::Finished) {
+            if(round->playingPlayers().contains(playerOne) && round->playingPlayers().contains(playerTwo)) {
+                if((round->rePlayers().contains(playerOne) && round->rePlayers().contains(playerTwo)) ||
+                   (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
+                    if(round->points(playerOne) > 0) {
+                        count++;
+                    }
+                }
+            }
+        }
+    }
+
+    return count;
+}
+
+int Game::pointsToLeader(QSharedPointer<Player> player)
+{
+    if(!currentRound()) {
+        return 0;
+    }
+
+    else return currentRound()->pointsToLeader(player);
+}
+
 void Game::addDrink(QSharedPointer<LiveDrink> drink)
 {
     currentRound()->addDrink(drink);
@@ -380,6 +450,11 @@ double Game::completedPercentage() const
 bool Game::isComplete() const
 {
     return totalRoundCount() == finishedRoundCount();
+}
+
+int Game::roundsToPlay() const
+{
+    return totalRoundCount() - finishedRoundCount();
 }
 
 bool Game::hasPflichtSolo(QSharedPointer<Player> player) const
@@ -480,6 +555,30 @@ int Game::schmeissereiCount(int roundCount)
     return result;
 }
 
+int Game::reWinsCount()
+{
+    int reCount = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->winnerParty() == Round::Re) {
+            reCount++;
+        }
+    }
+
+    return reCount;
+}
+
+int Game::contraWinCount()
+{
+    int contra = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->winnerParty() == Round::Contra) {
+            contra++;
+        }
+    }
+
+    return contra;
+}
+
 QList<QSharedPointer<OLD_OfflineGameInformation> > Game::offlineGameInformation() const
 {
     return m_offlineGameInformation.resolveList();
@@ -553,7 +652,7 @@ bool Game::mitPflichtSolo() const
 
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)
 {
-    return g1->creationTime() > g2->creationTime();
+    return g1->creationTime() < g2->creationTime();
 }
 
 QList<QSharedPointer<League> > Game::leagues() const

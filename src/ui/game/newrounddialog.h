@@ -4,41 +4,48 @@
 #include <QDialog>
 
 namespace Ui {
-class NewRoundDialog;
+    class NewRoundDialog;
 }
 
 class Round;
 
 class NewRoundDialog : public QDialog
 {
-    Q_OBJECT
-    
-public:
-    explicit NewRoundDialog(QWidget *parent = 0);
-    ~NewRoundDialog();
+        Q_OBJECT
 
-    QSharedPointer<Round> doppelkopfRound() const;
-    void setRound(QSharedPointer<Round> doppelkopfRound);
+    public:
 
-private slots:
-    void setCurrentPage(int);
+        enum Context{
+            NewRound,
+            EditRound
+        };
 
-    void checkNormalRoundContents();
-    void checkHochzeitRoundContents();
-    void checkSoloRoundContents();
-    void checkTrumpfabgabeRoundContents();
+        explicit NewRoundDialog(QWidget *parent = 0);
+        ~NewRoundDialog();
 
-    void save();
-    void saveNormalRound();
-    void saveHochzeitRound();
-    void saveSoloRound();
-    void saveTrumpfabgabeRound();
+        QSharedPointer<Round> doppelkopfRound() const;
+        void setRound(QSharedPointer<Round> doppelkopfRound, Context context = NewRound);
 
-    void on_buttonBox_rejected();
+    private slots:
+        void setCurrentPage(int);
 
-private:
-    Ui::NewRoundDialog *ui;
-    QSharedPointer<Round> m_doppelkopfRound;
+        void checkNormalRoundContents();
+        void checkHochzeitRoundContents();
+        void checkSoloRoundContents();
+        void checkTrumpfabgabeRoundContents();
+
+        void save();
+        void saveNormalRound();
+        void saveHochzeitRound();
+        void saveSoloRound();
+        void saveTrumpfabgabeRound();
+
+        void on_buttonBox_rejected();
+
+    private:
+        Ui::NewRoundDialog *ui;
+        QSharedPointer<Round> m_doppelkopfRound;
+        Context m_context;
 };
 
 #endif // NEWROUNDDIALOG_H

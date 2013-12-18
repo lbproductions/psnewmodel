@@ -1,0 +1,30 @@
+<RCC>
+    <qresource prefix="/drinks">
+        <file alias="astrarotlicht">astra_rotlicht.png</file>
+        <file alias="default">beer_default.png</file>
+        <file alias="bitburger05">bitburger_05.png</file>
+        <file alias="brinkhoffs05">brinkhoffs_05.png</file>
+        <file alias="brinkhoffs033">brinkhoffs_033.png</file>
+        <file alias="erdinger">erdinger.png</file>
+        <file alias="gose">gose.png</file>
+        <file alias="kromweizen">krombacher_weizen.png</file>
+        <file alias="krombacher033">krombacher033.png</file>
+        <file alias="mixerycola05">mixerycola05.png</file>
+        <file alias="oettingerradler05">oettingerradler05.png</file>
+        <file alias="paulaner">paulaner.png</file>
+        <file alias="vapple">v+apple.png</file>
+        <file alias="vcola">v+cola.png</file>
+        <file alias="venergy">v+energy.png</file>
+        <file alias="vlemon">v+lemon.png</file>
+        <file alias="veltins05">veltins_05.png</file>
+        <file alias="veltins033">veltins_033.png</file>
+        <file alias="warsteinercola">warsteiner_cola_033.png</file>
+        <file alias="wickueler033">wickueler_033.png</file>
+        <file alias="potts">potts.png</file>
+        <file alias="gambrinus10">gambrinus10.png</file>
+        <file alias="gambrinus11">gambrinus11.png</file>
+        <file alias="hoevels">hoevels.png</file>
+        <file alias="whiskeycola">whiskeycola.png</file>
+        <file alias="wikingerblut">wickingerblut.png</file>
+    </qresource>
+</RCC>

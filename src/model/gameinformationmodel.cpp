@@ -5,6 +5,8 @@
 #include <data/game.h>
 #include <data/player.h>
 
+#include <misc/settings.h>
+
 GameInformationModel::GameInformationModel(QObject *parent) :
     QAbstractTableModel(parent)
 {
@@ -21,6 +23,9 @@ void GameInformationModel::setGame(const QSharedPointer<Game> &game)
     m_game = game;
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SIGNAL(layoutChanged()));
     connect(m_game.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(layoutChanged()));
+    connect(&GameSettings::instance(), SIGNAL(playerSortChanged(PlayerSort)), this, SIGNAL(layoutChanged()));
+    connect(&GameSettings::instance(), SIGNAL(pointsDisplayChanged(PointsDisplay)), this, SIGNAL(layoutChanged()));
+    connect(&GameSettings::instance(), SIGNAL(showExtraRowsChanged(bool)), this, SIGNAL(layoutChanged()));
     endResetModel();
 }
 
@@ -51,7 +56,12 @@ int GameInformationModel::rowCount(const QModelIndex &parent) const
     if(!m_game)
         return 0;
 
-    return m_game->players().size() + GameOverviewModel::ExtraRowsCount;
+    if(GameSettings::instance().showExtraRows()) {
+        return m_game->players().size() + GameOverviewModel::ExtraRowsCount;
+    }
+    else{
+        return m_game->players().size();
+    }
 }
 
 QVariant GameInformationModel::data(const QModelIndex &index, int role) const
@@ -83,8 +93,20 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
             return m_game->schmeissereiCount();
         }
         else if(row < m_game->players().size()) {
-            QSharedPointer<Player> player = m_game->players().at(row);
-            return m_game->totalPoints(player);
+            QSharedPointer<Player> player;
+            if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
+                player = m_game->players().at(row);
+            }
+            else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
+                player = m_game->playersSortedByPlacement().at(row);
+            }
+            if(GameSettings::instance().pointsDisplay() == GameSettings::DifferenceToLeader) {
+                return -m_game->pointsToLeader(player);
+            }
+            else if(GameSettings::instance().pointsDisplay() == GameSettings::TotalPoints) {
+                return m_game->totalPoints(player);
+            }
+
         }
     }
 
@@ -115,10 +137,20 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
     }
     else {
         if(role == Qt::DisplayRole) {
-            return m_game->players().at(section)->name();
+            if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
+                return m_game->players().at(section)->name();
+            }
+            else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
+                return m_game->playersSortedByPlacement().at(section)->name();
+            }
         }
         else if(role == Qt::DecorationRole) {
-            return m_game->players().at(section)->color();
+            if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
+                return m_game->players().at(section)->color();
+            }
+            else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
+                return m_game->playersSortedByPlacement().at(section)->color();
+            }
         }
     }
 

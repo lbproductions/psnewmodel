@@ -6,19 +6,45 @@
 #include <data/round.h>
 #include <data/game.h>
 #include <ui/widgets/drinkslistwidget.h>
+#include <ui/drinkinformationdialog.h>
 #include <misc/tools.h>
 
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 #include <QLabel>
+#include <QPushButton>
 
 AddDrinksWidget::AddDrinksWidget(QWidget *parent) :
     QWidget(parent)
 {
+    QVBoxLayout* layout = new QVBoxLayout(this);
+    layout->setContentsMargins(0,0,0,0);
+    layout->setSpacing(0);
+
     m_layoutPlayerWidgets = new QHBoxLayout(this);
     m_layoutPlayerWidgets->setSpacing(0);
     m_layoutPlayerWidgets->setContentsMargins(0,0,0,0);
-    setLayout(m_layoutPlayerWidgets);
+    layout->addLayout(m_layoutPlayerWidgets);
+
+    //Add drink button
+    QHBoxLayout* newDrinkLayout = new QHBoxLayout(this);
+    QPushButton* addButton = new QPushButton(tr("New Drink"), this);
+    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", addButton);
+
+    connect(addButton, &QPushButton::clicked, [=]() {
+        DrinkInformationDialog* dlg = new DrinkInformationDialog(this);
+        dlg->setPalette(Tools::darkPalette(dlg));
+
+        connect(dlg, SIGNAL(drinkAdded(QSharedPointer<Drink>)), this, SLOT(addDrinkToWidgets(QSharedPointer<Drink>)));
+
+        dlg->exec();
+    });
+
+    newDrinkLayout->addWidget(addButton);
+    newDrinkLayout->setContentsMargins(0,0,0,0);
+    layout->addLayout(newDrinkLayout);
+
+    setLayout(layout);
 }
 
 void AddDrinksWidget::setPlayers(QList<QSharedPointer<Player> > players)
@@ -48,8 +74,10 @@ QWidget *AddDrinksWidget::createPlayerWidget(QSharedPointer<Player> player)
     // Drinks list
     DrinksListWidget *drinksListWidget = new DrinksListWidget();
     drinksListWidget->add(player->drinks());
+    drinksListWidget->add(Qp::readAll<Drink>());
     drinksListWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
     drinksListWidget->setFrameStyle(QFrame::NoFrame);
+    m_drinkListWidgets.append(drinksListWidget);
 
     connect(drinksListWidget, &DrinksListWidget::drinkActivated, [=]() {
         QSharedPointer<LiveDrink> ld = Qp::create<LiveDrink>();
@@ -65,20 +93,7 @@ QWidget *AddDrinksWidget::createPlayerWidget(QSharedPointer<Player> player)
         QList<QSharedPointer<LiveDrink> > liveDrinks = m_game->liveDrinks(player);
         if(!liveDrinks.isEmpty())
             drinksListWidget->setCurrent(liveDrinks.last()->drink());
-
-        /*
-        // LiveDrinks list
-        QMap<QSharedPointer<Drink>, int> drinkCounts = m_game->drinkCounts(player);
-        for(auto it = drinkCounts.constBegin(); it != drinkCounts.constEnd(); ++it) {
-            QLabel *drinkLabel = new QLabel(QString("%1x %2")
-                                            .arg(it.value())
-                                            .arg(it.key()->name()));
-            liveDrinksLayout->addWidget(drinkLabel);
-        }
-        */
     }
-
-
 
     // Complete Widget
     QWidget *widget = new QWidget();
@@ -89,9 +104,17 @@ QWidget *AddDrinksWidget::createPlayerWidget(QSharedPointer<Player> player)
 
     layout->addWidget(drinksListWidget);
     layout->addLayout(labelLayout);
+
     //layout->addLayout(liveDrinksLayout);
 
     return widget;
+}
+
+void AddDrinksWidget::addDrinkToWidgets(QSharedPointer<Drink> drink)
+{
+    foreach(DrinksListWidget* widget, m_drinkListWidgets) {
+        widget->add(QList<QSharedPointer<Drink> >() << drink);
+    }
 }
 
 QSharedPointer<Game> AddDrinksWidget::game() const

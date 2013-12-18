@@ -19,6 +19,7 @@ class Drink : public QObject
     Q_PROPERTY(int type READ _type WRITE _setType)
     Q_PROPERTY(double volume READ volume WRITE setVolume)
     Q_PROPERTY(QPixmap picture READ picture WRITE setPicture)
+        Q_PROPERTY(QString iconPath READ iconPath WRITE setIconPath)
     Q_PROPERTY(double alcoholByVolume READ alcoholByVolume WRITE setAlcoholByVolume)
     Q_PROPERTY(QList<QSharedPointer<LiveDrink> > liveDrinks READ liveDrinks WRITE setLiveDrinks)
 
@@ -68,6 +69,9 @@ public:
 private:
     void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
 
+    void setIconPath(QString path);
+    QString iconPath() const;
+
     int _type() const;
     void _setType(int type);
 
@@ -76,6 +80,7 @@ private:
     double m_volume;
     QPixmap m_picture;
     double m_alcoholByVolume;
+    QString m_iconPath;
 
     QpWeakRelation<LiveDrink> m_liveDrinks;
 };

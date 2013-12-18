@@ -31,7 +31,7 @@ color:white;
 color:white;
 font-size: 19px;
 }
-QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar,  QToolButton#toolButtonAddRound, QToolButton#toolButtonAddDrinks, QToolButton#toolButtonAddSchmeisserei{
+QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar,  QToolButton#toolButtonAddRound, QToolButton#toolButtonAddDrinks, QToolButton#toolButtonAddSchmeisserei, QToolButton#toolButtonSetComment, QToolButton#toolButtonStop, QToolButton#toolButtonSettings{
 border: none;
 background: none;
 }
@@ -383,7 +383,7 @@ QWidget#widgetCreateGame {
              </widget>
             </item>
             <item>
-             <widget class="GraphWidget" name="graphWidget" native="true">
+             <widget class="GameGraphWidget" name="graphWidget" native="true">
               <property name="sizePolicy">
                <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
                 <horstretch>0</horstretch>
@@ -399,7 +399,14 @@ QWidget#widgetCreateGame {
         </item>
        </layout>
       </widget>
-      <widget class="ShadowFrame" name="widgetStatisticsFrame" native="true"/>
+      <widget class="ShadowFrame" name="widgetStatisticsFrame" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+      </widget>
      </widget>
     </item>
     <item>
@@ -454,6 +461,43 @@ QWidget#widgetCreateGame {
           <size>
            <width>32</width>
            <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonStop">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resource/statusbar/statusbar.qrc">
+           <normaloff>:/statusbar/stop.png</normaloff>:/statusbar/stop.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>52</width>
+           <height>52</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonSettings">
+         <property name="styleSheet">
+          <string notr="true">border:none; background:none</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resource/statusbar/statusbar.qrc">
+           <normaloff>:/statusbar/settings.png</normaloff>:/statusbar/settings.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>52</width>
+           <height>52</height>
           </size>
          </property>
         </widget>
@@ -523,6 +567,23 @@ QWidget#widgetCreateGame {
          <property name="icon">
           <iconset resource="../../resource/statusbar/statusbar.qrc">
            <normaloff>:/statusbar/drink.png</normaloff>:/statusbar/drink.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>32</width>
+           <height>32</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QToolButton" name="toolButtonSetComment">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resource/statusbar/statusbar.qrc">
+           <normaloff>:/statusbar/comment.png</normaloff>:/statusbar/comment.png</iconset>
          </property>
          <property name="iconSize">
           <size>
@@ -645,9 +706,9 @@ QWidget#widgetCreateGame {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GraphWidget</class>
+   <class>GameGraphWidget</class>
    <extends>QWidget</extends>
-   <header location="global">ui/game/graphwidget.h</header>
+   <header location="global">ui/game/gamegraphwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

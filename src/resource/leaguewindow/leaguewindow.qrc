@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/leaguewindow">
+        <file>placedown.png</file>
+        <file>placeup.png</file>
+        <file>placestay.png</file>
+    </qresource>
+</RCC>

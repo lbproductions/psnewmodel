@@ -87,7 +87,7 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case PlayerCountColumn:
             return game->players().size();
         case PlayersColumn:
-            return playersString(game->players());
+            return Tools::playersString(game->players());
         case SiteColumn:
             return game->site()->displayString();
         case DrinkCount:
@@ -132,17 +132,4 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
 bool playersAlphabetically(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)
 {
     return p1->name() < p2->name();
-}
-
-QVariant GameListModel::playersString(const QList<QSharedPointer<Player> > &ps) const
-{
-    if(ps.isEmpty())
-        return QVariant();
-
-    QStringList list;
-    foreach(QSharedPointer<Player> p, ps) {
-        list.append(p->name());
-    }
-
-    return list.join(", ");
 }

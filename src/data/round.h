@@ -140,6 +140,7 @@ class Round : public QObject
         int totalPoints(QSharedPointer<Player> player) const;
         QList<QSharedPointer<Player> > playersSortedByPlacement() const;
         int placement(QSharedPointer<Player> player) const;
+        int pointsToLeader(QSharedPointer<Player> player);
 
         QSharedPointer<Game> game() const;
 

@@ -6,9 +6,11 @@ include($$QPERSISTENCE_PATH/QPersistence.pri)
 TARGET          = psnewmodel
 VERSION         = 0.0.0
 TEMPLATE        = app
+ICON            = icon.icns
 QT              += sql widgets
 CONFIG          += c++11
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
+
 
 ### Qp ###
 
@@ -40,7 +42,6 @@ SOURCES += main.cpp \
     ui/game/overviewplayerheaderview.cpp \
     ui/game/overviewhorizontalheaderview.cpp \
     ui/game/overviewdelegate.cpp \
-    ui/game/graphwidget.cpp \
     ui/widgets/scrollarea.cpp \
     ui/game/graphaxis.cpp \
     ui/game/newrounddialog.cpp \
@@ -60,7 +61,30 @@ SOURCES += main.cpp \
     ui/game/adddrinkswidget.cpp \
     data/old_offlineGameInformation.cpp \
     data/old_dokoofflinegamebuddys.cpp \
-    ui/startwindow.cpp
+    ui/startwindow.cpp \
+    ui/game/playerstatswidget.cpp \
+    ui/league/addleaguedialog.cpp \
+    ui/league/leaguewindow.cpp \
+    model/leagueclassementmodel.cpp \
+    ui/league/leagueplayerheaderview.cpp \
+    ui/league/leagueplacementdelegate.cpp \
+    model/leaguegameplacementmodel.cpp \
+    ui/league/leaguehorizontalheaderview.cpp \
+    data/matchday.cpp \
+    ui/widgets/graphwidget.cpp \
+    ui/game/gamegraphwidget.cpp \
+    ui/league/leaguegraphwidget.cpp \
+    ui/widgets/solooverviewwidget.cpp \
+    ui/widgets/recontrapiewidget.cpp \
+    ui/widgets/totalpointswidget.cpp \
+    ui/widgets/gamestogetherwidget.cpp \
+    ui/widgets/gameswidget.cpp \
+    ui/game/commentwidget.cpp \
+    ui/game/stopgamewidget.cpp \
+    ui/game/gamestatswidget.cpp \
+    ui/widgets/biggestdistancewidget.cpp \
+    ui/game/settingswidget.cpp \
+    misc/settings.cpp
 
 
 HEADERS  += \
@@ -85,7 +109,6 @@ HEADERS  += \
     ui/game/overviewplayerheaderview.h \
     ui/game/overviewhorizontalheaderview.h \
     ui/game/overviewdelegate.h \
-    ui/game/graphwidget.h \
     ui/widgets/scrollarea.h \
     ui/game/graphaxis.h \
     ui/game/newrounddialog.h \
@@ -105,7 +128,30 @@ HEADERS  += \
     ui/game/adddrinkswidget.h \
     data/old_offlineGameInformation.h \
     data/old_dokoofflinegamebuddys.h \
-    ui/startwindow.h
+    ui/startwindow.h \
+    ui/game/playerstatswidget.h \
+    ui/league/addleaguedialog.h \
+    ui/league/leaguewindow.h \
+    model/leagueclassementmodel.h \
+    ui/league/leagueplayerheaderview.h \
+    ui/league/leagueplacementdelegate.h \
+    model/leaguegameplacementmodel.h \
+    ui/league/leaguehorizontalheaderview.h \
+    data/matchday.h \
+    ui/widgets/graphwidget.h \
+    ui/game/gamegraphwidget.h \
+    ui/league/leaguegraphwidget.h \
+    ui/widgets/solooverviewwidget.h \
+    ui/widgets/recontrapiewidget.h \
+    ui/widgets/totalpointswidget.h \
+    ui/widgets/gamestogetherwidget.h \
+    ui/widgets/gameswidget.h \
+    ui/game/commentwidget.h \
+    ui/game/stopgamewidget.h \
+    ui/game/gamestatswidget.h \
+    ui/widgets/biggestdistancewidget.h \
+    ui/game/settingswidget.h \
+    misc/settings.h
 
 
 FORMS += \
@@ -115,7 +161,18 @@ FORMS += \
     ui/game/newrounddialog.ui \
     ui/game/schmeissereidialog.ui \
     ui/game/statisticswidget.ui \
-    ui/drinkinformationdialog.ui
+    ui/drinkinformationdialog.ui \
+    ui/league/addleaguedialog.ui \
+    ui/league/leaguewindow.ui \
+    ui/widgets/solooverviewwidget.ui \
+    ui/widgets/totalpointswidget.ui \
+    ui/widgets/gamestogetherwidget.ui \
+    ui/widgets/gameswidget.ui \
+    ui/game/commentwidget.ui \
+    ui/game/stopgamewidget.ui \
+    ui/game/gamestatswidget.ui \
+    ui/widgets/biggestdistancewidget.ui \
+    ui/game/settingswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
@@ -123,10 +180,38 @@ RESOURCES += \
     resource/general/general.qrc \
     resource/stylesheets/stylesheets.qrc \
     resource/pushbutton/pushbutton.qrc \
-    resource/gamewindow/gamewindow.qrc
+    resource/gamewindow/gamewindow.qrc \
+    resource/drinks/drinks.qrc \
+    resource/leaguewindow/leaguewindow.qrc
 
 OTHER_FILES += \
     resource/stylesheets/imagewell.qss \
     resource/stylesheets/pushbutton-dark.qss \
     resource/stylesheets/bubble.qss \
-    resource/gamewindow/bubenSolo.png
+    resource/gamewindow/bubenSolo.png \
+    resource/drinks/wickingerblut.png \
+    resource/drinks/beer_default.png \
+    resource/drinks/astra_rotlicht.png \
+    resource/drinks/veltins_033.png \
+    resource/drinks/wickueler_033.png \
+    resource/drinks/veltins_05.png \
+    resource/drinks/gose.png \
+    resource/drinks/brinkhoffs_033.png \
+    resource/drinks/warsteiner_cola_033.png \
+    resource/drinks/krombacher033.png \
+    resource/drinks/v+cola.png \
+    resource/drinks/v+apple.png \
+    resource/drinks/v+energy.png \
+    resource/drinks/v+lemon.png \
+    resource/drinks/bitburger_05.png \
+    resource/drinks/erdinger.png \
+    resource/drinks/whiskeycola.png \
+    resource/drinks/gambrinus10.png \
+    resource/drinks/oettingerradler05.png \
+    resource/drinks/paulaner.png \
+    resource/drinks/brinkhoffs_05.png \
+    resource/drinks/gambrinus11.png \
+    resource/drinks/potts.png \
+    resource/drinks/mixerycola05.png \
+    resource/drinks/hoevels.png \
+    resource/drinks/krombacher_weizen.png

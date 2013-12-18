@@ -15,17 +15,25 @@
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="styleSheet">
+      <string notr="true">QScrollArea { background: transparent; }
+QScrollArea &gt; QWidget &gt; QWidget { background: transparent; }</string>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
-    </spacer>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>218</width>
+        <height>533</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
    </item>
   </layout>
  </widget>

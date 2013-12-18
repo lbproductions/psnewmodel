@@ -8,6 +8,9 @@
 #include "schmeissereidialog.h"
 #include "statisticswidget.h"
 #include "adddrinkswidget.h"
+#include "commentwidget.h"
+#include "stopgamewidget.h"
+#include "settingswidget.h"
 
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
@@ -18,11 +21,13 @@
 #include <model/gameinformationmodel.h>
 #include <data/player.h>
 #include <misc/tools.h>
+#include <misc/settings.h>
 
 #include <QPersistence.h>
 #include <QScrollBar>
 #include <QWheelEvent>
 #include <QPushButton>
+#include <QModelIndex>
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -50,7 +55,7 @@ GameWindow::GameWindow(QWidget *parent) :
 
     // This has a bug in 5.0
     // TODO: enable in Qt 5.1 final: https://bugreports.qt-project.org/browse/QTBUG-31061
-    //    ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
+        ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
 
     ui->tableViewInformation->hide();
     ui->tableViewOverview->hide();
@@ -64,6 +69,7 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->splitter->setPalette(darkPalette);
     ui->tableViewOverview->setPalette(darkPalette);
     ui->tableViewOverview->setModel(m_gameOverViewModel);
+    connect(ui->tableViewOverview, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_TableViewOverviewDoubleClicked(const QModelIndex&)));
     OverviewDelegate *delegate = new OverviewDelegate(this);
     delegate->setGameModel(m_gameOverViewModel);
     ui->tableViewOverview->setItemDelegate(delegate);
@@ -117,6 +123,8 @@ GameWindow::GameWindow(QWidget *parent) :
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_drinks, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
     updateTimes();
+
+    connect(&GameSettings::instance(), SIGNAL(showExtraRowsChanged(bool)), this, SLOT(updateSizes()));
 }
 
 GameWindow::~GameWindow()
@@ -141,18 +149,16 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     m_game = game;
     m_gameOverViewModel->setGame(game);
     m_informationModel->setGame(game);
-    ui->tableViewOverview->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
-                                  (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
     ui->graphWidget->setGame(game);
-    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
-    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
 
     m_statsWidget->setGame(game);
 
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(onNewRoundStarted()));
+    connect(m_game.data(), SIGNAL(stateChanged()), this, SLOT(enableActionsBasedOnState()));
 
     enableActionsBasedOnState();
     updateTimes();
+    updateSizes();
 }
 
 void GameWindow::wheelEvent(QWheelEvent *e)
@@ -200,6 +206,7 @@ void GameWindow::enableActionsBasedOnState()
     ui->actionPlayPause->setEnabled(false);
     ui->actionAdd_round->setEnabled(false);
     ui->actionAdd_schmeisserei->setEnabled(false);
+    ui->toolButtonStop->setEnabled(false);
 
     if(!m_game)
         return;
@@ -210,10 +217,12 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionAdd_schmeisserei->setEnabled(true);
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
+        ui->toolButtonStop->setEnabled(true);
         ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
     }
     else if(state == Game::Paused) {
         ui->actionPlayPause->setEnabled(true);
+        ui->toolButtonStop->setEnabled(true);
         ui->actionPlayPause->setText(tr("Play"));
         ui->toolButtonState->setIcon(QIcon(":/statusbar/play.png"));
     }
@@ -353,6 +362,21 @@ void GameWindow::setSidebarToggleToShow()
                                                "}");
 }
 
+void GameWindow::on_TableViewOverviewDoubleClicked(const QModelIndex& index)
+{
+
+    int roundIndex = index.column();
+
+    if(roundIndex < 0 || roundIndex >= m_game->rounds().size())
+        return;
+
+    QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
+    NewRoundDialog* dlg = new NewRoundDialog(this);
+    dlg->setRound(round, NewRoundDialog::EditRound);
+    dlg->exec();
+
+}
+
 void GameWindow::on_pushButtonAddPlayers_clicked()
 {
     if(popupWidget()) {
@@ -414,4 +438,68 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     game->setState(Game::Running);
     setGame(game);
+}
+
+void GameWindow::on_toolButtonSetComment_clicked()
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    CommentWidget* commentWidget = new CommentWidget(this);
+    commentWidget->setGame(m_game);
+
+    popup->setWidget(commentWidget);
+    popup->setMinimumWidth(500);
+    popup->setMinimumHeight(500);
+    popup->anchorTo(ui->toolButtonSetComment);
+    popup->show();
+    setPopupWidget(popup);
+}
+
+
+void GameWindow::on_toolButtonStop_clicked()
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    StopGameWidget* widget = new StopGameWidget(this);
+    widget->setGame(m_game);
+
+    popup->setWidget(widget);
+    popup->setMinimumWidth(400);
+    popup->setMinimumHeight(200);
+    popup->anchorTo(ui->toolButtonStop);
+    popup->show();
+    setPopupWidget(popup);
+}
+
+void GameWindow::on_toolButtonSettings_clicked()
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    SettingsWidget* setWidget = new SettingsWidget(this);
+
+    popup->setWidget(setWidget);
+    popup->setMinimumWidth(400);
+    popup->setMinimumHeight(400);
+    popup->anchorTo(ui->toolButtonSettings);
+    popup->show();
+    setPopupWidget(popup);
+}
+
+void GameWindow::updateSizes()
+{
+    ui->tableViewOverview->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
+                                  (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
+    ui->tableViewInformation->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
+                                             (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
+    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
+    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
 }

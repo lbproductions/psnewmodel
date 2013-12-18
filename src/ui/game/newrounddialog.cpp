@@ -15,7 +15,7 @@ NewRoundDialog::NewRoundDialog(QWidget *parent) :
 {
     ui->setupUi(this);
 
-//    setWindowFlags(Qt::FramelessWindowHint);
+    //    setWindowFlags(Qt::FramelessWindowHint);
 
     ui->buttonGroup->setId(ui->pushButtonNormal, 0);
     ui->buttonGroup->setId(ui->pushButtonHochzeit, 1);
@@ -55,47 +55,13 @@ NewRoundDialog::~NewRoundDialog()
     delete ui;
 }
 
-void NewRoundDialog::setRound(QSharedPointer<Round> round)
+void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
 {
     if(!round || m_doppelkopfRound == round)
         return;
 
     QSharedPointer<Game> game = round->game();
-
-    m_doppelkopfRound = round;
-    ui->comboBoxNormalRe1->addPlayers(round->playingPlayers());
-    ui->comboBoxNormalRe1->setCurrentPlayer(round->re1Player());
-    ui->comboBoxNormalRe2->addPlayers(round->playingPlayers());
-    ui->comboBoxNormalRe2->setCurrentPlayer(round->re2Player());
-    ui->comboBoxNormalSchweine->addPlayers(round->playingPlayers());
-    ui->comboBoxNormalSchweine->setCurrentPlayer(round->schweinereiPlayer());
-
-    ui->comboBoxHochzeitHochzeit->addPlayers(round->playingPlayers());
-    ui->comboBoxHochzeitHochzeit->setCurrentPlayer(round->hochzeitPlayer());
-    ui->comboBoxHochzeitFellow->addPlayers(round->playingPlayers());
-    ui->comboBoxHochzeitFellow->setCurrentPlayer(round->re2Player());
-    ui->comboBoxHochzeitSchweine->addPlayers(round->playingPlayers());
-    ui->comboBoxHochzeitSchweine->setCurrentPlayer(round->schweinereiPlayer());
-
-    ui->comboBoxSoloPlayer->addPlayers(round->playingPlayers());
-    ui->comboBoxSoloPlayer->setCurrentPlayer(round->soloPlayer());
-    ui->comboBoxSoloSchweine->addPlayers(round->playingPlayers());
-    ui->comboBoxSoloSchweine->setCurrentPlayer(round->schweinereiPlayer());
-    ui->comboBoxSoloHochzeit->addPlayers(round->playingPlayers());
-    ui->comboBoxSoloHochzeit->setCurrentPlayer(round->schweinereiPlayer());
-    ui->checkBoxSoloPflicht->setEnabled(game->mitPflichtSolo());
-    ui->comboBoxSoloType->addItems(Round::soloTypeStrings());
-    if(round->isSolo())
-        ui->comboBoxSoloType->setCurrentText(round->soloTypeString());
-    else
-        ui->comboBoxSoloType->setCurrentIndex(0);
-
-    ui->comboBoxTrumpfabgabePlayer->addPlayers(round->playingPlayers());
-    ui->comboBoxTrumpfabgabePlayer->setCurrentPlayer(round->trumpfabgabePlayer());
-    ui->comboBoxTrumpfabgabeAccept->addPlayers(round->playingPlayers());
-    ui->comboBoxTrumpfabgabeAccept->setCurrentPlayer(round->re2Player());
-    ui->comboBoxTrumpfabgabeSchweine->addPlayers(round->playingPlayers());
-    ui->comboBoxTrumpfabgabeSchweine->setCurrentPlayer(round->schweinereiPlayer());
+    m_context = context;
 
     ui->comboBoxWinner->addItem(tr("Re"));
     ui->comboBoxWinner->addItem(tr("Contra"));
@@ -108,6 +74,84 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round)
 
     ui->comboBoxHochzeitWinner->addItem(tr("Re"));
     ui->comboBoxHochzeitWinner->addItem(tr("Contra"));
+
+    m_doppelkopfRound = round;
+    ui->comboBoxNormalRe1->addPlayers(round->playingPlayers());
+    ui->comboBoxNormalRe1->setCurrentPlayer(round->re1Player());
+    ui->comboBoxNormalRe2->addPlayers(round->playingPlayers());
+    ui->comboBoxNormalRe2->setCurrentPlayer(round->re2Player());
+    ui->comboBoxNormalSchweine->addPlayers(round->playingPlayers());
+    ui->comboBoxNormalSchweine->setCurrentPlayer(round->schweinereiPlayer());
+
+
+    ui->comboBoxHochzeitHochzeit->addPlayers(round->playingPlayers());
+    ui->comboBoxHochzeitHochzeit->setCurrentPlayer(round->hochzeitPlayer());
+    ui->comboBoxHochzeitFellow->addPlayers(round->playingPlayers());
+    ui->comboBoxHochzeitFellow->setCurrentPlayer(round->re2Player());
+    ui->comboBoxHochzeitSchweine->addPlayers(round->playingPlayers());
+    ui->comboBoxHochzeitSchweine->setCurrentPlayer(round->schweinereiPlayer());
+
+
+    ui->comboBoxSoloPlayer->addPlayers(round->playingPlayers());
+    ui->comboBoxSoloPlayer->setCurrentPlayer(round->soloPlayer());
+    ui->comboBoxSoloSchweine->addPlayers(round->playingPlayers());
+    ui->comboBoxSoloSchweine->setCurrentPlayer(round->schweinereiPlayer());
+    ui->comboBoxSoloHochzeit->addPlayers(round->playingPlayers());
+    ui->comboBoxSoloHochzeit->setCurrentPlayer(round->schweinereiPlayer());
+    ui->checkBoxSoloPflicht->setEnabled(game->mitPflichtSolo());
+    ui->comboBoxSoloType->addItems(Round::soloTypeStrings());
+    // TODO: Wird nicht bei neuer Runde ausgeführt
+    if(round->isSolo()) {
+        ui->comboBoxSoloType->setCurrentText(round->soloTypeString());
+        if(round->soloTypeString() == "Trumpf" || round->soloTypeString() == "Sitzengelassene Hochzeit"
+           || round->soloTypeString() == "Stille Hochzeit" || round->soloTypeString() == "Falsch gespielt") {
+            if(round->hochzeitPlayer()) {
+                ui->comboBoxSoloHochzeit->setCurrentPlayer(round->hochzeitPlayer());
+            }
+            if(round->schweinereiPlayer()) {
+                ui->comboBoxSoloSchweine->setCurrentPlayer(round->schweinereiPlayer());
+            }
+        }
+    }
+    else {
+        ui->comboBoxSoloType->setCurrentIndex(0);
+    }
+
+    ui->comboBoxTrumpfabgabePlayer->addPlayers(round->playingPlayers());
+    ui->comboBoxTrumpfabgabePlayer->setCurrentPlayer(round->trumpfabgabePlayer());
+    ui->comboBoxTrumpfabgabeAccept->addPlayers(round->playingPlayers());
+    ui->comboBoxTrumpfabgabeAccept->setCurrentPlayer(round->re2Player());
+    ui->comboBoxTrumpfabgabeSchweine->addPlayers(round->playingPlayers());
+    ui->comboBoxTrumpfabgabeSchweine->setCurrentPlayer(round->schweinereiPlayer());
+
+    if(round->state() == Round::Finished) {
+        ui->spinBoxNormalPoints->setValue(round->points(round->re1Player()));
+        ui->spinBoxTrumpfabgabePoints->setValue(round->points(round->re1Player()));
+        ui->spinBoxHochzeitPoints->setValue(round->points(round->re1Player()));
+        if(round->isSolo()) {
+            ui->spinBoxSoloPoints->setValue(round->points(round->re1Player()) / 3);
+        }
+        else {
+            ui->spinBoxSoloPoints->setValue(round->points(round->re1Player()));
+        }
+    }
+
+    if(round->soloPlayer()) {
+        ui->pushButtonSolo->click();
+        //setCurrentPage(1);
+    }
+    else if(round->hochzeitPlayer()) {
+        ui->pushButtonHochzeit->click();
+        //setCurrentPage(2);
+    }
+    else if(round->trumpfabgabePlayer()) {
+        ui->pushButtonTrumpfabgabe->click();
+        setCurrentPage(3);
+    }
+    else{
+        ui->pushButtonNormal->click();
+        //setCurrentPage(0);
+    }
 }
 
 void NewRoundDialog::setCurrentPage(int index)
@@ -115,25 +159,28 @@ void NewRoundDialog::setCurrentPage(int index)
     ui->stackedWidget->setCurrentIndex(index);
 
     switch(index) {
-    case 0:
-        checkNormalRoundContents();
-        break;
-    case 1:
-        checkHochzeitRoundContents();
-        break;
-    case 2:
-        checkSoloRoundContents();
-        break;
-    case 3:
-        checkTrumpfabgabeRoundContents();
-        break;
-    default:
-        ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
+        case 0:
+            checkNormalRoundContents();
+            break;
+        case 1:
+            checkHochzeitRoundContents();
+            break;
+        case 2:
+            checkSoloRoundContents();
+            break;
+        case 3:
+            checkTrumpfabgabeRoundContents();
+            break;
+        default:
+            ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
     }
 }
 
 void NewRoundDialog::checkNormalRoundContents()
 {
+    disconnect(ui->comboBoxNormalRe1, SIGNAL(currentIndexChanged(int)), this, SLOT(checkNormalRoundContents()));
+    disconnect(ui->comboBoxNormalRe2, SIGNAL(currentIndexChanged(int)), this, SLOT(checkNormalRoundContents()));
+
     ui->comboBoxNormalRe1->addPlayers(m_doppelkopfRound->playingPlayers());
     ui->comboBoxNormalRe2->addPlayers(m_doppelkopfRound->playingPlayers());
 
@@ -164,10 +211,16 @@ void NewRoundDialog::checkNormalRoundContents()
             ui->comboBoxWinner->setCurrentIndex(ui->comboBoxWinner->findText("Contra"));
         }
     }
+
+    connect(ui->comboBoxNormalRe1, SIGNAL(currentIndexChanged(int)), this, SLOT(checkNormalRoundContents()));
+    connect(ui->comboBoxNormalRe2, SIGNAL(currentIndexChanged(int)), this, SLOT(checkNormalRoundContents()));
 }
 
 void NewRoundDialog::checkHochzeitRoundContents()
 {
+    disconnect(ui->comboBoxHochzeitHochzeit, SIGNAL(currentIndexChanged(int)), this, SLOT(checkHochzeitRoundContents()));
+    disconnect(ui->comboBoxHochzeitFellow, SIGNAL(currentIndexChanged(int)), this, SLOT(checkHochzeitRoundContents()));
+
     ui->comboBoxHochzeitHochzeit->addPlayers(m_doppelkopfRound->playingPlayers());
     ui->comboBoxHochzeitFellow->addPlayers(m_doppelkopfRound->playingPlayers());
 
@@ -198,19 +251,14 @@ void NewRoundDialog::checkHochzeitRoundContents()
             ui->comboBoxHochzeitWinner->setCurrentIndex(ui->comboBoxHochzeitWinner->findText("Contra"));
         }
     }
+
+    connect(ui->comboBoxHochzeitHochzeit, SIGNAL(currentIndexChanged(int)), this, SLOT(checkHochzeitRoundContents()));
+    connect(ui->comboBoxHochzeitFellow, SIGNAL(currentIndexChanged(int)), this, SLOT(checkHochzeitRoundContents()));
 }
 
 void NewRoundDialog::checkSoloRoundContents()
 {
     QSharedPointer<Game> game = static_cast<QSharedPointer<Game> >(m_doppelkopfRound->game());
-    if(ui->comboBoxSoloPlayer->currentPlayer() && game->hasPflichtSolo(ui->comboBoxSoloPlayer->currentPlayer())) {
-        ui->checkBoxSoloPflicht->setChecked(false);
-        ui->checkBoxSoloPflicht->setEnabled(false);
-    }
-    else {
-        ui->checkBoxSoloPflicht->setChecked(true);
-        ui->checkBoxSoloPflicht->setEnabled(true);
-    }
 
     if(ui->comboBoxSoloType->currentText() == "Trumpf" || ui->comboBoxSoloType->currentText() == "Stille Hochzeit"
        || ui->comboBoxSoloType->currentText() == "Sitzengelassene Hochzeit" || ui->comboBoxSoloType->currentText() == "Falsch gespielt") {
@@ -222,6 +270,20 @@ void NewRoundDialog::checkSoloRoundContents()
         ui->comboBoxSoloHochzeit->setEnabled(false);
         ui->comboBoxSoloSchweine->setCurrentIndex(0);
         ui->comboBoxSoloHochzeit->setCurrentIndex(0);
+    }
+
+    if(m_doppelkopfRound->isPflicht()) {
+        ui->checkBoxSoloPflicht->setChecked(true);
+        ui->checkBoxSoloPflicht->setEnabled(true);
+    }
+    else{
+        ui->checkBoxSoloPflicht->setChecked(false);
+        if(game->hasPflichtSolo(ui->comboBoxSoloPlayer->currentPlayer())) {
+            ui->checkBoxSoloPflicht->setEnabled(false);
+        }
+        else{
+            ui->checkBoxSoloPflicht->setEnabled(true);
+        }
     }
 
     ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(ui->comboBoxSoloPlayer->currentPlayer());
@@ -247,19 +309,23 @@ void NewRoundDialog::checkSoloRoundContents()
 
 void NewRoundDialog::checkTrumpfabgabeRoundContents()
 {
-    qDebug() << "NewRoundDialog::checkTrumpfabgabeRoundContents()";
-    qDebug() << "Adding players to ui->comboBoxTrumpfabgabePlayer";
+    qDebug() << "######## BEGIN #########";
+    disconnect(ui->comboBoxTrumpfabgabePlayer, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
+    disconnect(ui->comboBoxTrumpfabgabeAccept, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
+
     ui->comboBoxTrumpfabgabePlayer->addPlayers(m_doppelkopfRound->playingPlayers());
-    qDebug() << "Adding players to ui->comboBoxTrumpfabgabeAccept";
     ui->comboBoxTrumpfabgabeAccept->addPlayers(m_doppelkopfRound->playingPlayers());
+    qDebug() << "ui->comboBoxTrumpfabgabeAccept playersSize: " << ui->comboBoxTrumpfabgabeAccept->players().size();
 
     if(ui->comboBoxTrumpfabgabePlayer->currentPlayer()) {
-        qDebug() << "Removing currentPlayer from ui->comboBoxTrumpfabgabePlayer";
+        qDebug() << "ui->comboBoxTrumpfabgabePlayer->currentPlayer(): " << ui->comboBoxTrumpfabgabePlayer->currentPlayer()->name();
         ui->comboBoxTrumpfabgabeAccept->removePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
+        qDebug() << "ui->comboBoxTrumpfabgabeAccept.size: " << ui->comboBoxTrumpfabgabeAccept->players().size();
     }
     if(ui->comboBoxTrumpfabgabeAccept->currentPlayer()) {
-        qDebug() << "Removing currentPlayer from ui->comboBoxTrumpfabgabeAccept";
+        qDebug() << "ui->comboBoxTrumpfabgabeAccept->currentPlayer(): " << ui->comboBoxTrumpfabgabeAccept->currentPlayer()->name();
         ui->comboBoxTrumpfabgabePlayer->removePlayer(ui->comboBoxTrumpfabgabeAccept->currentPlayer());
+        qDebug() << "ui->comboBoxTrumpfabgabePlayer.size: " << ui->comboBoxTrumpfabgabePlayer->players().size();
     }
 
     ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(ui->comboBoxTrumpfabgabePlayer->currentPlayer() &&
@@ -283,26 +349,29 @@ void NewRoundDialog::checkTrumpfabgabeRoundContents()
         }
     }
 
-    qDebug() << "########### END CHECKING #######";
+    connect(ui->comboBoxTrumpfabgabePlayer, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
+    connect(ui->comboBoxTrumpfabgabeAccept, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
+
+    qDebug() << "######## END #########";
 }
 
 void NewRoundDialog::save()
 {
     switch(ui->buttonGroup->checkedId()) {
-    case 0:
-        saveNormalRound();
-        break;
-    case 1:
-        saveHochzeitRound();
-        break;
-    case 2:
-        saveSoloRound();
-        break;
-    case 3:
-        saveTrumpfabgabeRound();
-        break;
-    default:
-        break;
+        case 0:
+            saveNormalRound();
+            break;
+        case 1:
+            saveHochzeitRound();
+            break;
+        case 2:
+            saveSoloRound();
+            break;
+        case 3:
+            saveTrumpfabgabeRound();
+            break;
+        default:
+            break;
     }
     accept();
 }
@@ -315,13 +384,23 @@ void NewRoundDialog::saveNormalRound()
     if(ui->comboBoxNormalSchweine->currentPlayer())
         m_doppelkopfRound->setSchweinereiPlayer(ui->comboBoxNormalSchweine->currentPlayer());
 
+    int contraPlayers = 0;
     foreach(QSharedPointer<Player> p, m_doppelkopfRound->playingPlayers()) {
         if(p == ui->comboBoxNormalRe1->currentPlayer() ||
-                p == ui->comboBoxNormalRe2->currentPlayer()) {
+           p == ui->comboBoxNormalRe2->currentPlayer()) {
             m_doppelkopfRound->setPoints(p, ui->spinBoxNormalPoints->value());
         }
         else {
             m_doppelkopfRound->setPoints(p, -ui->spinBoxNormalPoints->value());
+            switch(contraPlayers){
+                case 0:
+                    m_doppelkopfRound->setContra1Player(p);
+                case 1:
+                    m_doppelkopfRound->setContra2Player(p);
+                case 2:
+                    m_doppelkopfRound->setContra3Player(p);
+            }
+            contraPlayers++;
         }
     }
 
@@ -334,8 +413,10 @@ void NewRoundDialog::saveNormalRound()
         m_doppelkopfRound->setWinnerParty(Round::Contra);
     }
 
-    QSharedPointer<Game> game = m_doppelkopfRound->game();
-    game->startNextRound();
+    if(m_context == NewRound) {
+        QSharedPointer<Game> game = m_doppelkopfRound->game();
+        game->startNextRound();
+    }
 }
 
 void NewRoundDialog::saveHochzeitRound()
@@ -347,17 +428,27 @@ void NewRoundDialog::saveHochzeitRound()
     if(ui->comboBoxHochzeitSchweine->currentPlayer())
         m_doppelkopfRound->setSchweinereiPlayer(ui->comboBoxHochzeitSchweine->currentPlayer());
 
+    int contraPlayers = 0;
     foreach(QSharedPointer<Player> p, m_doppelkopfRound->playingPlayers()) {
         if(p == ui->comboBoxHochzeitHochzeit->currentPlayer() ||
-                p == ui->comboBoxHochzeitFellow->currentPlayer()) {
+           p == ui->comboBoxHochzeitFellow->currentPlayer()) {
             m_doppelkopfRound->setPoints(p, ui->spinBoxHochzeitPoints->value());
         }
         else {
             m_doppelkopfRound->setPoints(p, -ui->spinBoxHochzeitPoints->value());
+            switch(contraPlayers){
+                case 0:
+                    m_doppelkopfRound->setContra1Player(p);
+                case 1:
+                    m_doppelkopfRound->setContra2Player(p);
+                case 2:
+                    m_doppelkopfRound->setContra3Player(p);
+            }
+            contraPlayers++;
         }
     }
 
-    if(ui->comboBoxWinner->currentText() == "Re")
+    if(ui->comboBoxHochzeitWinner->currentText() == "Re")
     {
         m_doppelkopfRound->setWinnerParty(Round::Re);
     }
@@ -366,8 +457,10 @@ void NewRoundDialog::saveHochzeitRound()
         m_doppelkopfRound->setWinnerParty(Round::Contra);
     }
 
-    QSharedPointer<Game> game = m_doppelkopfRound->game();
-    game->startNextRound();
+    if(m_context == NewRound) {
+        QSharedPointer<Game> game = m_doppelkopfRound->game();
+        game->startNextRound();
+    }
 }
 
 void NewRoundDialog::saveSoloRound()
@@ -382,16 +475,26 @@ void NewRoundDialog::saveSoloRound()
     m_doppelkopfRound->setSoloType(Round::soloTypeFromString(ui->comboBoxSoloType->currentText()));
     m_doppelkopfRound->setIsPflicht(ui->checkBoxSoloPflicht->isChecked());
 
+    int contraPlayers = 0;
     foreach(QSharedPointer<Player> p, m_doppelkopfRound->playingPlayers()) {
         if(p == ui->comboBoxSoloPlayer->currentPlayer()) {
             m_doppelkopfRound->setPoints(p, 3 * ui->spinBoxSoloPoints->value());
         }
         else {
             m_doppelkopfRound->setPoints(p, -ui->spinBoxSoloPoints->value());
+            switch(contraPlayers){
+                case 0:
+                    m_doppelkopfRound->setContra1Player(p);
+                case 1:
+                    m_doppelkopfRound->setContra2Player(p);
+                case 2:
+                    m_doppelkopfRound->setContra3Player(p);
+            }
+            contraPlayers++;
         }
     }
 
-    if(ui->comboBoxWinner->currentText() == "Re")
+    if(ui->comboBoxSoloWinner->currentText() == "Re")
     {
         m_doppelkopfRound->setWinnerParty(Round::Re);
     }
@@ -400,8 +503,10 @@ void NewRoundDialog::saveSoloRound()
         m_doppelkopfRound->setWinnerParty(Round::Contra);
     }
 
-    QSharedPointer<Game> game = m_doppelkopfRound->game();
-    game->startNextRound();
+    if(m_context == NewRound) {
+        QSharedPointer<Game> game = m_doppelkopfRound->game();
+        game->startNextRound();
+    }
 }
 
 void NewRoundDialog::saveTrumpfabgabeRound()
@@ -413,17 +518,27 @@ void NewRoundDialog::saveTrumpfabgabeRound()
     if(ui->comboBoxTrumpfabgabeSchweine->currentPlayer())
         m_doppelkopfRound->setSchweinereiPlayer(ui->comboBoxTrumpfabgabeSchweine->currentPlayer());
 
+    int contraPlayers = 0;
     foreach(QSharedPointer<Player> p, m_doppelkopfRound->playingPlayers()) {
         if(p == ui->comboBoxTrumpfabgabePlayer->currentPlayer() ||
-                p == ui->comboBoxTrumpfabgabeAccept->currentPlayer()) {
+           p == ui->comboBoxTrumpfabgabeAccept->currentPlayer()) {
             m_doppelkopfRound->setPoints(p, ui->spinBoxTrumpfabgabePoints->value());
         }
         else {
             m_doppelkopfRound->setPoints(p, -ui->spinBoxTrumpfabgabePoints->value());
+            switch(contraPlayers){
+                case 0:
+                    m_doppelkopfRound->setContra1Player(p);
+                case 1:
+                    m_doppelkopfRound->setContra2Player(p);
+                case 2:
+                    m_doppelkopfRound->setContra3Player(p);
+            }
+            contraPlayers++;
         }
     }
 
-    if(ui->comboBoxWinner->currentText() == "Re")
+    if(ui->comboBoxTrumpfabgabeWinner->currentText() == "Re")
     {
         m_doppelkopfRound->setWinnerParty(Round::Re);
     }
@@ -432,8 +547,10 @@ void NewRoundDialog::saveTrumpfabgabeRound()
         m_doppelkopfRound->setWinnerParty(Round::Contra);
     }
 
-    QSharedPointer<Game> game = m_doppelkopfRound->game();
-    game->startNextRound();
+    if(m_context == NewRound) {
+        QSharedPointer<Game> game = m_doppelkopfRound->game();
+        game->startNextRound();
+    }
 }
 
 void NewRoundDialog::on_buttonBox_rejected()

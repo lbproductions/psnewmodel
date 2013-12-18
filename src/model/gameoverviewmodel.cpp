@@ -5,6 +5,8 @@
 #include <data/player.h>
 #include <data/schmeisserei.h>
 
+#include <misc/settings.h>
+
 #include <QDebug>
 
 const int GameOverviewModel::ExtraRowsCount(5);
@@ -24,6 +26,10 @@ void GameOverviewModel::setGame(const QSharedPointer<Game> &game)
     beginResetModel();
     m_game = game;
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SIGNAL(layoutChanged()));
+    connect(m_game.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(layoutChanged()));
+    connect(&GameSettings::instance(), SIGNAL(playerSortChanged(PlayerSort)), this, SIGNAL(layoutChanged()));
+    connect(&GameSettings::instance(), SIGNAL(tableDisplayChanged(TableDisplay)), this, SIGNAL(layoutChanged()));
+    connect(&GameSettings::instance(), SIGNAL(showExtraRowsChanged(bool)), this, SIGNAL(layoutChanged()));
     endResetModel();
 }
 
@@ -48,9 +54,9 @@ int GameOverviewModel::columnCount(const QModelIndex &parent) const
         return m_game->totalRoundCount();
     }
     else{
-       return 44;
+        return 44;
     }
- }
+}
 
 int GameOverviewModel::rowCount(const QModelIndex &parent) const
 {
@@ -60,7 +66,12 @@ int GameOverviewModel::rowCount(const QModelIndex &parent) const
     if(!m_game)
         return 0;
 
-    return m_game->players().size() + ExtraRowsCount;
+    if(GameSettings::instance().showExtraRows()) {
+        return m_game->players().size() + ExtraRowsCount;
+    }
+    else{
+        return m_game->players().size();
+    }
 }
 
 QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
@@ -164,13 +175,19 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
     }
     else if(playerIndex < m_game->players().size()
             && roundIndex < m_game->rounds().size()) {
-        QSharedPointer<Player> player = m_game->players().at(playerIndex);
+        QSharedPointer<Player> player;
+        if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
+            player = m_game->players().at(playerIndex);
+        }
+        else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
+            player = m_game->playersSortedByPlacement().at(playerIndex);
+        }
         QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
 
         if(round->state() != Round::Finished)
             return QVariant();
 
-        if(round->playingPlayers().contains(player)) {
+        if(GameSettings::instance().tableDisplay() == GameSettings::RoundPoints && round->playingPlayers().contains(player)) {
             if(role == Qt::DisplayRole)
                 return round->points(player);
 
@@ -179,6 +196,22 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
             // TODO: could be better in performance
             if(role == IsReRole) {
                 return round->rePlayers().contains(player);
+            }
+        }
+        else if(GameSettings::instance().tableDisplay() == GameSettings::TableTotalPoints) {
+            if(role == Qt::DisplayRole) {
+                return round->totalPoints(player);
+            }
+            if(role == Qt::BackgroundColorRole) {
+                return colorFromPoints(round->totalPoints(player));
+            }
+        }
+        else if(GameSettings::instance().tableDisplay() == GameSettings::DeficitToLeader) {
+            if(role == Qt::DisplayRole) {
+                return round->pointsToLeader(player);
+            }
+            if(role == Qt::BackgroundColorRole) {
+                return colorFromPoints(-round->pointsToLeader(player));
             }
         }
     }
@@ -193,35 +226,35 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
             int roundIndex = section;
             if(roundIndex < m_game->rounds().size()) {
                 if(m_game->players().size() > 0 &&
-                        roundIndex % m_game->players().size() == 0)
+                   roundIndex % m_game->players().size() == 0)
                     return roundIndex + 1;
             }
         }
     }
-//    else {
-//        int row = section;
-//        int playerIndex = row - m_extraRowsCount;
+    //    else {
+    //        int row = section;
+    //        int playerIndex = row - m_extraRowsCount;
 
-//        if(row < m_extraRowsCount) {
-//            if(row == HochzeitenRow) {
-//                return tr("Hochzeiten");
-//            }
-//            else if(row == TrumpfabgabenRow) {
-//                return tr("Trumpfabgaben");
-//            }
-//            else if(row == SoliRow) {
-//                return tr("Soli");
-//            }
-//        }
-//        else {
-//            if(role == Qt::DisplayRole) {
-//                return m_game->players().at(playerIndex)->name();
-//            }
-//            else if(role == Qt::DecorationRole) {
-//                return m_game->players().at(playerIndex)->color();
-//            }
-//        }
-//    }
+    //        if(row < m_extraRowsCount) {
+    //            if(row == HochzeitenRow) {
+    //                return tr("Hochzeiten");
+    //            }
+    //            else if(row == TrumpfabgabenRow) {
+    //                return tr("Trumpfabgaben");
+    //            }
+    //            else if(row == SoliRow) {
+    //                return tr("Soli");
+    //            }
+    //        }
+    //        else {
+    //            if(role == Qt::DisplayRole) {
+    //                return m_game->players().at(playerIndex)->name();
+    //            }
+    //            else if(role == Qt::DecorationRole) {
+    //                return m_game->players().at(playerIndex)->color();
+    //            }
+    //        }
+    //    }
 
     return QVariant();
 }

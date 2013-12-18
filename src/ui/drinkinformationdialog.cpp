@@ -2,6 +2,7 @@
 #include "ui_drinkinformationdialog.h"
 
 #include <data/drink.h>
+#include <QPushButton>
 
 DrinkInformationDialog::DrinkInformationDialog(QWidget *parent) :
     QDialog(parent),
@@ -10,6 +11,12 @@ DrinkInformationDialog::DrinkInformationDialog(QWidget *parent) :
     ui->setupUi(this);
 
     ui->comboBoxType->addItems(Drink::typeStrings());
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
+
+    connect(ui->lineEditName, SIGNAL(editingFinished()), this, SLOT(checkData()));
+    connect(ui->lineEditAlcohol, SIGNAL(editingFinished()), this, SLOT(checkData()));
+    connect(ui->lineEditVolume, SIGNAL(editingFinished()), this, SLOT(checkData()));
 }
 
 DrinkInformationDialog::~DrinkInformationDialog()
@@ -41,8 +48,11 @@ void DrinkInformationDialog::setDrink(const QSharedPointer<Drink> &drink)
 
 void DrinkInformationDialog::accept()
 {
+    bool create = false;
+
     if(!m_drink)
-        return;
+        m_drink = Qp::create<Drink>();
+        create = true;
 
     m_drink->setName(ui->lineEditName->text());
     bool ok = false;
@@ -59,5 +69,28 @@ void DrinkInformationDialog::accept()
 
     m_drink->setPicture(ui->picture->pixmap());
     Qp::update(m_drink);
+
+    if(create)
+        emit drinkAdded(m_drink);
+
     QDialog::accept();
+}
+
+void DrinkInformationDialog::checkData()
+{
+    if(ui->lineEditName->text() == "" || ui->lineEditAlcohol->text() == "" || ui->lineEditVolume->text() == "") {
+        return;
+    }
+
+    bool ok = false;
+    double alc = ui->lineEditAlcohol->text().toDouble(&ok);
+    if(!ok)
+        return;
+
+    ok = false;
+    double vol = ui->lineEditVolume->text().toDouble(&ok);
+    if(!ok)
+        return;
+
+    ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 }

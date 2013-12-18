@@ -6,6 +6,8 @@
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
 
+class Player;
+
 class Tools
 {
 public:
@@ -22,6 +24,14 @@ public:
     static QVariant percentageString(double percentage);
     static QVariant ifPositive(int number);
     static QVariant scaledPixmap(const QPixmap &pm, int h = 16, int w = 16);
+
+    static QPalette darkPalette(QWidget* widget);
+
+    static QVariant playersString(const QList<QSharedPointer<Player> > &players);
+
+    static double percentage(double value1, double value2);
+
+    static QPixmap playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo, int w = 16, int h = 16);
 };
 
 template<class T>

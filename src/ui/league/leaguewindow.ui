@@ -1,0 +1,415 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>LeagueWindow</class>
+ <widget class="QMainWindow" name="LeagueWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>864</width>
+    <height>549</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>LeagueWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">QWidget#line, QWidget#line_2 {
+	color: rgb(108,108,108);
+}
+QWidget#statusBar {
+background: url(:/statusbar/dark-background.png) repeat-x;
+}
+QTableCornerButton::section {
+border: none;
+background: rgb(55,55,55);
+}
+QLabel#labelLength {
+color:white;
+}
+ QLabel#labelClock {
+color:white;
+font-size: 19px;
+}
+QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar,  QToolButton#toolButtonAddRound, QToolButton#toolButtonAddDrinks, QToolButton#toolButtonAddSchmeisserei{
+border: none;
+background: none;
+}
+QSplitter:handle {
+background-color: rgb(108,108,108);
+}
+QToolButton#pushButtonAddPlayers {
+	color: white;
+	border: 1px solid rgb(108,108,108);
+	border-left: none;
+	border-bottom: none;
+	height: 32px;
+	font-size: 14px;
+}
+PlayersListWidget {
+	background-color: rgba(0,0,0,0);
+	border:none;
+	border-right: 1px solid rgb(108,108,108);
+}
+QCheckBox {
+	color: white;
+}
+QLabel {
+	color: white;
+}
+QWidget#widgetCreateGame {
+	border-bottom: 1px solid rgb(108,108,108);
+}</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_5">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1">
+      <property name="spacing">
+       <number>0</number>
+      </property>
+      <property name="topMargin">
+       <number>0</number>
+      </property>
+      <item>
+       <widget class="QTableView" name="tableViewPlayer">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>40</number>
+        </attribute>
+       </widget>
+      </item>
+      <item>
+       <widget class="QTableView" name="tableViewPlacement">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="autoFillBackground">
+         <bool>true</bool>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::NoFrame</enum>
+        </property>
+        <property name="verticalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
+        </property>
+        <property name="autoScroll">
+         <bool>false</bool>
+        </property>
+        <property name="verticalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <property name="horizontalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <property name="showGrid">
+         <bool>false</bool>
+        </property>
+        <property name="cornerButtonEnabled">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>40</number>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout1">
+      <property name="spacing">
+       <number>-1</number>
+      </property>
+      <item>
+       <widget class="QPushButton" name="pushButtonPrev">
+        <property name="text">
+         <string>Prev</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonCurrent">
+        <property name="text">
+         <string>Current</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="pushButtonNext">
+        <property name="text">
+         <string>Next</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_2">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QComboBox" name="comboBoxAverage">
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <item>
+         <property name="text">
+          <string>PlacementGraph</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>PointsGraph</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>AverageGraph</string>
+         </property>
+        </item>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Current matchday:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLabel" name="labelMatchday">
+        <property name="minimumSize">
+         <size>
+          <width>30</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>-</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <widget class="ScrollArea" name="scrollAreaGraph">
+      <property name="styleSheet">
+       <string notr="true"/>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAlwaysOff</enum>
+      </property>
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="GraphAxis" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>864</width>
+         <height>256</height>
+        </rect>
+       </property>
+       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+        <item>
+         <widget class="GraphAxis" name="graphAxis" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_3"/>
+         </widget>
+        </item>
+        <item>
+         <widget class="LeagueGraphWidget" name="graphWidget" native="true">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>0</height>
+           </size>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout"/>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </widget>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="BiggestDistanceWidget" name="distanceWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="SoloOverviewWidget" name="soloOverviewWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="ReContraPieWidget" name="reContraPieWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="TotalPointsWidget" name="totalPointsWidget" native="true"/>
+      </item>
+      <item>
+       <widget class="GamesTogetherWidget" name="gamesTogetherWidget" native="true"/>
+      </item>
+     </layout>
+    </item>
+    <item>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="GamesWidget" name="gamesWidget" native="true"/>
+      </item>
+     </layout>
+    </item>
+   </layout>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header location="global">ui/widgets/scrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GraphAxis</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/game/graphaxis.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>LeagueGraphWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/league/leaguegraphwidget.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SoloOverviewWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/solooverviewwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ReContraPieWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/recontrapiewidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>TotalPointsWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/totalpointswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GamesTogetherWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/gamestogetherwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GamesWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/gameswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>BiggestDistanceWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/widgets/biggestdistancewidget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+</ui>
