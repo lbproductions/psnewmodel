@@ -38,6 +38,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     bool cardMixerMode = false;
     bool hasPflichtSolo = false;
     bool border = false;
+    bool borderBottom = false;
 
     QString text = model()->headerData(logicalIndex, orientation()).toString();
     QColor color = model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QColor>();
@@ -53,8 +54,10 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
                     hasPflichtSolo = game->hasPflichtSolo(player);
                 }
             }
-            if(game->players().size() == logicalIndex+1)
+            if(logicalIndex == game->players().size())
                 border = true;
+            if(logicalIndex == game->players().size() - 1)
+                borderBottom = true;
         }
     }
 
@@ -75,14 +78,18 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     painter->drawLine(rect.bottomLeft(), rect.bottomRight());
     if(logicalIndex == 0)
         painter->drawLine(rect.topLeft(), rect.topRight());
+
     if(border) {
-        pen.setColor(Qt::white);
-        //pen.setWidth(0);
-        painter->setPen(pen);
-        painter->drawLine(rect.bottomLeft(), rect.bottomRight());
-        //pen.setWidth(0);
-        pen.setColor(palette.highlight().color());
-        painter->setPen(pen);
+        QRect r2 = rect.adjusted(0,0,1,0);
+        painter->drawLine(r2.topLeft(),r2.topRight());
+    }
+
+    if(borderBottom) {
+        QRect r2 = rect.adjusted(-1,0,0,-1);
+        painter->drawLine(r2.bottomLeft(),r2.bottomRight());
+        r2.adjust(0,0,0,1);
+        painter->setPen(QPen(palette.highlight().color().darker(150)));
+        painter->drawLine(r2.bottomLeft(),r2.bottomRight());
     }
 
     // player name

@@ -14,8 +14,9 @@
    <string>Doppelkopf Game</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget#line, QWidget#line_2 {
+   <string notr="true">QWidget#line, QWidget#line_2, QWidget#line_3 {
 	color: rgb(108,108,108);
+	width: 1px;
 }
 QWidget#statusBar {
 background: url(:/statusbar/dark-background.png) repeat-x;
@@ -98,7 +99,7 @@ QWidget#widgetCreateGame {
          <number>0</number>
         </property>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,1">
+         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -128,6 +129,16 @@ QWidget#widgetCreateGame {
             <attribute name="horizontalHeaderDefaultSectionSize">
              <number>40</number>
             </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
            </widget>
           </item>
           <item>

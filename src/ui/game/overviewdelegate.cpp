@@ -18,14 +18,23 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     QPalette palette = static_cast<QWidget *>(this->parent())->palette();
 
-    painter->setPen(QPen(palette.color(QPalette::Highlight)));
+    painter->setPen(QPen(Qt::transparent));
     painter->setBrush(palette.color(QPalette::Base));
 
-    QRect r = option.rect.adjusted(-1,0,0,-1);
-    if(index.row() != 0)
-        r.adjust(0,-1,0,0);
+    QRect r = option.rect;
 
     painter->drawRect(r);
+    painter->setPen(QPen(palette.highlight().color()));
+    painter->drawLine(r.topRight(), r.bottomRight());
+    painter->drawLine(r.bottomLeft(), r.bottomRight());
+    if(index.row() == 0) {
+        painter->drawLine(r.topLeft(), r.topRight());
+        r.adjust(0,1,0,0);
+    }
+
+    painter->setPen(QPen(Qt::transparent));
+
+    r.adjust(0,0,-1,-1);
 
     QColor color = index.data(Qt::BackgroundColorRole).value<QColor>();
     if(color.isValid()) {
@@ -36,18 +45,25 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     // Draw white dividing line
     if(m_model) {
         if(m_model->game()) {
+            painter->save();
             QSharedPointer<Game> game = m_model->game();
-            QPen pen = painter->pen();
-            pen.setColor(Qt::white);
-            painter->setPen(pen);
+            painter->setPen(QPen(palette.highlight().color()));
+            if(game->players().size() - 1 == index.row()) {
+                painter->drawLine(r.bottomLeft(),r.bottomRight());
+
+                painter->setPen(QPen(palette.highlight().color().darker(150)));
+                QRect r2 = r.adjusted(-1,0,0,1);
+                painter->drawLine(r2.bottomLeft(),r2.bottomRight());
+            }
             if(game->players().size() == index.row()) {
-                painter->drawLine(r.topLeft().x(), r.topLeft().y(), r.topRight().x(), r.topRight().y());
+                QRect r2 = r.adjusted(0,0,1,0);
+                painter->drawLine(r2.topLeft(),r2.topRight());
             }
             if(index.column() == game->totalRoundCount()) {
-                painter->drawLine(r.topLeft(), r.bottomLeft());
+                QRect r2 = r.adjusted(0,0,1,0);
+                painter->drawLine(r2.topLeft(), r2.bottomLeft());
             }
-            pen.setColor(palette.highlight().color());
-            painter->setPen(pen);
+            painter->restore();
         }
     }
 
@@ -128,9 +144,10 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->setBrush(Qt::white);
         painter->setPen(Qt::transparent);
         QPolygonF polygon;
-        polygon << option.rect.topRight() <<
-                   QPointF(option.rect.topRight().x()-triangleSize, option.rect.topRight().y()) <<
-                   QPointF(option.rect.topRight().x(), option.rect.topRight().y()+triangleSize);
+        r.adjust(0,0,1,0);
+        polygon << r.topRight() <<
+                   QPointF(r.topRight().x()-triangleSize, r.topRight().y()) <<
+                   QPointF(r.topRight().x(), r.topRight().y()+triangleSize);
         painter->drawPolygon(polygon);
     }
 

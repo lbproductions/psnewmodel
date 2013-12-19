@@ -40,7 +40,7 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
             item->setText(0, players.at(i)->name() + " - " + players.at(j)->name());
             item->setData(1, Qt::DisplayRole, wins);
             item->setData(2, Qt::DisplayRole, gameCount);
-            item->setData(3, Qt::DisplayRole, Tools::percentage(wins * 100, gameCount));
+            item->setData(3, Qt::DisplayRole, Tools::percentage(wins, gameCount));
             item->setTextAlignment(3, Qt::AlignRight);
 
             ui->treeWidgetGamesTogether->addTopLevelItem(item);

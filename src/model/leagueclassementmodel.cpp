@@ -5,6 +5,8 @@
 #include <data/player.h>
 #include <data/matchday.h>
 
+#include <misc/tools.h>
+
 #include <QDebug>
 
 LeagueClassementModel::LeagueClassementModel(QObject *parent):
@@ -117,7 +119,7 @@ QVariant LeagueClassementModel::data(const QModelIndex &index, int role) const
     }
     else if(index.column() == 4) {
         if(role == Qt::DisplayRole) {
-            return m_league->currentMatchday()->average(player);
+            return QString("%1").arg(m_league->currentMatchday()->average(player), 4, 'f', 2);
         }
     }
 

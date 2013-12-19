@@ -17,7 +17,7 @@ void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &
 
     QPalette palette = parentWidget()->palette();
 
-    painter->setPen(QPen(QColor(0,0,0,0)));
+    painter->setPen(QPen(Qt::transparent));
     painter->setBrush(palette.color(QPalette::Base));
     painter->drawRect(rect);
 
@@ -25,7 +25,6 @@ void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &
     if(!text.isEmpty()) {
         painter->setPen(QPen(palette.highlight().color()));
         painter->drawLine(rect.topLeft() - QPoint(1,0), rect.bottomLeft() - QPoint(1,0));
-        painter->drawLine(rect.topRight(), rect.topRight());
 
         painter->setPen(palette.color(QPalette::Text));
         QTextOption option;

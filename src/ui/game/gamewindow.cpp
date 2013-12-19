@@ -498,6 +498,6 @@ void GameWindow::updateSizes()
                                   (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
     ui->tableViewInformation->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
                                              (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
-    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
-    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 41);
+    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
+    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
 }
