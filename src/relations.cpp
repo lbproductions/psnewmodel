@@ -3,6 +3,7 @@
 
 #include "relationresolver.h"
 #include "qpersistence.h"
+#include "metaproperty.h"
 
 
 
@@ -14,12 +15,43 @@ bool QpWeakRelation::QpWeakRelationData::isToMany() const
 }
 
 template<class T>
-QpWeakRelation<T>::QpWeakRelation(const QString &name, QObject *parent) : data(new QpWeakRelationData)
+class QpWeakRelationData : public QSharedData {
+public:
+    QpWeakRelationData(const QpMetaProperty &metaProperty);
+
+    QString name;
+    QObject *parent;
+    mutable bool resolved;
+    mutable QList<QWeakPointer<T> > relatedList;
+    mutable QWeakPointer<T> related;
+    QpMetaProperty metaProperty;
+    QpMetaProperty::Cardinality cardinality;
+
+    bool isToMany() const;
+};
+
+template<class T>
+QpWeakRelationData<T>::QpWeakRelationData(const QpMetaProperty &metaProperty) :
+    QSharedData(),
+    metaProperty(metaProperty)
+{
+}
+
+template<class T>
+bool QpWeakRelationData<T>::isToMany() const
+{
+    return cardinality == QpMetaProperty::OneToManyCardinality
+            || cardinality == QpMetaProperty::ManyToManyCardinality
+            || cardinality == QpMetaProperty::ToManyCardinality;
+}
+
+template<class T>
+QpWeakRelation<T>::QpWeakRelation(const QString &name, QObject *parent) :
+    data(new QpWeakRelationData<T>(QpMetaObject(*parent->metaObject()).metaProperty(name)))
 {
     data->name = name;
     data->parent = parent;
     data->resolved = false;
-    data->metaProperty = QpMetaObject(parent->metaObject()).metaProperty(name);
     data->cardinality = data->metaProperty.cardinality();
 }
 
@@ -140,10 +172,19 @@ QList<QSharedPointer<T> > QpWeakRelation<T>::resolveFromDatabase() const
 
 
 
-
+template<class T>
+class QpStrongRelationData : public QSharedData {
+public:
+    QString name;
+    QObject *parent;
+    mutable bool resolved;
+    mutable QList<QSharedPointer<T> > relatedList;
+    mutable QSharedPointer<T> related;
+};
 
 template<class T>
-QpStrongRelation<T>::QpStrongRelation(const QString &name, QObject *parent) : data(new QpStrongRelationData)
+QpStrongRelation<T>::QpStrongRelation(const QString &name, QObject *parent) :
+    data(new QpStrongRelationData<T>)
 {
     data->name = name;
     data->parent = parent;
@@ -231,3 +272,5 @@ void QpStrongRelation<T>::resolveFromDatabase() const
         return;
     data->related = resolved.first();
 }
+
+
