@@ -428,5 +428,5 @@ double PlayerStatistics::percentage(int value1, int value2)
 
     double number = (double) value1 / (double) value2;
 
-    return static_cast<double>(static_cast<int>(number*100+0.5))/100.0;
+    return static_cast<double>((number*100+0.5))/100.0;
 }
