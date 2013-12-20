@@ -5,6 +5,8 @@
 #include <misc/tools.h>
 #include <data/game.h>
 
+#include <QSettings>
+
 GameStatsWidget::GameStatsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GameStatsWidget),
@@ -22,11 +24,22 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
             this, &GameStatsWidget::toggleWeightedAverageRoundTime);
     connect(ui->labelAverageRoundLabel, &ClickableLabel::pressed,
             this, &GameStatsWidget::toggleWeightedAverageRoundTime);
+
+    // read negated values and toggle once to reflect correct state
+    QSettings settings;
+    m_predictedTimeLeftShown = !settings.value("gamewindow/statswidget/predictedTimeLeftShown", true).toBool();
+    m_roundAverageWeighted = !settings.value("gamewindow/statswidget/roundAverageWeighted", false).toBool();
+    toggleWeightedAverageRoundTime();
+    togglePredictedTime();
 }
 
 GameStatsWidget::~GameStatsWidget()
 {
     delete ui;
+
+    QSettings settings;
+    settings.setValue("gamewindow/statswidget/predictedTimeLeftShown", m_predictedTimeLeftShown);
+    settings.setValue("gamewindow/statswidget/roundAverageWeighted", m_roundAverageWeighted);
 }
 
 void GameStatsWidget::setGame(QSharedPointer<Game> game)
