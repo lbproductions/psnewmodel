@@ -16,7 +16,7 @@ public:
         TrumpfabgabenRow,
         SoliRow,
         SchweinereienRow,
-        SchmeissereiRow
+        SchmeissereienRow
     };
     static const int ExtraRowsCount;
 
@@ -25,7 +25,8 @@ public:
         SoloTypeRole,
         IsReRole,
         TotalPointsRole,
-        PflichtSoloRole
+        PflichtSoloRole,
+        SchmeissereienRole
     };
 
     explicit GameOverviewModel(QObject *parent = 0);

@@ -164,13 +164,16 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
 
         }
     }
-    if(extraRow == SchmeissereiRow) {
+    if(extraRow == SchmeissereienRow) {
         QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
         QList<QSharedPointer<Schmeisserei> > schmeissereien = round->schmeissereien();
 
-        if(schmeissereien.size() > 0 && schmeissereien.first()){
-            if(role == Qt::DecorationRole)
-                return schmeissereien.first()->player()->color();
+        if(role == SchmeissereienRole) {
+            QList<QColor> colors;
+            foreach(auto schmeisserei, schmeissereien) {
+                colors.append(schmeisserei->player()->color());
+            }
+            return QVariant::fromValue<QList<QColor> >(colors);
         }
     }
     else if(playerIndex < m_game->players().size()

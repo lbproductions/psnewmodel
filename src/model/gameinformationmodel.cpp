@@ -89,7 +89,7 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
         else if(extraRow == GameOverviewModel::SchweinereienRow) {
             return m_game->schweinereiCount();
         }
-        else if(extraRow == GameOverviewModel::SchmeissereiRow) {
+        else if(extraRow == GameOverviewModel::SchmeissereienRow) {
             return m_game->schmeissereiCount();
         }
         else if(row < m_game->players().size()) {
@@ -132,7 +132,7 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
     else if(extraRow == GameOverviewModel::SchweinereienRow) {
         return tr("Schweinereien");
     }
-    else if(extraRow == GameOverviewModel::SchmeissereiRow) {
+    else if(extraRow == GameOverviewModel::SchmeissereienRow) {
         return tr("Schmeissereien");
     }
     else {

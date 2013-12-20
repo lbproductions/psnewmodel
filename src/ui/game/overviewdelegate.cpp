@@ -16,6 +16,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 {
     painter->save();
 
+    int extraRow = -1;
     QPalette palette = static_cast<QWidget *>(this->parent())->palette();
 
     painter->setPen(QPen(Qt::transparent));
@@ -47,6 +48,8 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         if(m_model->game()) {
             painter->save();
             QSharedPointer<Game> game = m_model->game();
+            extraRow = index.row() - game->players().size();
+
             painter->setPen(QPen(palette.highlight().color()));
             if(game->players().size() - 1 == index.row()) {
                 painter->drawLine(r.bottomLeft(),r.bottomRight());
@@ -83,12 +86,14 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->drawText(option.rect, text, to);
     }
 
+    // Draw mitspieler
     color = index.data(GameOverviewModel::MitspielerColorRole).value<QColor>();
     if(color.isValid()) {
         painter->setBrush(color);
         painter->drawRect(QRect(option.rect.topLeft() + QPoint(16,8), option.rect.topLeft() + QPoint(32,24)));
     }
 
+    // Draw spieler
     color = index.data(Qt::DecorationRole).value<QColor>();
     if(color.isValid()) {
         painter->setBrush(color);
@@ -100,6 +105,27 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->drawRect(QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19)));
     }
 
+    // Draw schmeissereien
+    if(extraRow == GameOverviewModel::SchmeissereienRow) {
+        painter->save();
+        QList<QColor> colors = index.data(GameOverviewModel::SchmeissereienRole).value<QList<QColor> >();
+        if(!colors.isEmpty()) {
+            if(colors.size() > 1)
+                painter->setPen(QPen(palette.highlight().color()));
+
+            QRect rect = QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19));
+            double dx = 19;
+            double dy = 8;
+            dx /= colors.size();
+            dy /= colors.size();
+            foreach(QColor color, colors) {
+                painter->setBrush(color);
+                painter->drawRect(rect);
+                rect.adjust(dx,dy,dx,dy);
+            }
+        }
+        painter->restore();
+    }
 
     // draw solo icons
     if(!index.data(GameOverviewModel::SoloTypeRole).isNull()) {
