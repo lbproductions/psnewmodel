@@ -18,6 +18,7 @@ SchmeissereiDialog::SchmeissereiDialog(QWidget *parent) :
             this, &SchmeissereiDialog::reject);
     connect(ui->comboBoxPlayer, SIGNAL(currentIndexChanged(int)),
             this, SLOT(checkContents()));
+
     checkContents();
 }
 
@@ -25,6 +26,21 @@ SchmeissereiDialog::~SchmeissereiDialog()
 {
     delete ui;
 }
+
+QSharedPointer<Game> SchmeissereiDialog::game() const
+{
+    return m_game;
+}
+
+void SchmeissereiDialog::setGame(const QSharedPointer<Game> &game)
+{
+    m_game = game;
+    int roundCount = game->rounds().size();
+    ui->spinBoxRoundNumber->setMinimum(1);
+    ui->spinBoxRoundNumber->setMaximum(roundCount);
+    ui->spinBoxRoundNumber->setValue(roundCount);
+}
+
 
 QSharedPointer<Round> SchmeissereiDialog::round() const
 {
@@ -37,6 +53,7 @@ void SchmeissereiDialog::setRound(const QSharedPointer<Round> &round)
         return;
 
     m_round = round;
+    ui->comboBoxPlayer->clear();
     ui->comboBoxPlayer->addPlayers(round->playingPlayers());
     ui->comboBoxType->addItems(Schmeisserei::typeStrings());
 }
@@ -58,4 +75,17 @@ void SchmeissereiDialog::save()
 void SchmeissereiDialog::checkContents()
 {
     ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(ui->comboBoxPlayer->currentPlayer());
+}
+
+void SchmeissereiDialog::on_spinBoxRoundNumber_valueChanged(int value)
+{
+    if(!m_game)
+        return;
+
+    int number = value - 1;
+    Q_ASSERT(number >= 0);
+    Q_ASSERT(number < m_game->rounds().size());
+
+    QSharedPointer<Round> round = m_game->rounds().at(number);
+    setRound(round);
 }

@@ -21,6 +21,8 @@ public:
 
     void removePlayer(QSharedPointer<Player> player);
 
+    void clear();
+
 private:
     QList<QSharedPointer<Player> > m_players;
 };

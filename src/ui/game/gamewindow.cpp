@@ -266,12 +266,12 @@ void GameWindow::on_actionAdd_schmeisserei_triggered()
     PopupWidget *popup = new PopupWidget(this);
 
     SchmeissereiDialog *dialog = new SchmeissereiDialog(popup);
-    dialog->setRound(m_game->currentRound());
+    dialog->setGame(m_game);
     dialog->setWindowFlags(Qt::Widget);
 
     popup->setWidget(dialog);
     popup->setMinimumWidth(300);
-    popup->setMinimumHeight(200);
+    popup->setMinimumHeight(300);
     popup->anchorTo(ui->toolButtonAddSchmeisserei);
     popup->show();
     setPopupWidget(popup);

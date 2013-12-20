@@ -55,3 +55,10 @@ void PlayersComboBox::removePlayer(QSharedPointer<Player> player)
     removeItem(findText(player->name()));
     m_players.removeAll(player);
 }
+
+void PlayersComboBox::clear()
+{
+    m_players.clear();
+    QComboBox::clear();
+    addItem(tr("---"));
+}

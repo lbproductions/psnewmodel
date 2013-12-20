@@ -8,6 +8,7 @@ namespace Ui {
 }
 
 class Round;
+class Game;
 
 class SchmeissereiDialog : public QDialog
 {
@@ -18,17 +19,26 @@ public:
 
     ~SchmeissereiDialog();
 
+
+
     QSharedPointer<Round> round() const;
-    void setRound(const QSharedPointer<Round> &round);
+
+    QSharedPointer<Game> game() const;
+    void setGame(const QSharedPointer<Game> &game);
 
 private slots:
     void save();
     void checkContents();
 
+    void on_spinBoxRoundNumber_valueChanged(int value);
+
 private:
     Ui::SchmeissereiWidget *ui;
 
     QSharedPointer<Round> m_round;
+    QSharedPointer<Game> m_game;
+
+    void setRound(const QSharedPointer<Round> &round);
 };
 
 #endif // SCHMEISSEREIDIALOG_H
