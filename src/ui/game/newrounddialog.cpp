@@ -272,18 +272,24 @@ void NewRoundDialog::checkSoloRoundContents()
         ui->comboBoxSoloHochzeit->setCurrentIndex(0);
     }
 
-    if(m_doppelkopfRound->isPflicht()) {
-        ui->checkBoxSoloPflicht->setChecked(true);
-        ui->checkBoxSoloPflicht->setEnabled(true);
+    bool isPflicht = m_doppelkopfRound->isPflicht();
+    bool hasPflicht = game->hasPflichtSolo(ui->comboBoxSoloPlayer->currentPlayer());
+    if(m_doppelkopfRound->state() == Round::Finished) {
+        // Allow to check the box, when it was the pflichtsolo, or when there is no pflichtsolo yet.
+        // This allows the user to have only one pflichtsolo per game checked at the same time,
+        // but also to correct an errornous entry
+        bool checked = isPflicht;
+        bool enabled = isPflicht || !hasPflicht;
+        ui->checkBoxSoloPflicht->setChecked(checked);
+        ui->checkBoxSoloPflicht->setEnabled(enabled);
     }
-    else{
-        ui->checkBoxSoloPflicht->setChecked(false);
-        if(game->hasPflichtSolo(ui->comboBoxSoloPlayer->currentPlayer())) {
-            ui->checkBoxSoloPflicht->setEnabled(false);
-        }
-        else{
-            ui->checkBoxSoloPflicht->setEnabled(true);
-        }
+    else {
+        // If the player already has played his pflichtsolo, do not allow to add another pflichtsolo.
+        // If the player has not played his pflichtsolo, make the solo pflicht by default.
+        bool checked = !hasPflicht;
+        bool enabled = !hasPflicht;
+        ui->checkBoxSoloPflicht->setChecked(checked);
+        ui->checkBoxSoloPflicht->setEnabled(enabled);
     }
 
     ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(ui->comboBoxSoloPlayer->currentPlayer());
