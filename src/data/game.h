@@ -92,8 +92,9 @@ class Game: public QObject
         void setMitPflichtSolo(bool arg);
 
         QTime length() const;
-        QTime averageRoundLength() const;
-        QTime predictedTimeToPlay() const;
+        QTime averageRoundLength(double weight = 0.7) const;
+        QTime predictedTimeToPlay(double weight = 0.7) const;
+        QTime predictedEndTime(double weight = 0.7) const;
 
         QSharedPointer<Place> site() const;
         void setSite(QSharedPointer<Place> site);
@@ -150,6 +151,8 @@ class Game: public QObject
         void schmeissereiAdded();
         void liveDrinkAdded();
         void stateChanged();
+        void lengthChanged();
+
     private:
         void setCreationTime(const QDateTime &creationTime);
         void setPlayers(const QList<QSharedPointer<Player> > &players);

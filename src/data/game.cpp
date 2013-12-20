@@ -34,6 +34,7 @@ Game::Game(QObject *parent) :
             if(!length.isValid())
                 length = QTime(0,0,0);
             r->setLength(length.addSecs(1));
+            emit lengthChanged();
         }
     });
 }
@@ -61,22 +62,45 @@ QTime Game::length() const
     return time;
 }
 
-QTime Game::averageRoundLength() const
+QTime Game::averageRoundLength(double weight) const
 {
-    int lengthSecs = QTime(0,0,0).secsTo(length());
-    if(finishedRoundCount() > 0)
-        return QTime(0,0,0).addSecs(lengthSecs/finishedRoundCount());
-    else
-        return QTime(0,0,0);
+    QList<QSharedPointer<Round> > rs = rounds();
+
+    if(rs.size() <= 1)
+        return length();
+
+    QSharedPointer<Round> current = rs.last();
+    double weightedAverageSecs = 0;
+    foreach(QSharedPointer<Round> r, rs) {
+        if(r == current) // dont account for the running round
+            break;
+
+        QTime t = r->length();
+        double secs = t.hour() * 60 * 60
+                   + t.minute() * 60
+                   + t.second();
+        if(weightedAverageSecs == 0) {
+            weightedAverageSecs = secs;
+        }
+        else {
+            weightedAverageSecs = secs * weight + weightedAverageSecs * (1 - weight);
+        }
+    }
+
+    return QTime(0,0,0).addSecs(weightedAverageSecs);
 }
 
-QTime Game::predictedTimeToPlay() const
+QTime Game::predictedTimeToPlay(double weight) const
 {
-    int averageLength = QTime(0,0,0).secsTo(averageRoundLength());
+    int averageLength = QTime(0,0,0).secsTo(averageRoundLength(weight));
     return QTime(0,0,0).addSecs(averageLength*roundsToPlay());
 }
 
-
+QTime Game::predictedEndTime(double weight) const
+{
+    int averageLength = QTime(0,0,0).secsTo(averageRoundLength(weight));
+    return QTime::currentTime().addSecs(averageLength*roundsToPlay());
+}
 
 Game::State Game::state() const
 {
