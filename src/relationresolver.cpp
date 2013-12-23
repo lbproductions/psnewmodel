@@ -7,34 +7,11 @@
 #include "private.h"
 #include "qpersistence.h"
 
-class QpRelationResolverData : public QSharedData {
-public:
-};
-
-QpRelationResolver::QpRelationResolver() : data(new QpRelationResolverData)
-{
-}
-
-QpRelationResolver::QpRelationResolver(const QpRelationResolver &rhs) : data(rhs.data)
-{
-}
-
-QpRelationResolver &QpRelationResolver::operator=(const QpRelationResolver &rhs)
-{
-    if (this != &rhs)
-        data.operator=(rhs.data);
-    return *this;
-}
-
-QpRelationResolver::~QpRelationResolver()
-{
-}
-
 QList<QSharedPointer<QObject> > QpRelationResolver::resolveRelation(const QString &name, const QObject *object)
 {
     QList<QSharedPointer<QObject> > result;
 
-    QpMetaObject metaObject = Qp::Private::metaObject(object->metaObject()->className());
+    QpMetaObject metaObject = QpMetaObject::forClassName(object->metaObject()->className());
     QpMetaProperty relation = metaObject.metaProperty(name);
 
     QpMetaProperty::Cardinality cardinality = relation.cardinality();
@@ -53,7 +30,7 @@ QList<QSharedPointer<QObject> > QpRelationResolver::resolveRelation(const QStrin
 
 QSharedPointer<QObject> QpRelationResolver::resolveToOneRelation(const QString &name, const QObject *object)
 {
-    QpMetaObject metaObject = Qp::Private::metaObject(object->metaObject()->className());
+    QpMetaObject metaObject = QpMetaObject::forClassName(object->metaObject()->className());
     QpMetaProperty relation = metaObject.metaProperty(name);
     const char* column = relation.columnName().toLatin1();
 
@@ -69,7 +46,7 @@ QSharedPointer<QObject> QpRelationResolver::resolveToOneRelation(const QString &
         return QSharedPointer<QObject>();
 
     QpMetaObject foreignMetaObject = relation.reverseMetaObject();
-    QSharedPointer<QObject> related = Qp::Private::dataAccessObject(foreignMetaObject)->readObject(foreignKey);
+    QSharedPointer<QObject> related = QpDaoBase::forClass(foreignMetaObject.metaObject())->readObject(foreignKey);
 
     if(!related)
         const_cast<QObject*>(object)->setProperty(column, 0);
@@ -79,7 +56,7 @@ QSharedPointer<QObject> QpRelationResolver::resolveToOneRelation(const QString &
 
 QList<QSharedPointer<QObject> > QpRelationResolver::resolveToManyRelation(const QString &name, const QObject *object)
 {
-    QpMetaObject metaObject = Qp::Private::metaObject(object->metaObject()->className());
+    QpMetaObject metaObject = QpMetaObject::forClassName(object->metaObject()->className());
     QpMetaProperty relation = metaObject.metaProperty(name);
 
     QpSqlDataAccessObjectHelper *helper = QpSqlDataAccessObjectHelper::forDatabase(Qp::database());
@@ -87,7 +64,7 @@ QList<QSharedPointer<QObject> > QpRelationResolver::resolveToManyRelation(const 
 
 
     QpMetaObject foreignMetaObject = relation.reverseMetaObject();
-    QpDaoBase *dao = Qp::Private::dataAccessObject(foreignMetaObject);
+    QpDaoBase *dao = QpDaoBase::forClass(foreignMetaObject.metaObject());
 
     QList<QSharedPointer<QObject> > relatedObjects;
     relatedObjects.reserve(foreignKeys.size());
