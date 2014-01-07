@@ -10,8 +10,8 @@
 
 PlayerStatsWidget::PlayerStatsWidget(QSharedPointer<Player> player, QSharedPointer<Game> game, QWidget *parent) :
     QWidget(parent),
-    m_game(game),
-    m_player(player)
+    m_player(player),
+    m_game(game)
 {
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
     connect(m_game.data(), SIGNAL(liveDrinkAdded()), this, SLOT(update()));
