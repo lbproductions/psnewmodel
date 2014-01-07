@@ -1,11 +1,11 @@
 #ifndef DRINKSLISTMODEL_H
 #define DRINKSLISTMODEL_H
 
-#include "../lib/QPersistence/src/abstractobjectlistmodel.h"
+#include "../lib/QPersistence/src/objectlistmodel.h"
 
 #include <data/drink.h>
 
-class DrinksListModel : public QpAbstractObjectListModel<Drink>
+class DrinksListModel : public QpObjectListModel<Drink>
 {
     Q_OBJECT
     Q_ENUMS(Columns)

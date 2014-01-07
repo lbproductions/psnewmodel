@@ -1,11 +1,11 @@
 #ifndef GAMELISTMODEL_H
 #define GAMELISTMODEL_H
 
-#include "../lib/QPersistence/src/abstractobjectlistmodel.h"
+#include "../lib/QPersistence/src/objectlistmodel.h"
 
 #include <data/game.h>
 
-class GameListModel : public QpAbstractObjectListModel<Game>
+class GameListModel : public QpObjectListModel<Game>
 {
     Q_OBJECT
     Q_ENUMS(Columns)

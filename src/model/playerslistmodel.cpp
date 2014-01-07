@@ -4,7 +4,7 @@
 #include <misc/tools.h>
 
 PlayersListModel::PlayersListModel(QObject *parent) :
-    QpAbstractObjectListModel<Player>(parent)
+    QpObjectListModel<Player>(parent)
 {
 }
 

@@ -1,11 +1,11 @@
 #ifndef PLAYERSLISTMODEL_H
 #define PLAYERSLISTMODEL_H
 
-#include "../lib/QPersistence/src/abstractobjectlistmodel.h"
+#include "../lib/QPersistence/src/objectlistmodel.h"
 
 #include <data/player.h>
 
-class PlayersListModel : public QpAbstractObjectListModel<Player>
+class PlayersListModel : public QpObjectListModel<Player>
 {
     Q_OBJECT
     Q_ENUMS(Columns)

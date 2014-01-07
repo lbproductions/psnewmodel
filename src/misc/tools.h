@@ -1,7 +1,7 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
-#include "../lib/QPersistence/src/abstractobjectlistmodel.h"
+#include "../lib/QPersistence/src/objectlistmodel.h"
 
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
@@ -47,9 +47,9 @@ QSharedPointer<T> Tools::selectedObjectFrom(QAbstractItemView *view)
 template<class T>
 QSharedPointer<T> Tools::objectFrom(const QModelIndex &index, QAbstractItemView *view)
 {
-    QpAbstractObjectListModelBase *model = qobject_cast<QpAbstractObjectListModelBase *>(view->model());
+    QpObjectListModelBase *model = qobject_cast<QpObjectListModelBase *>(view->model());
     if(!model) {
-        model = static_cast<QpAbstractObjectListModelBase *>(static_cast<QSortFilterProxyModel *>(view->model())->sourceModel());
+        model = static_cast<QpObjectListModelBase *>(static_cast<QSortFilterProxyModel *>(view->model())->sourceModel());
     }
 
     return qSharedPointerCast<T>(model->objectByIndexBase(index));
@@ -58,7 +58,7 @@ QSharedPointer<T> Tools::objectFrom(const QModelIndex &index, QAbstractItemView 
 template<class T>
 QList<QSharedPointer<T> > Tools::objectsFrom(QAbstractItemView *view)
 {
-    QpAbstractObjectListModelBase *model = static_cast<QpAbstractObjectListModelBase *>(view->model());
+    QpObjectListModelBase *model = static_cast<QpObjectListModelBase *>(view->model());
     int count = model->rowCount();
 
     QList<QSharedPointer<T> > result;

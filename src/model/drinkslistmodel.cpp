@@ -3,7 +3,7 @@
 #include <misc/tools.h>
 
 DrinksListModel::DrinksListModel(QObject *parent) :
-    QpAbstractObjectListModel<Drink>(parent)
+    QpObjectListModel<Drink>(parent)
 {
 }
 

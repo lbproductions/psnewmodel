@@ -5,7 +5,7 @@
 #include <misc/tools.h>
 
 GameListModel::GameListModel(QObject *parent) :
-    QpAbstractObjectListModel<Game>(parent)
+    QpObjectListModel<Game>(parent)
 {
 }
 
