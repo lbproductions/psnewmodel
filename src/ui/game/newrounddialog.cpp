@@ -315,23 +315,17 @@ void NewRoundDialog::checkSoloRoundContents()
 
 void NewRoundDialog::checkTrumpfabgabeRoundContents()
 {
-    qDebug() << "######## BEGIN #########";
     disconnect(ui->comboBoxTrumpfabgabePlayer, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
     disconnect(ui->comboBoxTrumpfabgabeAccept, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
 
     ui->comboBoxTrumpfabgabePlayer->addPlayers(m_doppelkopfRound->playingPlayers());
     ui->comboBoxTrumpfabgabeAccept->addPlayers(m_doppelkopfRound->playingPlayers());
-    qDebug() << "ui->comboBoxTrumpfabgabeAccept playersSize: " << ui->comboBoxTrumpfabgabeAccept->players().size();
 
     if(ui->comboBoxTrumpfabgabePlayer->currentPlayer()) {
-        qDebug() << "ui->comboBoxTrumpfabgabePlayer->currentPlayer(): " << ui->comboBoxTrumpfabgabePlayer->currentPlayer()->name();
         ui->comboBoxTrumpfabgabeAccept->removePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
-        qDebug() << "ui->comboBoxTrumpfabgabeAccept.size: " << ui->comboBoxTrumpfabgabeAccept->players().size();
     }
     if(ui->comboBoxTrumpfabgabeAccept->currentPlayer()) {
-        qDebug() << "ui->comboBoxTrumpfabgabeAccept->currentPlayer(): " << ui->comboBoxTrumpfabgabeAccept->currentPlayer()->name();
         ui->comboBoxTrumpfabgabePlayer->removePlayer(ui->comboBoxTrumpfabgabeAccept->currentPlayer());
-        qDebug() << "ui->comboBoxTrumpfabgabePlayer.size: " << ui->comboBoxTrumpfabgabePlayer->players().size();
     }
 
     ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(ui->comboBoxTrumpfabgabePlayer->currentPlayer() &&
@@ -357,8 +351,6 @@ void NewRoundDialog::checkTrumpfabgabeRoundContents()
 
     connect(ui->comboBoxTrumpfabgabePlayer, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
     connect(ui->comboBoxTrumpfabgabeAccept, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
-
-    qDebug() << "######## END #########";
 }
 
 void NewRoundDialog::save()
