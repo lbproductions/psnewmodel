@@ -42,7 +42,6 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->tableViewPlayer->setPalette(darkPalette);
 
     LeaguePlacementDelegate* placementDelegate = new LeaguePlacementDelegate(this);
-    placementDelegate->setLeagueClassementModel(m_classementModel);
     ui->tableViewPlayer->setItemDelegate(placementDelegate);
 
     LeaguePlayerHeaderView* playerHeaderView = new LeaguePlayerHeaderView(Qt::Vertical, this);
@@ -177,4 +176,15 @@ void LeagueWindow::on_comboBoxAverage_currentIndexChanged(const QString &arg1)
     else if(arg1 == "PointsGraph") {
         ui->graphWidget->setType(LeagueGraphWidget::PointsGraph);
     }
+}
+
+void LeagueWindow::on_doubleSpinBoxFinishedGames_valueChanged(double arg1)
+{
+    m_league->setFinishedGamesBorder(arg1);
+    m_league->recalculate();
+
+    m_classementModel->setChanged();
+    m_gamePlacementModel->setChanged();
+
+    ui->graphWidget->updateGraphs();
 }

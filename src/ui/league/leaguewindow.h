@@ -35,7 +35,9 @@ class LeagueWindow : public QMainWindow
 
         void on_comboBoxAverage_currentIndexChanged(const QString &arg1);
 
-    private:
+        void on_doubleSpinBoxFinishedGames_valueChanged(double arg1);
+
+private:
         Ui::LeagueWindow *ui;
 
         QSharedPointer<League> m_league;

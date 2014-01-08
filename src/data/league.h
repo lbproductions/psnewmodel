@@ -53,6 +53,9 @@ class League : public QObject
 
         void recalculate();
 
+        double finishedGamesBorder() const;
+        void setFinishedGamesBorder(double border);
+
         static int currentMatchDayNumber;
         QSharedPointer<Matchday> currentMatchday();
         QList<QSharedPointer<Matchday> > matchdays();
@@ -70,6 +73,7 @@ class League : public QObject
         QString m_name;
 
         double m_playerRatio;
+        double m_finishedGamesPercentage;
 
         QpWeakRelation<Player> m_players;
         QpWeakRelation<Game> m_games;

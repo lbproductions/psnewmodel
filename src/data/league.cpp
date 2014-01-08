@@ -12,7 +12,8 @@ League::League(QObject *parent) :
     QObject(parent),
     m_playerRatio(0.75),
     m_players("players", this),
-    m_games("games",this)
+    m_games("games",this),
+    m_finishedGamesPercentage(0)
 {   
 }
 
@@ -168,7 +169,7 @@ QList<QSharedPointer<Game> > League::calculatePossibleGames() const
     QList<QSharedPointer<Game> > fittingGames;
     for(int i = 0; i < possibleGames.size(); ++i) {
         QSharedPointer<Game> game = possibleGames.at(i);
-        if(game->creationTime().date() < startDate() || game->creationTime().date() > endDate() || !hasEnoughPlayers(game)) {
+        if(game->creationTime().date() < startDate() || game->creationTime().date() > endDate() || !hasEnoughPlayers(game) || game->completedPercentage() < m_finishedGamesPercentage) {
             continue;
         }
         else{
@@ -221,6 +222,16 @@ void League::recalculate()
 {
     m_playerStatistics.clear();
     m_calculatedGames.clear();
+}
+
+double League::finishedGamesBorder() const
+{
+    return m_finishedGamesPercentage;
+}
+
+void League::setFinishedGamesBorder(double border)
+{
+    m_finishedGamesPercentage = border;
 }
 
 QSharedPointer<Matchday> League::currentMatchday()

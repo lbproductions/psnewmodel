@@ -468,7 +468,7 @@ double Game::completedPercentage() const
     if(total == 0)
         return 0;
 
-    return (double) finishedRoundCount() / (double) total;
+    return (double) finishedRoundCount() * 100 / (double) total;
 }
 
 bool Game::isComplete() const

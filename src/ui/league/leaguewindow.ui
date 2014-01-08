@@ -150,7 +150,7 @@ QWidget#widgetCreateGame {
          <bool>false</bool>
         </property>
         <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>40</number>
+         <number>30</number>
         </attribute>
         <attribute name="verticalHeaderVisible">
          <bool>false</bool>
@@ -182,6 +182,22 @@ QWidget#widgetCreateGame {
        <widget class="QPushButton" name="pushButtonNext">
         <property name="text">
          <string>Next</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QDoubleSpinBox" name="doubleSpinBoxFinishedGames">
+        <property name="specialValueText">
+         <string/>
+        </property>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+        <property name="singleStep">
+         <double>1.000000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -281,7 +297,7 @@ QWidget#widgetCreateGame {
          <x>0</x>
          <y>0</y>
          <width>864</width>
-         <height>256</height>
+         <height>254</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">

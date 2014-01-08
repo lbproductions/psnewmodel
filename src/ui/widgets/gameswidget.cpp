@@ -37,11 +37,11 @@ void GamesWidget::setGames(QList<QSharedPointer<Game> > games)
     foreach(QSharedPointer<Game> game, games) {
         ui->treeWidget->addTopLevelItem(createItem(ui->treeWidget, game->statePixmap(), game->name(), Tools::playersString(game->playersSortedByPlacement()).toString(),
                                                    game->creationTime().date().toString("dd.MM.yy"), game->site()->displayString(),
-                                                   QString::number(game->completedPercentage()*100) + "%"));
+                                                   QString::number(game->completedPercentage()) + "%"));
         if(game->state() != Game::Finished) {
             ui->treeWidgetUnfinshed->addTopLevelItem(createItem(ui->treeWidgetUnfinshed, game->statePixmap(), game->name(), Tools::playersString(game->playersSortedByPlacement()).toString(),
                                                        game->creationTime().date().toString("dd.MM.yy"), game->site()->displayString(),
-                                                       QString::number(game->completedPercentage()*100) + "%"));
+                                                       QString::number(game->completedPercentage()) + "%"));
             m_unfinishedGames.append(game);
         }
     }
