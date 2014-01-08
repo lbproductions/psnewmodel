@@ -3,13 +3,14 @@
 #include <QPainter>
 
 #include <model/leagueclassementmodel.h>
+#include "leaguewindow.h"
 
-LeaguePlacementDelegate::LeaguePlacementDelegate(QObject *parent) :
+LeagueDelegate::LeagueDelegate(QObject *parent) :
     QStyledItemDelegate(parent)
 {
 }
 
-void LeaguePlacementDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void LeagueDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     painter->save();
 
@@ -64,24 +65,24 @@ void LeaguePlacementDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     painter->restore();
 }
 
-QSize LeaguePlacementDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+QSize LeagueDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
     QSize size = QStyledItemDelegate::sizeHint(option,index);
-    if(index.column() < 4) {
-        size.setWidth(30);
+    if(m_model == ClassementModel) {
+        if(index.column() < 4) {
+            size.setWidth(30);
+        }
+        else{
+            size.setWidth(50);
+        }
     }
-    else{
-        size.setWidth(70);
+    if(m_model == PlacementModel) {
+        size.setWidth(LeagueWindow::tableWidth);
     }
     return size;
 }
 
-LeagueClassementModel *LeaguePlacementDelegate::model() const
-{
-    return m_model;
-}
-
-void LeaguePlacementDelegate::setLeagueClassementModel(LeagueClassementModel *model)
+void LeagueDelegate::setModel(LeagueDelegate::Model model)
 {
     m_model = model;
 }

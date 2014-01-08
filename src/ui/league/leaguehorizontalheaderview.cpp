@@ -1,12 +1,13 @@
 #include "leaguehorizontalheaderview.h"
 
 #include <QPainter>
+#include "leaguewindow.h"
 
 LeagueHorizontalHeaderView::LeagueHorizontalHeaderView(Qt::Orientation orientation, QWidget *parent) :
     QHeaderView(orientation, parent)
 {
     setSectionResizeMode(QHeaderView::ResizeToContents);
-    setDefaultSectionSize(70);
+    setDefaultSectionSize(LeagueWindow::tableWidth);
 }
 
 void LeagueHorizontalHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
@@ -28,6 +29,10 @@ void LeagueHorizontalHeaderView::paintSection(QPainter *painter, const QRect &re
         painter->setPen(palette.color(QPalette::Text));
         QTextOption option;
         option.setAlignment(Qt::AlignCenter);
+        QFont font = painter->font();
+        font.setPointSize(10);
+        font.setBold(false);
+        painter->setFont(font);
         painter->drawText(rect, text, option);
     }
 

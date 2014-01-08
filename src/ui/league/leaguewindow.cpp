@@ -14,6 +14,8 @@
 #include "leagueplacementdelegate.h"
 #include "leagueplayerheaderview.h"
 
+int LeagueWindow::tableWidth = 35;
+
 LeagueWindow::LeagueWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::LeagueWindow),
@@ -41,8 +43,9 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->tableViewPlayer->setModel(m_classementModel);
     ui->tableViewPlayer->setPalette(darkPalette);
 
-    LeaguePlacementDelegate* placementDelegate = new LeaguePlacementDelegate(this);
-    ui->tableViewPlayer->setItemDelegate(placementDelegate);
+    LeagueDelegate* classementDelegate = new LeagueDelegate(this);
+    classementDelegate->setModel(LeagueDelegate::ClassementModel);
+    ui->tableViewPlayer->setItemDelegate(classementDelegate);
 
     LeaguePlayerHeaderView* playerHeaderView = new LeaguePlayerHeaderView(Qt::Vertical, this);
     playerHeaderView->setLeagueClassementModel(m_classementModel);
@@ -51,6 +54,8 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     LeagueHorizontalHeaderView* horizontalHeader = new LeagueHorizontalHeaderView(Qt::Horizontal, this);
     ui->tableViewPlayer->setHorizontalHeader(horizontalHeader);
 
+    LeagueDelegate* placementDelegate = new LeagueDelegate(this);
+    placementDelegate->setModel(LeagueDelegate::PlacementModel);
     ui->tableViewPlacement->setModel(m_gamePlacementModel);
     ui->tableViewPlacement->setPalette(darkPalette);
     ui->tableViewPlacement->setItemDelegate(placementDelegate);
@@ -67,6 +72,7 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->graphAxis->setPalette(darkPalette);
     ui->graphAxis->setGraph(ui->graphWidget);
     ui->graphWidget->stackUnder(ui->graphAxis);
+    ui->graphWidget->setCellWidth(tableWidth);
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 }
@@ -83,7 +89,7 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
     m_classementModel->setLeague(m_league);
     m_gamePlacementModel->setLeague(m_league);
 
-    ui->tableViewPlayer->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 191);
+    ui->tableViewPlayer->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
     ui->tableViewPlayer->setFixedHeight(ui->tableViewPlayer->horizontalHeader()->height() +
                                   (m_gamePlacementModel->rowCount()) * ui->tableViewPlayer->rowHeight(0));
     ui->tableViewPlacement->setFixedHeight(ui->tableViewPlacement->horizontalHeader()->height() +
@@ -92,7 +98,7 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
     ui->labelMatchday->setText(QString::number(League::currentMatchDayNumber));
 
     ui->graphWidget->setLeague(league);
-    ui->graphAxis->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 191);
+    ui->graphAxis->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
 
     ui->soloOverviewWidget->setGames(m_league->calculatedGames());
 

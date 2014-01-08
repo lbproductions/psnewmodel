@@ -21,7 +21,9 @@ class LeagueWindow : public QMainWindow
         void setLeague(QSharedPointer<League> league);
 
         void wheelEvent(QWheelEvent *e);
-        
+
+        static int tableWidth;
+
     signals:
         
     public slots:
