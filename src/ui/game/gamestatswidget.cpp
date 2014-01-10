@@ -61,21 +61,29 @@ void GameStatsWidget::update()
     if(m_roundAverageWeighted) {
         weight = 0.7;
     }
+    QFont f = ui->labelAverageRoundLabel->font();
+    f.setOverline(m_roundAverageWeighted);
+    ui->labelAverageRoundLabel->setFont(f);
 
     QTime roundLength = m_game->averageRoundLength(weight);
 
     QTime predictedTime;
+    QString formatTime;
     if(m_predictedTimeLeftShown) {
         predictedTime = m_game->predictedTimeToPlay(weight);
+        formatTime = "%1 h";
     }
     else {
+        formatTime = "%1";
         predictedTime = m_game->predictedEndTime(weight);
     }
 
     ui->labelRoundsToPlay->setText(QString::number(m_game->roundsToPlay()));
-    ui->labelTimeToPlay->setText(predictedTime.toString("hh:mm:ss"));
+    ui->labelTimeToPlay->setText(QString(formatTime)
+                                 .arg(predictedTime.toString("hh:mm")));
     ui->labelReContra->setText(QString::number(m_game->reWinsCount()) + " : " + QString::number(m_game->contraWinCount()));
-    ui->labelAverageRound->setText(roundLength.toString("hh:mm:ss"));
+    ui->labelAverageRound->setText(QString("%1 m")
+                                   .arg(roundLength.toString("m:ss")));
 
     if (ui->verticalLayoutGamesTogether) {
         QLayoutItem* item;
@@ -102,12 +110,12 @@ void GameStatsWidget::togglePredictedTime()
 {
     if(m_predictedTimeLeftShown) {
         m_predictedTimeLeftShown = false;
-        ui->labelPredictedTimeLabel->setText(tr("Predicted end:"));
+        ui->labelPredictedTimeLabel->setText(tr("End:"));
         ui->labelPredictedTimeLabel->setToolTip(tr("Click to show predicted time left"));
     }
     else {
         m_predictedTimeLeftShown = true;
-        ui->labelPredictedTimeLabel->setText(tr("Predicted time to play:"));
+        ui->labelPredictedTimeLabel->setText(tr("ETA:"));
         ui->labelPredictedTimeLabel->setToolTip(tr("Click to show predicted end time"));
     }
 
@@ -120,12 +128,12 @@ void GameStatsWidget::toggleWeightedAverageRoundTime()
 {
     if(m_roundAverageWeighted) {
         m_roundAverageWeighted = false;
-        ui->labelAverageRoundLabel->setText(tr("Average round length:"));
+        ui->labelAverageRoundLabel->setText(tr("\u00D8Length:"));
         ui->labelAverageRoundLabel->setToolTip(tr("Click to show weighted average"));
     }
     else {
         m_roundAverageWeighted = true;
-        ui->labelAverageRoundLabel->setText(tr("Weighted round length:"));
+        ui->labelAverageRoundLabel->setText(tr("\u00D8Length:"));
         ui->labelAverageRoundLabel->setToolTip(tr("Click to show unweighted"));
     }
 
