@@ -260,10 +260,15 @@ void NewRoundDialog::checkSoloRoundContents()
 {
     QSharedPointer<Game> game = static_cast<QSharedPointer<Game> >(m_doppelkopfRound->game());
 
-    if(ui->comboBoxSoloType->currentText() == "Trumpf" || ui->comboBoxSoloType->currentText() == "Stille Hochzeit"
-       || ui->comboBoxSoloType->currentText() == "Sitzengelassene Hochzeit" || ui->comboBoxSoloType->currentText() == "Falsch gespielt") {
+    if(ui->comboBoxSoloType->currentText() == "Trumpf" || ui->comboBoxSoloType->currentText() == "Falsch gespielt") {
         ui->comboBoxSoloSchweine->setEnabled(true);
         ui->comboBoxSoloHochzeit->setEnabled(true);
+    }
+    else if(ui->comboBoxSoloType->currentText() == "Stille Hochzeit"
+            || ui->comboBoxSoloType->currentText() == "Sitzengelassene Hochzeit") {
+        ui->comboBoxSoloHochzeit->setEnabled(false);
+        ui->comboBoxSoloHochzeit->setCurrentPlayer(ui->comboBoxSoloPlayer->currentPlayer());
+        ui->comboBoxSoloSchweine->setEnabled(true);
     }
     else {
         ui->comboBoxSoloSchweine->setEnabled(false);
