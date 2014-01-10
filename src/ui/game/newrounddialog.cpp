@@ -45,6 +45,9 @@ NewRoundDialog::NewRoundDialog(QWidget *parent) :
     connect(ui->comboBoxTrumpfabgabeAccept, SIGNAL(currentIndexChanged(int)), this, SLOT(checkTrumpfabgabeRoundContents()));
     connect(ui->spinBoxTrumpfabgabePoints,SIGNAL(valueChanged(int)),this, SLOT(checkTrumpfabgabeRoundContents()));
 
+    connect(ui->spinBoxTrumpfCount, SIGNAL(valueChanged(int)),
+            this, SLOT(checkTrumpfabgabeRoundContents()));
+
     connect(ui->buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(setCurrentPage(int)));
 
     connect(ui->buttonBox->button(QDialogButtonBox::Save), SIGNAL(clicked()), this, SLOT(save()));
@@ -139,6 +142,18 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
         ui->spinBoxNormalPoints->setValue(round->points(round->re1Player()));
         ui->spinBoxTrumpfabgabePoints->setValue(round->points(round->re1Player()));
         ui->spinBoxHochzeitPoints->setValue(round->points(round->re1Player()));
+
+        if(round->trumpfCount() < 0) {
+            ui->spinBoxTrumpfCount->setMinimum(0);
+            ui->spinBoxTrumpfCount->setSpecialValueText(tr("?"));
+            ui->spinBoxTrumpfCount->setValue(0); // Displays as '?'
+            ui->checkBoxTrumpfZurueck->setEnabled(false);
+        }
+        else {
+            ui->checkBoxTrumpfZurueck->setChecked(round->trumpfZurueck());
+            ui->spinBoxTrumpfCount->setValue(round->trumpfCount());
+        }
+
         if(round->isSolo()) {
             ui->spinBoxSoloPoints->setValue(round->points(round->re1Player()) / 3);
         }
@@ -353,6 +368,8 @@ void NewRoundDialog::checkTrumpfabgabeRoundContents()
     ui->comboBoxTrumpfabgabePlayer->addPlayers(m_doppelkopfRound->playingPlayers());
     ui->comboBoxTrumpfabgabeAccept->addPlayers(m_doppelkopfRound->playingPlayers());
 
+    ui->checkBoxTrumpfZurueck->setEnabled(ui->spinBoxTrumpfCount->value() > 0);
+
     if(ui->comboBoxTrumpfabgabePlayer->currentPlayer()) {
         ui->comboBoxTrumpfabgabeAccept->removePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
     }
@@ -551,6 +568,11 @@ void NewRoundDialog::saveTrumpfabgabeRound()
     m_doppelkopfRound->setComment(ui->textEditTrumpfabgabeComment->toPlainText());
     if(ui->comboBoxTrumpfabgabeSchweine->currentPlayer())
         m_doppelkopfRound->setSchweinereiPlayer(ui->comboBoxTrumpfabgabeSchweine->currentPlayer());
+
+    if(ui->spinBoxTrumpfCount->value() > 0) {
+        m_doppelkopfRound->setTrumpfCount(ui->spinBoxTrumpfCount->value());
+        m_doppelkopfRound->setTrumpfZurueck(ui->checkBoxTrumpfZurueck->isChecked());
+    }
 
     int contraPlayers = 0;
     foreach(QSharedPointer<Player> p, m_doppelkopfRound->playingPlayers()) {

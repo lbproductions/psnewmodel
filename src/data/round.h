@@ -32,6 +32,8 @@ class Round : public QObject
     Q_PROPERTY(int winnerParty READ _winnerParty WRITE _setWinnerParty)
     Q_PROPERTY(int state READ _state WRITE _setState)
     Q_PROPERTY(int trumpfColor READ _trumpfColor WRITE _setTrumpfColor)
+    Q_PROPERTY(int trumpfCount READ trumpfCount WRITE setTrumpfCount)
+    Q_PROPERTY(bool trumpfZurueck READ trumpfZurueck WRITE setTrumpfZurueck)
 
     Q_PROPERTY(QMap<int COMMA int> points READ _points WRITE _setPoints)
 
@@ -216,6 +218,12 @@ public:
     Round::HochzeitDecision hochzeitDecision() const;
     void setHochzeitDecision(Round::HochzeitDecision arg);
 
+    int trumpfCount() const;
+    void setTrumpfCount(int arg);
+
+    bool trumpfZurueck() const;
+    void setTrumpfZurueck(bool arg);
+
 signals:
     void schmeissereiAdded();
 
@@ -268,6 +276,8 @@ private:
     QpWeakRelation<Player> m_contra2Player;
     QpWeakRelation<Player> m_contra3Player;
     Round::HochzeitDecision m_hochzeitDecision;
+    int m_trumpfCount;
+    bool m_trumpfZurueck;
 };
 
 Q_DECLARE_METATYPE(Round::HochzeitDecision)
