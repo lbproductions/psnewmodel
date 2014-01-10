@@ -3,49 +3,52 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class NewRoundDialog;
-}
+#include <data/round.h>
 
-class Round;
+namespace Ui {
+class NewRoundDialog;
+}
 
 class NewRoundDialog : public QDialog
 {
-        Q_OBJECT
+    Q_OBJECT
 
-    public:
+public:
 
-        enum Context{
-            NewRound,
-            EditRound
-        };
+    enum Context{
+        NewRound,
+        EditRound
+    };
 
-        explicit NewRoundDialog(QWidget *parent = 0);
-        ~NewRoundDialog();
+    explicit NewRoundDialog(QWidget *parent = 0);
+    ~NewRoundDialog();
 
-        QSharedPointer<Round> doppelkopfRound() const;
-        void setRound(QSharedPointer<Round> doppelkopfRound, Context context = NewRound);
+    QSharedPointer<Round> doppelkopfRound() const;
+    void setRound(QSharedPointer<Round> doppelkopfRound, Context context = NewRound);
 
-    private slots:
-        void setCurrentPage(int);
+private slots:
+    void setCurrentPage(int);
 
-        void checkNormalRoundContents();
-        void checkHochzeitRoundContents();
-        void checkSoloRoundContents();
-        void checkTrumpfabgabeRoundContents();
+    void checkNormalRoundContents();
+    void checkHochzeitRoundContents();
+    void checkSoloRoundContents();
+    void checkTrumpfabgabeRoundContents();
 
-        void save();
-        void saveNormalRound();
-        void saveHochzeitRound();
-        void saveSoloRound();
-        void saveTrumpfabgabeRound();
+    void save();
+    void saveNormalRound();
+    void saveHochzeitRound();
+    void saveSoloRound();
+    void saveTrumpfabgabeRound();
 
-        void on_buttonBox_rejected();
+    void on_buttonBox_rejected();
 
-    private:
-        Ui::NewRoundDialog *ui;
-        QSharedPointer<Round> m_doppelkopfRound;
-        Context m_context;
+private:
+    Ui::NewRoundDialog *ui;
+    QSharedPointer<Round> m_doppelkopfRound;
+    Context m_context;
+
+    Round::HochzeitDecision hochzeitDecisionFromText(const QString &text);
+    QString textFromHochzeitDecision(Round::HochzeitDecision d);
 };
 
 #endif // NEWROUNDDIALOG_H

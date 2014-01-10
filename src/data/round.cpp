@@ -28,7 +28,8 @@ Round::Round(QObject *parent) :
     m_re2Player("re2Player",this),
     m_contra1Player("contra1Player",this),
     m_contra2Player("contra2Player",this),
-    m_contra3Player("contra3Player",this)
+    m_contra3Player("contra3Player",this),
+    m_hochzeitDecision(Round::UnkownHochzeitDecision)
 {
 }
 
@@ -579,4 +580,18 @@ Round::SoloType Round::soloTypeFromString(const QString &typeString)
 
     typeIndex += 2; // UnkownSolo and NoSolo
     return static_cast<Round::SoloType>(typeIndex);
+}
+
+Round::HochzeitDecision Round::hochzeitDecision() const
+{
+    return m_hochzeitDecision;
+}
+
+
+void Round::setHochzeitDecision(Round::HochzeitDecision arg)
+{
+    if(arg > Round::ErsterTrumpf)
+        arg = Round::UnkownHochzeitDecision;
+
+    m_hochzeitDecision = arg;
 }
