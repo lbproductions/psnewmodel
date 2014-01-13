@@ -335,22 +335,22 @@ double PlayerStatistics::roundWinsPercentage() const
 
 double PlayerStatistics::rePercentage() const
 {
-    return percentage(reRounds().size(), rounds().size());
+    return percentage(reRounds().size() * 100, rounds().size());
 }
 
 double PlayerStatistics::reWinsPercentage() const
 {
-    return percentage(reWins().size(), reRounds().size());
+    return percentage(reWins().size() * 100, reRounds().size());
 }
 
 double PlayerStatistics::contraPercentage() const
 {
-    return percentage(contraRounds().size(), rounds().size());
+    return percentage(contraRounds().size() * 100, rounds().size());
 }
 
 double PlayerStatistics::contraWinsPercentage() const
 {
-    return percentage(contraWins().size(), contraRounds().size());
+    return percentage(contraWins().size() * 100, contraRounds().size());
 }
 
 double PlayerStatistics::averagePointsPerRound() const

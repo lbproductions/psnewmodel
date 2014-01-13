@@ -1,11 +1,14 @@
-#ifndef PLAYERSTATSWIDGET_H
+ #ifndef PLAYERSTATSWIDGET_H
 #define PLAYERSTATSWIDGET_H
 
 #include <QWidget>
 #include <QLabel>
+
 #include <QPushButton>
+#include <QProgressBar>
 
 class Player;
+class PlayerStatistics;
 class Game;
 
 class PlayerStatsWidget : public QWidget
@@ -16,19 +19,23 @@ class PlayerStatsWidget : public QWidget
 
         QString getDrinkString();
 
-        QString getRoundsTogetherString();
-
     signals:
         
     public slots:
         void update();
 
     private:
+        QColor percentageColor(double percentage);
+
         QSharedPointer<Player> m_player;
         QSharedPointer<Game> m_game;
 
         QLabel* m_drinkLabel;
-        QLabel* m_roundsTogetherLabel;
+        QProgressBar* m_reContraBar;
+        QProgressBar* m_reWinBar;
+        QProgressBar* m_contraWinBar;
+
+        PlayerStatistics* m_playerStats;
         
 };
 

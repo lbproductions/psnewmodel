@@ -2,6 +2,9 @@
 
 #include <QFile>
 #include <QPainter>
+#include <QColor>
+#include <QDebug>
+
 #include <data/player.h>
 
 void Tools::setStyleSheetFromResource(const QString &resource, QWidget *widget, const QString &additionalStyles)
@@ -14,6 +17,20 @@ void Tools::setStyleSheetFromResource(const QString &resource, QWidget *widget, 
     Q_ASSERT(file.open(QFile::ReadOnly));
     widget->setStyleSheet(QString(file.readAll()).append(additionalStyles));
     file.close();
+}
+
+QString Tools::progressBarStyleSheet(QColor color)
+{
+    QString rgbString = QString("rgb(") + QString::number(qRed(color.rgb())) + ","
+            + QString::number(qGreen(color.rgb())) + ","
+            + QString::number(qBlue(color.rgb())) + ")";
+
+    QString returnValue = QString("QProgressBar{border: 1px solid white; padding: 1px; border-radius: 7px; background: transparent; width: 15px; color:white;}")
+            + " QProgressBar::chunk {background: " + rgbString + "; border-radius: 7px;}";
+
+    qDebug() << returnValue;
+
+    return returnValue;
 }
 
 QVariant Tools::percentageString(double percentage)

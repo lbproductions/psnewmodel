@@ -88,7 +88,7 @@ void GameStatsWidget::update()
                                    .arg(roundLength.toString("m:ss")));
 
     ui->progressBarGamePercentage->setValue(m_game->completedPercentage());
-    ui->progressBarGamePercentage->setFormat("Game complete: "+QLocale().toString(m_game->completedPercentage(), 'g', 2)+"%");
+    ui->progressBarGamePercentage->setFormat("Game complete: "+QString::number((int)m_game->completedPercentage())+"%");
 
     if (ui->verticalLayoutGamesTogether) {
         QLayoutItem* item;
