@@ -35,7 +35,9 @@ class SettingsWidget : public QWidget
 
         void on_checkBoxShowExtraRows_clicked(bool checked);
 
-    private:
+        void on_checkBoxGameCompleted_clicked(bool checked);
+
+private:
         Ui::SettingsWidget *ui;
 };
 

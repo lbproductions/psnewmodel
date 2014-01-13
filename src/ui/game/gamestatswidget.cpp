@@ -25,6 +25,8 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     connect(ui->labelAverageRoundLabel, &ClickableLabel::pressed,
             this, &GameStatsWidget::toggleWeightedAverageRoundTime);
 
+    ui->progressBarGamePercentage->setTextVisible(true);
+
     // read negated values and toggle once to reflect correct state
     QSettings settings;
     m_predictedTimeLeftShown = !settings.value("gamewindow/statswidget/predictedTimeLeftShown", true).toBool();
@@ -84,6 +86,9 @@ void GameStatsWidget::update()
     ui->labelReContra->setText(QString::number(m_game->reWinsCount()) + " : " + QString::number(m_game->contraWinCount()));
     ui->labelAverageRound->setText(QString("%1 m")
                                    .arg(roundLength.toString("m:ss")));
+
+    ui->progressBarGamePercentage->setValue(m_game->completedPercentage());
+    ui->progressBarGamePercentage->setFormat("Game complete: "+QLocale().toString(m_game->completedPercentage(), 'g', 2)+"%");
 
     if (ui->verticalLayoutGamesTogether) {
         QLayoutItem* item;

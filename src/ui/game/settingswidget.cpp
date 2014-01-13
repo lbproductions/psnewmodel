@@ -13,6 +13,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui->radioButtonPlacement->setStyleSheet("color:white");
     ui->radioButtonPosition->setStyleSheet("color:white");
     ui->groupBox->setStyleSheet("color:white");
+    ui->groupBox_2->setStyleSheet("color: white;");
 
     if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
         ui->radioButtonPlacement->setChecked(true);
@@ -41,6 +42,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     }
 
     ui->checkBoxShowExtraRows->setChecked(GameSettings::instance().showExtraRows());
+    ui->checkBoxGameCompleted->setChecked(GameSettings::instance().gamePercentageWarning());
 }
 
 SettingsWidget::~SettingsWidget()
@@ -112,4 +114,9 @@ void SettingsWidget::on_radioButtonTableTotalPoints_clicked(bool checked)
 void SettingsWidget::on_checkBoxShowExtraRows_clicked(bool checked)
 {
     GameSettings::instance().setShowExtraRows(checked);
+}
+
+void SettingsWidget::on_checkBoxGameCompleted_clicked(bool checked)
+{
+    GameSettings::instance().setGamePercentageWarning(checked);
 }

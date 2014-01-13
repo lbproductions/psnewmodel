@@ -37,6 +37,9 @@ class GameSettings : public QObject
         bool showExtraRows();
         void setShowExtraRows(bool showExtraRows);
 
+        bool gamePercentageWarning();
+        void setGamePercentageWarning(bool warning);
+
     signals:
         void playerSortChanged(PlayerSort sort);
         void pointsDisplayChanged(PointsDisplay display);
@@ -45,6 +48,7 @@ class GameSettings : public QObject
 
     private:
         GameSettings(QObject* _parent = 0);
+        ~GameSettings();
 
         static GameSettings* m_instance;
 
@@ -53,6 +57,8 @@ class GameSettings : public QObject
         TableDisplay m_tableDisplay;
 
         bool m_showExtraRows;
+
+        bool m_gamePercentageWarning;
 };
 
 

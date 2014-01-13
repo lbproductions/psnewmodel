@@ -29,6 +29,8 @@
 #include <QPushButton>
 #include <QModelIndex>
 
+#include <QMessageBox>
+
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
@@ -250,12 +252,22 @@ void GameWindow::on_actionAdd_round_triggered()
     setPopupWidget(popup);
 
     //connect(dialog, &QDialog::accepted,
-            //this, &GameWindow::onNewRoundStarted);
+    //this, &GameWindow::onNewRoundStarted);
 }
 
 void GameWindow::onNewRoundStarted()
 {
     ui->graphWidget->updateGraphs();
+
+    if(GameSettings::instance().gamePercentageWarning()) {
+        int oldPercentage = (m_game->rounds().size()-2) * 100 / m_game->totalRoundCount();
+        if(oldPercentage < 50 && m_game->completedPercentage() >= 50) {
+            QMessageBox box(this);
+            box.setPalette(Tools::darkPalette(&box));
+            box.setText(tr("This game is to 50% complete!"));
+            box.exec();
+        }
+    }
 }
 
 void GameWindow::on_actionAdd_schmeisserei_triggered()
@@ -486,7 +498,7 @@ void GameWindow::on_toolButtonSettings_clicked()
 
     popup->setWidget(setWidget);
     popup->setMinimumWidth(400);
-    popup->setMinimumHeight(400);
+    popup->setMinimumHeight(500);
     popup->anchorTo(ui->toolButtonSettings);
     popup->show();
     setPopupWidget(popup);
@@ -495,7 +507,7 @@ void GameWindow::on_toolButtonSettings_clicked()
 void GameWindow::updateSizes()
 {
     ui->tableViewOverview->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
-                                  (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
+                                          (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
     ui->tableViewInformation->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
                                              (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);

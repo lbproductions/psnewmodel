@@ -1,5 +1,7 @@
 #include "settings.h"
 
+#include <QSettings>
+
 GameSettings::GameSettings(QObject *_parent):
     QObject(_parent),
     m_sort(SortByPosition),
@@ -7,6 +9,22 @@ GameSettings::GameSettings(QObject *_parent):
     m_tableDisplay(RoundPoints),
     m_showExtraRows(true)
 {
+    QSettings settings;
+    m_sort = static_cast<PlayerSort>(settings.value("gamewindow/settings/playerSort", 0).toInt());
+    m_pointsDisplay = static_cast<PointsDisplay>(settings.value("gamewindow/settings/pointsDisplay", 0).toInt());
+    m_tableDisplay = static_cast<TableDisplay>(settings.value("gamewindow/settings/tableDisplay", 0).toInt());
+    m_showExtraRows = settings.value("gamewindow/settings/showExtraRows", true).toBool();
+    m_gamePercentageWarning = settings.value("gamewindow/settings/gamePercentageWarning", false).toBool();
+}
+
+GameSettings::~GameSettings()
+{
+    QSettings settings;
+    settings.setValue("gamewindow/settings/playerSort", m_sort);
+    settings.setValue("gamewindow/settings/pointsDisplay", m_pointsDisplay);
+    settings.setValue("gamewindow/settings/tableDisplay", m_tableDisplay);
+    settings.setValue("gamewindow/settings/showExtraRows", m_showExtraRows);
+    settings.setValue("gamewindow/settings/gamePercentageWarning", m_gamePercentageWarning);
 }
 
 GameSettings &GameSettings::instance()
@@ -61,4 +79,14 @@ void GameSettings::setShowExtraRows(bool showExtraRows)
     m_showExtraRows = showExtraRows;
 
     emit showExtraRowsChanged(m_showExtraRows);
+}
+
+bool GameSettings::gamePercentageWarning()
+{
+    return m_gamePercentageWarning;
+}
+
+void GameSettings::setGamePercentageWarning(bool warning)
+{
+    m_gamePercentageWarning = warning;
 }
