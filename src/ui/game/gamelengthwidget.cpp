@@ -14,6 +14,13 @@ GameLengthWidget::GameLengthWidget(QWidget *parent) :
 void GameLengthWidget::setGame(QSharedPointer<Game> _game)
 {
     m_game = _game;
+
+    connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
+}
+
+void GameLengthWidget::update()
+{
+    this->repaint();
 }
 
 void GameLengthWidget::paintEvent(QPaintEvent *event)
