@@ -6,48 +6,47 @@
 #include <misc/tools.h>
 
 GamesTogetherWidget::GamesTogetherWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GamesTogetherWidget)
+    QTreeWidget(parent)
 {
-    ui->setupUi(this);
+        //this->setStyleSheet("QHeaderView::section {background-color:transparent;}");
 
     this->setPalette(Tools::darkPalette(this));
+    this->setColumnCount(5);
 
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButton);
-
-    ui->treeWidgetGamesTogether->setPalette(Tools::darkPalette(ui->treeWidgetGamesTogether));
 }
 
 GamesTogetherWidget::~GamesTogetherWidget()
 {
-    delete ui;
 }
 
 void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players)
 {
+    m_players = players;
+    m_games = games;
+
+    int index = 0;
     for(int i = 0; i<players.size(); i++) {
         for(int j = i+1; j<players.size(); j++) {
-            int gameCount = 0;
-            int wins = 0;
-            foreach(QSharedPointer<Game> game, games) {
-                gameCount += game->roundsTogether(players.at(i), players.at(j));
-                wins += game->winsTogether(players.at(i), players.at(j));
-            }
-
-            QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidgetGamesTogether);
+            QTreeWidgetItem* item = new QTreeWidgetItem(this);
             item->setIcon(0, QIcon(Tools::playersColorPixmap(players.at(i), players.at(j))));
-            //item->setIcon(1, QIcon(players.at(j)->colorPixmap(10,10)));
-            item->setText(0, players.at(i)->name() + " - " + players.at(j)->name());
-            item->setData(1, Qt::DisplayRole, wins);
-            item->setData(2, Qt::DisplayRole, gameCount);
-            item->setData(3, Qt::DisplayRole, Tools::percentage(wins, gameCount));
-            item->setTextAlignment(3, Qt::AlignRight);
+            QString playersString = players.at(i)->name() + " - " + players.at(j)->name();
+            item->setText(0, playersString);
 
-            ui->treeWidgetGamesTogether->addTopLevelItem(item);
+            m_indexes.insert(playersString, index);
+            this->addTopLevelItem(item);
+
+            index++;
         }
-
     }
 
+    update();
+
+    foreach(QSharedPointer<Game> game, games) {
+        connect(game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
+    }
+
+    resizeColumnToContents(0);
+    /*
     ui->treeWidgetGamesTogether->resizeColumnToContents(0);
     ui->treeWidgetGamesTogether->resizeColumnToContents(1);
     //ui->treeWidgetGamesTogether->header()->resizeSection(1, 25);
@@ -59,18 +58,33 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
 
     ui->treeWidgetGamesTogether->setMinimumWidth(250);
     ui->treeWidgetGamesTogether->sortByColumn(3);
-
-}
-
-QTreeWidget *GamesTogetherWidget::gamesTogetherWidget()
-{
-    if(!ui)
-        return 0;
-
-    return ui->treeWidgetGamesTogether;
+    */
 }
 
 void GamesTogetherWidget::update()
 {
+    for(int i = 0; i<m_players.size(); i++) {
+        for(int j = i+1; j<m_players.size(); j++) {
 
+            int gameCount = 0;
+            int wins = 0;
+            foreach(QSharedPointer<Game> game, m_games) {
+                gameCount += game->roundsTogether(m_players.at(i), m_players.at(j));
+                wins += game->winsTogether(m_players.at(i), m_players.at(j));
+            }
+
+            QString playersString = m_players.at(i)->name() + " - " + m_players.at(j)->name();
+            QTreeWidgetItem* item = this->topLevelItem(m_indexes.value(playersString));
+            item->setData(1, Qt::DisplayRole, wins);
+            item->setData(2, Qt::DisplayRole, gameCount);
+            item->setData(3, Qt::DisplayRole, Tools::percentage(wins, gameCount));
+            item->setTextAlignment(3, Qt::AlignRight);
+        }
+    }
+
+
+    resizeColumnToContents(1);
+    resizeColumnToContents(2);
+    resizeColumnToContents(3);
+    sortByColumn(3);
 }

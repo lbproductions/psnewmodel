@@ -55,6 +55,8 @@ void GameStatsWidget::setGame(QSharedPointer<Game> game)
 {
     m_game = game;
 
+    ui->gamesTogetherWidget->setData(QList<QSharedPointer<Game> >() << game, m_game->players());
+
     connect(m_game.data(), &Game::lengthChanged,
             this, &GameStatsWidget::update);
 
@@ -99,6 +101,9 @@ void GameStatsWidget::update()
     ui->labelReContra->setText(QString::number(m_game->reWinsCount()) + " : " + QString::number(m_game->contraWinCount()));
     ui->labelAverageRound->setText(QString("%1 m")
                                    .arg(roundLength.toString("m:ss")));
+
+
+
 
     /*
     //TODO: TreeWidget aus GamesTogetherWidget auslagern und mit update-Methode ausstatten

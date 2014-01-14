@@ -4,29 +4,27 @@
 #include <QWidget>
 #include <QTreeWidget>
 
-namespace Ui {
-    class GamesTogetherWidget;
-}
-
 class Game;
 class Player;
 
-class GamesTogetherWidget : public QWidget
+class GamesTogetherWidget : public QTreeWidget
 {
-        Q_OBJECT
-        
-    public:
-        explicit GamesTogetherWidget(QWidget *parent = 0);
-        ~GamesTogetherWidget();
+    Q_OBJECT
 
-        void setData(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
+public:
+    explicit GamesTogetherWidget(QWidget *parent = 0);
+    ~GamesTogetherWidget();
 
-        QTreeWidget* gamesTogetherWidget();
+    void setData(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
 
-        void update();
-        
-    private:
-        Ui::GamesTogetherWidget *ui;
+private slots:
+    void update();
+
+private:
+    QList<QSharedPointer<Game> > m_games;
+    QList<QSharedPointer<Player> > m_players;
+
+    QHash<QString,int> m_indexes;
 };
 
 #endif // GAMESTOGETHERWIDGET_H

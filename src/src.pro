@@ -171,7 +171,6 @@ FORMS += \
     ui/league/leaguewindow.ui \
     ui/widgets/solooverviewwidget.ui \
     ui/widgets/totalpointswidget.ui \
-    ui/widgets/gamestogetherwidget.ui \
     ui/widgets/gameswidget.ui \
     ui/game/commentwidget.ui \
     ui/game/stopgamewidget.ui \
