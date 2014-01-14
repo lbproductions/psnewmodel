@@ -85,7 +85,8 @@ SOURCES += main.cpp \
     ui/widgets/biggestdistancewidget.cpp \
     ui/game/settingswidget.cpp \
     misc/settings.cpp \
-    ui/widgets/clickablelabel.cpp
+    ui/widgets/clickablelabel.cpp \
+    ui/game/gamelengthwidget.cpp
 
 
 HEADERS  += \
@@ -154,7 +155,8 @@ HEADERS  += \
     ui/game/settingswidget.h \
     misc/settings.h \
     local_dbconfig.h \
-    ui/widgets/clickablelabel.h
+    ui/widgets/clickablelabel.h \
+    ui/game/gamelengthwidget.h
 
 
 FORMS += \

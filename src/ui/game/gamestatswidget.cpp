@@ -11,7 +11,8 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::GameStatsWidget),
     m_predictedTimeLeftShown(true),
-    m_roundAverageWeighted(false)
+    m_roundAverageWeighted(false),
+    m_roundsToPlay(true)
 {
     ui->setupUi(this);
 
@@ -25,14 +26,19 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     connect(ui->labelAverageRoundLabel, &ClickableLabel::pressed,
             this, &GameStatsWidget::toggleWeightedAverageRoundTime);
 
-    ui->progressBarGamePercentage->setTextVisible(true);
+    connect(ui->labelRoundsToPlay, &ClickableLabel::pressed,
+            this, &GameStatsWidget::toggleRoundsToPlay);
+    connect(ui->labelRoundsToPlayLabel, &ClickableLabel::pressed,
+            this, &GameStatsWidget::toggleRoundsToPlay);
 
     // read negated values and toggle once to reflect correct state
     QSettings settings;
     m_predictedTimeLeftShown = !settings.value("gamewindow/statswidget/predictedTimeLeftShown", true).toBool();
     m_roundAverageWeighted = !settings.value("gamewindow/statswidget/roundAverageWeighted", false).toBool();
+    m_roundsToPlay = !settings.value("gamewindow/statswidget/roundsToPlay", true).toBool();
     toggleWeightedAverageRoundTime();
     togglePredictedTime();
+    toggleRoundsToPlay();
 }
 
 GameStatsWidget::~GameStatsWidget()
@@ -42,6 +48,7 @@ GameStatsWidget::~GameStatsWidget()
     QSettings settings;
     settings.setValue("gamewindow/statswidget/predictedTimeLeftShown", m_predictedTimeLeftShown);
     settings.setValue("gamewindow/statswidget/roundAverageWeighted", m_roundAverageWeighted);
+    settings.setValue("gamewindow/statswidget/roundsToPlay", m_roundsToPlay);
 }
 
 void GameStatsWidget::setGame(QSharedPointer<Game> game)
@@ -80,23 +87,18 @@ void GameStatsWidget::update()
         predictedTime = m_game->predictedEndTime(weight);
     }
 
-    ui->labelRoundsToPlay->setText(QString::number(m_game->roundsToPlay()));
+    if(m_roundsToPlay) {
+        ui->labelRoundsToPlay->setText(QString::number(m_game->roundsToPlay()));
+    }
+    else {
+        ui->labelRoundsToPlay->setText(QString::number((int)m_game->completedPercentage()) + "%");
+    }
+
     ui->labelTimeToPlay->setText(QString(formatTime)
                                  .arg(predictedTime.toString("hh:mm")));
     ui->labelReContra->setText(QString::number(m_game->reWinsCount()) + " : " + QString::number(m_game->contraWinCount()));
     ui->labelAverageRound->setText(QString("%1 m")
                                    .arg(roundLength.toString("m:ss")));
-
-    ui->progressBarGamePercentage->setValue(m_game->completedPercentage());
-    ui->progressBarGamePercentage->setFormat("Game complete: "+QString::number((int)m_game->completedPercentage())+"%");
-
-    if (ui->verticalLayoutGamesTogether) {
-        QLayoutItem* item;
-        while ((item = ui->verticalLayoutGamesTogether->takeAt(0))) {
-            delete item->widget();
-            delete item;
-        }
-    }
 
     /*
     //TODO: TreeWidget aus GamesTogetherWidget auslagern und mit update-Methode ausstatten
@@ -143,6 +145,20 @@ void GameStatsWidget::toggleWeightedAverageRoundTime()
     }
 
     ui->labelAverageRound->setToolTip(ui->labelAverageRoundLabel->toolTip());
+
+    update();
+}
+
+void GameStatsWidget::toggleRoundsToPlay()
+{
+    m_roundsToPlay = !m_roundsToPlay;
+
+    if(m_roundsToPlay) {
+        ui->labelRoundsToPlayLabel->setText(tr("Rounds to play:"));
+    }
+    else {
+        ui->labelRoundsToPlayLabel->setText(tr("Game completed:"));
+    }
 
     update();
 }

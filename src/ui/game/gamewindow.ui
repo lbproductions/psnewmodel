@@ -94,10 +94,13 @@ QWidget#widgetCreateGame {
        <number>1</number>
       </property>
       <widget class="QWidget" name="verticalLayoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
         <property name="spacing">
          <number>0</number>
         </property>
+        <item>
+         <widget class="GameLengthWidget" name="gameLengthWidget" native="true"/>
+        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
           <property name="spacing">
@@ -368,8 +371,8 @@ QWidget#widgetCreateGame {
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>667</width>
-             <height>93</height>
+             <width>668</width>
+             <height>83</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
@@ -749,6 +752,12 @@ QWidget#widgetCreateGame {
    <class>PlacesComboBox</class>
    <extends>QComboBox</extends>
    <header location="global">ui/widgets/placescombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>GameLengthWidget</class>
+   <extends>QWidget</extends>
+   <header>ui/game/gamelengthwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

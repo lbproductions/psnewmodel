@@ -55,9 +55,21 @@ QTime Game::length() const
     foreach(QSharedPointer<Round> r, rounds()) {
         QTime t = r->length();
         int secs = t.hour() * 60 * 60
-                   + t.minute() * 60
-                   + t.second();
+                + t.minute() * 60
+                + t.second();
         time = time.addSecs(secs);
+    }
+    return time;
+}
+
+QTime Game::finishedRoundsLength() const
+{
+    QTime time(0,0,0);
+    foreach(QSharedPointer<Round> r, rounds()) {
+        if(r->state() == Round::Finished) {
+            QTime t = r->length();
+            time = time.addSecs(QTime(0,0,0).secsTo(t));
+        }
     }
     return time;
 }
@@ -77,8 +89,8 @@ QTime Game::averageRoundLength(double weight) const
 
         QTime t = r->length();
         double secs = t.hour() * 60 * 60
-                   + t.minute() * 60
-                   + t.second();
+                + t.minute() * 60
+                + t.second();
         if(weightedAverageSecs == 0) {
             weightedAverageSecs = secs;
         }
@@ -109,15 +121,15 @@ Game::State Game::state() const
         return UnkownState;
 
     switch(r->state()) {
-        case Round::Finished:
-            return Finished;
-        case Round::Running:
-            return Running;
-        case Round::Paused:
-            return Paused;
-        case Round::UnkownState:
-        default:
-            return UnkownState;
+    case Round::Finished:
+        return Finished;
+    case Round::Running:
+        return Running;
+    case Round::Paused:
+        return Paused;
+    case Round::UnkownState:
+    default:
+        return UnkownState;
     }
 
     return UnkownState;
@@ -135,23 +147,23 @@ void Game::setState(State state)
         return;
 
     switch(state) {
-        case Finished:
-            r->setState(Round::Finished);
-            Qp::remove<Round>(r);
-            emit stateChanged();
-            return;
-        case Running:
-            r->setState(Round::Running);
-            emit stateChanged();
-            return;
-        case Paused:
-            r->setState(Round::Paused);
-            emit stateChanged();
-            return;
-        case UnkownState:
-        default:
-            r->setState(Round::UnkownState);
-            return;
+    case Finished:
+        r->setState(Round::Finished);
+        Qp::remove<Round>(r);
+        emit stateChanged();
+        return;
+    case Running:
+        r->setState(Round::Running);
+        emit stateChanged();
+        return;
+    case Paused:
+        r->setState(Round::Paused);
+        emit stateChanged();
+        return;
+    case UnkownState:
+    default:
+        r->setState(Round::UnkownState);
+        return;
     }
 
     emit stateChanged();
@@ -181,15 +193,15 @@ QPixmap Game::statePixmap() const
     static const QPixmap FinishedStatePixmap(":/general/state-finished.png");
 
     switch(state()) {
-        case Finished:
-            return FinishedStatePixmap;
-        case Running:
-            return RunningStatePixmap;
-        case Paused:
-            return PausedStatePixmap;
-        case UnkownState:
-        default:
-            break;
+    case Finished:
+        return FinishedStatePixmap;
+    case Running:
+        return RunningStatePixmap;
+    case Paused:
+        return PausedStatePixmap;
+    case UnkownState:
+    default:
+        break;
     }
 
     return QPixmap();
@@ -344,7 +356,7 @@ int Game::roundsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player
         if(round->state() == Round::Finished) {
             if(round->playingPlayers().contains(playerOne) && round->playingPlayers().contains(playerTwo)) {
                 if((round->rePlayers().contains(playerOne) && round->rePlayers().contains(playerTwo)) ||
-                   (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
+                        (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
                     count++;
                 }
             }
@@ -362,7 +374,7 @@ int Game::winsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> 
         if(round->state() == Round::Finished) {
             if(round->playingPlayers().contains(playerOne) && round->playingPlayers().contains(playerTwo)) {
                 if((round->rePlayers().contains(playerOne) && round->rePlayers().contains(playerTwo)) ||
-                   (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
+                        (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
                     if(round->points(playerOne) > 0) {
                         count++;
                     }

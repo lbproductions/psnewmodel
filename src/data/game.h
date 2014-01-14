@@ -92,6 +92,7 @@ class Game: public QObject
         void setMitPflichtSolo(bool arg);
 
         QTime length() const;
+        QTime finishedRoundsLength() const;
         QTime averageRoundLength(double weight = 0.7) const;
         QTime predictedTimeToPlay(double weight = 0.7) const;
         QTime predictedEndTime(double weight = 0.7) const;

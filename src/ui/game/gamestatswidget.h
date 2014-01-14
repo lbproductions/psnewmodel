@@ -23,6 +23,7 @@ class GameStatsWidget : public QWidget
         void update();
         void togglePredictedTime();
         void toggleWeightedAverageRoundTime();
+        void toggleRoundsToPlay();
         
     private:
         Ui::GameStatsWidget *ui;
@@ -30,6 +31,7 @@ class GameStatsWidget : public QWidget
         QSharedPointer<Game> m_game;
         bool m_predictedTimeLeftShown;
         bool m_roundAverageWeighted;
+        bool m_roundsToPlay;
 };
 
 #endif // GAMESTATSWIDGET_H

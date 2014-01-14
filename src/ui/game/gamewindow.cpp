@@ -153,6 +153,8 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
 
     m_statsWidget->setGame(game);
 
+    ui->gameLengthWidget->setGame(game);
+
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(onNewRoundStarted()));
     connect(m_game.data(), SIGNAL(stateChanged()), this, SLOT(enableActionsBasedOnState()));
 

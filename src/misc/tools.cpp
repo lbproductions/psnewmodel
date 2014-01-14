@@ -28,8 +28,6 @@ QString Tools::progressBarStyleSheet(QColor color)
     QString returnValue = QString("QProgressBar{border: 1px solid white; padding: 1px; border-radius: 7px; background: transparent; width: 15px; color:white;}")
             + " QProgressBar::chunk {background: " + rgbString + "; border-radius: 7px;}";
 
-    qDebug() << returnValue;
-
     return returnValue;
 }
 
