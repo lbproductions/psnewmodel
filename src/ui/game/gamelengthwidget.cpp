@@ -27,6 +27,9 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
 
+    if(!m_game)
+        return;
+
     QPainter painter(this);
 
     int totalHeight = event->rect().height();
