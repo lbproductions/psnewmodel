@@ -46,6 +46,11 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
     }
 
     resizeColumnToContents(0);
+
+    if(players.isEmpty())
+        return;
+
+    setMaximumHeight(index*this->visualItemRect(this->topLevelItem(0)).height()+1);
     /*
     ui->treeWidgetGamesTogether->resizeColumnToContents(0);
     ui->treeWidgetGamesTogether->resizeColumnToContents(1);
