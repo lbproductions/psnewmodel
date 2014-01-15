@@ -51,7 +51,13 @@ void Matchday::addAverage(QSharedPointer<Player> player, double average)
 
 int Matchday::placementOfPlayer(QSharedPointer<Player> player)
 {
-    return m_playersSortedByAverage.indexOf(player)+1;
+    int placement = 1;
+    foreach(QSharedPointer<Player> otherPlayer, m_playersSortedByAverage) {
+        if(player->name() != otherPlayer->name() && m_averages.value(otherPlayer) > m_averages.value(player)) {
+            placement++;
+        }
+    }
+    return placement;
 }
 
 void Matchday::setNumber(int number)
