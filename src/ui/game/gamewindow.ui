@@ -94,13 +94,10 @@ QWidget#widgetCreateGame {
        <number>1</number>
       </property>
       <widget class="QWidget" name="verticalLayoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,1">
+       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
         <property name="spacing">
          <number>0</number>
         </property>
-        <item>
-         <widget class="GameLengthWidget" name="gameLengthWidget" native="true"/>
-        </item>
         <item>
          <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
           <property name="spacing">
@@ -372,7 +369,7 @@ QWidget#widgetCreateGame {
              <x>0</x>
              <y>0</y>
              <width>668</width>
-             <height>83</height>
+             <height>93</height>
             </rect>
            </property>
            <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
@@ -393,7 +390,11 @@ QWidget#widgetCreateGame {
             </property>
             <item>
              <widget class="GraphAxis" name="graphAxis" native="true">
-              <layout class="QVBoxLayout" name="verticalLayout_3"/>
+              <layout class="QVBoxLayout" name="verticalLayout_3">
+               <item>
+                <widget class="GameLengthWidget" name="gameLengthWidget" native="true"/>
+               </item>
+              </layout>
              </widget>
             </item>
             <item>

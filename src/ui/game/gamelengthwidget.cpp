@@ -9,6 +9,7 @@
 GameLengthWidget::GameLengthWidget(QWidget *parent) :
     QWidget(parent)
 {
+    this->setFixedWidth(35);
 }
 
 void GameLengthWidget::setGame(QSharedPointer<Game> _game)
@@ -33,13 +34,13 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
     QPainter painter(this);
 
     int totalHeight = event->rect().height();
-    int totalWidth = event->rect().width() - 2;
+    int totalWidth = event->rect().width();
 
-    int rectHeight = totalHeight * 0.7;
+    int rectHeight = totalHeight - 30;
     int heightOffset = totalHeight - rectHeight;
 
-    int rectWidth = totalWidth - 10;
-    int widthOffset = totalWidth - rectWidth;
+    double rectWidth = totalWidth * 0.7;
+    double widthOffset = totalWidth - rectWidth;
 
     QPen pen = painter.pen();
     pen.setWidth(1);
@@ -47,30 +48,35 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
     painter.setBrush(Qt::transparent);
 
-    painter.drawRect(event->rect().topLeft().x() + widthOffset/2, event->rect().topLeft().y() + heightOffset/2, rectWidth, rectHeight);
+    painter.drawRect(event->rect().topLeft().x() + widthOffset/2, event->rect().topLeft().y() + heightOffset * 0.25, rectWidth, rectHeight);
 
     painter.setPen(Qt::transparent);
     painter.setBrush(QColor("orange"));
 
-    int currentLength = QTime(0,0,0).secsTo(m_game->finishedRoundsLength());
-    int totalLength = currentLength + QTime(0,0,0).secsTo(m_game->predictedTimeToPlay());
+    double currentLength = QTime(0,0,0).secsTo(m_game->finishedRoundsLength());
+    double totalLength = currentLength + QTime(0,0,0).secsTo(m_game->predictedTimeToPlay());
 
-    int lengthRectWidth = rectWidth * currentLength / totalLength;
-    int startWidth = event->rect().topLeft().x() + widthOffset/2 + 1;
+    double lengthRectHeight = rectHeight * currentLength / totalLength;
+    double startHeight = event->rect().bottomLeft().y() - lengthRectHeight - heightOffset * 0.75 + 1;
 
-    painter.drawRect(startWidth, event->rect().topLeft().y() + heightOffset/2 + 1, lengthRectWidth, rectHeight - 1);
+    painter.drawRect(event->rect().bottomLeft().x() + widthOffset/2 + 1, startHeight, rectWidth - 1, lengthRectHeight);
 
-    double currentWidth = startWidth;
+    double currentHeight = event->rect().bottomLeft().y() - heightOffset * 0.75 + 1;
     painter.setPen(Qt::white);
     foreach(QSharedPointer<Round> round, m_game->rounds()) {
         if(round->state() == Round::Finished) {
 
-            int relLength = QTime(0,0,0).secsTo(round->length());
-            currentWidth += (double)((double)relLength / (double)currentLength) * (double)lengthRectWidth;
+            double relLength = QTime(0,0,0).secsTo(round->length());
+            currentHeight -= (double)((double)relLength / (double)currentLength) * (double)lengthRectHeight;
 
-            painter.drawLine(currentWidth, event->rect().topLeft().y(), currentWidth, event->rect().bottomLeft().y());
+            painter.drawLine(event->rect().topLeft().x(), currentHeight, event->rect().topRight().x(), currentHeight);
         }
     }
+
+    QFont font = painter.font();
+    font.setPixelSize(10);
+    painter.drawText(QRect(event->rect().bottomLeft().x(), event->rect().bottomLeft().y()-15, totalWidth, 15),
+                      Qt::AlignCenter, QString::number((int)m_game->completedPercentage()) + "%");
 
     painter.end();
 }
@@ -78,7 +84,7 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
 QSize GameLengthWidget::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
-    size.setWidth(500);
-    size.setHeight(20);
+    size.setWidth(20);
+    size.setHeight(500);
     return size;
 }
