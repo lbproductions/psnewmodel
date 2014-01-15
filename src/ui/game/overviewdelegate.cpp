@@ -63,6 +63,10 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                 painter->drawLine(r2.topLeft(),r2.topRight());
             }
             if(index.column() == game->totalRoundCount()) {
+                QPen pen = painter->pen();
+                pen.setWidth(2);
+                pen.setBrush(Qt::white);
+                painter->setPen(pen);
                 QRect r2 = r.adjusted(0,0,1,0);
                 painter->drawLine(r2.topLeft(), r2.bottomLeft());
             }
