@@ -237,16 +237,6 @@ void Game::setType(const Type &type)
     m_type = type;
 }
 
-int Game::_type() const
-{
-    return static_cast<int>(type());
-}
-
-void Game::_setType(int type)
-{
-    setType(static_cast<Type>(type));
-}
-
 QString Game::name() const
 {
     return m_name;

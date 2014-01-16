@@ -239,47 +239,6 @@ int Round::cardMixerPosition() const
     return number() % countPlayers;
 }
 
-int Round::_state() const
-{
-    return static_cast<int>(state());
-}
-
-void Round::_setState(int state)
-{
-    setState(static_cast<Round::State>(state));
-}
-
-int Round::_soloType() const
-{
-    return static_cast<int>(soloType());
-}
-
-void Round::_setSoloType(int type)
-{
-    setSoloType(static_cast<Round::SoloType>(type));
-}
-
-int Round::_winnerParty() const
-{
-    return static_cast<int>(winnerParty());
-}
-
-void Round::_setWinnerParty(int party)
-{
-    setWinnerParty(static_cast<Round::WinnerParty>(party));
-}
-
-int Round::_trumpfColor() const
-{
-    return static_cast<int>(trumpfColor());
-}
-
-void Round::_setTrumpfColor(int color)
-{
-    setTrumpfColor(static_cast<Round::TrumpfColor>(color));
-}
-
-
 QTime Round::length() const
 {
     return m_length;

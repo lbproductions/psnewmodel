@@ -49,16 +49,6 @@ QString Drink::iconPath() const
     return m_iconPath;
 }
 
-int Drink::_type() const
-{
-    return static_cast<int>(type());
-}
-
-void Drink::_setType(int type)
-{
-    setType(static_cast<Type>(type));
-}
-
 int Drink::count() const
 {
     return liveDrinks().size();

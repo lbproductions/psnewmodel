@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 #include <QPixmap>
 
 
@@ -16,7 +16,7 @@ class Drink : public QObject
     Q_OBJECT
     Q_ENUMS(Type)
     Q_PROPERTY(QString name READ name WRITE setName)
-    Q_PROPERTY(int type READ _type WRITE _setType)
+    Q_PROPERTY(Type type READ type WRITE setType)
     Q_PROPERTY(double volume READ volume WRITE setVolume)
     Q_PROPERTY(QPixmap picture READ picture WRITE setPicture)
         Q_PROPERTY(QString iconPath READ iconPath WRITE setIconPath)
@@ -71,9 +71,6 @@ private:
 
     void setIconPath(QString path);
     QString iconPath() const;
-
-    int _type() const;
-    void _setType(int type);
 
     QString m_name;
     Type m_type;

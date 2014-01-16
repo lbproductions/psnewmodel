@@ -2,7 +2,7 @@
 #define OLD_DOKOOFFLINEGAMEBUDDYS_H
 
 #include <QObject>
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 
 class Game;
 class Player;

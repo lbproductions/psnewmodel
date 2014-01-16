@@ -229,16 +229,6 @@ void Player::setGames(const QList<QSharedPointer<Game> > &games)
     m_games.relate(games);
 }
 
-int Player::_gender() const
-{
-    return static_cast<int>(gender());
-}
-
-void Player::_setGender(int gender)
-{
-    setGender(static_cast<Gender>(gender));
-}
-
 QList<QSharedPointer<Round> > Player::re2Rounds() const
 {
     return m_re2Rounds.resolveList();

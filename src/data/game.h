@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 #include <QTime>
 #include <QDateTime>
 #include <QTimer>
@@ -24,7 +24,7 @@ class Game: public QObject
         Q_ENUMS(Type)
         Q_ENUMS(State)
         Q_PROPERTY(QString name READ name WRITE setName)
-        Q_PROPERTY(int type READ _type WRITE _setType)
+        Q_PROPERTY(Type type READ type WRITE setType)
         Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
         Q_PROPERTY(QString comment READ comment WRITE setComment)
         Q_PROPERTY(bool mitPflichtSolo READ mitPflichtSolo WRITE setMitPflichtSolo)
@@ -162,9 +162,6 @@ class Game: public QObject
         void setLeagues(const QList<QSharedPointer<League> > &arg);
         void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
         void setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games);
-
-        int _type() const;
-        void _setType(int type);
 
         QString m_name;
         Type m_type;

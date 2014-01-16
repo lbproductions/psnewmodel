@@ -23,16 +23,6 @@ void Schmeisserei::setPlayer(const QSharedPointer<Player> &player)
     m_player.relate(player);
 }
 
-int Schmeisserei::_type() const
-{
-    return static_cast<int>(type());
-}
-
-void Schmeisserei::_setType(int type)
-{
-    setType(static_cast<Type>(type));
-}
-
 QSharedPointer<Round> Schmeisserei::round() const
 {
     return m_round.resolve();

@@ -4,7 +4,7 @@
 #include <QObject>
 
 #include <QPixmap>
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 
 
 

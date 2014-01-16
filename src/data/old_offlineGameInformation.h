@@ -2,7 +2,7 @@
 #define DOKOOFFLINEGAME_H
 
 #include <QObject>
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 
 class Game;
 class Player;

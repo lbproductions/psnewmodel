@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 #include <QDate>
 
 class Player;

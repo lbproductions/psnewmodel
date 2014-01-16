@@ -5,7 +5,7 @@
 
 #include <QColor>
 #include <QPixmap>
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 
 
 
@@ -25,7 +25,7 @@ class Player : public QObject
         Q_OBJECT
         Q_ENUMS(Gender)
         Q_PROPERTY(QString name READ name WRITE setName)
-        Q_PROPERTY(int gender READ _gender WRITE _setGender)
+        Q_PROPERTY(Gender gender READ gender WRITE setGender)
         Q_PROPERTY(int weight READ weight WRITE setWeight)
         Q_PROPERTY(int height READ height WRITE setHeight)
         Q_PROPERTY(QColor color READ color WRITE setColor)
@@ -177,9 +177,6 @@ class Player : public QObject
         void setContra1Rounds(QList<QSharedPointer<Round> > arg);
         void setContra2Rounds(QList<QSharedPointer<Round> > arg);
         void setContra3Rounds(QList<QSharedPointer<Round> > arg);
-
-        int _gender() const;
-        void _setGender(int gender);
 
         QString m_name;
         Gender m_gender;

@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 
 
 
@@ -14,7 +14,7 @@ class Schmeisserei : public QObject
 {
     Q_OBJECT
     Q_ENUMS(Type)
-    Q_PROPERTY(int type READ _type WRITE _setType)
+    Q_PROPERTY(Type type READ type WRITE setType)
     Q_PROPERTY(QSharedPointer<Round> round READ round WRITE setRound)
     Q_PROPERTY(QSharedPointer<Player> player READ player WRITE setPlayer)
 
@@ -50,11 +50,7 @@ public:
     static Type typeFromString(const QString &typeString);
 
 private:
-    int _type() const;
-    void _setType(int type);
-
     Type m_type;
-
     QpWeakRelation<Round> m_round;
     QpWeakRelation<Player> m_player;
 };

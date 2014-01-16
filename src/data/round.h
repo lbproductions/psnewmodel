@@ -3,7 +3,7 @@
 
 #include <QObject>
 
-#include <QPersistenceRelations.h>
+#include <QPersistence.h>
 #include <QDateTime>
 #include <QDate>
 #define COMMA ,
@@ -22,16 +22,18 @@ class Round : public QObject
     Q_ENUMS(SoloType)
     Q_ENUMS(State)
     Q_ENUMS(TrumpfColor)
+    Q_ENUMS(HochzeitDecision)
+
     Q_PROPERTY(int number READ number WRITE setNumber)
     Q_PROPERTY(QDateTime startTime READ startTime WRITE setStartTime)
     Q_PROPERTY(QTime length READ length WRITE setLength)
     Q_PROPERTY(QString comment READ comment WRITE setComment)
-    Q_PROPERTY(Round::HochzeitDecision hochzeitDecision READ hochzeitDecision WRITE setHochzeitDecision)
-    Q_PROPERTY(int soloType READ _soloType WRITE _setSoloType)
+    Q_PROPERTY(HochzeitDecision hochzeitDecision READ hochzeitDecision WRITE setHochzeitDecision)
+    Q_PROPERTY(SoloType soloType READ soloType WRITE setSoloType)
     Q_PROPERTY(bool isPflicht READ isPflicht WRITE setIsPflicht)
-    Q_PROPERTY(int winnerParty READ _winnerParty WRITE _setWinnerParty)
-    Q_PROPERTY(int state READ _state WRITE _setState)
-    Q_PROPERTY(int trumpfColor READ _trumpfColor WRITE _setTrumpfColor)
+    Q_PROPERTY(WinnerParty winnerParty READ winnerParty WRITE setWinnerParty)
+    Q_PROPERTY(State state READ state WRITE setState)
+    Q_PROPERTY(TrumpfColor trumpfColor READ trumpfColor WRITE setTrumpfColor)
     Q_PROPERTY(int trumpfCount READ trumpfCount WRITE setTrumpfCount)
     Q_PROPERTY(bool trumpfZurueck READ trumpfZurueck WRITE setTrumpfZurueck)
 
@@ -239,18 +241,6 @@ private:
 
     int cardMixerPosition() const;
 
-    int _state() const;
-    void _setState(int state);
-
-    int _soloType() const;
-    void _setSoloType(int type);
-
-    int _winnerParty() const;
-    void _setWinnerParty(int party);
-
-    int _trumpfColor() const;
-    void _setTrumpfColor(int color);
-
     int m_number;
     QDateTime m_startTime;
     State m_state;
@@ -280,11 +270,6 @@ private:
     bool m_trumpfZurueck;
 };
 
-Q_DECLARE_METATYPE(Round::HochzeitDecision)
-
-
 #undef COMMA
-
-
 
 #endif // ROUND_H
