@@ -11,9 +11,9 @@ int League::currentMatchDayNumber = 1;
 League::League(QObject *parent) :
     QObject(parent),
     m_playerRatio(0.75),
+    m_finishedGamesPercentage(0),
     m_players("players", this),
-    m_games("games",this),
-    m_finishedGamesPercentage(0)
+    m_games("games",this)
 {   
 }
 

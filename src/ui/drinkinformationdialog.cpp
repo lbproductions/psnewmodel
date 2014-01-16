@@ -83,12 +83,12 @@ void DrinkInformationDialog::checkData()
     }
 
     bool ok = false;
-    double alc = ui->lineEditAlcohol->text().toDouble(&ok);
+    ui->lineEditAlcohol->text().toDouble(&ok);
     if(!ok)
         return;
 
     ok = false;
-    double vol = ui->lineEditVolume->text().toDouble(&ok);
+    ui->lineEditVolume->text().toDouble(&ok);
     if(!ok)
         return;
 

@@ -63,7 +63,7 @@ void GamesWidget::setGames(QList<QSharedPointer<Game> > games)
     ui->treeWidgetUnfinshed->setMinimumWidth(660);
 }
 
-void GamesWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void GamesWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
     int index = ui->treeWidget->indexOfTopLevelItem(item);
     QSharedPointer<Game> game = m_games.at(index);
@@ -88,7 +88,7 @@ QTreeWidgetItem *GamesWidget::createItem(QTreeWidget* parent, QPixmap statePixma
     return item;
 }
 
-void GamesWidget::on_treeWidgetUnfinshed_itemDoubleClicked(QTreeWidgetItem *item, int column)
+void GamesWidget::on_treeWidgetUnfinshed_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
     int index = ui->treeWidgetUnfinshed->indexOfTopLevelItem(item);
     if(index < 0 || index >= m_unfinishedGames.size())

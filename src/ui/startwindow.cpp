@@ -119,7 +119,7 @@ void StartWindow::onLibraryButtonPressed()
     MenuBar::instance()->showLibrary();
 }
 
-void StartWindow::onGameTreeWidgetDoubleClicked(QTreeWidgetItem* item, int column)
+void StartWindow::onGameTreeWidgetDoubleClicked(QTreeWidgetItem* item, int /*column*/)
 {
     int index = m_treeWidget->indexOfTopLevelItem(item);
     QSharedPointer<Game> game = m_games.at(index);
@@ -132,7 +132,7 @@ void StartWindow::onGameTreeWidgetDoubleClicked(QTreeWidgetItem* item, int colum
 
 }
 
-void StartWindow::onLeagueTreeWidgetDoubleClicked(QTreeWidgetItem *item, int column)
+void StartWindow::onLeagueTreeWidgetDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
     int index = m_leagueTreeWidget->indexOfTopLevelItem(item);
     QSharedPointer<League> league = m_leagues.at(index);
