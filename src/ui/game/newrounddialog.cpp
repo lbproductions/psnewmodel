@@ -442,10 +442,10 @@ void NewRoundDialog::saveNormalRound()
             switch(contraPlayers){
             case 0:
                 m_doppelkopfRound->setContra1Player(p);
+                break;
             case 1:
                 m_doppelkopfRound->setContra2Player(p);
-            case 2:
-                m_doppelkopfRound->setContra3Player(p);
+                break;
             }
             contraPlayers++;
         }
@@ -486,10 +486,10 @@ void NewRoundDialog::saveHochzeitRound()
             switch(contraPlayers){
             case 0:
                 m_doppelkopfRound->setContra1Player(p);
+                break;
             case 1:
                 m_doppelkopfRound->setContra2Player(p);
-            case 2:
-                m_doppelkopfRound->setContra3Player(p);
+                break;
             }
             contraPlayers++;
         }
@@ -536,10 +536,13 @@ void NewRoundDialog::saveSoloRound()
             switch(contraPlayers){
             case 0:
                 m_doppelkopfRound->setContra1Player(p);
+                break;
             case 1:
                 m_doppelkopfRound->setContra2Player(p);
+                break;
             case 2:
                 m_doppelkopfRound->setContra3Player(p);
+                break;
             }
             contraPlayers++;
         }
@@ -585,10 +588,10 @@ void NewRoundDialog::saveTrumpfabgabeRound()
             switch(contraPlayers){
             case 0:
                 m_doppelkopfRound->setContra1Player(p);
+                break;
             case 1:
                 m_doppelkopfRound->setContra2Player(p);
-            case 2:
-                m_doppelkopfRound->setContra3Player(p);
+                break;
             }
             contraPlayers++;
         }
