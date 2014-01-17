@@ -156,7 +156,6 @@ public:
     QSharedPointer<Game> game() const;
 
     QList<QSharedPointer<LiveDrink> > drinks() const;
-    void addDrink(QSharedPointer<LiveDrink> drink);
 
     QSharedPointer<Player> cardMixer() const;
     QList<QSharedPointer<Player> > playingPlayers() const;
@@ -231,7 +230,10 @@ signals:
 
 private:
     friend class Game;
+    friend class LiveDrink;
 
+    void addDrink(QSharedPointer<LiveDrink> drink);
+    void removeDrink(QSharedPointer<LiveDrink> drink);
     void setDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
     void setGame(const QSharedPointer<Game> &game);
     void setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien);

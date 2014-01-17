@@ -32,6 +32,11 @@ private slots:
     void onDrinkSelectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
 
     void addLiveDrinkForSelection();
+    void removeSelectedDrinks();
+
+    void on_pushButtonAdd_clicked();
+
+    void on_pushButtonRemove_clicked();
 
 private:
     Ui::DrinksWidget *ui;

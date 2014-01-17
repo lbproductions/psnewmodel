@@ -144,13 +144,26 @@ QList<QSharedPointer<Player> > DrinkPlayersModel::checkedPlayers()
 class LiveDrinkRoundModel : public QStandardItemModel
 {
 public:
+    enum DataRoles {
+        LiveDrinksRole = Qt::UserRole + 1,
+        DrinkRole,
+        PlayerRole
+    };
+
     explicit LiveDrinkRoundModel(QObject *parent);
 
+    void setRound(QSharedPointer<Round> round);
     void addLiveDrink(QSharedPointer<LiveDrink> liveDrink);
+    void removeSelectedDrinks(const QModelIndexList &list);
 
 private:
-    QHash<QSharedPointer<Drink>, QStandardItem *> m_drinkItems;
-    QHash<QSharedPointer<Drink>, QHash<QSharedPointer<Player>, QStandardItem *> > m_playerItems;
+    QSharedPointer<Round> m_round;
+
+    bool removeOneDrinkFromItem(QStandardItem *item, QStandardItem *parent);
+
+    QStandardItem *findDrink(QSharedPointer<Drink> drink);
+    QStandardItem *findPlayer(QStandardItem *drinkItem, QSharedPointer<Player> player);
+    void addDrinkToItem(QStandardItem *playerItem, QSharedPointer<LiveDrink> liveDrink);
 };
 
 LiveDrinkRoundModel::LiveDrinkRoundModel(QObject *parent) :
@@ -158,34 +171,120 @@ LiveDrinkRoundModel::LiveDrinkRoundModel(QObject *parent) :
 {
 }
 
+void LiveDrinkRoundModel::setRound(QSharedPointer<Round> round)
+{
+    clear();
+    foreach(QSharedPointer<LiveDrink> liveDrink, round->drinks()) {
+        addLiveDrink(liveDrink);
+    }
+    m_round = round;
+}
+
 void LiveDrinkRoundModel::addLiveDrink(QSharedPointer<LiveDrink> liveDrink)
 {
     QSharedPointer<Drink> drink = liveDrink->drink();
     QSharedPointer<Player> player = liveDrink->player();
 
-    QStandardItem *drinkItem = nullptr;
-    if(m_drinkItems.contains(drink)) {
-        drinkItem = m_drinkItems.value(drink);
-    }
-    else {
+    QStandardItem *drinkItem = findDrink(drink);
+    if(!drinkItem) {
         drinkItem = new QStandardItem(drink->name());
-        m_drinkItems.insert(drink, drinkItem);
         invisibleRootItem()->appendRow(drinkItem);
+        drinkItem->setData(QVariant::fromValue<QSharedPointer<Drink> >(drink), DrinkRole);
     }
 
-    QHash<QSharedPointer<Player>, QStandardItem *> playerItems = m_playerItems.value(drink);
-
-    QStandardItem *playerItem = nullptr;
-    if(playerItems.contains(player)) {
-        playerItem = playerItems.value(player);
-        playerItem->setText(playerItem->text() + "|");
-    }
-    else {
-        playerItem = new QStandardItem(player->name() + "|");
-        playerItems.insert(player, playerItem);
-        m_playerItems.insert(drink, playerItems);
+    QStandardItem *playerItem = findPlayer(drinkItem, player);
+    if(!playerItem) {
+        playerItem = new QStandardItem;
+        playerItem->setData(QVariant::fromValue<QSharedPointer<Player> >(player), PlayerRole);
         drinkItem->appendRow(playerItem);
     }
+
+    addDrinkToItem(playerItem, liveDrink);
+}
+
+QStandardItem *LiveDrinkRoundModel::findDrink(QSharedPointer<Drink> drink)
+{
+    int childCount = invisibleRootItem()->rowCount();
+    for(int i = 0; i < childCount; ++i) {
+        QStandardItem *item = invisibleRootItem()->child(i);
+        QSharedPointer<Drink> itemDrink = item->data(DrinkRole).value<QSharedPointer<Drink> >();
+        if(itemDrink == drink)
+            return item;
+    }
+
+    return nullptr;
+}
+
+QStandardItem *LiveDrinkRoundModel::findPlayer(QStandardItem *drinkItem, QSharedPointer<Player> player)
+{
+    int childCount = drinkItem->rowCount();
+    for(int i = 0; i < childCount; ++i) {
+        QStandardItem *item = drinkItem->child(i);
+        QSharedPointer<Player> itemPlayer = item->data(PlayerRole).value<QSharedPointer<Player> >();
+        if(itemPlayer == player)
+            return item;
+    }
+
+    return nullptr;
+}
+
+void LiveDrinkRoundModel::addDrinkToItem(QStandardItem *playerItem, QSharedPointer<LiveDrink> liveDrink)
+{
+    QList<QSharedPointer<LiveDrink> > itemLiveDrinks = playerItem->data(LiveDrinksRole).value<QList<QSharedPointer<LiveDrink> > >();
+    itemLiveDrinks.append(liveDrink);
+    playerItem->setData(QVariant::fromValue<QList<QSharedPointer<LiveDrink> > >(itemLiveDrinks), LiveDrinksRole);
+
+    QSharedPointer<Player> itemPlayer = playerItem->data(PlayerRole).value<QSharedPointer<Player> >();
+    playerItem->setText(QString("%1x %2")
+                        .arg(itemLiveDrinks.size())
+                        .arg(itemPlayer->name()));
+}
+
+void LiveDrinkRoundModel::removeSelectedDrinks(const QModelIndexList &list)
+{
+    foreach(QModelIndex index, list) {
+        QStandardItem *item = itemFromIndex(index);
+
+        if(index.parent().isValid()) {
+            QStandardItem *parent = item->parent();
+            removeOneDrinkFromItem(item, item->parent());
+
+            if(parent->rowCount() == 0) {
+                invisibleRootItem()->removeRow(parent->row());
+            }
+            continue;
+        }
+
+        for(int i = 0; i < item->rowCount();) {
+            if(!removeOneDrinkFromItem(item->child(i), item))
+                ++i;
+        }
+
+        if(item->rowCount() == 0) {
+            invisibleRootItem()->removeRow(item->row());
+        }
+    }
+}
+
+bool LiveDrinkRoundModel::removeOneDrinkFromItem(QStandardItem *playerItem, QStandardItem *drinkItem)
+{
+    QList<QSharedPointer<LiveDrink> > itemLiveDrinks = playerItem->data(LiveDrinksRole)
+            .value<QList<QSharedPointer<LiveDrink> > >();
+    QSharedPointer<LiveDrink> liveDrink = itemLiveDrinks.takeFirst();
+    liveDrink->clearRelations();
+    Qp::remove(liveDrink);
+
+    if(itemLiveDrinks.isEmpty()) {
+        drinkItem->removeRow(playerItem->row());
+        return true;
+    }
+
+    playerItem->setData(QVariant::fromValue<QList<QSharedPointer<LiveDrink> > >(itemLiveDrinks), LiveDrinksRole);
+    QSharedPointer<Player> itemPlayer = playerItem->data(PlayerRole).value<QSharedPointer<Player> >();
+    playerItem->setText(QString("%1x %2")
+                        .arg(itemLiveDrinks.size())
+                        .arg(itemPlayer->name()));
+    return false;
 }
 
 
@@ -220,7 +319,9 @@ DrinksWidget::DrinksWidget(QSharedPointer<Round> round, QWidget *parent) :
     ui->listViewPlayers->setModelColumn(PlayersListModel::NameColumn);
 
     m_drinkRoundModel = new LiveDrinkRoundModel(this);
+    m_drinkRoundModel->setRound(m_round);
     ui->treeViewDrinkRound->setModel(m_drinkRoundModel);
+    ui->treeViewDrinkRound->expandAll();
 
     connect(drinksModel, &DrinksListModel::rowsInserted,
             this, &DrinksWidget::selectDrinkIfNoneSelected);
@@ -275,6 +376,11 @@ bool DrinksWidget::eventFilter(QObject *obj, QEvent *event)
             if(focus == ui->listViewDrinks
                     || ui->listViewPlayers) {
                 ui->lineEditSearchDrink->setFocus();
+            }
+            // From drink round treeview, it removes the selected drink(s)
+            if(focus == ui->treeViewDrinkRound) {
+                removeSelectedDrinks();
+                ui->treeViewDrinkRound->setFocus();
             }
             break;
 
@@ -354,7 +460,7 @@ void DrinksWidget::addLiveDrinkForSelection()
         QSharedPointer<LiveDrink> liveDrink = Qp::create<LiveDrink>();
         liveDrink->setDrink(drink);
         liveDrink->setPlayer(player);
-        m_round->addDrink(liveDrink);
+        liveDrink->setRound(m_round);
         Qp::update(liveDrink);
         m_drinkRoundModel->addLiveDrink(liveDrink);
     }
@@ -362,3 +468,21 @@ void DrinksWidget::addLiveDrinkForSelection()
     ui->treeViewDrinkRound->expandAll();
 }
 
+void DrinksWidget::removeSelectedDrinks()
+{
+    QModelIndexList list = ui->treeViewDrinkRound->selectionModel()->selectedRows();
+
+    m_drinkRoundModel->removeSelectedDrinks(list);
+    ui->treeViewDrinkRound->expandAll();
+}
+
+
+void DrinksWidget::on_pushButtonAdd_clicked()
+{
+    addLiveDrinkForSelection();
+}
+
+void DrinksWidget::on_pushButtonRemove_clicked()
+{
+    removeSelectedDrinks();
+}

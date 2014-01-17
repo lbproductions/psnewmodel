@@ -49,6 +49,11 @@ void Round::addDrink(QSharedPointer<LiveDrink> drink)
     m_drinks.relate(drink);
 }
 
+void Round::removeDrink(QSharedPointer<LiveDrink> drink)
+{
+    m_drinks.unrelate(drink);
+}
+
 void Round::setDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
 {
     m_drinks.clear();

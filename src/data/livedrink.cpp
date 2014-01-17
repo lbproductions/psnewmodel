@@ -26,7 +26,18 @@ QSharedPointer<Player> LiveDrink::player() const
 
 void LiveDrink::setPlayer(QSharedPointer<Player> player)
 {
+    QSharedPointer<LiveDrink> sharedThis = Qp::sharedFrom(this);
+
+    QSharedPointer<Player> p = this->player();
+    if(p) {
+        p->removeLiveDrink(sharedThis);
+    }
+
     m_player.relate(player);
+    if(player) {
+        player->addLiveDrink(sharedThis);
+    }
+
 }
 
 QSharedPointer<Round> LiveDrink::round() const
@@ -36,7 +47,17 @@ QSharedPointer<Round> LiveDrink::round() const
 
 void LiveDrink::setRound(QSharedPointer<Round> round)
 {
+    QSharedPointer<LiveDrink> sharedThis = Qp::sharedFrom(this);
+
+    QSharedPointer<Round> r = this->round();
+    if(r) {
+        r->removeDrink(sharedThis);
+    }
+
     m_round.relate(round);
+    if(round) {
+        round->addDrink(sharedThis);
+    }
 }
 
 QSharedPointer<Drink> LiveDrink::drink() const
@@ -46,7 +67,24 @@ QSharedPointer<Drink> LiveDrink::drink() const
 
 void LiveDrink::setDrink(QSharedPointer<Drink> drink)
 {
+    QSharedPointer<LiveDrink> sharedThis = Qp::sharedFrom(this);
+
+    QSharedPointer<Drink> d = this->drink();
+    if(d) {
+        d->removeLiveDrink(sharedThis);
+    }
+
     m_drink.relate(drink);
+    if(drink) {
+        drink->addLiveDrink(sharedThis);
+    }
+}
+
+void LiveDrink::clearRelations()
+{
+    setRound(QSharedPointer<Round>());
+    setPlayer(QSharedPointer<Player>());
+    setDrink(QSharedPointer<Drink>());
 }
 
 QDateTime LiveDrink::time() const

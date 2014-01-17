@@ -37,12 +37,14 @@ public:
     void setPlayer(QSharedPointer<Player> player);
 
     QSharedPointer<Round> round() const;
+    void setRound(QSharedPointer<Round> round);
 
     QSharedPointer<Drink> drink() const;
     void setDrink(QSharedPointer<Drink> drink);
 
+    void clearRelations();
+
 private:
-    void setRound(QSharedPointer<Round> round);
     void setTime(const QDateTime &time);
 
     QDateTime m_time;

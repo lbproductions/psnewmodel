@@ -406,3 +406,13 @@ QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
 {
     return m_allGamesStatistics;
 }
+
+void Player::addLiveDrink(QSharedPointer<LiveDrink> drink)
+{
+    m_liveDrinks.relate(drink);
+}
+
+void Player::removeLiveDrink(QSharedPointer<LiveDrink> drink)
+{
+    m_liveDrinks.unrelate(drink);
+}
