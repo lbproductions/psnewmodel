@@ -7,9 +7,11 @@
 #include <data/round.h>
 
 GameLengthWidget::GameLengthWidget(QWidget *parent) :
-    QWidget(parent)
+    QWidget(parent),
+    m_context(TotalTime)
 {
-    this->setFixedWidth(35);
+    this->setFixedWidth(80);
+    setCursor(Qt::PointingHandCursor);
 }
 
 void GameLengthWidget::setGame(QSharedPointer<Game> _game)
@@ -24,6 +26,18 @@ void GameLengthWidget::update()
     this->repaint();
 }
 
+void GameLengthWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    if(m_context == Duration) {
+        m_context = TotalTime;
+    }
+    else if(m_context == TotalTime) {
+        m_context = Duration;
+    }
+
+    update();
+}
+
 void GameLengthWidget::paintEvent(QPaintEvent *event)
 {
     QWidget::paintEvent(event);
@@ -33,8 +47,10 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
+    int scalaWidth = 50;
+
     int totalHeight = event->rect().height();
-    int totalWidth = event->rect().width();
+    int totalWidth = event->rect().width() - scalaWidth;
 
     int rectHeight = totalHeight - 30;
     int heightOffset = totalHeight - rectHeight;
@@ -63,20 +79,64 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
 
     double currentHeight = event->rect().bottomLeft().y() - heightOffset * 0.75 + 1;
     painter.setPen(Qt::white);
+
+    if(m_context == TotalTime) {
+        painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, currentHeight - 7, scalaWidth, 15), Qt::AlignRight,
+                         m_game->rounds().first()->startTime().time().toString("hh:mm"));
+    }
+    else if(m_context == Duration) {
+        painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, currentHeight - 7, scalaWidth, 15), Qt::AlignRight,
+                         QTime(0,0,0).toString("hh:mm") + "h");
+    }
+
+    int count = 0;
+    bool averagePainted = false;
     foreach(QSharedPointer<Round> round, m_game->rounds()) {
         if(round->state() == Round::Finished) {
 
             double relLength = QTime(0,0,0).secsTo(round->length());
             currentHeight -= (double)((double)relLength / (double)currentLength) * (double)lengthRectHeight;
 
-            painter.drawLine(event->rect().topLeft().x(), currentHeight, event->rect().topRight().x(), currentHeight);
+            painter.drawLine(event->rect().topLeft().x(), currentHeight, event->rect().topRight().x() - scalaWidth, currentHeight);
+
+            if(m_game->finishedRoundCount()/2 == count && count > 1 && !averagePainted && m_context == Duration) {
+                painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, currentHeight - 7, scalaWidth, 15), Qt::AlignRight,
+                                 "\u00D8" + m_game->averageRoundLength().toString("mm:ss"));
+
+                averagePainted = true;
+            }
+
+            count++;
+        }
+    }
+
+    if(m_context == TotalTime) {
+        painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, currentHeight - 7, scalaWidth, 15), Qt::AlignRight,
+                         QTime::currentTime().toString("hh:mm"));
+    }
+    else if(m_context == Duration) {
+        painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, currentHeight - 7, scalaWidth, 15), Qt::AlignRight,
+                         m_game->length().toString("hh:mm") + "h");
+    }
+
+
+    if(m_game->state() != Game::Finished) {
+        if(m_context == TotalTime) {
+            painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, event->rect().topLeft().y() + heightOffset * 0.25 - 7, scalaWidth, 15),
+                             Qt::AlignRight,
+                             m_game->predictedEndTime().toString("hh:mm"));
+        }
+        else if(m_context == Duration) {
+            painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, event->rect().topLeft().y() + heightOffset * 0.25 - 7, scalaWidth, 15),
+                             Qt::AlignRight,
+                             m_game->predictedGameLength().toString("hh:mm") + "h");
         }
     }
 
     QFont font = painter.font();
     font.setPixelSize(10);
     painter.drawText(QRect(event->rect().bottomLeft().x(), event->rect().bottomLeft().y()-15, totalWidth, 15),
-                      Qt::AlignCenter, QString::number((int)m_game->completedPercentage()) + "%");
+                     Qt::AlignCenter, QString::number((int)m_game->completedPercentage()) + "%");
 
     painter.end();
 }

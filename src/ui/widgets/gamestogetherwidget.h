@@ -24,7 +24,7 @@ private:
     QList<QSharedPointer<Game> > m_games;
     QList<QSharedPointer<Player> > m_players;
 
-    QHash<QString,int> m_indexes;
+    QHash<QString,QTreeWidgetItem*> m_items;
 };
 
 #endif // GAMESTOGETHERWIDGET_H

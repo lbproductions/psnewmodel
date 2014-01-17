@@ -114,6 +114,11 @@ QTime Game::predictedEndTime(double weight) const
     return QTime::currentTime().addSecs(averageLength*roundsToPlay());
 }
 
+QTime Game::predictedGameLength(double weight) const
+{
+    return finishedRoundsLength().addSecs(QTime(0,0,0).secsTo(predictedTimeToPlay(weight)));
+}
+
 Game::State Game::state() const
 {
     QSharedPointer<Round> r = currentRound();

@@ -24,7 +24,7 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
     m_players = players;
     m_games = games;
 
-    int index = 0;
+    int rowCount = 0;
     for(int i = 0; i<players.size(); i++) {
         for(int j = i+1; j<players.size(); j++) {
             QTreeWidgetItem* item = new QTreeWidgetItem(this);
@@ -32,10 +32,10 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
             QString playersString = players.at(i)->name() + " - " + players.at(j)->name();
             item->setText(0, playersString);
 
-            m_indexes.insert(playersString, index);
+            m_items.insert(playersString, item);
             this->addTopLevelItem(item);
 
-            index++;
+            rowCount++;
         }
     }
 
@@ -50,7 +50,7 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
     if(players.isEmpty())
         return;
 
-    setMaximumHeight(index*this->visualItemRect(this->topLevelItem(0)).height()+1);
+    setMaximumHeight(rowCount*this->visualItemRect(this->topLevelItem(0)).height()+1);
     /*
     ui->treeWidgetGamesTogether->resizeColumnToContents(0);
     ui->treeWidgetGamesTogether->resizeColumnToContents(1);
@@ -79,7 +79,7 @@ void GamesTogetherWidget::update()
             }
 
             QString playersString = m_players.at(i)->name() + " - " + m_players.at(j)->name();
-            QTreeWidgetItem* item = this->topLevelItem(m_indexes.value(playersString));
+            QTreeWidgetItem* item = m_items.value(playersString);
             item->setData(1, Qt::DisplayRole, wins);
             item->setData(2, Qt::DisplayRole, gameCount);
             item->setData(3, Qt::DisplayRole, Tools::percentage(wins, gameCount));
