@@ -87,7 +87,8 @@ SOURCES += main.cpp \
     misc/settings.cpp \
     ui/widgets/clickablelabel.cpp \
     ui/game/gamelengthwidget.cpp \
-    ui/game/recontrastatswidget.cpp
+    ui/game/recontrastatswidget.cpp \
+    ui/game/resumewidget.cpp
 
 
 HEADERS  += \
@@ -158,7 +159,8 @@ HEADERS  += \
     local_dbconfig.h \
     ui/widgets/clickablelabel.h \
     ui/game/gamelengthwidget.h \
-    ui/game/recontrastatswidget.h
+    ui/game/recontrastatswidget.h \
+    ui/game/resumewidget.h
 
 
 FORMS += \
@@ -179,7 +181,8 @@ FORMS += \
     ui/game/gamestatswidget.ui \
     ui/widgets/biggestdistancewidget.ui \
     ui/game/settingswidget.ui \
-    ui/game/recontrastatswidget.ui
+    ui/game/recontrastatswidget.ui \
+    ui/game/resumewidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
