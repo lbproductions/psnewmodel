@@ -12,6 +12,7 @@
 #include "stopgamewidget.h"
 #include "settingswidget.h"
 #include "gamestatswidget.h"
+#include "resumewidget.h"
 
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
@@ -105,7 +106,6 @@ GameWindow::GameWindow(QWidget *parent) :
             this, &GameWindow::updateTimes);
     lengthTimer->start(1000);
 
-    ui->toolButtonState->setDefaultAction(ui->actionPlayPause);
     ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
     ui->toolButtonAddSchmeisserei->setDefaultAction(ui->actionAdd_schmeisserei);
     ui->toolButtonAddDrinks->setDefaultAction(ui->actionAdd_drinks);
@@ -126,6 +126,9 @@ GameWindow::GameWindow(QWidget *parent) :
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionStats, this);
     MenuBar::instance()->addAction(tr(""), ui->actionSettings, this);
+
+    m_resumeWidget = new ResumeWidget(this);
+    m_resumeWidget->setVisible(false);
 
     updateTimes();
 
@@ -159,6 +162,12 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     m_statsWidget->setGame(game);
 
     ui->gameLengthWidget->setGame(game);
+
+    if(m_game->state() == Game::Paused) {
+        m_resumeWidget->resize(this->width(), this->height());
+        m_resumeWidget->setVisible(true);
+        connect(m_resumeWidget, SIGNAL(widgetClicked()), this, SLOT(on_actionPlayPause_triggered()));
+    }
 
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(onNewRoundStarted()));
     connect(m_game.data(), SIGNAL(stateChanged()), this, SLOT(enableActionsBasedOnState()));
@@ -199,6 +208,8 @@ void GameWindow::resizeEvent(QResizeEvent *)
         popupWidget()->deleteLater();
         setPopupWidget(nullptr);
     }
+
+    m_resumeWidget->resize(this->width(), this->height());
 }
 
 void GameWindow::on_actionPlayPause_triggered()
@@ -225,13 +236,14 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
         ui->actionStop_Game->setEnabled(true);
-        ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
+
+        m_resumeWidget->setVisible(false);
     }
     else if(state == Game::Paused) {
         ui->actionPlayPause->setEnabled(true);
         ui->actionStop_Game->setEnabled(true);
         ui->actionPlayPause->setText(tr("Play"));
-        ui->toolButtonState->setIcon(QIcon(":/statusbar/play.png"));
+        m_resumeWidget->setVisible(true);
     }
     else {
         ui->actionPlayPause->setText(tr("Pause"));
