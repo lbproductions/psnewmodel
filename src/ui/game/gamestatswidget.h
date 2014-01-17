@@ -10,6 +10,8 @@ namespace Ui {
 
 class Game;
 class ReContraStatsWidget;
+class PointsStatsWidget;
+class GamesTogetherWidget;
 
 class GameStatsWidget : public QWidget
 {
@@ -34,6 +36,8 @@ class GameStatsWidget : public QWidget
         QHash<QTreeWidgetItem*, int> m_indexes;
 
         ReContraStatsWidget* m_reContraWidget;
+        PointsStatsWidget* m_pointsStatsWidget;
+        GamesTogetherWidget* m_gamesTogetherWidget;
 
         int m_widgetCounter;
 };

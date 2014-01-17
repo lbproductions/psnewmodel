@@ -6,6 +6,7 @@
 #include <data/game.h>
 
 #include "recontrastatswidget.h"
+#include "pointsstatswidget.h"
 
 #include <QSettings>
 #include <misc/tools.h>
@@ -21,9 +22,17 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     this->setPalette(Tools::darkPalette(this));
 
     m_reContraWidget = new ReContraStatsWidget(this);
-    addWidget("Re/Contra", m_reContraWidget);
+    addWidget(tr("Re/Contra"), m_reContraWidget);
+
+    m_pointsStatsWidget = new PointsStatsWidget(this);
+    addWidget(tr("Points"), m_pointsStatsWidget);
+
+    m_gamesTogetherWidget = new GamesTogetherWidget(this);
+    addWidget(tr("Games together"), m_gamesTogetherWidget);
 
     ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
+
+    connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemClicked(QTreeWidgetItem*)));
 
     setAttribute(Qt::WA_DeleteOnClose, true);
 }
@@ -38,6 +47,10 @@ void GameStatsWidget::setGame(QSharedPointer<Game> game)
     m_game = game;
 
     m_reContraWidget->setGame(game);
+
+    m_pointsStatsWidget->setGame(game);
+
+    m_gamesTogetherWidget->setGames(QList<QSharedPointer<Game> >() << game);
 }
 
 void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)

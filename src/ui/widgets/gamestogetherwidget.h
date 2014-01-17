@@ -15,7 +15,7 @@ public:
     explicit GamesTogetherWidget(QWidget *parent = 0);
     ~GamesTogetherWidget();
 
-    void setData(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
+    void setGames(QList<QSharedPointer<Game> > games);
 
 private slots:
     void update();

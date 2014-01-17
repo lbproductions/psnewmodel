@@ -106,7 +106,7 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
 
     ui->totalPointsWidget->setLeague(m_league);
 
-    ui->gamesTogetherWidget->setData(m_league->calculatedGames(), m_league->players());
+    ui->gamesTogetherWidget->setGames(m_league->calculatedGames());
 
     ui->gamesWidget->setGames(m_league->calculatedGames());
 

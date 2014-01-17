@@ -8,10 +8,11 @@
 GamesTogetherWidget::GamesTogetherWidget(QWidget *parent) :
     QTreeWidget(parent)
 {
-        //this->setStyleSheet("QHeaderView::section {background-color:transparent;}");
+    this->header()->setStyleSheet(Tools::darkHeaderViewStyleSheet());
 
     this->setPalette(Tools::darkPalette(this));
-    this->setColumnCount(5);
+    this->setColumnCount(4);
+    this->setHeaderLabels(QStringList() << tr("Players") << tr("Wins") << tr("Rounds") << tr("WinPercentage"));
 
 }
 
@@ -19,17 +20,26 @@ GamesTogetherWidget::~GamesTogetherWidget()
 {
 }
 
-void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players)
+void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > games)
 {
-    m_players = players;
     m_games = games;
 
+    foreach(QSharedPointer<Game> game, games) {
+        foreach(QSharedPointer<Player> player, game->players()) {
+            if(!m_players.contains(player)) {
+                m_players.append(player);
+            }
+        }
+
+        connect(game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
+    }
+
     int rowCount = 0;
-    for(int i = 0; i<players.size(); i++) {
-        for(int j = i+1; j<players.size(); j++) {
+    for(int i = 0; i<m_players.size(); i++) {
+        for(int j = i+1; j<m_players.size(); j++) {
             QTreeWidgetItem* item = new QTreeWidgetItem(this);
-            item->setIcon(0, QIcon(Tools::playersColorPixmap(players.at(i), players.at(j))));
-            QString playersString = players.at(i)->name() + " - " + players.at(j)->name();
+            item->setIcon(0, QIcon(Tools::playersColorPixmap(m_players.at(i), m_players.at(j))));
+            QString playersString = m_players.at(i)->name() + " - " + m_players.at(j)->name();
             item->setText(0, playersString);
 
             m_items.insert(playersString, item);
@@ -41,14 +51,7 @@ void GamesTogetherWidget::setData(QList<QSharedPointer<Game> > games, QList<QSha
 
     update();
 
-    foreach(QSharedPointer<Game> game, games) {
-        connect(game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
-    }
-
     resizeColumnToContents(0);
-
-    if(players.isEmpty())
-        return;
 
     setMaximumHeight(rowCount*this->visualItemRect(this->topLevelItem(0)).height()+1);
     /*

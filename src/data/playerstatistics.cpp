@@ -362,6 +362,24 @@ double PlayerStatistics::averagePointsPerRound() const
     return percentage(points, winRounds().size());
 }
 
+double PlayerStatistics::averageRePointsPerRound() const
+{
+    int points = 0;
+    foreach(QSharedPointer<Round> round, reWins()) {
+        points += round->points(player());
+    }
+    return percentage(points, reWins().size());
+}
+
+double PlayerStatistics::averageContraPointsPerRound() const
+{
+    int points = 0;
+    foreach(QSharedPointer<Round> round, contraWins()) {
+        points += round->points(player());
+    }
+    return percentage(points, contraWins().size());
+}
+
 double PlayerStatistics::averagePlacement() const
 {
     QList<QSharedPointer<Game> > gs = games();

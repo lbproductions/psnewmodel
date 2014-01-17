@@ -88,7 +88,8 @@ SOURCES += main.cpp \
     ui/widgets/clickablelabel.cpp \
     ui/game/gamelengthwidget.cpp \
     ui/game/recontrastatswidget.cpp \
-    ui/game/resumewidget.cpp
+    ui/game/resumewidget.cpp \
+    ui/game/pointsstatswidget.cpp
 
 
 HEADERS  += \
@@ -160,7 +161,8 @@ HEADERS  += \
     ui/widgets/clickablelabel.h \
     ui/game/gamelengthwidget.h \
     ui/game/recontrastatswidget.h \
-    ui/game/resumewidget.h
+    ui/game/resumewidget.h \
+    ui/game/pointsstatswidget.h
 
 
 FORMS += \
