@@ -96,6 +96,7 @@ class Game: public QObject
         QTime averageRoundLength(double weight = 0.7) const;
         QTime predictedTimeToPlay(double weight = 0.7) const;
         QTime predictedEndTime(double weight = 0.7) const;
+        QTime predictedGameLength(double weight = 0.7) const;
 
         QSharedPointer<Place> site() const;
         void setSite(QSharedPointer<Place> site);
