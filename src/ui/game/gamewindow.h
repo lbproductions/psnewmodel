@@ -66,13 +66,13 @@ private slots:
 
     void on_toolButtonSetComment_clicked();
 
-    void on_toolButtonStop_clicked();
-
-    void on_toolButtonSettings_clicked();
-
     void updateSizes();
 
     void on_actionStats_triggered();
+
+    void on_actionStop_Game_triggered();
+
+    void on_actionSettings_triggered();
 
 private:
     Ui::GameWindow *ui;

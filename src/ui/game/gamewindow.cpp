@@ -118,12 +118,14 @@ GameWindow::GameWindow(QWidget *parent) :
     enableActionsBasedOnState();
     setSidebarToggleToHide();
     MenuBar::instance()->addAction(tr("&Game"), ui->actionPlayPause, this);
+    MenuBar::instance()->addAction(tr("&Game"), ui->actionStop_Game, this);
     MenuBar::instance()->menu(tr("&Game"))->addSeparator();
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_round, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_drinks, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionStats, this);
+    MenuBar::instance()->addAction(tr(""), ui->actionSettings, this);
 
     updateTimes();
 
@@ -211,7 +213,7 @@ void GameWindow::enableActionsBasedOnState()
     ui->actionPlayPause->setEnabled(false);
     ui->actionAdd_round->setEnabled(false);
     ui->actionAdd_schmeisserei->setEnabled(false);
-    ui->toolButtonStop->setEnabled(false);
+    ui->actionStop_Game->setEnabled(false);
 
     if(!m_game)
         return;
@@ -222,12 +224,12 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionAdd_schmeisserei->setEnabled(true);
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
-        ui->toolButtonStop->setEnabled(true);
+        ui->actionStop_Game->setEnabled(true);
         ui->toolButtonState->setIcon(QIcon(":/statusbar/pause.png"));
     }
     else if(state == Game::Paused) {
         ui->actionPlayPause->setEnabled(true);
-        ui->toolButtonStop->setEnabled(true);
+        ui->actionStop_Game->setEnabled(true);
         ui->actionPlayPause->setText(tr("Play"));
         ui->toolButtonState->setIcon(QIcon(":/statusbar/play.png"));
     }
@@ -473,42 +475,6 @@ void GameWindow::on_toolButtonSetComment_clicked()
     setPopupWidget(popup);
 }
 
-
-void GameWindow::on_toolButtonStop_clicked()
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    StopGameWidget* widget = new StopGameWidget(this);
-    widget->setGame(m_game);
-
-    popup->setWidget(widget);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(200);
-    popup->anchorTo(ui->toolButtonStop);
-    popup->show();
-    setPopupWidget(popup);
-}
-
-void GameWindow::on_toolButtonSettings_clicked()
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    SettingsWidget* setWidget = new SettingsWidget(this);
-
-    popup->setWidget(setWidget);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(500);
-    popup->anchorTo(ui->toolButtonSettings);
-    popup->show();
-    setPopupWidget(popup);
-}
-
 void GameWindow::updateSizes()
 {
     ui->tableViewOverview->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
@@ -524,4 +490,37 @@ void GameWindow::on_actionStats_triggered()
     GameStatsWidget* widget = new GameStatsWidget();
     widget->setGame(m_game);
     widget->show();
+}
+
+void GameWindow::on_actionStop_Game_triggered()
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    StopGameWidget* widget = new StopGameWidget(this);
+    widget->setGame(m_game);
+
+    popup->setWidget(widget);
+    popup->setMinimumWidth(400);
+    popup->setMinimumHeight(200);
+    popup->show();
+    setPopupWidget(popup);
+}
+
+void GameWindow::on_actionSettings_triggered()
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+    PopupWidget *popup = new PopupWidget(this);
+
+    SettingsWidget* setWidget = new SettingsWidget(this);
+
+    popup->setWidget(setWidget);
+    popup->setMinimumWidth(400);
+    popup->setMinimumHeight(500);
+    popup->show();
+    setPopupWidget(popup);
 }
