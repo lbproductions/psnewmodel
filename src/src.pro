@@ -58,7 +58,6 @@ SOURCES += main.cpp \
     model/gameinformationmodel.cpp \
     ui/widgets/objectlistwidget.cpp \
     ui/widgets/drinkslistwidget.cpp \
-    ui/game/adddrinkswidget.cpp \
     data/old_offlineGameInformation.cpp \
     data/old_dokoofflinegamebuddys.cpp \
     ui/startwindow.cpp \
@@ -89,7 +88,8 @@ SOURCES += main.cpp \
     ui/game/gamelengthwidget.cpp \
     ui/game/recontrastatswidget.cpp \
     ui/game/resumewidget.cpp \
-    ui/game/pointsstatswidget.cpp
+    ui/game/pointsstatswidget.cpp \
+    ui/game/drinkswidget.cpp
 
 
 HEADERS  += \
@@ -130,7 +130,6 @@ HEADERS  += \
     model/gameinformationmodel.h \
     ui/widgets/objectlistwidget.h \
     ui/widgets/drinkslistwidget.h \
-    ui/game/adddrinkswidget.h \
     data/old_offlineGameInformation.h \
     data/old_dokoofflinegamebuddys.h \
     ui/startwindow.h \
@@ -162,7 +161,8 @@ HEADERS  += \
     ui/game/gamelengthwidget.h \
     ui/game/recontrastatswidget.h \
     ui/game/resumewidget.h \
-    ui/game/pointsstatswidget.h
+    ui/game/pointsstatswidget.h \
+    ui/game/drinkswidget.h
 
 
 FORMS += \
@@ -184,7 +184,8 @@ FORMS += \
     ui/widgets/biggestdistancewidget.ui \
     ui/game/settingswidget.ui \
     ui/game/recontrastatswidget.ui \
-    ui/game/resumewidget.ui
+    ui/game/resumewidget.ui \
+    ui/game/drinkswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

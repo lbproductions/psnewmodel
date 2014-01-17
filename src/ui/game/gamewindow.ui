@@ -609,9 +609,6 @@ QWidget#widgetCreateGame {
    <property name="text">
     <string>Play</string>
    </property>
-   <property name="shortcut">
-    <string>Space</string>
-   </property>
   </action>
   <action name="actionAdd_round">
    <property name="icon">
@@ -687,12 +684,6 @@ QWidget#widgetCreateGame {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GameGraphWidget</class>
-   <extends>QWidget</extends>
-   <header location="global">ui/game/gamegraphwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>ScrollArea</class>
    <extends>QScrollArea</extends>
    <header location="global">ui/widgets/scrollarea.h</header>
@@ -702,6 +693,12 @@ QWidget#widgetCreateGame {
    <class>GraphAxis</class>
    <extends>QWidget</extends>
    <header location="global">ui/game/graphaxis.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>GameGraphWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/game/gamegraphwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

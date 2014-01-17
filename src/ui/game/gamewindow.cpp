@@ -7,7 +7,7 @@
 #include "newrounddialog.h"
 #include "schmeissereidialog.h"
 #include "statisticswidget.h"
-#include "adddrinkswidget.h"
+#include "drinkswidget.h"
 #include "commentwidget.h"
 #include "stopgamewidget.h"
 #include "settingswidget.h"
@@ -315,9 +315,9 @@ void GameWindow::on_actionAdd_drinks_triggered()
     }
     PopupWidget *popup = new PopupWidget(this);
 
-    AddDrinksWidget *dialog = new AddDrinksWidget(popup);
-    dialog->setGame(m_game);
-    dialog->setPlayers(m_game->players());
+    DrinksWidget *dialog = new DrinksWidget(m_game->currentRound(), popup);
+//    dialog->setGame(m_game);
+//    dialog->setPlayers(m_game->players());
 
     popup->setWidget(dialog);
     popup->setMinimumWidth(1000);
