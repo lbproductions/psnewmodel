@@ -25,17 +25,10 @@ class PlayerStatsWidget : public QWidget
         void update();
 
     private:
-        QColor percentageColor(double percentage);
-
         QSharedPointer<Player> m_player;
         QSharedPointer<Game> m_game;
 
         QLabel* m_drinkLabel;
-        QProgressBar* m_reContraBar;
-        QProgressBar* m_reWinBar;
-        QProgressBar* m_contraWinBar;
-
-        PlayerStatistics* m_playerStats;
         
 };
 

@@ -6,160 +6,52 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>220</width>
-    <height>177</height>
+    <width>559</width>
+    <height>443</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
-  <layout class="QFormLayout" name="formLayout">
-   <property name="fieldGrowthPolicy">
-    <enum>QFormLayout::FieldsStayAtSizeHint</enum>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>0</number>
    </property>
-   <property name="horizontalSpacing">
-    <number>-1</number>
+   <property name="leftMargin">
+    <number>0</number>
    </property>
-   <property name="verticalSpacing">
-    <number>2</number>
+   <property name="topMargin">
+    <number>0</number>
    </property>
-   <item row="0" column="0">
-    <widget class="ClickableLabel" name="labelRoundsToPlayLabel">
-     <property name="text">
-      <string>Rounds to play:</string>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="QTreeWidget" name="treeWidget">
+     <property name="maximumSize">
+      <size>
+       <width>150</width>
+       <height>16777215</height>
+      </size>
      </property>
+     <attribute name="headerVisible">
+      <bool>false</bool>
+     </attribute>
+     <column>
+      <property name="text">
+       <string notr="true">1</string>
+      </property>
+     </column>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="ClickableLabel" name="labelRoundsToPlay">
-     <property name="text">
-      <string>-</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="ClickableLabel" name="labelAverageRoundLabel">
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>Average round length:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="ClickableLabel" name="labelAverageRound">
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>-</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="ClickableLabel" name="labelPredictedTimeLabel">
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="toolTip">
-      <string>Click to show predicted end time</string>
-     </property>
-     <property name="text">
-      <string>Predicted time to play:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="ClickableLabel" name="labelTimeToPlay">
-     <property name="cursor">
-      <cursorShape>PointingHandCursor</cursorShape>
-     </property>
-     <property name="text">
-      <string>-</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Re vs. Contra:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="labelReContra">
-     <property name="text">
-      <string>-</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="2">
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="spacing">
-      <number>0</number>
-     </property>
-     <property name="topMargin">
-      <number>5</number>
-     </property>
-     <item>
-      <widget class="GamesTogetherWidget" name="gamesTogetherWidget">
-       <property name="columnCount">
-        <number>4</number>
-       </property>
-       <attribute name="headerVisible">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string notr="true">1</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string notr="true">2</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string notr="true">3</string>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string notr="true">4</string>
-        </property>
-       </column>
-      </widget>
-     </item>
-    </layout>
+   <item>
+    <widget class="QStackedWidget" name="stackedWidget"/>
    </item>
   </layout>
  </widget>
- <customwidgets>
-  <customwidget>
-   <class>ClickableLabel</class>
-   <extends>QLabel</extends>
-   <header location="global">ui/widgets/clickablelabel.h</header>
-  </customwidget>
-  <customwidget>
-   <class>GamesTogetherWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>ui/widgets/gamestogetherwidget.h</header>
-  </customwidget>
- </customwidgets>
  <resources/>
  <connections/>
 </ui>

@@ -2,12 +2,14 @@
 #define GAMESTATSWIDGET_H
 
 #include <QWidget>
+#include <QTreeWidgetItem>
 
 namespace Ui {
     class GameStatsWidget;
 }
 
 class Game;
+class ReContraStatsWidget;
 
 class GameStatsWidget : public QWidget
 {
@@ -20,18 +22,20 @@ class GameStatsWidget : public QWidget
         void setGame(QSharedPointer<Game> game);
 
    private slots:
-        void update();
-        void togglePredictedTime();
-        void toggleWeightedAverageRoundTime();
-        void toggleRoundsToPlay();
+        void onItemClicked(QTreeWidgetItem* item);
         
     private:
+        void addWidget(QString name, QWidget* widget);
+
         Ui::GameStatsWidget *ui;
 
         QSharedPointer<Game> m_game;
-        bool m_predictedTimeLeftShown;
-        bool m_roundAverageWeighted;
-        bool m_roundsToPlay;
+
+        QHash<QTreeWidgetItem*, int> m_indexes;
+
+        ReContraStatsWidget* m_reContraWidget;
+
+        int m_widgetCounter;
 };
 
 #endif // GAMESTATSWIDGET_H

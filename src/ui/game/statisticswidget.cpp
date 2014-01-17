@@ -34,14 +34,14 @@ void StatisticsWidget::setGame(QSharedPointer<Game> game)
     QVBoxLayout* layout = new QVBoxLayout(this);
 
     //GAMESTATS
-    QPushButton* gameButton = new QPushButton(QPixmap(":/sidebar/games.png"),m_game->name()==""?"Game":m_game->name(), this);
-    gameButton->setStyleSheet("color: white; border: 1px solid rgb(108,108,108); height: 20px; font-size: 14px; text-align:left;");
-    connect(gameButton, SIGNAL(pressed()), this, SLOT(onButtonPressed()));
-    GameStatsWidget* gameWidget = new GameStatsWidget(this);
-    gameWidget->setGame(m_game);
-    m_statsWidgets.insert(gameButton, gameWidget);
-    layout->addWidget(gameButton);
-    layout->addWidget(gameWidget);
+//    QPushButton* gameButton = new QPushButton(QPixmap(":/sidebar/games.png"),m_game->name()==""?"Game":m_game->name(), this);
+//    gameButton->setStyleSheet("color: white; border: 1px solid rgb(108,108,108); height: 20px; font-size: 14px; text-align:left;");
+//    connect(gameButton, SIGNAL(pressed()), this, SLOT(onButtonPressed()));
+//    GameStatsWidget* gameWidget = new GameStatsWidget(this);
+//    gameWidget->setGame(m_game);
+//    m_statsWidgets.insert(gameButton, gameWidget);
+//    layout->addWidget(gameButton);
+//    layout->addWidget(gameWidget);
 
     /*
     //SETTINGS

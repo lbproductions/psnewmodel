@@ -11,6 +11,7 @@
 #include "commentwidget.h"
 #include "stopgamewidget.h"
 #include "settingswidget.h"
+#include "gamestatswidget.h"
 
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
@@ -122,6 +123,8 @@ GameWindow::GameWindow(QWidget *parent) :
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_drinks, this);
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
+    MenuBar::instance()->addAction(tr("&Game"), ui->actionStats, this);
+
     updateTimes();
 
     connect(&GameSettings::instance(), SIGNAL(showExtraRowsChanged(bool)), this, SLOT(updateSizes()));
@@ -514,4 +517,11 @@ void GameWindow::updateSizes()
                                              (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
+}
+
+void GameWindow::on_actionStats_triggered()
+{
+    GameStatsWidget* widget = new GameStatsWidget();
+    widget->setGame(m_game);
+    widget->show();
 }

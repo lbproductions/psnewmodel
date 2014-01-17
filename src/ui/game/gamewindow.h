@@ -72,7 +72,9 @@ private slots:
 
     void updateSizes();
 
-    private:
+    void on_actionStats_triggered();
+
+private:
     Ui::GameWindow *ui;
 
     QSharedPointer<Game> m_game;

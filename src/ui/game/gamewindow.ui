@@ -718,6 +718,11 @@ QWidget#widgetCreateGame {
     <string>Ctrl+D</string>
    </property>
   </action>
+  <action name="actionStats">
+   <property name="text">
+    <string>Stats</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
