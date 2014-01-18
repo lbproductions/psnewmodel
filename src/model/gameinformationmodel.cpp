@@ -112,6 +112,9 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
             else if(GameSettings::instance().pointsDisplay() == GameSettings::TotalPoints) {
                 return m_game->totalPoints(player);
             }
+            else if(GameSettings::instance().pointsDisplay() == GameSettings::Drinks) {
+                return m_game->totalDrinkCount(player);
+            }
         }
     }
 

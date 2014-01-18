@@ -409,6 +409,18 @@ QMap<QSharedPointer<Drink>, int> Game::drinkCounts(QSharedPointer<Player> player
     return result;
 }
 
+int Game::totalDrinkCount(QSharedPointer<Player> player) const
+{
+    int count = 0;
+
+    QMap<QSharedPointer<Drink>, int> map = drinkCounts(player);
+    foreach(QSharedPointer<Drink> drink, map.keys()) {
+        count += map.value(drink);
+    }
+
+    return count;
+}
+
 QList<QSharedPointer<LiveDrink> > Game::liveDrinks() const
 {
     QList<QSharedPointer<LiveDrink> > result;

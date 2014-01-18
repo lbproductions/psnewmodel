@@ -14,7 +14,8 @@ class GameSettings : public QObject
 
         enum PointsDisplay {
             TotalPoints,
-            DifferenceToLeader
+            DifferenceToLeader,
+            Drinks
         };
 
         enum TableDisplay{

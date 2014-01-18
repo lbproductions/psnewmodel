@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>316</height>
+    <height>365</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -71,6 +71,13 @@
           <attribute name="buttonGroup">
            <string notr="true">buttonGroup_2</string>
           </attribute>
+         </widget>
+        </item>
+        <item>
+         <widget class="QRadioButton" name="radioButtonDrinkCount">
+          <property name="text">
+           <string>Show drink-count</string>
+          </property>
          </widget>
         </item>
        </layout>

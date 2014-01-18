@@ -28,6 +28,9 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     else if(GameSettings::instance().pointsDisplay() == GameSettings::TotalPoints) {
         ui->radioButtonTotalPoints->setChecked(true);
     }
+    else if(GameSettings::instance().pointsDisplay() == GameSettings::Drinks) {
+        ui->radioButtonDrinkCount->setChecked(true);
+    }
 
     switch(GameSettings::instance().tableDisplay()) {
         case GameSettings::DeficitToLeader:
@@ -68,7 +71,8 @@ void SettingsWidget::on_radioButtonPosition_clicked(bool checked)
 void SettingsWidget::on_radioButtonTotalPoints_clicked(bool checked)
 {
     if(checked) {
-        ui->radioButtonTotalPoints->setChecked(false);
+        ui->radioButtonPointsToLeader->setChecked(false);
+        ui->radioButtonDrinkCount->setChecked(false);
         GameSettings::instance().setPointsDisplay(GameSettings::TotalPoints);
     }
 }
@@ -76,8 +80,19 @@ void SettingsWidget::on_radioButtonTotalPoints_clicked(bool checked)
 void SettingsWidget::on_radioButtonPointsToLeader_clicked(bool checked)
 {
     if(checked) {
-        ui->radioButtonPointsToLeader->setChecked(false);
+        ui->radioButtonTotalPoints->setChecked(false);
+        ui->radioButtonDrinkCount->setChecked(false);
         GameSettings::instance().setPointsDisplay(GameSettings::DifferenceToLeader);
+    }
+}
+
+
+void SettingsWidget::on_radioButtonDrinkCount_clicked(bool checked)
+{
+    if(checked) {
+        ui->radioButtonPointsToLeader->setChecked(false);
+        ui->radioButtonTotalPoints->setChecked(false);
+        GameSettings::instance().setPointsDisplay(GameSettings::Drinks);
     }
 }
 

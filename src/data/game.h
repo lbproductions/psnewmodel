@@ -123,6 +123,7 @@ class Game: public QObject
 
         void addDrink(QSharedPointer<LiveDrink> drink);
         QMap<QSharedPointer<Drink>, int> drinkCounts(QSharedPointer<Player> player) const;
+        int totalDrinkCount(QSharedPointer<Player> player) const;
         QList<QSharedPointer<LiveDrink> > liveDrinks() const;
         QList<QSharedPointer<LiveDrink> > liveDrinks(QSharedPointer<Player> player) const;
 
