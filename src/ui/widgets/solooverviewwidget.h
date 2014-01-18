@@ -26,6 +26,7 @@ class SoloOverviewWidget : public QWidget
         void createCountHash();
 
         int totalTypeCount(Round::SoloType type);
+        int totalPlayerCount(QSharedPointer<Player> player);
 
         Ui::SoloOverviewWidget *ui;
 

@@ -1,12 +1,13 @@
 #include "gamestatswidget.h"
 #include "ui_gamestatswidget.h"
 
-#include <ui/widgets/gamestogetherwidget.h>
 #include <misc/tools.h>
 #include <data/game.h>
 
 #include "recontrastatswidget.h"
 #include "pointsstatswidget.h"
+#include <ui/widgets/gamestogetherwidget.h>
+#include <ui/widgets/solooverviewwidget.h>
 
 #include <QSettings>
 #include <misc/tools.h>
@@ -30,6 +31,9 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     m_gamesTogetherWidget = new GamesTogetherWidget(this);
     addWidget(tr("Games together"), m_gamesTogetherWidget);
 
+    m_soloWidget = new SoloOverviewWidget(this);
+    addWidget(tr("Soli"), m_soloWidget);
+
     ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemClicked(QTreeWidgetItem*)));
@@ -42,15 +46,17 @@ GameStatsWidget::~GameStatsWidget()
     delete ui;
 }
 
-void GameStatsWidget::setGame(QSharedPointer<Game> game)
+void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
 {
-    m_game = game;
+    m_games = games;
 
-    m_reContraWidget->setGame(game);
+    m_reContraWidget->setGames(games);
 
-    m_pointsStatsWidget->setGame(game);
+    m_pointsStatsWidget->setGames(games);
 
-    m_gamesTogetherWidget->setGames(QList<QSharedPointer<Game> >() << game);
+    m_gamesTogetherWidget->setGames(games);
+
+    m_soloWidget->setGames(games);
 }
 
 void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)

@@ -499,8 +499,11 @@ void GameWindow::updateSizes()
 
 void GameWindow::on_actionStats_triggered()
 {
+    if(!m_game)
+        return;
+
     GameStatsWidget* widget = new GameStatsWidget();
-    widget->setGame(m_game);
+    widget->setGames(QList<QSharedPointer<Game> >() << m_game);
     widget->show();
 }
 
