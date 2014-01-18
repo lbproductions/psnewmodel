@@ -304,6 +304,11 @@ DrinksWidget::DrinksWidget(QSharedPointer<Round> round, QWidget *parent) :
     ui->listViewPlayers->installEventFilter(this);
     ui->treeViewDrinkRound->installEventFilter(this);
 
+    ui->lineEditSearchDrink->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->treeViewDrinkRound->setAttribute(Qt::WA_MacShowFocusRect, false);
+
     DrinksListModel *drinksModel = new DrinksListModel(this);
     m_drinksModel = new DrinksSortFilterModel(drinksModel, this);
     m_drinksModel->sort(Qt::DescendingOrder);
