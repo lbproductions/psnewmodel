@@ -9,7 +9,7 @@
 
 #include <QDebug>
 
-const int GameOverviewModel::ExtraRowsCount(5);
+const int GameOverviewModel::ExtraRowsCount(7);
 
 GameOverviewModel::GameOverviewModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -176,6 +176,45 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
             return QVariant::fromValue<QList<QColor> >(colors);
         }
     }
+    else if(extraRow == NormalRoundRow) {
+        QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
+
+        if(!round)
+            return QVariant();
+
+        QSharedPointer<Player> re1Player = round->re1Player();
+        QSharedPointer<Player> re2Player = round->re2Player();
+
+        if(!re1Player || !re2Player || round->trumpfabgabePlayer() || round->hochzeitPlayer()) {
+            return QVariant();
+        }
+
+        if(role == Qt::DecorationRole)
+            return re1Player->color();
+
+        if(role == Qt::BackgroundColorRole)
+            return colorFromPoints(round->points(re1Player));
+
+        if(role == MitspielerColorRole) {
+            return re2Player->color();
+        }
+
+    }
+    else if(extraRow == DrinksRow) {
+        QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
+
+        if(!round)
+            return QVariant();
+
+        if(role == Qt::DisplayRole) {
+            int count =  round->drinks().size();
+            if(count > 0) {
+                return count;
+            }
+
+            return QVariant();
+        }
+    }
     else if(playerIndex < m_game->players().size()
             && roundIndex < m_game->rounds().size()) {
         QSharedPointer<Player> player;
@@ -229,7 +268,7 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
             int roundIndex = section;
             if(roundIndex < m_game->rounds().size()) {
                 if(m_game->players().size() > 0 &&
-                   roundIndex % m_game->players().size() == 0)
+                        roundIndex % m_game->players().size() == 0)
                     return roundIndex + 1;
             }
         }

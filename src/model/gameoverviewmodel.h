@@ -12,11 +12,13 @@ class GameOverviewModel : public QAbstractTableModel
     Q_OBJECT
 public:
     enum ExtraRows {
+        NormalRoundRow,
         HochzeitenRow,
         TrumpfabgabenRow,
         SoliRow,
         SchweinereienRow,
-        SchmeissereienRow
+        SchmeissereienRow,
+        DrinksRow
     };
     static const int ExtraRowsCount;
 

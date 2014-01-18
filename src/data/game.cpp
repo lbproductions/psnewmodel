@@ -498,6 +498,21 @@ bool Game::hasPflichtSolo(QSharedPointer<Player> player) const
     return false;
 }
 
+int Game::normalRoundCount(int roundCount)
+{
+    int result = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(roundCount == 0)
+            break;
+
+        --roundCount;
+        if(!round->hochzeitPlayer() && !round->soloPlayer() && !round->trumpfabgabePlayer()) {
+            ++result;
+        }
+    }
+    return result;
+}
+
 int Game::hochzeitCount(int roundCount)
 {
     int result = 0;

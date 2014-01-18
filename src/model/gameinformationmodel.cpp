@@ -92,6 +92,12 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
         else if(extraRow == GameOverviewModel::SchmeissereienRow) {
             return m_game->schmeissereiCount();
         }
+        else if(extraRow == GameOverviewModel::NormalRoundRow) {
+            return m_game->normalRoundCount();
+        }
+        else if(extraRow == GameOverviewModel::DrinksRow) {
+            return m_game->liveDrinks().size();
+        }
         else if(row < m_game->players().size()) {
             QSharedPointer<Player> player;
             if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
@@ -106,7 +112,6 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
             else if(GameSettings::instance().pointsDisplay() == GameSettings::TotalPoints) {
                 return m_game->totalPoints(player);
             }
-
         }
     }
 
@@ -134,6 +139,12 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
     }
     else if(extraRow == GameOverviewModel::SchmeissereienRow) {
         return tr("Schmeissereien");
+    }
+    else if(extraRow == GameOverviewModel::NormalRoundRow) {
+        return tr("Normal round");
+    }
+    else if(extraRow == GameOverviewModel::DrinksRow) {
+        return tr("Drinks");
     }
     else {
         if(role == Qt::DisplayRole) {

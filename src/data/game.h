@@ -136,6 +136,7 @@ class Game: public QObject
 
         bool hasPflichtSolo(QSharedPointer<Player> player) const;
 
+        int normalRoundCount(int roundCount = std::numeric_limits<int>::max());
         int hochzeitCount(int roundCount = std::numeric_limits<int>::max());
         int soloCount(int roundCount = std::numeric_limits<int>::max());
         int pflichtSoloCount(int roundCount = std::numeric_limits<int>::max());
