@@ -333,7 +333,8 @@ void NewRoundDialog::checkSoloRoundContents()
     else {
         // If the player already has played his pflichtsolo, do not allow to add another pflichtsolo.
         // If the player has not played his pflichtsolo, make the solo pflicht by default.
-        bool checked = !hasPflicht;
+        bool checked = !hasPflicht && (ui->checkBoxSoloPflicht->isChecked()
+                                       || !ui->checkBoxSoloPflicht->isEnabled());
         bool enabled = !hasPflicht;
         ui->checkBoxSoloPflicht->setChecked(checked);
         ui->checkBoxSoloPflicht->setEnabled(enabled);
