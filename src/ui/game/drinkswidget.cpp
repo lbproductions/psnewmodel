@@ -23,9 +23,16 @@ class DrinksSortFilterModel : public QpSortFilterProxyObjectModel<Drink>
 public:
     explicit DrinksSortFilterModel(QpObjectListModel<Drink> *sourceModel, QObject *parent = 0);
 
+    QSharedPointer<Round> round() const;
+    void setRound(const QSharedPointer<Round> &round);
+
 protected:
     bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
     bool lessThan(QSharedPointer<Drink> left, QSharedPointer<Drink> right) const Q_DECL_OVERRIDE;
+
+private:
+    QSharedPointer<Round> m_round;
+    QSharedPointer<Game> m_game;
 };
 
 DrinksSortFilterModel::DrinksSortFilterModel(QpObjectListModel<Drink> *sourceModel, QObject *parent) :
@@ -40,11 +47,29 @@ bool DrinksSortFilterModel::filterAcceptsRow(int source_row, const QModelIndex &
 
 bool DrinksSortFilterModel::lessThan(QSharedPointer<Drink> left, QSharedPointer<Drink> right) const
 {
-    int countLeft = left->count();
-    int countRight = right->count();
+    if(!m_game)
+        return left->count() > right->count();
 
-    return countLeft > countRight;
+    int leftCount = m_game->drinkCount(left);
+    int rightCount = m_game->drinkCount(right);
+
+    if(leftCount != rightCount)
+        return leftCount > rightCount;
+
+    return left->count() > right->count();
 }
+
+QSharedPointer<Round> DrinksSortFilterModel::round() const
+{
+    return m_round;
+}
+
+void DrinksSortFilterModel::setRound(const QSharedPointer<Round> &round)
+{
+    m_game = round->game();
+    m_round = round;
+}
+
 
 /*********************************************************************
  * PlayersSortFilterCheckableModel
@@ -65,11 +90,16 @@ public:
 
     QList<QSharedPointer<Player> > checkedPlayers();
 
+    QSharedPointer<Round> round() const;
+    void setRound(const QSharedPointer<Round> &round);
+
 protected:
     bool lessThan(QSharedPointer<Player> left, QSharedPointer<Player> right) const Q_DECL_OVERRIDE;
 
-    QHash<QSharedPointer<Player>, Qt::CheckState> m_checkStates;
+    mutable QHash<QSharedPointer<Player>, Qt::CheckState> m_checkStates;
     QSharedPointer<Drink> m_drink;
+    QSharedPointer<Round> m_round;
+    QSharedPointer<Game> m_game;
 };
 
 DrinkPlayersModel::DrinkPlayersModel(QpObjectListModel<Player> *sourceModel, QObject *parent) :
@@ -89,11 +119,22 @@ bool DrinkPlayersModel::setData(const QModelIndex &index, const QVariant &value,
 
 QVariant DrinkPlayersModel::data(const QModelIndex &index, int role) const
 {
-    if(role == Qt::CheckStateRole) {
-        return m_checkStates.value(objectByIndex(index), Qt::Unchecked);
-    }
+    if(role != Qt::CheckStateRole)
+        return QpSortFilterProxyObjectModel<Player>::data(index, role);
 
-    return QpSortFilterProxyObjectModel<Player>::data(index, role);
+    if(!m_game || !m_drink)
+        return Qt::Unchecked;
+
+    QSharedPointer<Player> player = objectByIndex(index);
+    if(m_checkStates.contains(player))
+        return m_checkStates.value(player);
+
+    int count = m_game->drinkCounts(player).value(m_drink);
+    if(count == 0)
+        return Qt::Unchecked;
+
+    m_checkStates.insert(player, Qt::Checked);
+    return Qt::Checked;
 }
 
 Qt::ItemFlags DrinkPlayersModel::flags(const QModelIndex &index) const
@@ -112,8 +153,32 @@ void DrinkPlayersModel::clearCheckStates()
 
 bool DrinkPlayersModel::lessThan(QSharedPointer<Player> left, QSharedPointer<Player> right) const
 {
-    return QpSortFilterProxyObjectModel<Player>::lessThan(left, right);
+    if(!m_game || !m_drink)
+        return QpSortFilterProxyObjectModel<Player>::lessThan(left, right);
+
+    int leftCount = m_game->drinkCounts(left).value(m_drink);
+    int rightCount = m_game->drinkCounts(right).value(m_drink);
+
+    if(leftCount != rightCount)
+        return leftCount > rightCount;
+
+    return m_drink->count(left) > m_drink->count(right);
 }
+
+QSharedPointer<Round> DrinkPlayersModel::round() const
+{
+    return m_round;
+}
+
+void DrinkPlayersModel::setRound(const QSharedPointer<Round> &round)
+{
+    beginResetModel();
+    m_round = round;
+    m_game = round->game();
+    m_checkStates.clear();
+    endResetModel();
+}
+
 
 QSharedPointer<Drink> DrinkPlayersModel::drink() const
 {
@@ -124,6 +189,7 @@ void DrinkPlayersModel::setDrink(const QSharedPointer<Drink> &drink)
 {
     beginResetModel();
     m_drink = drink;
+    m_checkStates.clear();
     endResetModel();
 }
 
@@ -174,7 +240,7 @@ LiveDrinkRoundModel::LiveDrinkRoundModel(QObject *parent) :
 void LiveDrinkRoundModel::setRound(QSharedPointer<Round> round)
 {
     clear();
-    foreach(QSharedPointer<LiveDrink> liveDrink, round->drinks()) {
+    foreach(QSharedPointer<LiveDrink> liveDrink, round->liveDrinks()) {
         addLiveDrink(liveDrink);
     }
     m_round = round;
@@ -287,14 +353,12 @@ bool LiveDrinkRoundModel::removeOneDrinkFromItem(QStandardItem *playerItem, QSta
     return false;
 }
 
-
 /*********************************************************************
  * DrinksWidget
  */
-DrinksWidget::DrinksWidget(QSharedPointer<Round> round, QWidget *parent) :
+DrinksWidget::DrinksWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::DrinksWidget),
-    m_round(round)
+    ui(new Ui::DrinksWidget)
 {
     ui->setupUi(this);
     setFocusProxy(ui->lineEditSearchDrink);
@@ -318,13 +382,12 @@ DrinksWidget::DrinksWidget(QSharedPointer<Round> round, QWidget *parent) :
     ui->listViewDrinks->setModelColumn(DrinksListModel::NameColumn);
 
     PlayersListModel *playersModel = new PlayersListModel(this);
-    playersModel->setObjects(round->game()->players());
     m_playersModel = new DrinkPlayersModel(playersModel, this);
+    m_playersModel->sort(Qt::DescendingOrder);
     ui->listViewPlayers->setModel(m_playersModel);
     ui->listViewPlayers->setModelColumn(PlayersListModel::NameColumn);
 
     m_drinkRoundModel = new LiveDrinkRoundModel(this);
-    m_drinkRoundModel->setRound(m_round);
     ui->treeViewDrinkRound->setModel(m_drinkRoundModel);
     ui->treeViewDrinkRound->expandAll();
 
@@ -394,8 +457,6 @@ bool DrinksWidget::eventFilter(QObject *obj, QEvent *event)
             // From filter line edit, allow choosing a drink without pressing TAB
             if(focus == ui->lineEditSearchDrink) {
                 ui->listViewDrinks->setFocus();
-                QApplication::sendEvent(ui->listViewDrinks, event);
-                return true;
             }
             break;
 
@@ -441,7 +502,8 @@ void DrinksWidget::selectDrinkIfNoneSelected()
     if(!ui->listViewDrinks->selectionModel()->selectedRows().isEmpty())
         return;
 
-    ui->listViewDrinks->setCurrentIndex(ui->listViewDrinks->model()->index(0,0));
+    QModelIndex i = ui->listViewDrinks->model()->index(0, ui->listViewDrinks->modelColumn());
+    ui->listViewDrinks->setCurrentIndex(i);
 }
 
 void DrinksWidget::onDrinkSelectionChanged(const QItemSelection &selected, const QItemSelection &)
@@ -452,14 +514,19 @@ void DrinksWidget::onDrinkSelectionChanged(const QItemSelection &selected, const
 
     m_playersModel->setDrink(drink);
 
-    if(m_playersModel->rowCount() > 0
-            && ui->listViewPlayers->selectionModel()->selectedIndexes().isEmpty()) {
-        ui->listViewPlayers->setCurrentIndex(ui->listViewPlayers->model()->index(0,0));
-    }
+    QItemSelectionModel *selectionModel = ui->listViewPlayers->selectionModel();
+    if(m_playersModel->rowCount() == 0
+            || !selectionModel->selectedIndexes().isEmpty())
+        return;
+
+    QModelIndex i = ui->listViewPlayers->model()->index(0, ui->listViewPlayers->modelColumn());
+    ui->listViewPlayers->setCurrentIndex(i);
 }
 
 void DrinksWidget::addLiveDrinkForSelection()
 {
+    Q_ASSERT(m_round);
+
     QSharedPointer<Drink> drink = m_playersModel->drink();
     foreach(QSharedPointer<Player> player, m_playersModel->checkedPlayers()) {
         QSharedPointer<LiveDrink> liveDrink = Qp::create<LiveDrink>();
@@ -491,3 +558,18 @@ void DrinksWidget::on_pushButtonRemove_clicked()
 {
     removeSelectedDrinks();
 }
+QSharedPointer<Round> DrinksWidget::round() const
+{
+    return m_round;
+}
+
+void DrinksWidget::setRound(const QSharedPointer<Round> &round)
+{
+    m_round = round;
+    m_drinkRoundModel->setRound(m_round);
+    m_drinksModel->setRound(m_round);
+    m_playersModel->sourceModel()->setObjects(m_round->game()->players());
+    m_playersModel->setRound(m_round);
+    ui->treeViewDrinkRound->expandAll();
+}
+

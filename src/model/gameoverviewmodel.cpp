@@ -207,7 +207,7 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
             return QVariant();
 
         if(role == Qt::DisplayRole) {
-            int count =  round->drinks().size();
+            int count =  round->liveDrinks().size();
             if(count > 0) {
                 return count;
             }

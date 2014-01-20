@@ -121,7 +121,7 @@ class Game: public QObject
         int winsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo);
         int pointsToLeader(QSharedPointer<Player> player);
 
-        void addDrink(QSharedPointer<LiveDrink> drink);
+        int drinkCount(QSharedPointer<Drink> drink) const;
         QMap<QSharedPointer<Drink>, int> drinkCounts(QSharedPointer<Player> player) const;
         int totalDrinkCount(QSharedPointer<Player> player) const;
         QList<QSharedPointer<LiveDrink> > liveDrinks() const;
@@ -153,7 +153,6 @@ class Game: public QObject
     signals:
         void newRoundStarted();
         void schmeissereiAdded();
-        void liveDrinkAdded();
         void stateChanged();
         void lengthChanged();
 

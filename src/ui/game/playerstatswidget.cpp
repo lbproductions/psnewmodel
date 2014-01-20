@@ -15,7 +15,6 @@ PlayerStatsWidget::PlayerStatsWidget(QSharedPointer<Player> player, QSharedPoint
     m_game(game)
 {
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
-    connect(m_game.data(), SIGNAL(liveDrinkAdded()), this, SLOT(update()));
 
     m_drinkLabel = new QLabel(getDrinkString(), this);
 

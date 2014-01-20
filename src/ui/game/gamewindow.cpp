@@ -30,6 +30,7 @@
 #include <QWheelEvent>
 #include <QPushButton>
 #include <QModelIndex>
+#include <QPropertyAnimation>
 
 #include <QMessageBox>
 
@@ -315,12 +316,12 @@ void GameWindow::on_actionAdd_drinks_triggered()
     }
     PopupWidget *popup = new PopupWidget(this);
 
-    DrinksWidget *dialog = new DrinksWidget(m_game->currentRound(), popup);
-//    dialog->setGame(m_game);
-//    dialog->setPlayers(m_game->players());
+    DrinksWidget *drinksWidget = new DrinksWidget(popup);
+    drinksWidget->setRound(m_game->currentRound());
+//    showCardWidget(drinksWidget);
 
-    popup->setWidget(dialog);
-    popup->setMinimumWidth(1000);
+    popup->setWidget(drinksWidget);
+    popup->setMinimumWidth(drinksWidget->minimumWidth() + 200);
     popup->setMinimumHeight(400);
     popup->anchorTo(ui->toolButtonAddDrinks);
     popup->show();
@@ -443,14 +444,41 @@ void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
 }
 
-PopupWidget *GameWindow::popupWidget() const
+QWidget *GameWindow::popupWidget() const
 {
     return m_popupWidget;
 }
 
-void GameWindow::setPopupWidget(PopupWidget *extraWidget)
+void GameWindow::setPopupWidget(QWidget *extraWidget)
 {
     m_popupWidget = extraWidget;
+}
+
+void GameWindow::showCardWidget(QWidget *widget)
+{
+    if(popupWidget()) {
+        popupWidget()->close();
+    }
+
+    widget->setFixedHeight(ui->tableViewInformation->height() - 22);
+    widget->show();
+    setPopupWidget(widget);
+
+    int width = widget->width();
+    int height = widget->height();
+    QPoint topRight = mapToGlobal(geometry().topRight());
+
+    QPropertyAnimation *animation  = new QPropertyAnimation(widget, "geometry");
+    animation->setStartValue(QRect(topRight - QPoint(-1, 64),
+                                   QSize(width, height)));
+    animation->setEndValue(QRect(topRight - QPoint(width - 1, 64),
+                                  QSize(width, height)));
+    animation->setDuration(300);
+    animation->setEasingCurve(QEasingCurve::OutExpo);
+    animation->start();
+
+    connect(animation, &QPropertyAnimation::finished,
+            animation, &QPropertyAnimation::deleteLater);
 }
 
 void GameWindow::on_buttonBox_accepted()

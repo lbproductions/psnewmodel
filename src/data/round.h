@@ -40,7 +40,7 @@ class Round : public QObject
     Q_PROPERTY(QMap<int COMMA int> points READ _points WRITE _setPoints)
 
     Q_PROPERTY(QSharedPointer<Game> game READ game WRITE setGame)
-    Q_PROPERTY(QList<QSharedPointer<LiveDrink> > drinks READ drinks WRITE setDrinks)
+    Q_PROPERTY(QList<QSharedPointer<LiveDrink> > liveDrinks READ liveDrinks WRITE setLiveDrinks)
     Q_PROPERTY(QList<QSharedPointer<Schmeisserei> > schmeissereien READ schmeissereien WRITE setSchmeissereien)
 
     Q_PROPERTY(QSharedPointer<Player> hochzeitPlayer READ hochzeitPlayer WRITE setHochzeitPlayer)
@@ -57,7 +57,7 @@ class Round : public QObject
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:game",
                 "reverserelation=rounds")
-    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:drinks",
+    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:liveDrinks",
                 "reverserelation=round")
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:schmeissereien",
@@ -155,7 +155,7 @@ public:
 
     QSharedPointer<Game> game() const;
 
-    QList<QSharedPointer<LiveDrink> > drinks() const;
+    QList<QSharedPointer<LiveDrink> > liveDrinks() const;
 
     QSharedPointer<Player> cardMixer() const;
     QList<QSharedPointer<Player> > playingPlayers() const;
@@ -232,9 +232,9 @@ private:
     friend class Game;
     friend class LiveDrink;
 
-    void addDrink(QSharedPointer<LiveDrink> drink);
-    void removeDrink(QSharedPointer<LiveDrink> drink);
-    void setDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
+    void addLiveDrink(QSharedPointer<LiveDrink> drink);
+    void removeLiveDrink(QSharedPointer<LiveDrink> drink);
+    void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &liveDrinks);
     void setGame(const QSharedPointer<Game> &game);
     void setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien);
 
@@ -256,7 +256,7 @@ private:
     TrumpfColor m_trumpfColor;
 
     QpWeakRelation<Game> m_game;
-    QpStrongRelation<LiveDrink> m_drinks;
+    QpStrongRelation<LiveDrink> m_liveDrinks;
     QpStrongRelation<Schmeisserei> m_schmeissereien;
     QpWeakRelation<Player> m_hochzeitPlayer;
     QpWeakRelation<Player> m_trumpfabgabePlayer;

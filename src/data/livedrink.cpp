@@ -51,12 +51,12 @@ void LiveDrink::setRound(QSharedPointer<Round> round)
 
     QSharedPointer<Round> r = this->round();
     if(r) {
-        r->removeDrink(sharedThis);
+        r->removeLiveDrink(sharedThis);
     }
 
     m_round.relate(round);
     if(round) {
-        round->addDrink(sharedThis);
+        round->addLiveDrink(sharedThis);
     }
 }
 

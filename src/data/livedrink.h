@@ -23,7 +23,7 @@ class LiveDrink : public QObject
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:player",
                 "reverserelation=liveDrinks")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:round",
-                "reverserelation=drinks")
+                "reverserelation=liveDrinks")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:drink",
                 "reverserelation=liveDrinks")
 

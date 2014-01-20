@@ -58,8 +58,10 @@ private slots:
 
     void addPlayerToGame(QSharedPointer<Player> player);
 
-    PopupWidget *popupWidget() const;
-    void setPopupWidget(PopupWidget *popupWidget);
+    QWidget *popupWidget() const;
+    void setPopupWidget(QWidget *popupWidget);
+
+    void showCardWidget(QWidget *widget);
 
     void on_buttonBox_accepted();
 
@@ -82,7 +84,7 @@ private:
     GameOverviewModel *m_gameOverViewModel;
     GameInformationModel *m_informationModel;
 
-    QPointer<PopupWidget> m_popupWidget;
+    QPointer<QWidget> m_popupWidget;
 
     OverviewPlayerHeaderView *m_verticalHeaderView;
     StatisticsWidget* m_statsWidget;

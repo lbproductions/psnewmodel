@@ -18,8 +18,11 @@ class DrinksWidget : public QWidget
     Q_OBJECT
 
 public:
-    explicit DrinksWidget(QSharedPointer<Round> round, QWidget *parent = 0);
+    explicit DrinksWidget(QWidget *parent = 0);
     ~DrinksWidget();
+
+    QSharedPointer<Round> round() const;
+    void setRound(const QSharedPointer<Round> &round);
 
 private slots:
     void on_lineEditSearchDrink_textChanged(const QString &arg1);
@@ -35,9 +38,7 @@ private slots:
     void removeSelectedDrinks();
 
     void on_pushButtonAdd_clicked();
-
     void on_pushButtonRemove_clicked();
-
 private:
     Ui::DrinksWidget *ui;
     DrinksSortFilterModel *m_drinksModel;
