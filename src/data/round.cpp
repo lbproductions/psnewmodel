@@ -18,7 +18,7 @@ Round::Round(QObject *parent) :
     m_soloIsPflicht(false),
     m_winnerParty(UnknownWinnerParty),
     m_game("game", this),
-    m_drinks("drinks",this),
+    m_liveDrinks("liveDrinks",this),
     m_schmeissereien("schmeissereien",this),
     m_hochzeitPlayer("hochzeitPlayer",this),
     m_trumpfabgabePlayer("trumpfabgabePlayer",this),
@@ -39,20 +39,25 @@ Round::~Round()
 {
 }
 
-QList<QSharedPointer<LiveDrink> > Round::drinks() const
+QList<QSharedPointer<LiveDrink> > Round::liveDrinks() const
 {
-    return m_drinks.resolveList();
+    return m_liveDrinks.resolveList();
 }
 
-void Round::addDrink(QSharedPointer<LiveDrink> drink)
+void Round::addLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_drinks.relate(drink);
+    m_liveDrinks.relate(drink);
 }
 
-void Round::setDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
+void Round::removeLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_drinks.clear();
-    m_drinks.relate(drinks);
+    m_liveDrinks.unrelate(drink);
+}
+
+void Round::setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
+{
+    m_liveDrinks.clear();
+    m_liveDrinks.relate(drinks);
 }
 
 QSharedPointer<Game> Round::game() const

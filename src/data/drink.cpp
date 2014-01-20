@@ -39,6 +39,16 @@ void Drink::setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
     m_liveDrinks.relate(drinks);
 }
 
+void Drink::addLiveDrink(QSharedPointer<LiveDrink> drink)
+{
+    m_liveDrinks.relate(drink);
+}
+
+void Drink::removeLiveDrink(QSharedPointer<LiveDrink> drink)
+{
+    m_liveDrinks.unrelate(drink);
+}
+
 void Drink::setIconPath(QString path)
 {
     m_iconPath = path;

@@ -390,18 +390,23 @@ int Game::pointsToLeader(QSharedPointer<Player> player)
     else return currentRound()->pointsToLeader(player);
 }
 
-void Game::addDrink(QSharedPointer<LiveDrink> drink)
+int Game::drinkCount(QSharedPointer<Drink> drink) const
 {
-    currentRound()->addDrink(drink);
-
-    emit liveDrinkAdded();
+    int result = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        foreach(QSharedPointer<LiveDrink> liveDrink, round->liveDrinks()) {
+            if(drink == liveDrink->drink())
+                ++result;
+        }
+    }
+    return result;
 }
 
 QMap<QSharedPointer<Drink>, int> Game::drinkCounts(QSharedPointer<Player> player) const
 {
     QMap<QSharedPointer<Drink>, int> result;
     foreach(QSharedPointer<Round> round, rounds()) {
-        foreach(QSharedPointer<LiveDrink> drink, round->drinks()) {
+        foreach(QSharedPointer<LiveDrink> drink, round->liveDrinks()) {
             if(drink->player() == player)
                 ++result[drink->drink()];
         }
@@ -425,7 +430,7 @@ QList<QSharedPointer<LiveDrink> > Game::liveDrinks() const
 {
     QList<QSharedPointer<LiveDrink> > result;
     foreach(QSharedPointer<Round> round, rounds()) {
-        result.append(round->drinks());
+        result.append(round->liveDrinks());
     }
     return result;
 }
@@ -434,7 +439,7 @@ QList<QSharedPointer<LiveDrink> > Game::liveDrinks(QSharedPointer<Player> player
 {
     QList<QSharedPointer<LiveDrink> > result;
     foreach(QSharedPointer<Round> round, rounds()) {
-        foreach(QSharedPointer<LiveDrink> drink, round->drinks()) {
+        foreach(QSharedPointer<LiveDrink> drink, round->liveDrinks()) {
             if(drink->player() == player)
                 result.append(drink);
         }

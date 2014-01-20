@@ -67,8 +67,12 @@ public:
     static Type typeFromString(const QString &typeString);
 
 private:
+    friend class LiveDrink;
+
     void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
 
+    void addLiveDrink(QSharedPointer<LiveDrink> drink);
+    void removeLiveDrink(QSharedPointer<LiveDrink> drink);
     void setIconPath(QString path);
     QString iconPath() const;
 
@@ -79,7 +83,7 @@ private:
     double m_alcoholByVolume;
     QString m_iconPath;
 
-    QpWeakRelation<LiveDrink> m_liveDrinks;
+    QpStrongRelation<LiveDrink> m_liveDrinks;
 };
 
 

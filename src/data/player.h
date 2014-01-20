@@ -155,6 +155,10 @@ class Player : public QObject
 
     private:
         friend class PlayersListModel;
+        friend class LiveDrink;
+
+        void addLiveDrink(QSharedPointer<LiveDrink> drink);
+        void removeLiveDrink(QSharedPointer<LiveDrink> drink);
 
         void setPlaces(const QList<QSharedPointer<Place> > &places);
         void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);

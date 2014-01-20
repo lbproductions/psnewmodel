@@ -59,6 +59,10 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
+    GameWindow *w = new GameWindow;
+    w->setGame(games.last());
+    w->show();
+
     /*
     foreach(QSharedPointer<Game> game, games) {
         if(game->type() == Game::Doppelkopf) {
@@ -92,9 +96,10 @@ int main(int argc, char *argv[])
     //qDebug() << "Contra-Count: " << count;
 
 
-    StartWindow* startWindow = new StartWindow();
-    startWindow->show();
+//    StartWindow* startWindow = new StartWindow();
+//    startWindow->show();
 
     //    new MainWindow;
-    return a.exec();
+    int ret = a.exec();
+    return ret;
 }
