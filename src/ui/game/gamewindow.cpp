@@ -69,7 +69,6 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->listWidgetPlayers->setPalette(darkPalette);
     ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width());
 
-    ui->splitter->setPalette(darkPalette);
     ui->tableViewOverview->setPalette(darkPalette);
     ui->tableViewOverview->setModel(m_gameOverViewModel);
     connect(ui->tableViewOverview, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_TableViewOverviewDoubleClicked(const QModelIndex&)));
@@ -99,25 +98,16 @@ GameWindow::GameWindow(QWidget *parent) :
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 
-    m_statsWidget = new StatisticsWidget(ui->widgetStatisticsFrame);
-    ui->widgetStatisticsFrame->setWidget(m_statsWidget);
+    ui->actionBar->addActionButton(ui->actionAdd_round);
+    ui->actionBar->addActionButton(ui->actionAdd_schmeisserei);
+    ui->actionBar->addActionButton(ui->actionAdd_drinks);
 
     QTimer *lengthTimer = new QTimer(this);
     connect(lengthTimer, &QTimer::timeout,
             this, &GameWindow::updateTimes);
     lengthTimer->start(1000);
 
-    ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
-    ui->toolButtonAddSchmeisserei->setDefaultAction(ui->actionAdd_schmeisserei);
-    ui->toolButtonAddDrinks->setDefaultAction(ui->actionAdd_drinks);
-    ui->toolButtonToggleSidebar->setDefaultAction(ui->actionToggleSidebar);
-    ui->toolButtonToggleSidebar->setText(QString());
-
-    connect(ui->splitter, SIGNAL(splitterMoved(int,int)),
-            this, SLOT(setSidebarToggleActionBasedUponSidebarState()));
-
     enableActionsBasedOnState();
-    setSidebarToggleToHide();
     MenuBar::instance()->addAction(tr("&Game"), ui->actionPlayPause, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionStop_Game, this);
     MenuBar::instance()->menu(tr("&Game"))->addSeparator();
@@ -160,8 +150,6 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     m_informationModel->setGame(game);
     ui->graphWidget->setGame(game);
 
-    m_statsWidget->setGame(game);
-
     ui->gameLengthWidget->setGame(game);
 
     if(m_game->state() == Game::Paused) {
@@ -199,6 +187,7 @@ void GameWindow::mousePressEvent(QMouseEvent *e)
         }
     }
 
+    ui->actionBar->closeCardWidget();
     QMainWindow::mousePressEvent(e);
 }
 
@@ -211,6 +200,15 @@ void GameWindow::resizeEvent(QResizeEvent *)
     }
 
     m_resumeWidget->resize(this->width(), this->height());
+
+    if(m_game) {
+        ui->actionBar->setButtonsOffest(ui->tableViewOverview->horizontalHeader()->height() +
+                                        m_game->players().size() * ui->tableViewOverview->rowHeight(0));
+        ui->actionBar->setCardOffset(ui->tableViewOverview->horizontalHeader()->height() + 1);
+        ui->actionBar->setCardHeight(ui->tableViewOverview->height()
+                                     - ui->tableViewOverview->horizontalHeader()->height() - 2);
+    }
+    ui->actionBar->raise();
 }
 
 void GameWindow::on_actionPlayPause_triggered()
@@ -267,7 +265,6 @@ void GameWindow::on_actionAdd_round_triggered()
     popup->setWidget(dialog);
     popup->setMinimumWidth(500);
     popup->setMinimumHeight(500);
-    popup->anchorTo(ui->toolButtonAddRound);
     popup->show();
     setPopupWidget(popup);
 
@@ -304,92 +301,24 @@ void GameWindow::on_actionAdd_schmeisserei_triggered()
     popup->setWidget(dialog);
     popup->setMinimumWidth(300);
     popup->setMinimumHeight(300);
-    popup->anchorTo(ui->toolButtonAddSchmeisserei);
     popup->show();
     setPopupWidget(popup);
 }
 
 void GameWindow::on_actionAdd_drinks_triggered()
 {
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    DrinksWidget *drinksWidget = new DrinksWidget(popup);
+    DrinksWidget *drinksWidget = new DrinksWidget(ui->centralwidget);
     drinksWidget->setRound(m_game->currentRound());
-//    showCardWidget(drinksWidget);
-
-    popup->setWidget(drinksWidget);
-    popup->setMinimumWidth(drinksWidget->minimumWidth() + 200);
-    popup->setMinimumHeight(400);
-    popup->anchorTo(ui->toolButtonAddDrinks);
-    popup->show();
-    setPopupWidget(popup);
+    ui->actionBar->showCardWidget(drinksWidget);
+    ui->tableViewInformation->lower();
+    ui->tableViewOverview->lower();
+    ui->actionBar->raise();
 }
 
 
 void GameWindow::updateTimes()
 {
-    ui->labelClock->setText(QTime::currentTime().toString());
-
-    if(m_game)
-        ui->labelLength->setText(m_game->length().toString());
-}
-
-void GameWindow::on_actionToggleSidebar_triggered()
-{
-    if(ui->widgetStatisticsFrame->isVisible()) {
-        QList<int> sizes = ui->splitter->sizes();
-        if(sizes.last() == 0) {
-            sizes[sizes.size() - 1] = 100;
-            ui->splitter->setSizes(sizes);
-            setSidebarToggleToHide();
-        }
-        else {
-            ui->widgetStatisticsFrame->hide();
-            setSidebarToggleToShow();
-        }
-    }
-    else {
-        ui->widgetStatisticsFrame->show();
-        setSidebarToggleToHide();
-    }
-}
-
-void GameWindow::setSidebarToggleActionBasedUponSidebarState()
-{
-    if(ui->widgetStatisticsFrame->isVisible()
-            && ui->splitter->sizes().last() > 0) {
-        setSidebarToggleToHide();
-    }
-    else {
-        setSidebarToggleToShow();
-    }
-}
-
-void GameWindow::setSidebarToggleToHide()
-{
-    ui->actionToggleSidebar->setText(tr("Hide sidebar"));
-    ui->toolButtonToggleSidebar->setText(QString());
-    ui->toolButtonToggleSidebar->setStyleSheet("QToolButton#toolButtonToggleSidebar {"
-                                               "border-image: url(:/statusbar/sidebar-right.png);"
-                                               "}"
-                                               "QToolButton#toolButtonToggleSidebar:pressed {"
-                                               "border-image: url(:/statusbar/sidebar-right-pressed.png);"
-                                               "}");
-}
-
-void GameWindow::setSidebarToggleToShow()
-{
-    ui->actionToggleSidebar->setText(tr("Show sidebar"));
-    ui->toolButtonToggleSidebar->setText(QString());
-    ui->toolButtonToggleSidebar->setStyleSheet("QToolButton#toolButtonToggleSidebar {"
-                                               "border-image: url(:/statusbar/sidebar-left.png);"
-                                               "}"
-                                               "QToolButton#toolButtonToggleSidebar:pressed {"
-                                               "border-image: url(:/statusbar/sidebar-left-pressed.png);"
-                                               "}");
+    // TODO: irgendwelche sachen anpassen?
 }
 
 void GameWindow::on_TableViewOverviewDoubleClicked(const QModelIndex& index)
@@ -454,33 +383,6 @@ void GameWindow::setPopupWidget(QWidget *extraWidget)
     m_popupWidget = extraWidget;
 }
 
-void GameWindow::showCardWidget(QWidget *widget)
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-
-    widget->setFixedHeight(ui->tableViewInformation->height() - 22);
-    widget->show();
-    setPopupWidget(widget);
-
-    int width = widget->width();
-    int height = widget->height();
-    QPoint topRight = mapToGlobal(geometry().topRight());
-
-    QPropertyAnimation *animation  = new QPropertyAnimation(widget, "geometry");
-    animation->setStartValue(QRect(topRight - QPoint(-1, 64),
-                                   QSize(width, height)));
-    animation->setEndValue(QRect(topRight - QPoint(width - 1, 64),
-                                  QSize(width, height)));
-    animation->setDuration(300);
-    animation->setEasingCurve(QEasingCurve::OutExpo);
-    animation->start();
-
-    connect(animation, &QPropertyAnimation::finished,
-            animation, &QPropertyAnimation::deleteLater);
-}
-
 void GameWindow::on_buttonBox_accepted()
 {
     QSharedPointer<Game> game = Qp::create<Game>();
@@ -510,7 +412,6 @@ void GameWindow::on_toolButtonSetComment_clicked()
     popup->setWidget(commentWidget);
     popup->setMinimumWidth(500);
     popup->setMinimumHeight(500);
-    popup->anchorTo(ui->toolButtonSetComment);
     popup->show();
     setPopupWidget(popup);
 }

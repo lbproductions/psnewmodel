@@ -29,7 +29,8 @@
 }
 
 QFrame#frame {
-	border: 2px solid rgb(128,128,128);
+	border:none;
+	border-right: 1px solid rgb(128,128,128);
 }
 
 
