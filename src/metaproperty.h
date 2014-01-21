@@ -2,17 +2,17 @@
 #define QPERSISTENCE_METAPROPERTY_H
 
 #include <QtCore/QMetaProperty>
-
 #include <QtCore/QSharedDataPointer>
 
 struct QMetaObject;
 class QpMetaObject;
 
 class QpMetaPropertyPrivate;
-class QpMetaProperty : public QMetaProperty
+class QpMetaProperty
 {
 public:
     enum Cardinality {
+        UnknownCardinality,
         NoCardinality,
         ToOneCardinality,
         ToManyCardinality,
@@ -22,17 +22,23 @@ public:
         ManyToManyCardinality
     };
 
-    explicit QpMetaProperty(const QString &propertyName, const QpMetaObject &metaObject);
-    explicit QpMetaProperty(const QMetaProperty &property, const QpMetaObject &metaObject);
+    QpMetaProperty();
     virtual ~QpMetaProperty();
     QpMetaProperty(const QpMetaProperty &other);
     QpMetaProperty &operator = (const QpMetaProperty &other);
 
     QpMetaObject metaObject() const;
 
+    QMetaProperty metaProperty() const;
     bool write(QObject *obj, const QVariant &value) const;
 
+    QString name() const;
+    QString typeName() const;
     QString columnName() const;
+
+    bool isStored() const;
+    bool isValid() const;
+    QVariant::Type type() const;
 
     // Relations
     bool isRelationProperty() const;
@@ -58,7 +64,12 @@ public:
     QString setType() const;
 
 private:
-    QSharedDataPointer<QpMetaPropertyPrivate> d;
+    friend class QpMetaObject;
+    explicit QpMetaProperty(const QMetaProperty &property, const QpMetaObject &metaObject);
+
+    QString generateColumnName() const;
+
+    QExplicitlySharedDataPointer<QpMetaPropertyPrivate> data;
 };
 
 #endif // QPERSISTENCE_METAPROPERTY_H

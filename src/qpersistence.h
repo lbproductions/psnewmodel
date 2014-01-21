@@ -3,7 +3,7 @@
 
 #include <QtSql/QSqlDatabase>
 
-#include <QPersistencePersistentDataAccessObject.h>
+#include "dataaccessobject.h"
 
 class QpMetaObject;
 
@@ -13,6 +13,9 @@ void setDatabase(const QSqlDatabase &database);
 QSqlDatabase database();
 void adjustDatabaseSchema();
 void createCleanSchema();
+
+void startBulkDatabaseQueries();
+void commitBulkDatabaseQueries();
 
 template<class T> int primaryKey(QSharedPointer<T> object);
 template<class T> void registerClass();
@@ -27,14 +30,11 @@ template<class T> bool remove(QSharedPointer<T> object);
 template<class K, class V> void registerMappableTypes();
 template<class T> void registerSetType();
 template<class T> QSharedPointer<T> sharedFrom(const QObject *object);
-template<class T> QSharedPointer<T> resolveToOneRelation(const QString &name, const QObject *object);
-template<class T> QList<QSharedPointer<T> > resolveToManyRelation(const QString &name, const QObject *object);
-
-
-template<class T> QList<QSharedPointer<T> > makeListStrong(const QList<QWeakPointer<T> >& list, bool *ok = 0);
-template<class T> QList<QWeakPointer<T> > makeListWeak(const QList<QSharedPointer<T> >& list);
-
-template <typename T> QList<T> reversed( const QList<T> & in );
+template<typename T> QList<T> reversed( const QList<T> & in );
+template<class Source, class Target>
+QList<Target> castList(const QList<Source>& list);
+template<class T, class O>
+QList<QSharedPointer<T> > castList(const QList<QSharedPointer<O> >& list);
 
 } // namespace Qp
 

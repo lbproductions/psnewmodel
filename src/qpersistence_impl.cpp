@@ -1,8 +1,8 @@
 #include "qpersistence.h"
 
-#include "private.h"
 #include "conversion.h"
 #include "metaproperty.h"
+#include "private.h"
 #include "relationresolver.h"
 
 #include <QSharedPointer>
@@ -18,10 +18,7 @@ void registerClass()
     qRegisterMetaType<QSharedPointer<T> >();
     qRegisterMetaType<QList<QSharedPointer<T> > >();
 
-    QpDao<T> *dataAccessObject = new QpDao<T>(&guard);
-
-    // Register meta object
-    Private::registerDataAccessObject(dataAccessObject, T::staticMetaObject);
+    new QpDao<T>(&guard);
 
     // Create converter
     Private::ObjectConverter<T> *converter = new Private::ObjectConverter<T>(&guard);
@@ -31,6 +28,14 @@ void registerClass()
 
     // Register converter for list type
     Private::registerConverter<QSharedPointer<T> >(converter);
+}
+
+template <typename T>
+QList<T> reversed( const QList<T> & in ) {
+    QList<T> result;
+    result.reserve( in.size() );
+    std::reverse_copy( in.begin(), in.end(), std::back_inserter( result ) );
+    return result;
 }
 
 template<class K, class V>
@@ -44,9 +49,9 @@ void registerMappableTypes()
     static QObject guard;
     Private::registerConverter<QMap<K,V> >(new Private::MapConverter<K,V>(&guard));
 
-    if(!Private::canConvertFromSqlStoredVariant<K>())
+    if (!Private::canConvertFromSqlStoredVariant<K>())
         Private::registerConverter<K>(new Private::SqlConverter<K>(&guard));
-    if(!Private::canConvertFromSqlStoredVariant<V>())
+    if (!Private::canConvertFromSqlStoredVariant<V>())
         Private::registerConverter<V>(new Private::SqlConverter<V>(&guard));
 }
 
@@ -60,7 +65,7 @@ void registerSetType()
     static QObject guard;
     Private::registerConverter<QSet<T> >(new Private::SetConverter<T>(&guard));
 
-    if(!Private::canConvertFromSqlStoredVariant<T>())
+    if (!Private::canConvertFromSqlStoredVariant<T>())
         Private::registerConverter<T>(new Private::SqlConverter<T>(&guard));
 }
 
@@ -72,7 +77,7 @@ template<class T> QSharedPointer<T> read(int id)
 template<class T>
 QList<QSharedPointer<T> > readAll()
 {
-    return Private::castList<T>(dataAccessObject<T>()->readAllObjects());
+    return dataAccessObject<T>()->readAllObjects();
 }
 
 template<class T>
@@ -90,66 +95,28 @@ QSharedPointer<T> create()
 template<class T>
 QpDao<T> *dataAccessObject()
 {
-    return static_cast<QpDao<T> *>(Private::dataAccessObject(T::staticMetaObject));
+    return static_cast<QpDao<T> *>(QpDaoBase::forClass(T::staticMetaObject));
 }
 
 template<class T>
 bool update(QSharedPointer<T> object)
 {
-    return Private::dataAccessObject(*object->metaObject())->updateObject(object);
+    return QpDaoBase::forClass(*object->metaObject())->updateObject(object);
 }
 
 template<class T>
 bool remove(QSharedPointer<T> object)
 {
-    return Private::dataAccessObject(*object->metaObject())->removeObject(object);
+    return QpDaoBase::forClass(*object->metaObject())->removeObject(object);
 }
 
 template<class T>
-QSharedPointer<T> sharedFrom(const QObject *object)
+QSharedPointer<T> sharedFrom(const T *object)
 {
     QVariant variant = object->property(Qp::Private::QPERSISTENCE_SHARED_POINTER_PROPERTY.toLatin1());
     QWeakPointer<QObject> weak = variant.value<QWeakPointer<QObject> >();
     QSharedPointer<QObject> strong = weak.toStrongRef();
     return qSharedPointerCast<T>(strong);
-}
-
-
-template<class T>
-QSharedPointer<T> resolveToOneRelation(const QString &name, const QObject *object)
-{
-    QpRelationResolver resolver;
-    return qSharedPointerCast<T>(resolver.resolveToOneRelation(name, object));
-}
-
-template<class T>
-QList<QSharedPointer<T> > resolveToManyRelation(const QString &name, const QObject *object)
-{
-    QpRelationResolver resolver;
-    return Qp::Private::castList<T>(resolver.resolveToOneRelation(name, object));
-
-}
-
-template<class T>
-QList<QSharedPointer<T> > makeListStrong(const QList<QWeakPointer<T> >& list, bool *ok)
-{
-    QList<QSharedPointer<T> > result;
-    result.reserve(list.size());
-    if(ok) *ok = true;
-    Q_FOREACH(QWeakPointer<T> s, list) {
-        QSharedPointer<T> p = s.toStrongRef();
-        if(ok && !p) *ok = false;
-        result.append(p);
-    }
-    return result;
-}
-
-template<class T>
-QList<QWeakPointer<T> > makeListWeak(const QList<QSharedPointer<T> >& list)
-{
-    QList<QWeakPointer<T> > result;
-    Q_FOREACH(QSharedPointer<T> s, list) result.append(s.toWeakRef());
-    return result;
 }
 
 template<class T>
@@ -158,11 +125,20 @@ int primaryKey(QSharedPointer<T> object)
     return Qp::Private::primaryKey(object.data());
 }
 
-template <typename T>
-QList<T> reversed( const QList<T> & in ) {
-    QList<T> result;
-    result.reserve( in.size() );
-    std::reverse_copy( in.begin(), in.end(), std::back_inserter( result ) );
+template<class Target, class Source>
+QList<Target> castList(const QList<Source>& list)
+{
+    QList<Target> result;
+    Q_FOREACH(Source s, list) result.append(static_cast<Target>(s));
+    return result;
+}
+
+template<class Target, class Source>
+QList<QSharedPointer<Target> > castList(const QList<QSharedPointer<Source> >& list)
+{
+    QList<QSharedPointer<Target> > result;
+    result.reserve(list.size());
+    Q_FOREACH(QSharedPointer<Source> s, list) result.append(qSharedPointerCast<Target>(s));
     return result;
 }
 

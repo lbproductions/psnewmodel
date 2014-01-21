@@ -1,5 +1,5 @@
 isEmpty(QPERSISTENCE_PATH) {
-    error(You have to set QPERSISTENCE_PATH to the path of QDataSuite relative to your project)
+    error(You have to set QPERSISTENCE_PATH to the path of QPersistence relative to your project)
 }
 
 QPERSISTENCE_TARGET          = qpersistence

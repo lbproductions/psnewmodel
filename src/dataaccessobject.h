@@ -1,12 +1,13 @@
-#ifndef QPERSISTENCE_PERSISTENTDATAACCESSOBJECT_H
-#define QPERSISTENCE_PERSISTENTDATAACCESSOBJECT_H
+#ifndef QPERSISTENCE_DATAACCESSOBJECT_H
+#define QPERSISTENCE_DATAACCESSOBJECT_H
 
 #include <QtCore/QObject>
-
-#include <QPersistenceMetaObject.h>
 #include <QtCore/QSharedDataPointer>
 #include <QtCore/QSharedPointer>
 #include <QtSql/QSqlDatabase>
+
+#include "conversion.h"
+#include "metaobject.h"
 
 class QSqlQuery;
 class QpError;
@@ -17,6 +18,9 @@ class QpDaoBase : public QObject
 {
     Q_OBJECT
 public:
+    static QpDaoBase *forClass(const QMetaObject &metaObject);
+    static QList<QpDaoBase *> dataAccessObjects();
+
     ~QpDaoBase();
 
     QpSqlDataAccessObjectHelper *sqlDataAccessObjectHelper() const;
@@ -44,7 +48,7 @@ protected:
     virtual QObject *createInstance() const = 0;
 
 private:
-    QSharedDataPointer<QpDaoBaseData> d;
+    QSharedDataPointer<QpDaoBaseData> data;
 
     void setLastError(const QpError &error) const;
     void resetLastError() const;
@@ -55,6 +59,8 @@ private:
 namespace Qp {
 template<class T>
 void registerClass();
+template<class T, class Source>
+QList<QSharedPointer<T> > castList(const QList<QSharedPointer<Source> >&);
 }
 
 template<class T>
@@ -62,6 +68,10 @@ class QpDao : public QpDaoBase
 {
 public:
     QSharedPointer<T> read(int id) { return qSharedPointerCast<T>(readObject(id)); }
+    QList<QSharedPointer<T> > readAllObjects(int skip = -1, int count = -1) const
+    {
+        return Qp::castList<T>(QpDaoBase::readAllObjects(skip, count));
+    }
 
 protected:
     QpDao(QObject *parent) :
@@ -77,4 +87,4 @@ private:
 
 uint qHash(const QVariant &var);
 
-#endif // QPERSISTENCE_PERSISTENTDATAACCESSOBJECT_H
+#endif // QPERSISTENCE_DATAACCESSOBJECT_H
