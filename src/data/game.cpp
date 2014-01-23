@@ -464,6 +464,8 @@ void Game::startNextRound()
     round->setNumber(nextNumber);
     round->setState(Round::Running);
     connect(round.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(schmeissereiAdded()));
+    connect(round.data(), SIGNAL(drinkAdded()), this, SIGNAL(drinksChanged()));
+    connect(round.data(), SIGNAL(drinkRemoved()), this, SIGNAL(drinksChanged()));
     addRound(round);
     save();
 

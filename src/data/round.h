@@ -235,6 +235,8 @@ public:
 
 signals:
     void schmeissereiAdded();
+    void drinkAdded();
+    void drinkRemoved();
 
 private:
     friend class Game;

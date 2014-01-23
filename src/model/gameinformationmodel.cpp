@@ -23,6 +23,7 @@ void GameInformationModel::setGame(const QSharedPointer<Game> &game)
     m_game = game;
     connect(m_game.data(), SIGNAL(newRoundStarted()), this, SIGNAL(layoutChanged()));
     connect(m_game.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(layoutChanged()));
+    connect(m_game.data(), SIGNAL(drinksChanged()), this, SIGNAL(layoutChanged()));
     connect(&GameSettings::instance(), SIGNAL(playerSortChanged(PlayerSort)), this, SIGNAL(layoutChanged()));
     connect(&GameSettings::instance(), SIGNAL(pointsDisplayChanged(PointsDisplay)), this, SIGNAL(layoutChanged()));
     connect(&GameSettings::instance(), SIGNAL(showExtraRowsChanged(bool)), this, SIGNAL(layoutChanged()));

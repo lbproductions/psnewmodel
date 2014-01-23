@@ -155,6 +155,7 @@ class Game: public QObject
         void schmeissereiAdded();
         void stateChanged();
         void lengthChanged();
+        void drinksChanged();
 
     private:
         void setCreationTime(const QDateTime &creationTime);
