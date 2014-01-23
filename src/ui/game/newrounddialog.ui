@@ -126,7 +126,7 @@ QCheckBox { color: white; }</string>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QFormLayout" name="formLayout_3">
