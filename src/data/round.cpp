@@ -31,7 +31,9 @@ Round::Round(QObject *parent) :
     m_contra3Player("contra3Player",this),
     m_hochzeitDecision(Round::UnkownHochzeitDecision),
     m_trumpfCount(-1),
-    m_trumpfZurueck(false)
+    m_trumpfZurueck(false),
+    m_reGamePoints(120),
+    m_contraGamePoints(120)
 {
 }
 
@@ -580,4 +582,24 @@ bool Round::trumpfZurueck() const
 void Round::setTrumpfZurueck(bool arg)
 {
     m_trumpfZurueck = arg;
+}
+
+int Round::reGamePoints() const
+{
+    return m_reGamePoints;
+}
+
+void Round::setReGamePoints(int arg)
+{
+    m_reGamePoints = arg;
+}
+
+int Round::contraGamePoints() const
+{
+    return m_contraGamePoints;
+}
+
+void Round::setContraGamePoints(int arg)
+{
+    m_contraGamePoints = arg;
 }
