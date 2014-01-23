@@ -297,7 +297,7 @@ QWidget#widgetCreateGame {
          <x>0</x>
          <y>0</y>
          <width>864</width>
-         <height>254</height>
+         <height>255</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
@@ -343,26 +343,17 @@ QWidget#widgetCreateGame {
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
-      <item>
-       <widget class="BiggestDistanceWidget" name="distanceWidget" native="true"/>
-      </item>
-      <item>
-       <widget class="SoloOverviewWidget" name="soloOverviewWidget" native="true"/>
-      </item>
-      <item>
-       <widget class="ReContraPieWidget" name="reContraPieWidget" native="true"/>
-      </item>
-      <item>
-       <widget class="TotalPointsWidget" name="totalPointsWidget" native="true"/>
-      </item>
-      <item>
-       <widget class="GamesTogetherWidget" name="gamesTogetherWidget" native="true"/>
-      </item>
-     </layout>
-    </item>
-    <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="Line" name="line">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="GameStatsWidget" name="gameStatsWidget" native="true"/>
+      </item>
       <item>
        <widget class="GamesWidget" name="gamesWidget" native="true"/>
       </item>
@@ -390,39 +381,15 @@ QWidget#widgetCreateGame {
    <header>ui/league/leaguegraphwidget.h</header>
   </customwidget>
   <customwidget>
-   <class>SoloOverviewWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/widgets/solooverviewwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ReContraPieWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/widgets/recontrapiewidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>TotalPointsWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/widgets/totalpointswidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>GamesTogetherWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/widgets/gamestogetherwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>GamesWidget</class>
    <extends>QWidget</extends>
    <header>ui/widgets/gameswidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>BiggestDistanceWidget</class>
+   <class>GameStatsWidget</class>
    <extends>QWidget</extends>
-   <header>ui/widgets/biggestdistancewidget.h</header>
+   <header>ui/game/gamestatswidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

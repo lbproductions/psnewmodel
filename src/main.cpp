@@ -59,47 +59,12 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
-    GameWindow *w = new GameWindow;
-    w->setGame(games.last());
-    w->show();
 
-    /*
-    foreach(QSharedPointer<Game> game, games) {
-        if(game->type() == Game::Doppelkopf) {
-            foreach(QSharedPointer<Round> round, game->rounds()) {
-                if(Qp::primaryKey(round)>=3509) {
-                    if(round->state() == Round::Finished && !round->contra1Player() && round->re1Player()) {
-                        int contraPlayers = 0;
-                        foreach(QSharedPointer<Player> player, round->playingPlayers()) {
-                            if(!round->isRe(player)) {
-                                switch(contraPlayers){
-                                    case 0:
-                                        round->setContra1Player(player);
-                                        break;
-                                    case 1:
-                                        round->setContra2Player(player);
-                                        break;
-                                    case 2:
-                                        round->setContra3Player(player);
-                                        break;
-                                }
-                                contraPlayers++;
-                            }
-                        }
-                        Qp::update(round);
-                    }
-                }
-            }
-        }
-    }
-    */
-    //qDebug() << "Contra-Count: " << count;
-
-
-//    StartWindow* startWindow = new StartWindow();
-//    startWindow->show();
+    StartWindow* startWindow = new StartWindow();
+    startWindow->show();
 
     //    new MainWindow;
     int ret = a.exec();
+
     return ret;
 }

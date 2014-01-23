@@ -100,17 +100,9 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
     ui->graphWidget->setLeague(league);
     ui->graphAxis->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
 
-    ui->soloOverviewWidget->setGames(m_league->calculatedGames());
-
-    ui->reContraPieWidget->setGames(m_league->calculatedGames());
-
-    ui->totalPointsWidget->setLeague(m_league);
-
-    ui->gamesTogetherWidget->setGames(m_league->calculatedGames());
-
     ui->gamesWidget->setGames(m_league->calculatedGames());
 
-    ui->distanceWidget->setGames(m_league->calculatedGames());
+    ui->gameStatsWidget->setGames(m_league->calculatedGames());
 }
 
 void LeagueWindow::on_pushButtonCurrent_clicked()

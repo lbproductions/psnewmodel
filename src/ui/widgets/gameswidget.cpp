@@ -7,27 +7,17 @@
 #include <ui/game/gamewindow.h>
 
 GamesWidget::GamesWidget(QWidget *parent) :
-    QWidget(parent),
-    ui(new Ui::GamesWidget)
+    QTreeWidget(parent)
 {
-    ui->setupUi(this);
-
     this->setPalette(Tools::darkPalette(this));
+    this->header()->setStyleSheet(Tools::darkHeaderViewStyleSheet());
 
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonGames);
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonUnfinished);
-
-    ui->treeWidget->setPalette(Tools::darkPalette(ui->treeWidget));
-    ui->treeWidgetUnfinshed->setPalette(Tools::darkPalette(ui->treeWidgetUnfinshed));
-
-    ui->buttonGroup->setId(ui->pushButtonGames, 0);
-    ui->buttonGroup->setId(ui->pushButtonUnfinished, 1);
-    connect(ui->buttonGroup, SIGNAL(buttonClicked(int)), ui->stackedWidget, SLOT(setCurrentIndex(int)));
+    this->setColumnCount(6);
+    this->setHeaderLabels(QStringList() << tr("State") << tr("Name") <<tr("Players") << tr("Date") << tr("Place") << tr("Completed"));
 }
 
 GamesWidget::~GamesWidget()
 {
-    delete ui;
 }
 
 void GamesWidget::setGames(QList<QSharedPointer<Game> > games)
@@ -35,37 +25,21 @@ void GamesWidget::setGames(QList<QSharedPointer<Game> > games)
     m_games = games;
 
     foreach(QSharedPointer<Game> game, games) {
-        ui->treeWidget->addTopLevelItem(createItem(ui->treeWidget, game->statePixmap(), game->name(), Tools::playersString(game->playersSortedByPlacement()).toString(),
+        this->addTopLevelItem(createItem(game->statePixmap(), game->name(), Tools::playersString(game->playersSortedByPlacement()).toString(),
                                                    game->creationTime().date().toString("dd.MM.yy"), game->site()->displayString(),
                                                    QString::number(game->completedPercentage()) + "%"));
-        if(game->state() != Game::Finished) {
-            ui->treeWidgetUnfinshed->addTopLevelItem(createItem(ui->treeWidgetUnfinshed, game->statePixmap(), game->name(), Tools::playersString(game->playersSortedByPlacement()).toString(),
-                                                       game->creationTime().date().toString("dd.MM.yy"), game->site()->displayString(),
-                                                       QString::number(game->completedPercentage()) + "%"));
-            m_unfinishedGames.append(game);
-        }
     }
 
-    ui->treeWidget->resizeColumnToContents(0);
-    ui->treeWidget->resizeColumnToContents(1);
-    ui->treeWidget->resizeColumnToContents(2);
-    ui->treeWidget->resizeColumnToContents(3);
-    ui->treeWidget->resizeColumnToContents(4);
-
-    ui->treeWidget->setMinimumWidth(660);
-
-    ui->treeWidgetUnfinshed->resizeColumnToContents(0);
-    ui->treeWidgetUnfinshed->resizeColumnToContents(1);
-    ui->treeWidgetUnfinshed->resizeColumnToContents(2);
-    ui->treeWidgetUnfinshed->resizeColumnToContents(3);
-    ui->treeWidgetUnfinshed->resizeColumnToContents(4);
-
-    ui->treeWidgetUnfinshed->setMinimumWidth(660);
+    resizeColumnToContents(0);
+    resizeColumnToContents(1);
+    resizeColumnToContents(2);
+    resizeColumnToContents(3);
+    resizeColumnToContents(4);
 }
 
-void GamesWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
+void GamesWidget::onItemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
 {
-    int index = ui->treeWidget->indexOfTopLevelItem(item);
+    int index = this->indexOfTopLevelItem(item);
     QSharedPointer<Game> game = m_games.at(index);
     if(!game)
         return;
@@ -75,9 +49,9 @@ void GamesWidget::on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int /*c
     window->show();
 }
 
-QTreeWidgetItem *GamesWidget::createItem(QTreeWidget* parent, QPixmap statePixmap, QString name, QString players, QString date, QString site, QString complete)
+QTreeWidgetItem *GamesWidget::createItem(QPixmap statePixmap, QString name, QString players, QString date, QString site, QString complete)
 {
-    QTreeWidgetItem* item = new QTreeWidgetItem(parent);
+    QTreeWidgetItem* item = new QTreeWidgetItem(this);
     item->setIcon(0, QIcon(statePixmap));
     item->setText(1, name);
     item->setText(2, players);
@@ -86,19 +60,4 @@ QTreeWidgetItem *GamesWidget::createItem(QTreeWidget* parent, QPixmap statePixma
     item->setText(5, complete);
 
     return item;
-}
-
-void GamesWidget::on_treeWidgetUnfinshed_itemDoubleClicked(QTreeWidgetItem *item, int /*column*/)
-{
-    int index = ui->treeWidgetUnfinshed->indexOfTopLevelItem(item);
-    if(index < 0 || index >= m_unfinishedGames.size())
-        return;
-
-    QSharedPointer<Game> game = m_unfinishedGames.at(index);
-    if(!game)
-        return;
-
-    GameWindow *window = new GameWindow(/*this*/);
-    window->setGame(game);
-    window->show();
 }

@@ -1,8 +1,7 @@
 #ifndef GAMESWIDGET_H
 #define GAMESWIDGET_H
 
-#include <QWidget>
-#include <QTreeWidgetItem>
+#include <QTreeWidget>
 
 namespace Ui {
     class GamesWidget;
@@ -10,7 +9,7 @@ namespace Ui {
 
 class Game;
 
-class GamesWidget : public QWidget
+class GamesWidget : public QTreeWidget
 {
         Q_OBJECT
         
@@ -21,17 +20,12 @@ class GamesWidget : public QWidget
         void setGames(QList<QSharedPointer<Game> > games);
         
     private slots:
-        void on_treeWidget_itemDoubleClicked(QTreeWidgetItem *item, int column);
-
-        void on_treeWidgetUnfinshed_itemDoubleClicked(QTreeWidgetItem *item, int column);
+        void onItemDoubleClicked(QTreeWidgetItem *item, int column);
 
     private:
-        QTreeWidgetItem* createItem(QTreeWidget* parent, QPixmap statePixmap, QString name, QString players, QString date, QString site, QString complete);
-
-        Ui::GamesWidget *ui;
+        QTreeWidgetItem* createItem(QPixmap statePixmap, QString name, QString players, QString date, QString site, QString complete);
 
         QList<QSharedPointer<Game> > m_games;
-        QList<QSharedPointer<Game> > m_unfinishedGames;
 };
 
 #endif // GAMESWIDGET_H

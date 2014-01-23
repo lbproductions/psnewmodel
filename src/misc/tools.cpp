@@ -80,6 +80,7 @@ QPalette Tools::darkPalette(QWidget *widget)
     darkPalette.setColor(QPalette::BrightText, QColor(43,43,43));
     darkPalette.setColor(QPalette::Highlight, QColor(108,108,108));
     darkPalette.setColor(QPalette::HighlightedText, QColor(187,187,187));
+    darkPalette.setColor(QPalette::Background, QColor(55,55,55));
 
     return darkPalette;
 }

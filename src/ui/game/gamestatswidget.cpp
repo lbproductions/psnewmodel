@@ -20,6 +20,7 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     ui->setupUi(this);
 
     this->setWindowTitle(tr("GameStats"));
+    this->setAutoFillBackground(true);
     this->setPalette(Tools::darkPalette(this));
 
     m_reContraWidget = new ReContraStatsWidget(this);
@@ -35,6 +36,7 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     addWidget(tr("Soli"), m_soloWidget);
 
     ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->treeWidget->setPalette(Tools::darkPalette(this));
 
     connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemClicked(QTreeWidgetItem*)));
 

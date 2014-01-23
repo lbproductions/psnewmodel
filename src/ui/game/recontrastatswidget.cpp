@@ -13,7 +13,7 @@ ReContraStatsWidget::ReContraStatsWidget(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    this->setStyleSheet("QLabel{color:white;}");
+    ui->scrollAreaWidgetContents->setStyleSheet("QWidget {color:white; background-color: rgb(55,55,55);}");
 
     ui->groupBoxRe->setPalette(Tools::darkPalette(ui->groupBoxRe));
     ui->groupBoxReWins->setPalette(Tools::darkPalette(ui->groupBoxReWins));

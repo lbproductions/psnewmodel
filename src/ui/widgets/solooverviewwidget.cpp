@@ -15,6 +15,7 @@ SoloOverviewWidget::SoloOverviewWidget(QWidget *parent) :
     ui->setupUi(this);
 
     this->setPalette(Tools::darkPalette(this));
+    ui->treeWidget->setPalette(Tools::darkPalette(ui->treeWidget));
     ui->treeWidget->header()->setStyleSheet(Tools::darkHeaderViewStyleSheet());
 }
 
