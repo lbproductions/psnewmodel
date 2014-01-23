@@ -429,8 +429,8 @@ QWidget#widgetCreateGame {
   </action>
   <action name="actionAdd_round">
    <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/newround.png</normaloff>:/statusbar/newround.png</iconset>
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/addnormalround.png</normaloff>:/gamewindow/addnormalround.png</iconset>
    </property>
    <property name="text">
     <string>Add round...</string>
@@ -441,8 +441,8 @@ QWidget#widgetCreateGame {
   </action>
   <action name="actionAdd_schmeisserei">
    <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/schmeisserei.png</normaloff>:/statusbar/schmeisserei.png</iconset>
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/schmeisserei.png</normaloff>:/gamewindow/schmeisserei.png</iconset>
    </property>
    <property name="text">
     <string>Add schmeisserei...</string>
@@ -461,9 +461,12 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionAdd_drinks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/drink.png</normaloff>:/statusbar/drink.png</iconset>
+    <iconset>
+     <normaloff>:/gamewindow/drink</normaloff>:/gamewindow/drink</iconset>
    </property>
    <property name="text">
     <string>Add drinks...</string>
@@ -542,6 +545,7 @@ QWidget#widgetCreateGame {
   </customwidget>
  </customwidgets>
  <resources>
+  <include location="../../resource/gamewindow/gamewindow.qrc"/>
   <include location="../../resource/statusbar/statusbar.qrc"/>
  </resources>
  <connections/>

@@ -6,11 +6,17 @@
 #include <QSharedPointer>
 
 class Game;
+class QAction;
 
 class GameInformationModel : public QAbstractTableModel
 {
     Q_OBJECT
 public:
+    enum Roles {
+        ActionRole = Qt::UserRole + 1,
+        PlayerRole
+    };
+
     explicit GameInformationModel(QObject *parent = 0);
 
     QSharedPointer<Game> game() const;
@@ -22,8 +28,15 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
+    void triggerAction(int section);
+    void setHeaderAction(int section, QAction *action);
+
 private:
     QSharedPointer<Game> m_game;
+
+    QVariant actionVariant(int section) const;
+
+    QHash<int, QAction *> m_actions;
 };
 
 #endif // GAMEINFORMATIONMODEL_H

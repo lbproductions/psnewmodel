@@ -49,7 +49,7 @@ void ActionsBar::showCardWidget(QWidget *widget)
     widget->setFixedHeight(m_cardHeight);
 
     int width = m_cardWidget->width();
-    QPoint topRight = geometry().topRight() + QPoint(0, m_cardOffset);
+    QPoint topRight = geometry().topRight() + QPoint(-5, m_cardOffset);
 
     QPropertyAnimation *animation  = new QPropertyAnimation(m_cardWidget, "geometry");
     animation->setStartValue(QRect(topRight - QPoint(width, 0),

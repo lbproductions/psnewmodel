@@ -37,7 +37,6 @@
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
-    m_gameOverViewModel(new GameOverviewModel(this)),
     m_popupWidget(nullptr)
 {
     ui->setupUi(this);
@@ -69,6 +68,7 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->listWidgetPlayers->setPalette(darkPalette);
     ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width());
 
+    m_gameOverViewModel = new GameOverviewModel(this);
     ui->tableViewOverview->setPalette(darkPalette);
     ui->tableViewOverview->setModel(m_gameOverViewModel);
     connect(ui->tableViewOverview, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_TableViewOverviewDoubleClicked(const QModelIndex&)));
@@ -87,6 +87,9 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->tableViewInformation->setVerticalHeader(m_verticalHeaderView);
     OverviewHorizontalHeaderView *horizontalHeaderView2 = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
     ui->tableViewInformation->setHorizontalHeader(horizontalHeaderView2);
+    m_informationModel->setHeaderAction(GameOverviewModel::NormalRoundRow, ui->actionAdd_round);
+    m_informationModel->setHeaderAction(GameOverviewModel::SchmeissereienRow, ui->actionAdd_schmeisserei);
+    m_informationModel->setHeaderAction(GameOverviewModel::DrinksRow, ui->actionAdd_drinks);
 
     connect(ui->scrollAreaGraph->horizontalScrollBar(), &QScrollBar::valueChanged,
             ui->tableViewOverview->horizontalScrollBar(), &QScrollBar::setValue);
@@ -120,6 +123,8 @@ GameWindow::GameWindow(QWidget *parent) :
 
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
+
+    ui->actionBar->setVisible(false);
 
     updateTimes();
 
