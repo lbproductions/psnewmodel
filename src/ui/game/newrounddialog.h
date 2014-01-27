@@ -1,7 +1,7 @@
 #ifndef NEWROUNDDIALOG_H
 #define NEWROUNDDIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 
 #include <data/round.h>
 
@@ -9,7 +9,7 @@ namespace Ui {
 class NewRoundDialog;
 }
 
-class NewRoundDialog : public QDialog
+class NewRoundDialog : public QWidget
 {
     Q_OBJECT
 
@@ -26,9 +26,9 @@ public:
     QSharedPointer<Round> doppelkopfRound() const;
     void setRound(QSharedPointer<Round> doppelkopfRound, Context context = NewRound);
 
-private slots:
     void setCurrentPage(int);
 
+private slots:
     void checkNormalRoundContents();
     void checkHochzeitRoundContents();
     void checkSoloRoundContents();

@@ -209,5 +209,5 @@ void GameGraphWidget::updateGraphs()
         return;
     setGame(m_game);
 
-    emit graphUpdated();
+    emit updated();
 }

@@ -182,12 +182,18 @@ void GameInformationModel::triggerAction(int section)
     if(!m_actions.contains(section))
         return;
 
-    m_actions.value(section)->trigger();
+    QAction *action = m_actions.value(section);
+    action->toggle();
+    action->trigger();
 }
 
 void GameInformationModel::setHeaderAction(int section, QAction *action)
 {
     m_actions.insert(section, action);
+
+    connect(action, &QAction::changed, [=] {
+        emit headerDataChanged(Qt::Horizontal, section, section);
+    });
 }
 
 QVariant GameInformationModel::actionVariant(int section) const

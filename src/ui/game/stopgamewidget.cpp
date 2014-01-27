@@ -5,12 +5,12 @@
 #include <misc/tools.h>
 
 StopGameWidget::StopGameWidget(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::StopGameWidget)
 {
     ui->setupUi(this);
-
-    this->setPalette(Tools::darkPalette(this));
+    setAttribute(Qt::WA_DeleteOnClose, true);
+    setPalette(Tools::darkPalette(this));
 }
 
 StopGameWidget::~StopGameWidget()
@@ -29,4 +29,5 @@ void StopGameWidget::on_buttonBox_accepted()
         return;
 
     m_game->setState(Game::Finished);
+    close();
 }

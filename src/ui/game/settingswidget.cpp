@@ -9,6 +9,7 @@ SettingsWidget::SettingsWidget(QWidget *parent) :
     ui(new Ui::SettingsWidget)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
     ui->radioButtonPlacement->setStyleSheet("color:white");
     ui->radioButtonPosition->setStyleSheet("color:white");

@@ -80,301 +80,294 @@ QWidget#widgetCreateGame {
      <number>0</number>
     </property>
     <item>
-     <widget class="ActionsBar" name="actionBar" native="true">
-      <property name="minimumSize">
-       <size>
-        <width>35</width>
-        <height>0</height>
-       </size>
+     <widget class="QScrollArea" name="scrollAreaCentral">
+      <property name="frameShape">
+       <enum>QFrame::NoFrame</enum>
       </property>
-      <property name="maximumSize">
-       <size>
-        <width>35</width>
-        <height>16777215</height>
-       </size>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
       </property>
-     </widget>
-    </item>
-    <item>
-     <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
-      <property name="spacing">
+      <property name="lineWidth">
        <number>0</number>
       </property>
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>800</width>
+         <height>600</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
         <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
          <number>0</number>
         </property>
         <property name="topMargin">
          <number>0</number>
         </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <widget class="QTableView" name="tableViewInformation">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
+         <layout class="QHBoxLayout" name="horizontalLayoutOverview" stretch="0,0,1">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>16777215</height>
-           </size>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="showGrid">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>40</number>
-          </attribute>
-         </widget>
+          <item>
+           <widget class="QTableView" name="tableViewInformation">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Maximum" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="showGrid">
+             <bool>false</bool>
+            </property>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>40</number>
+            </attribute>
+           </widget>
+          </item>
+          <item>
+           <widget class="Line" name="line_3">
+            <property name="frameShadow">
+             <enum>QFrame::Plain</enum>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QTableView" name="tableViewOverview">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="autoScroll">
+             <bool>false</bool>
+            </property>
+            <property name="verticalScrollMode">
+             <enum>QAbstractItemView::ScrollPerPixel</enum>
+            </property>
+            <property name="horizontalScrollMode">
+             <enum>QAbstractItemView::ScrollPerPixel</enum>
+            </property>
+            <property name="showGrid">
+             <bool>false</bool>
+            </property>
+            <property name="cornerButtonEnabled">
+             <bool>false</bool>
+            </property>
+            <attribute name="horizontalHeaderDefaultSectionSize">
+             <number>40</number>
+            </attribute>
+            <attribute name="verticalHeaderVisible">
+             <bool>false</bool>
+            </attribute>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
-         <widget class="Line" name="line_3">
-          <property name="frameShadow">
-           <enum>QFrame::Plain</enum>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QTableView" name="tableViewOverview">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="autoFillBackground">
-           <bool>true</bool>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="autoScroll">
-           <bool>false</bool>
-          </property>
-          <property name="verticalScrollMode">
-           <enum>QAbstractItemView::ScrollPerPixel</enum>
-          </property>
-          <property name="horizontalScrollMode">
-           <enum>QAbstractItemView::ScrollPerPixel</enum>
-          </property>
-          <property name="showGrid">
-           <bool>false</bool>
-          </property>
-          <property name="cornerButtonEnabled">
-           <bool>false</bool>
-          </property>
-          <attribute name="horizontalHeaderDefaultSectionSize">
-           <number>40</number>
-          </attribute>
-          <attribute name="verticalHeaderVisible">
-           <bool>false</bool>
-          </attribute>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QWidget" name="widgetCreateGame" native="true">
-        <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="leftMargin">
-          <number>0</number>
-         </property>
-         <property name="topMargin">
-          <number>24</number>
-         </property>
-         <property name="rightMargin">
-          <number>0</number>
-         </property>
-         <property name="bottomMargin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="Line" name="line_2">
-           <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
+         <widget class="QWidget" name="widgetCreateGame" native="true">
+          <layout class="QVBoxLayout" name="verticalLayout_6" stretch="0,0">
+           <property name="spacing">
+            <number>0</number>
            </property>
-           <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+           <property name="leftMargin">
+            <number>0</number>
            </property>
-          </widget>
-         </item>
-         <item>
-          <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
+           <property name="topMargin">
+            <number>24</number>
+           </property>
            <property name="rightMargin">
             <number>0</number>
            </property>
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_2">
-             <property name="spacing">
-              <number>0</number>
+            <widget class="Line" name="line_2">
+             <property name="frameShadow">
+              <enum>QFrame::Plain</enum>
              </property>
-             <item>
-              <widget class="PlayersListWidget" name="listWidgetPlayers">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="minimumSize">
-                <size>
-                 <width>250</width>
-                 <height>0</height>
-                </size>
-               </property>
-               <property name="maximumSize">
-                <size>
-                 <width>250</width>
-                 <height>16777215</height>
-                </size>
-               </property>
-               <property name="frameShape">
-                <enum>QFrame::NoFrame</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QToolButton" name="pushButtonAddPlayers">
-               <property name="sizePolicy">
-                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                 <horstretch>0</horstretch>
-                 <verstretch>0</verstretch>
-                </sizepolicy>
-               </property>
-               <property name="text">
-                <string>Add Players</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
            </item>
            <item>
-            <layout class="QVBoxLayout" name="verticalLayout_4">
+            <layout class="QHBoxLayout" name="horizontalLayout_5" stretch="0,1">
              <property name="rightMargin">
-              <number>12</number>
-             </property>
-             <property name="bottomMargin">
               <number>0</number>
              </property>
              <item>
-              <layout class="QFormLayout" name="formLayout">
-               <property name="horizontalSpacing">
-                <number>6</number>
+              <layout class="QVBoxLayout" name="verticalLayout_2">
+               <property name="spacing">
+                <number>0</number>
                </property>
-               <property name="verticalSpacing">
-                <number>12</number>
-               </property>
-               <property name="leftMargin">
-                <number>12</number>
-               </property>
-               <property name="topMargin">
-                <number>12</number>
-               </property>
-               <property name="rightMargin">
-                <number>12</number>
-               </property>
-               <property name="bottomMargin">
-                <number>12</number>
-               </property>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label">
-                 <property name="text">
-                  <string>Site:</string>
+               <item>
+                <widget class="PlayersListWidget" name="listWidgetPlayers">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
+                 </property>
+                 <property name="minimumSize">
+                  <size>
+                   <width>250</width>
+                   <height>0</height>
+                  </size>
+                 </property>
+                 <property name="maximumSize">
+                  <size>
+                   <width>250</width>
+                   <height>16777215</height>
+                  </size>
+                 </property>
+                 <property name="frameShape">
+                  <enum>QFrame::NoFrame</enum>
                  </property>
                 </widget>
                </item>
-               <item row="0" column="1">
-                <widget class="PlacesComboBox" name="comboBoxSite"/>
-               </item>
-               <item row="1" column="0" colspan="2">
-                <widget class="QCheckBox" name="checkBoxMitPflichtSoli">
-                 <property name="text">
-                  <string>Mit Pflichtsoli</string>
+               <item>
+                <widget class="QToolButton" name="pushButtonAddPlayers">
+                 <property name="sizePolicy">
+                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+                   <horstretch>0</horstretch>
+                   <verstretch>0</verstretch>
+                  </sizepolicy>
                  </property>
-                 <property name="checked">
-                  <bool>true</bool>
+                 <property name="text">
+                  <string>Add Players</string>
                  </property>
                 </widget>
                </item>
               </layout>
              </item>
              <item>
-              <widget class="QDialogButtonBox" name="buttonBox">
-               <property name="enabled">
-                <bool>true</bool>
+              <layout class="QVBoxLayout" name="verticalLayout_4">
+               <property name="rightMargin">
+                <number>12</number>
                </property>
-               <property name="standardButtons">
-                <set>QDialogButtonBox::Ok</set>
+               <property name="bottomMargin">
+                <number>0</number>
                </property>
-              </widget>
+               <item>
+                <layout class="QFormLayout" name="formLayout">
+                 <property name="horizontalSpacing">
+                  <number>6</number>
+                 </property>
+                 <property name="verticalSpacing">
+                  <number>12</number>
+                 </property>
+                 <property name="leftMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="topMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="rightMargin">
+                  <number>12</number>
+                 </property>
+                 <property name="bottomMargin">
+                  <number>12</number>
+                 </property>
+                 <item row="0" column="0">
+                  <widget class="QLabel" name="label">
+                   <property name="text">
+                    <string>Site:</string>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="0" column="1">
+                  <widget class="PlacesComboBox" name="comboBoxSite"/>
+                 </item>
+                 <item row="1" column="0" colspan="2">
+                  <widget class="QCheckBox" name="checkBoxMitPflichtSoli">
+                   <property name="text">
+                    <string>Mit Pflichtsoli</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </item>
+               <item>
+                <widget class="QDialogButtonBox" name="buttonBox">
+                 <property name="enabled">
+                  <bool>true</bool>
+                 </property>
+                 <property name="standardButtons">
+                  <set>QDialogButtonBox::Ok</set>
+                 </property>
+                </widget>
+               </item>
+              </layout>
              </item>
             </layout>
            </item>
           </layout>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item>
-       <widget class="Line" name="line">
-        <property name="styleSheet">
-         <string notr="true">QWidget {
+         </widget>
+        </item>
+        <item>
+         <widget class="Line" name="line">
+          <property name="styleSheet">
+           <string notr="true">QWidget {
 	color: rgb(108,108,108);
 }</string>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Plain</enum>
-        </property>
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="ScrollArea" name="scrollAreaGraph">
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::NoFrame</enum>
-        </property>
-        <property name="verticalScrollBarPolicy">
-         <enum>Qt::ScrollBarAsNeeded</enum>
-        </property>
-        <property name="horizontalScrollBarPolicy">
-         <enum>Qt::ScrollBarAsNeeded</enum>
-        </property>
-        <property name="widgetResizable">
-         <bool>true</bool>
-        </property>
-        <widget class="GraphAxis" name="scrollAreaWidgetContents">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>763</width>
-           <height>145</height>
-          </rect>
-         </property>
-         <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Plain</enum>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QHBoxLayout" name="horizontalLayoutGraph">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -382,12 +375,6 @@ QWidget#widgetCreateGame {
            <number>0</number>
           </property>
           <property name="topMargin">
-           <number>0</number>
-          </property>
-          <property name="rightMargin">
-           <number>0</number>
-          </property>
-          <property name="bottomMargin">
            <number>0</number>
           </property>
           <item>
@@ -411,10 +398,10 @@ QWidget#widgetCreateGame {
            </widget>
           </item>
          </layout>
-        </widget>
-       </widget>
-      </item>
-     </layout>
+        </item>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -428,36 +415,33 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionAdd_round">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../resource/gamewindow/gamewindow.qrc">
      <normaloff>:/gamewindow/addnormalround.png</normaloff>:/gamewindow/addnormalround.png</iconset>
    </property>
    <property name="text">
-    <string>Add round...</string>
+    <string>Add Round...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionAdd_schmeisserei">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../resource/gamewindow/gamewindow.qrc">
      <normaloff>:/gamewindow/schmeisserei.png</normaloff>:/gamewindow/schmeisserei.png</iconset>
    </property>
    <property name="text">
-    <string>Add schmeisserei...</string>
+    <string>Add Schmeisserei...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionToggleSidebar">
-   <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/sidebar-left.png</normaloff>:/statusbar/sidebar-left.png</iconset>
-   </property>
-   <property name="text">
-    <string>Hide sidebar</string>
    </property>
   </action>
   <action name="actionAdd_drinks">
@@ -481,15 +465,18 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionStop_Game">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../resource/statusbar/statusbar.qrc">
      <normaloff>:/statusbar/stop.png</normaloff>:/statusbar/stop.png</iconset>
    </property>
    <property name="text">
-    <string>Stop Game</string>
+    <string>End Game...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionSettings">
@@ -501,14 +488,32 @@ QWidget#widgetCreateGame {
     <string>Settings</string>
    </property>
   </action>
+  <action name="actionAdd_Hochzeit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Hochzeit...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Solo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Solo...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Trumpfabgabe">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Add Trumpfabgabe...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>ScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header location="global">ui/widgets/scrollarea.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>GraphAxis</class>
    <extends>QWidget</extends>
@@ -535,12 +540,6 @@ QWidget#widgetCreateGame {
    <class>GameLengthWidget</class>
    <extends>QWidget</extends>
    <header>ui/game/gamelengthwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ActionsBar</class>
-   <extends>QWidget</extends>
-   <header location="global">ui/game/actionsbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -32,7 +32,7 @@ QSize OverviewPlayerHeaderView::sizeHint() const
 QSize OverviewPlayerHeaderView::sectionSizeFromContents(int logicalIndex) const
 {
     QSize size = QHeaderView::sectionSizeFromContents(logicalIndex);
-    size += QSize(45,0);
+    size += QSize(65,0);
     size.setHeight(30);
     return size;
 }
@@ -65,7 +65,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
         backgroundColor = playerColor.darker(250);
     }
     else if(isHoveringActionIndex) {
-        backgroundColor = palette().color(QPalette::AlternateBase);
+        backgroundColor = QColor(35,35,35);
     }
     paintBackground(backgroundColor, rect, painter);
 
@@ -77,7 +77,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     else if(action) {
         icon = action->icon().pixmap(QSize(22,23));
     }
-    paintSidebar(icon, logicalIndex, playerCount, isHoveringActionIndex, rect, painter);
+    paintSidebar(icon, logicalIndex, playerCount, isHoveringActionIndex, action, rect, painter);
 
     // Text (player name etc)
     QString text;
@@ -139,6 +139,7 @@ void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
                                             int logicalIndex,
                                             int playerCount,
                                             bool isHoveringActionIndex,
+                                            QAction *action,
                                             const QRect &rect, QPainter *painter) const
 {
     QRect sidebarRect = getSidebarRect(rect);
@@ -147,6 +148,8 @@ void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
     painter->save();
     painter->setPen(Qt::transparent);
     painter->setBrush(palette().alternateBase());
+    if(isHoveringActionIndex)
+        painter->setBrush(QColor(35,35,35));
     painter->drawRect(sidebarRect);
 
     // player color
@@ -154,7 +157,7 @@ void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
         painter->drawPixmap(iconRect, icon);
     }
 
-    if(!isHoveringActionIndex) {
+    if(!isHoveringActionIndex || action->actionGroup()->checkedAction() != action) {
         painter->setPen(palette().highlight().color());
         painter->drawLine(sidebarRect.topRight(),
                           sidebarRect.bottomRight());

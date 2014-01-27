@@ -8,6 +8,7 @@ CommentWidget::CommentWidget(QWidget *parent) :
     ui(new Ui::CommentWidget)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose, true);
 }
 
 CommentWidget::~CommentWidget()

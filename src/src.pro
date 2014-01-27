@@ -90,7 +90,7 @@ SOURCES += main.cpp \
     ui/game/resumewidget.cpp \
     ui/game/pointsstatswidget.cpp \
     ui/game/drinkswidget.cpp \
-    ui/game/actionsbar.cpp
+    ui/game/dialogcontroller.cpp
 
 
 HEADERS  += \
@@ -164,7 +164,7 @@ HEADERS  += \
     ui/game/resumewidget.h \
     ui/game/pointsstatswidget.h \
     ui/game/drinkswidget.h \
-    ui/game/actionsbar.h
+    ui/game/dialogcontroller.h
 
 
 FORMS += \
@@ -186,8 +186,7 @@ FORMS += \
     ui/game/settingswidget.ui \
     ui/game/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
-    ui/game/drinkswidget.ui \
-    ui/game/actionsbar.ui
+    ui/game/drinkswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

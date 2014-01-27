@@ -19,9 +19,6 @@ public:
 public slots:
     void updateGraphs();
 
-signals:
-    void graphUpdated();
-
 private:
     void paintEvent(QPaintEvent *event);
 

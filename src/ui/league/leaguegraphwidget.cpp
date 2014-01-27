@@ -276,5 +276,5 @@ void LeagueGraphWidget::updateGraphs()
         return;
     setLeague(m_league);
 
-    emit graphUpdated();
+    emit updated();
 }

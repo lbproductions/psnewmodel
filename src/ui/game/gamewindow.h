@@ -17,6 +17,7 @@ class GameInformationModel;
 class OverviewPlayerHeaderView;
 class StatisticsWidget;
 class ResumeWidget;
+class DialogController;
 
 class GameWindow : public QMainWindow
 {
@@ -25,17 +26,14 @@ class GameWindow : public QMainWindow
 public:
     explicit GameWindow(QWidget *parent = 0);
     ~GameWindow();
-    
-    QSharedPointer<Game> game() const;
+
     void setGame(const QSharedPointer<Game> &game);
 
-    void wheelEvent(QWheelEvent *e);
+protected:
     void mousePressEvent(QMouseEvent *e);
     void resizeEvent(QResizeEvent *);
 
-
 private slots:
-
     void enableActionsBasedOnState();
 
     void on_pushButtonAddPlayers_clicked();
@@ -50,17 +48,19 @@ private slots:
     void on_actionAdd_schmeisserei_triggered();
     void on_actionStats_triggered();
     void on_actionSettings_triggered();
-    void on_TableViewOverviewDoubleClicked(const QModelIndex &index);
+    void onTableViewOverviewDoubleClicked(const QModelIndex &index);
     void on_toolButtonSetComment_clicked();
 
     void onNewRoundStarted();
-    void updateTimes();
     void updateSizes();
 
-private:
-    QWidget *popupWidget() const;
-    void setPopupWidget(QWidget *popupWidget);
+    void on_actionAdd_Hochzeit_triggered();
 
+    void on_actionAdd_Solo_triggered();
+
+    void on_actionAdd_Trumpfabgabe_triggered();
+
+private:
     Ui::GameWindow *ui;
 
     QSharedPointer<Game> m_game;
@@ -69,8 +69,8 @@ private:
     GameInformationModel *m_informationModel;
     OverviewPlayerHeaderView *m_verticalHeaderView;
 
-    QPointer<QWidget> m_popupWidget;
     ResumeWidget* m_resumeWidget;
+    DialogController *m_actionsController;
 };
 
 #endif // GAMEWINDOW_H

@@ -7,26 +7,15 @@
 #include <misc/tools.h>
 
 #include <QFile>
+#include <QPushButton>
 
 NewRoundDialog::NewRoundDialog(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::NewRoundDialog),
     m_doppelkopfRound(0)
 {
     ui->setupUi(this);
-
-    //    setWindowFlags(Qt::FramelessWindowHint);
-
-    ui->buttonGroup->setId(ui->pushButtonNormal, 0);
-    ui->buttonGroup->setId(ui->pushButtonHochzeit, 1);
-    ui->buttonGroup->setId(ui->pushButtonSolo, 2);
-    ui->buttonGroup->setId(ui->pushButtonTrumpfabgabe, 3);
-
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonNormal);
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonHochzeit);
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonSolo);
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonTrumpfabgabe,
-                                     "QWidget { margin-right: -2px; }");
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
     ui->buttonBox->button(QDialogButtonBox::Save)->setEnabled(false);
     connect(ui->comboBoxNormalRe1, SIGNAL(currentIndexChanged(int)), this, SLOT(checkNormalRoundContents()));
@@ -48,8 +37,6 @@ NewRoundDialog::NewRoundDialog(QWidget *parent) :
 
     connect(ui->spinBoxTrumpfCount, SIGNAL(valueChanged(int)),
             this, SLOT(checkTrumpfabgabeRoundContents()));
-
-    connect(ui->buttonGroup, SIGNAL(buttonClicked(int)), this, SLOT(setCurrentPage(int)));
 
     connect(ui->buttonBox->button(QDialogButtonBox::Save), SIGNAL(clicked()), this, SLOT(save()));
 }
@@ -164,20 +151,16 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
     }
 
     if(round->soloPlayer()) {
-        ui->pushButtonSolo->click();
-        //setCurrentPage(1);
+        setCurrentPage(1);
     }
     else if(round->hochzeitPlayer()) {
-        ui->pushButtonHochzeit->click();
-        //setCurrentPage(2);
+        setCurrentPage(2);
     }
     else if(round->trumpfabgabePlayer()) {
-        ui->pushButtonTrumpfabgabe->click();
         setCurrentPage(3);
     }
     else{
-        ui->pushButtonNormal->click();
-        //setCurrentPage(0);
+        setCurrentPage(0);
     }
 }
 
@@ -406,7 +389,7 @@ void NewRoundDialog::checkTrumpfabgabeRoundContents()
 
 void NewRoundDialog::save()
 {
-    switch(ui->buttonGroup->checkedId()) {
+    switch(ui->stackedWidget->currentIndex()) {
     case 0:
         saveNormalRound();
         break;
@@ -422,7 +405,7 @@ void NewRoundDialog::save()
     default:
         break;
     }
-    accept();
+    close();
 }
 
 void NewRoundDialog::saveNormalRound()
@@ -628,7 +611,7 @@ void NewRoundDialog::saveTrumpfabgabeRound()
 
 void NewRoundDialog::on_buttonBox_rejected()
 {
-    reject();
+    close();
 }
 
 Round::HochzeitDecision NewRoundDialog::hochzeitDecisionFromText(const QString &text)

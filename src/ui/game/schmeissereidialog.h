@@ -1,7 +1,7 @@
 #ifndef SCHMEISSEREIDIALOG_H
 #define SCHMEISSEREIDIALOG_H
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui {
     class SchmeissereiWidget;
@@ -10,19 +10,15 @@ namespace Ui {
 class Round;
 class Game;
 
-class SchmeissereiDialog : public QDialog
+class SchmeissereiDialog : public QWidget
 {
     Q_OBJECT
 
 public:
     explicit SchmeissereiDialog(QWidget *parent = 0);
-
     ~SchmeissereiDialog();
 
-
-
     QSharedPointer<Round> round() const;
-
     QSharedPointer<Game> game() const;
     void setGame(const QSharedPointer<Game> &game);
 
