@@ -4,6 +4,7 @@
 
 #include <data/game.h>
 #include <data/player.h>
+#include <misc/tools.h>
 
 #include <misc/settings.h>
 
@@ -143,6 +144,9 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
         return tr("Soli");
     }
     else if(extraRow == GameOverviewModel::SchweinereienRow) {
+        if(role == Qt::DecorationRole) {
+            return QPixmap(":/gamewindow/schweinerei");
+        }
         return tr("Schweinereien");
     }
     else if(extraRow == GameOverviewModel::SchmeissereienRow) {
@@ -183,8 +187,8 @@ void GameInformationModel::triggerAction(int section)
         return;
 
     QAction *action = m_actions.value(section);
-    action->toggle();
-    action->trigger();
+    if(!action->isChecked())
+        action->trigger();
 }
 
 void GameInformationModel::setHeaderAction(int section, QAction *action)

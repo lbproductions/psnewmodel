@@ -10,6 +10,7 @@ DialogController::DialogController(GameWindow *parent) :
     QObject(parent),
     m_gameWindow(parent),
     m_dialog(nullptr),
+    m_widget(nullptr),
     m_dialogHeight(400),
     m_dialogOffsetTop(0),
     m_dialogOffsetLeft(29)
@@ -55,27 +56,33 @@ void DialogController::closeDialogOnMousePress(const QPoint &mousePos)
         return;
 
     closeDialog();
-    emit dialogClosed();
 }
 
 void DialogController::showDialog(QWidget *widget)
 {
-    widget = frameWidget(widget);
-    widget->setFixedHeight(m_dialogHeight);
-    widget->show();
+    QWidget *frame = frameWidget(widget);
+    frame->setFixedHeight(m_dialogHeight);
+    frame->show();
 
     if(m_dialog) { // previous dialog
+        if(m_widget)
+            disconnect(m_widget, 0, this, 0);
+
         m_dialog->close();
         m_dialog->deleteLater();
-        m_dialog = widget;
-        widget->setGeometry(visibleGeometry(widget));
+        m_widget = widget;
+        m_dialog = frame;
+        frame->setGeometry(visibleGeometry(frame));
         return; // only animate, if there was no dialog before.
     }
 
-    m_dialog = widget;
+    m_widget = widget;
+    m_dialog = frame;
+    connect(widget, &QWidget::destroyed, this, &DialogController::closeDialogWhenDestroyed);
+
     QPropertyAnimation *animation  = new QPropertyAnimation(m_dialog, "geometry");
-    animation->setStartValue(hiddenGeometry(widget));
-    animation->setEndValue(visibleGeometry(widget));
+    animation->setStartValue(hiddenGeometry(frame));
+    animation->setEndValue(visibleGeometry(frame));
     animation->setDuration(300);
     animation->setEasingCurve(QEasingCurve::OutExpo);
     animation->start();
@@ -86,15 +93,16 @@ void DialogController::showDialog(QWidget *widget)
 
 void DialogController::closeDialog()
 {
-    QWidget *widget = m_dialog;
+    QWidget *dialog = m_dialog;
     m_dialog = nullptr;
+    m_widget = nullptr;
 
-    if(!widget)
+    if(!dialog)
         return;
 
-    QRect geom = widget->geometry();
+    QRect geom = dialog->geometry();
     int w = geom.width() + m_dialogOffsetLeft;
-    QPropertyAnimation *animation  = new QPropertyAnimation(widget, "geometry");
+    QPropertyAnimation *animation  = new QPropertyAnimation(dialog, "geometry");
     animation->setStartValue(geom);
     animation->setEndValue(geom.adjusted(-w,0,-w,0));
     animation->setDuration(300);
@@ -103,9 +111,20 @@ void DialogController::closeDialog()
 
     connect(animation, &QPropertyAnimation::finished, [=]{
         animation->deleteLater();
-        widget->close();
-        widget->deleteLater();
+        dialog->close();
+        dialog->deleteLater();
     });
+
+    emit dialogClosed();
+}
+
+void DialogController::closeDialogWhenDestroyed()
+{
+    QWidget *w = static_cast<QWidget*>(sender());
+    if(w != m_widget)
+        return;
+
+    closeDialog();
 }
 
 QWidget *DialogController::frameWidget(QWidget *widget)

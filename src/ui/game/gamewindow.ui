@@ -492,6 +492,10 @@ QWidget#widgetCreateGame {
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/hochzeit.png</normaloff>:/gamewindow/hochzeit.png</iconset>
+   </property>
    <property name="text">
     <string>Add Hochzeit...</string>
    </property>
@@ -500,6 +504,10 @@ QWidget#widgetCreateGame {
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="icon">
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/solo.png</normaloff>:/gamewindow/solo.png</iconset>
+   </property>
    <property name="text">
     <string>Add Solo...</string>
    </property>
@@ -507,6 +515,10 @@ QWidget#widgetCreateGame {
   <action name="actionAdd_Trumpfabgabe">
    <property name="checkable">
     <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/trumpfabgabe.png</normaloff>:/gamewindow/trumpfabgabe.png</iconset>
    </property>
    <property name="text">
     <string>Add Trumpfabgabe...</string>
@@ -544,8 +556,8 @@ QWidget#widgetCreateGame {
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resource/gamewindow/gamewindow.qrc"/>
   <include location="../../resource/statusbar/statusbar.qrc"/>
+  <include location="../../resource/gamewindow/gamewindow.qrc"/>
  </resources>
  <connections/>
 </ui>

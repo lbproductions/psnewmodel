@@ -60,6 +60,8 @@ private slots:
 
     void on_actionAdd_Trumpfabgabe_triggered();
 
+    void onDialogClosed();
+
 private:
     Ui::GameWindow *ui;
 

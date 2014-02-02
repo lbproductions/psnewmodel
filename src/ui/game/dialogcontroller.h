@@ -26,15 +26,19 @@ public:
 signals:
     void dialogClosed();
 
+private slots:
+    void closeDialog();
+
 private:
     GameWindow *m_gameWindow;
     QWidget *m_dialog;
+    QWidget *m_widget;
 
     int m_dialogHeight;
     int m_dialogOffsetTop;
     int m_dialogOffsetLeft;
 
-    void closeDialog();
+    void closeDialogWhenDestroyed();
 
     QWidget *frameWidget(QWidget *widget);
     QRect visibleGeometry(QWidget *widget) const;

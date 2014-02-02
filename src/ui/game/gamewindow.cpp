@@ -111,10 +111,9 @@ GameWindow::GameWindow(QWidget *parent) :
     m_informationModel->setHeaderAction(GameOverviewModel::SoliRow, ui->actionAdd_Solo);
 
     m_actionsController = new DialogController(this);
-    connect(m_actionsController, &DialogController::dialogClosed, [this, actionGroup] {
-        actionGroup->checkedAction()->setChecked(false);
-        ui->tableViewInformation->horizontalHeader()->repaint();
-    });
+
+    connect(m_actionsController, &DialogController::dialogClosed,
+            this, &GameWindow::onDialogClosed);
 
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
@@ -199,6 +198,12 @@ void GameWindow::mousePressEvent(QMouseEvent *e)
 void GameWindow::resizeEvent(QResizeEvent *)
 {
     m_resumeWidget->resize(width(), height());
+}
+
+void GameWindow::onDialogClosed()
+{
+    ui->actionAdd_drinks->actionGroup()->checkedAction()->setChecked(false);
+    ui->tableViewInformation->horizontalHeader()->repaint();
 }
 
 void GameWindow::enableActionsBasedOnState()

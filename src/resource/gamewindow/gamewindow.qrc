@@ -9,5 +9,9 @@
         <file>addnormalround.png</file>
         <file>drink.png</file>
         <file>schmeisserei.png</file>
+        <file>hochzeit.png</file>
+        <file>solo.png</file>
+        <file alias="schweinerei">schweine.png</file>
+        <file>trumpfabgabe.png</file>
     </qresource>
 </RCC>

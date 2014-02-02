@@ -72,10 +72,13 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     // "sidebar"
     QPixmap icon;
     if(player) {
-        icon = Tools::colorPixmap(22,23, playerColor);
+        icon = Tools::colorPixmap(23,22, playerColor);
     }
     else if(action) {
-        icon = action->icon().pixmap(QSize(22,23));
+        icon = action->icon().pixmap(QSize(23,22));
+    }
+    else {
+        icon = model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QPixmap>();
     }
     paintSidebar(icon, logicalIndex, playerCount, isHoveringActionIndex, action, rect, painter);
 
@@ -106,11 +109,15 @@ QRect OverviewPlayerHeaderView::getSidebarRect(const QRect &rect)
 
 QRect OverviewPlayerHeaderView::getIconRect(int logicalIndex, int playerCount, const QRect &sidebarRect)
 {
-    QRect iconRect = sidebarRect.adjusted(3,3, -4,-4);
+    QRect iconRect = sidebarRect.adjusted(2,3, -3,-5);
     if(logicalIndex == 0)
-        return iconRect.adjusted(0,1,0,0);
+        iconRect.adjust(0,1,0,0);
     if(logicalIndex == playerCount - 1)
-        return iconRect.adjusted(0,0,0,-1);
+        iconRect.adjust(0,0,0,-1);
+    if(logicalIndex < playerCount)
+        iconRect.adjust(1,0,-1,1);
+    if(logicalIndex >= playerCount)
+        iconRect.adjust(0,0,-1,0);
     return iconRect;
 }
 
@@ -152,10 +159,9 @@ void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
         painter->setBrush(QColor(35,35,35));
     painter->drawRect(sidebarRect);
 
-    // player color
-    if(!icon.isNull()) {
+    // player color and icon
+    if(!icon.isNull())
         painter->drawPixmap(iconRect, icon);
-    }
 
     if(!isHoveringActionIndex || action->actionGroup()->checkedAction() != action) {
         painter->setPen(palette().highlight().color());
