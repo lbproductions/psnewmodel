@@ -216,6 +216,9 @@ void GameWindow::resizeEvent(QResizeEvent *)
 
 void GameWindow::onDialogClosed()
 {
+    if(!ui->actionAdd_drinks->actionGroup()->checkedAction())
+        return;
+
     ui->actionAdd_drinks->actionGroup()->checkedAction()->setChecked(false);
     ui->tableViewInformation->horizontalHeader()->repaint();
 }
@@ -297,7 +300,7 @@ void GameWindow::on_actionAdd_Hochzeit_triggered()
 {
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
-    dialog->setCurrentPage(1);
+    dialog->setCurrentPage(Round::Hochzeit);
     m_actionsController->showDialog(dialog);
 }
 
@@ -305,7 +308,7 @@ void GameWindow::on_actionAdd_Solo_triggered()
 {
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
-    dialog->setCurrentPage(2);
+    dialog->setCurrentPage(Round::Solo);
     m_actionsController->showDialog(dialog);
 }
 
@@ -313,7 +316,7 @@ void GameWindow::on_actionAdd_Trumpfabgabe_triggered()
 {
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
-    dialog->setCurrentPage(3);
+    dialog->setCurrentPage(Round::Trumpfabgabe);
     m_actionsController->showDialog(dialog);
 }
 
@@ -368,6 +371,21 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
     NewRoundDialog* dlg = new NewRoundDialog(this);
     dlg->setRound(round, NewRoundDialog::EditRound);
     m_actionsController->showDialog(dlg);
+
+    switch(round->type()) {
+    case Round::NormalRound:
+        ui->actionAdd_round->setChecked(true);
+        break;
+    case Round::Hochzeit:
+        ui->actionAdd_Hochzeit->setChecked(true);
+        break;
+    case Round::Solo:
+        ui->actionAdd_Solo->setChecked(true);
+        break;
+    case Round::Trumpfabgabe:
+        ui->actionAdd_Trumpfabgabe->setChecked(true);
+        break;
+    }
 }
 
 

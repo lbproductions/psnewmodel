@@ -15,6 +15,7 @@ class NewRoundDialog : public QWidget
 
 public:
 
+
     enum Context{
         NewRound,
         EditRound
@@ -26,7 +27,7 @@ public:
     QSharedPointer<Round> doppelkopfRound() const;
     void setRound(QSharedPointer<Round> doppelkopfRound, Context context = NewRound);
 
-    void setCurrentPage(int);
+    void setCurrentPage(Round::Type type);
 
 private slots:
     void checkNormalRoundContents();

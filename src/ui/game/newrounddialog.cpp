@@ -150,35 +150,24 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
         }
     }
 
-    if(round->soloPlayer()) {
-        setCurrentPage(1);
-    }
-    else if(round->hochzeitPlayer()) {
-        setCurrentPage(2);
-    }
-    else if(round->trumpfabgabePlayer()) {
-        setCurrentPage(3);
-    }
-    else{
-        setCurrentPage(0);
-    }
+    setCurrentPage(round->type());
 }
 
-void NewRoundDialog::setCurrentPage(int index)
+void NewRoundDialog::setCurrentPage(Round::Type type)
 {
-    ui->stackedWidget->setCurrentIndex(index);
+    ui->stackedWidget->setCurrentIndex(type);
 
-    switch(index) {
-    case 0:
+    switch(type) {
+    case Round::NormalRound:
         checkNormalRoundContents();
         break;
-    case 1:
+    case Round::Hochzeit:
         checkHochzeitRoundContents();
         break;
-    case 2:
+    case Round::Solo:
         checkSoloRoundContents();
         break;
-    case 3:
+    case Round::Trumpfabgabe:
         checkTrumpfabgabeRoundContents();
         break;
     default:
