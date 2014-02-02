@@ -4,7 +4,7 @@ GraphWidget::GraphWidget(QWidget *parent) :
     QWidget(parent),
     m_maxY(std::numeric_limits<int>::min()),
     m_minY(std::numeric_limits<int>::max()),
-    m_cellWidth(70)
+    m_columnWidth(40)
 {
 }
 
@@ -39,19 +39,20 @@ int GraphWidget::originY() const
     return qAbs(maxY()) * pixelsPerPoint();
 }
 
-int GraphWidget::cellWidth() const
+int GraphWidget::columnWidth() const
 {
-    return m_cellWidth;
+    return m_columnWidth;
 }
 
-void GraphWidget::setCellWidth(int width)
+void GraphWidget::setColumnWidth(int width)
 {
-    m_cellWidth = width;
+    m_columnWidth = width;
+    update();
 }
 
 int GraphWidget::translateX(int x) const
 {
-    return x * 40 - 1;
+    return x * m_columnWidth - 1;
 }
 
 int GraphWidget::translateY(int y) const

@@ -37,7 +37,8 @@
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
-    ui(new Ui::GameWindow)
+    ui(new Ui::GameWindow),
+    m_minimumColumnWidth(20)
 {
     ui->setupUi(this);
 
@@ -198,6 +199,19 @@ void GameWindow::mousePressEvent(QMouseEvent *e)
 void GameWindow::resizeEvent(QResizeEvent *)
 {
     m_resumeWidget->resize(width(), height());
+
+    if(!m_game)
+        return;
+
+    int w = width();
+    int roundCount = m_game->totalRoundCount();
+
+    w -= ui->tableViewInformation->width();
+    w /= roundCount + 1;
+    w = qMax(m_minimumColumnWidth, w);
+
+    ui->tableViewOverview->horizontalHeader()->setDefaultSectionSize(w);
+    ui->graphWidget->setColumnWidth(w);
 }
 
 void GameWindow::onDialogClosed()

@@ -72,7 +72,7 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->graphAxis->setPalette(darkPalette);
     ui->graphAxis->setGraph(ui->graphWidget);
     ui->graphWidget->stackUnder(ui->graphAxis);
-    ui->graphWidget->setCellWidth(tableWidth);
+    ui->graphWidget->setColumnWidth(tableWidth);
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 }

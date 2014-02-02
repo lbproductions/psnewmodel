@@ -73,6 +73,8 @@ private:
 
     ResumeWidget* m_resumeWidget;
     DialogController *m_actionsController;
+
+    int m_minimumColumnWidth;
 };
 
 #endif // GAMEWINDOW_H

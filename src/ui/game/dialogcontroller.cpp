@@ -63,6 +63,7 @@ void DialogController::showDialog(QWidget *widget)
     QWidget *frame = frameWidget(widget);
     frame->setFixedHeight(m_dialogHeight);
     frame->show();
+    connect(widget, &QWidget::destroyed, this, &DialogController::closeDialogWhenDestroyed);
 
     if(m_dialog) { // previous dialog
         if(m_widget)
@@ -78,7 +79,6 @@ void DialogController::showDialog(QWidget *widget)
 
     m_widget = widget;
     m_dialog = frame;
-    connect(widget, &QWidget::destroyed, this, &DialogController::closeDialogWhenDestroyed);
 
     QPropertyAnimation *animation  = new QPropertyAnimation(m_dialog, "geometry");
     animation->setStartValue(hiddenGeometry(frame));
@@ -135,7 +135,7 @@ QWidget *DialogController::frameWidget(QWidget *widget)
     frame->setMinimumWidth(widget->width());
     frame->layout()->addWidget(widget);
     frame->layout()->setContentsMargins(0,0,0,0);
-    frame->setStyleSheet("QFrame#actionFrame { background: rgb(35,35,35); border:none; border-right:3px solid rgb(108,108,108);}");
+    frame->setStyleSheet("QFrame#actionFrame { background: rgb(35,35,35); border:none; border-right:2px solid rgb(108,108,108);}");
     return frame;
 }
 

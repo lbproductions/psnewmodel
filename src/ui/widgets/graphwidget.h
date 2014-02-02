@@ -19,8 +19,8 @@ public:
     int originX() const;
     int originY() const;
 
-    int cellWidth() const;
-    void setCellWidth(int width);
+    int columnWidth() const;
+    void setColumnWidth(int width);
 
     virtual int translateX(int x) const;
     int translateY(int y) const;
@@ -33,7 +33,7 @@ signals:
 protected:
     int m_maxY;
     int m_minY;
-    int m_cellWidth;
+    int m_columnWidth;
 };
 
 #endif // GRAPHWIDGET_H
