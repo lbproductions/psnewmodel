@@ -18,26 +18,12 @@
 	color: rgb(108,108,108);
 	width: 1px;
 }
-QWidget#statusBar {
-background: url(:/statusbar/dark-background.png) repeat-x;
-}
 QTableCornerButton::section {
 border: none;
 background: rgb(55,55,55);
 }
-QLabel#labelLength {
-color:white;
-}
- QLabel#labelClock {
-color:white;
-font-size: 19px;
-}
-QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar,  QToolButton#toolButtonAddRound, QToolButton#toolButtonAddDrinks, QToolButton#toolButtonAddSchmeisserei, QToolButton#toolButtonSetComment, QToolButton#toolButtonStop, QToolButton#toolButtonSettings{
-border: none;
-background: none;
-}
-QSplitter:handle {
-background-color: rgb(108,108,108);
+QWidget#widgetCreateGame {
+background: rgb(55,55,55);
 }
 QToolButton#pushButtonAddPlayers {
 	color: white;
@@ -99,7 +85,7 @@ QWidget#widgetCreateGame {
          <x>0</x>
          <y>0</y>
          <width>800</width>
-         <height>600</height>
+         <height>578</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
@@ -405,6 +391,41 @@ QWidget#widgetCreateGame {
     </item>
    </layout>
   </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="actionPlayPause"/>
+    <addaction name="actionSet_comment"/>
+    <addaction name="actionStop_Game"/>
+    <addaction name="actionAdd_drinks"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_round"/>
+    <addaction name="actionAdd_Hochzeit"/>
+    <addaction name="actionAdd_Solo"/>
+    <addaction name="actionAdd_Trumpfabgabe"/>
+    <addaction name="actionAdd_schmeisserei"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionStats"/>
+    <addaction name="actionSettings"/>
+    <addaction name="actionClose_window"/>
+   </widget>
+   <addaction name="menuView"/>
+   <addaction name="menuGame"/>
+  </widget>
   <action name="actionPlayPause">
    <property name="icon">
     <iconset resource="../../resource/statusbar/statusbar.qrc">
@@ -460,8 +481,11 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionStats">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Stats</string>
+    <string>Show statistics</string>
    </property>
   </action>
   <action name="actionStop_Game">
@@ -522,6 +546,25 @@ QWidget#widgetCreateGame {
    </property>
    <property name="text">
     <string>Add Trumpfabgabe...</string>
+   </property>
+  </action>
+  <action name="actionSet_comment">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit comment...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit comment</string>
+   </property>
+  </action>
+  <action name="actionClose_window">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>

@@ -11,6 +11,9 @@ StopGameWidget::StopGameWidget(QWidget *parent) :
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose, true);
     setPalette(Tools::darkPalette(this));
+
+    connect(ui->buttonBox, &QDialogButtonBox::rejected,
+            this, &QWidget::close);
 }
 
 StopGameWidget::~StopGameWidget()

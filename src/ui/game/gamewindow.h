@@ -49,7 +49,6 @@ private slots:
     void on_actionStats_triggered();
     void on_actionSettings_triggered();
     void onTableViewOverviewDoubleClicked(const QModelIndex &index);
-    void on_toolButtonSetComment_clicked();
 
     void onNewRoundStarted();
     void updateSizes();
@@ -62,6 +61,8 @@ private slots:
 
     void onDialogClosed();
 
+    void on_actionSet_comment_triggered();
+
 private:
     Ui::GameWindow *ui;
 
@@ -72,7 +73,7 @@ private:
     OverviewPlayerHeaderView *m_verticalHeaderView;
 
     ResumeWidget* m_resumeWidget;
-    DialogController *m_actionsController;
+    DialogController *m_dialogController;
 
     int m_minimumColumnWidth;
 };

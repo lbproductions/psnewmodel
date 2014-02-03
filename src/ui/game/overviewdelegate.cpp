@@ -96,7 +96,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     color = index.data(GameOverviewModel::MitspielerColorRole).value<QColor>();
     if(color.isValid()) {
         painter->setBrush(color);
-        painter->drawRect(QRect(option.rect.topLeft() + QPoint(16,8), option.rect.topLeft() + QPoint(32,24)));
+        painter->drawRect(playerColorRect(option.rect, false));
     }
 
     // Draw spieler
@@ -108,7 +108,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             pen.setBrush(Qt::white);
             painter->setPen(pen);
         }
-        painter->drawRect(QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19)));
+        painter->drawRect(playerColorRect(option.rect, true));
     }
 
     // Draw schmeissereien
@@ -119,10 +119,11 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             if(colors.size() > 1)
                 painter->setPen(QPen(palette.highlight().color()));
 
-            QRect rect = QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19));
-            double dx = 19;
+            QRect rect = QRect(playerColorRect(option.rect, true));
+            double dx = rect.width();
             double dy = 8;
-            dx /= colors.size();
+            if(colors.size() > 1)
+                dx /= colors.size() - 1;
             dy /= colors.size();
             foreach(QColor color, colors) {
                 painter->setBrush(color);
@@ -194,5 +195,22 @@ GameOverviewModel *OverviewDelegate::model() const
 void OverviewDelegate::setGameModel(GameOverviewModel *model)
 {
     m_model = model;
+}
+
+QRect OverviewDelegate::playerColorRect(const QRect &rect, bool first) const
+{
+    int h = 16;
+    int w = qMin(16, rect.width() / 3 + 3);
+    int x, y;
+    if(first) {
+        x = rect.topLeft().x() + rect.width() / 2 - w;
+        y = rect.topLeft().y() + 5;
+    }
+    else {
+        x = rect.bottomRight().x() - rect.width() / 2;
+        y = rect.bottomRight().y() - h - 5;
+    }
+
+    return QRect(QPoint(x, y), QSize(w, h));
 }
 

@@ -40,9 +40,6 @@ GameWindow::GameWindow(QWidget *parent) :
     ui(new Ui::GameWindow),
     m_minimumColumnWidth(20)
 {
-    ui->setupUi(this);
-
-    setAttribute(Qt::WA_DeleteOnClose, true);
     QPalette darkPalette = palette();
     darkPalette.setColor(QPalette::Window, QColor(71,71,71));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
@@ -57,6 +54,10 @@ GameWindow::GameWindow(QWidget *parent) :
     darkPalette.setColor(QPalette::Highlight, QColor(108,108,108));
     darkPalette.setColor(QPalette::HighlightedText, QColor(187,187,187));
     setPalette(darkPalette);
+
+    ui->setupUi(this);
+
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
     ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
 
@@ -103,6 +104,8 @@ GameWindow::GameWindow(QWidget *parent) :
     actionGroup->addAction(ui->actionAdd_Solo);
     actionGroup->addAction(ui->actionAdd_Trumpfabgabe);
     actionGroup->addAction(ui->actionStop_Game);
+    actionGroup->addAction(ui->actionSet_comment);
+    actionGroup->addAction(ui->actionStats);
     actionGroup->setExclusive(true);
     m_informationModel->setHeaderAction(GameOverviewModel::NormalRoundRow, ui->actionAdd_round);
     m_informationModel->setHeaderAction(GameOverviewModel::SchmeissereienRow, ui->actionAdd_schmeisserei);
@@ -111,35 +114,25 @@ GameWindow::GameWindow(QWidget *parent) :
     m_informationModel->setHeaderAction(GameOverviewModel::TrumpfabgabenRow, ui->actionAdd_Trumpfabgabe);
     m_informationModel->setHeaderAction(GameOverviewModel::SoliRow, ui->actionAdd_Solo);
 
-    m_actionsController = new DialogController(this);
+    m_dialogController = new DialogController(this);
 
-    connect(m_actionsController, &DialogController::dialogClosed,
+    connect(m_dialogController, &DialogController::dialogClosed,
             this, &GameWindow::onDialogClosed);
 
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
 
-//    QTimer *lengthTimer = new QTimer(this);
-//    connect(lengthTimer, &QTimer::timeout,
-//            this, &GameWindow::updateTimes);
-//    lengthTimer->start(1000);
-
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionPlayPause, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionStop_Game, this);
-    MenuBar::instance()->menu(tr("&Game"))->addSeparator();
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_round, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_Hochzeit, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_Solo, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_Trumpfabgabe, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_drinks, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionStats, this);
-    MenuBar::instance()->addAction(tr(""), ui->actionSettings, this);
+    //    QTimer *lengthTimer = new QTimer(this);
+    //    connect(lengthTimer, &QTimer::timeout,
+    //            this, &GameWindow::updateTimes);
+    //    lengthTimer->start(1000);
 
     enableActionsBasedOnState();
 
     void (GameSettings::*showExtraRowsChangedSignal)(bool) = &GameSettings::showExtraRowsChanged;
     connect(&GameSettings::instance(), showExtraRowsChangedSignal, this, &GameWindow::updateSizes);
+
+    connect(ui->actionClose_window, &QAction::triggered, this, &QWidget::close);
 }
 
 GameWindow::~GameWindow()
@@ -184,15 +177,16 @@ void GameWindow::updateSizes()
             (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0);
     ui->tableViewOverview->setFixedHeight(overviewHeight);
     ui->tableViewInformation->setFixedHeight(overviewHeight);
-    m_actionsController->setDialogOffsetTop(1 + ui->tableViewInformation->horizontalHeader()->height());
-    m_actionsController->setDialogHeight(overviewHeight - m_actionsController->dialogOffsetTop() - 1);
+    m_dialogController->setDialogOffsetTop(1 + ui->tableViewInformation->horizontalHeader()->height());
+    m_dialogController->setDialogOffsetLeft(29);
+    m_dialogController->setDialogHeight(overviewHeight - m_dialogController->dialogOffsetTop() - 1);
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
 }
 
 void GameWindow::mousePressEvent(QMouseEvent *e)
 {
-    m_actionsController->closeDialogOnMousePress(e->pos());
+    m_dialogController->closeDialogOnMousePress(e->pos());
     QMainWindow::mousePressEvent(e);
 }
 
@@ -229,6 +223,10 @@ void GameWindow::enableActionsBasedOnState()
     ui->actionAdd_round->setEnabled(false);
     ui->actionAdd_schmeisserei->setEnabled(false);
     ui->actionStop_Game->setEnabled(false);
+    ui->actionAdd_drinks->setEnabled(false);
+    ui->actionAdd_Hochzeit->setEnabled(false);
+    ui->actionAdd_Solo->setEnabled(false);
+    ui->actionAdd_Trumpfabgabe->setEnabled(false);
 
     if(!m_game)
         return;
@@ -240,6 +238,10 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
         ui->actionStop_Game->setEnabled(true);
+        ui->actionAdd_drinks->setEnabled(true);
+        ui->actionAdd_Hochzeit->setEnabled(true);
+        ui->actionAdd_Solo->setEnabled(true);
+        ui->actionAdd_Trumpfabgabe->setEnabled(true);
 
         m_resumeWidget->setVisible(false);
     }
@@ -268,7 +270,7 @@ void GameWindow::on_actionStop_Game_triggered()
 {
     StopGameWidget* widget = new StopGameWidget(this);
     widget->setGame(m_game);
-    m_actionsController->showDialog(widget);
+    m_dialogController->showDialog(widget);
 }
 
 void GameWindow::onNewRoundStarted()
@@ -293,7 +295,7 @@ void GameWindow::on_actionAdd_round_triggered()
 {
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
-    m_actionsController->showDialog(dialog);
+    m_dialogController->showDialog(dialog);
 }
 
 void GameWindow::on_actionAdd_Hochzeit_triggered()
@@ -301,7 +303,7 @@ void GameWindow::on_actionAdd_Hochzeit_triggered()
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     dialog->setCurrentPage(Round::Hochzeit);
-    m_actionsController->showDialog(dialog);
+    m_dialogController->showDialog(dialog);
 }
 
 void GameWindow::on_actionAdd_Solo_triggered()
@@ -309,7 +311,7 @@ void GameWindow::on_actionAdd_Solo_triggered()
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     dialog->setCurrentPage(Round::Solo);
-    m_actionsController->showDialog(dialog);
+    m_dialogController->showDialog(dialog);
 }
 
 void GameWindow::on_actionAdd_Trumpfabgabe_triggered()
@@ -317,47 +319,43 @@ void GameWindow::on_actionAdd_Trumpfabgabe_triggered()
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     dialog->setCurrentPage(Round::Trumpfabgabe);
-    m_actionsController->showDialog(dialog);
+    m_dialogController->showDialog(dialog);
 }
 
 void GameWindow::on_actionAdd_schmeisserei_triggered()
 {
     SchmeissereiDialog *dialog = new SchmeissereiDialog(this);
     dialog->setGame(m_game);
-    m_actionsController->showDialog(dialog);
+    m_dialogController->showDialog(dialog);
 }
 
 void GameWindow::on_actionAdd_drinks_triggered()
 {
     DrinksWidget *drinksWidget = new DrinksWidget(ui->centralwidget);
     drinksWidget->setRound(m_game->currentRound());
-    m_actionsController->showDialog(drinksWidget);
+    m_dialogController->showDialog(drinksWidget);
 }
 
-void GameWindow::on_toolButtonSetComment_clicked()
+
+void GameWindow::on_actionSet_comment_triggered()
 {
     CommentWidget* commentWidget = new CommentWidget(this);
     commentWidget->setGame(m_game);
-    m_actionsController->showDialog(commentWidget);
+    m_dialogController->showDialog(commentWidget);
 }
+
 
 void GameWindow::on_actionStats_triggered()
 {
     GameStatsWidget* widget = new GameStatsWidget(this);
     widget->setGames(QList<QSharedPointer<Game> >() << m_game);
-    widget->show();
+    m_dialogController->showDialog(widget);
 }
 
 void GameWindow::on_actionSettings_triggered()
 {
-    PopupWidget *popup = new PopupWidget(this);
-
     SettingsWidget* setWidget = new SettingsWidget(this);
-
-    popup->setWidget(setWidget);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(500);
-    popup->show();
+    m_dialogController->showDialog(setWidget);
 }
 
 void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
@@ -370,7 +368,7 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
     QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
     NewRoundDialog* dlg = new NewRoundDialog(this);
     dlg->setRound(round, NewRoundDialog::EditRound);
-    m_actionsController->showDialog(dlg);
+    m_dialogController->showDialog(dlg);
 
     switch(round->type()) {
     case Round::NormalRound:
@@ -392,14 +390,29 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
 /**********************************************************
  * PRE-Game
  */
+bool sortPlayers(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)
+{
+    QList<QSharedPointer<Game>> g1 = p1->games();
+    if(g1.isEmpty())
+        return false;
+
+    QList<QSharedPointer<Game>> g2 = p2->games();
+    if(g2.isEmpty())
+        return true;
+
+    return g1.last()->creationTime() > g2.last()->creationTime();
+}
+
 void GameWindow::on_pushButtonAddPlayers_clicked()
 {
-    PopupWidget *popup = new PopupWidget(this);
+    QList<QSharedPointer<Player>> players = Qp::readAll<Player>();
+    qSort(players.begin(), players.end(), sortPlayers);
 
-    PlayersListWidget *list = new PlayersListWidget(popup);
+    PlayersListWidget *list = new PlayersListWidget(this);
     list->setPalette(palette());
     list->setAttribute(Qt::WA_MacShowFocusRect, false);
-    list->add(Qp::readAll<Player>());
+    list->add(players);
+    list->setFixedWidth(300);
 
     foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->items())
         list->remove(p);
@@ -407,12 +420,10 @@ void GameWindow::on_pushButtonAddPlayers_clicked()
     connect(list, &PlayersListWidget::playerActivated,
             this, &GameWindow::addPlayerToGame);
 
-    popup->setWidget(list);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(500);
-    popup->setArrowPosition(PopupWidget::Left);
-    popup->anchorTo(ui->pushButtonAddPlayers);
-    popup->show();
+    m_dialogController->setDialogOffsetTop(ui->widgetCreateGame->layout()->contentsMargins().top() + 1);
+    m_dialogController->setDialogOffsetLeft(ui->listWidgetPlayers->width());
+    m_dialogController->setDialogHeight(ui->listWidgetPlayers->height() + ui->pushButtonAddPlayers->height() - 1);
+    m_dialogController->showDialog(list);
 }
 
 void GameWindow::addPlayerToGame(QSharedPointer<Player> player)

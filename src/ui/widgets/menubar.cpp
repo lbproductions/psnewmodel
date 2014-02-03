@@ -9,6 +9,8 @@
 MenuBar::MenuBar(QWidget *parent) :
     QMenuBar(parent)
 {
+    Q_ASSERT_X(false,Q_FUNC_INFO,"Do not use this menu bar. Its fuckin' bugged.");
+
     connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)),
             this, SLOT(enableActionsBasedOnCurrentWindow()));
 
