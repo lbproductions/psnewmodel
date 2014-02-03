@@ -264,4 +264,6 @@ void OverviewPlayerHeaderView::mouseReleaseEvent(QMouseEvent *e)
 {
     if(e->button() == Qt::LeftButton)
         m_model->triggerAction(logicalIndexAt(e->pos()) - m_model->game()->players().size());
+
+    QHeaderView::mouseReleaseEvent(e);
 }

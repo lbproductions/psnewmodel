@@ -32,7 +32,8 @@
 #include <QPushButton>
 #include <QModelIndex>
 #include <QPropertyAnimation>
-
+#include <QMouseEvent>
+#include <QEvent>
 #include <QMessageBox>
 
 GameWindow::GameWindow(QWidget *parent) :
@@ -133,6 +134,10 @@ GameWindow::GameWindow(QWidget *parent) :
     connect(&GameSettings::instance(), showExtraRowsChangedSignal, this, &GameWindow::updateSizes);
 
     connect(ui->actionClose_window, &QAction::triggered, this, &QWidget::close);
+
+    installEventFilter(this);
+    ui->tableViewInformation->viewport()->installEventFilter(this);
+    ui->tableViewOverview->viewport()->installEventFilter(this);
 }
 
 GameWindow::~GameWindow()
@@ -171,6 +176,16 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     updateSizes();
 }
 
+bool GameWindow::eventFilter(QObject *obj, QEvent *event)
+{
+    if(event->type() == QEvent::MouseButtonRelease) {
+        QPoint pos = static_cast<QMouseEvent *>(event)->pos();
+        m_dialogController->closeDialogOnMousePress(pos);
+    }
+
+    return QObject::eventFilter(obj, event);
+}
+
 void GameWindow::updateSizes()
 {
     int overviewHeight = ui->tableViewOverview->horizontalHeader()->height() +
@@ -182,12 +197,6 @@ void GameWindow::updateSizes()
     m_dialogController->setDialogHeight(overviewHeight - m_dialogController->dialogOffsetTop() - 1);
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
-}
-
-void GameWindow::mousePressEvent(QMouseEvent *e)
-{
-    m_dialogController->closeDialogOnMousePress(e->pos());
-    QMainWindow::mousePressEvent(e);
 }
 
 void GameWindow::resizeEvent(QResizeEvent *)

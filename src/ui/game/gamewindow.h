@@ -30,8 +30,8 @@ public:
     void setGame(const QSharedPointer<Game> &game);
 
 protected:
-    void mousePressEvent(QMouseEvent *e);
     void resizeEvent(QResizeEvent *);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void enableActionsBasedOnState();
