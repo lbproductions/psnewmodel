@@ -4,6 +4,8 @@
 class Updater
 {
 public:
+    virtual ~Updater();
+
     virtual void checkForUpdates() = 0;
     virtual void checkForUpdatesInBackground() = 0;
 

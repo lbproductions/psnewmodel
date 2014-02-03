@@ -7,7 +7,7 @@ include($$SPARKLE_PATH/Sparkle.pri)
 ### General config ###
 
 TARGET          = psnewmodel
-VERSION         = 0.0.1
+VERSION         = 0.0.0
 TEMPLATE        = app
 ICON            = icon.icns
 QT              += sql widgets

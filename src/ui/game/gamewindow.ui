@@ -681,6 +681,11 @@ QWidget#widgetCreateGame {
     <string>Settings</string>
    </property>
   </action>
+  <action name="actionCheck_for_updates">
+   <property name="text">
+    <string>Check for updates...</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

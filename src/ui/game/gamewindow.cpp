@@ -24,6 +24,7 @@
 #include <data/player.h>
 #include <misc/tools.h>
 #include <misc/settings.h>
+#include <misc/updater/updater.h>
 
 #include <QPersistence.h>
 #include <QScrollBar>
@@ -127,6 +128,8 @@ GameWindow::GameWindow(QWidget *parent) :
     MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
     MenuBar::instance()->addAction(tr("&Game"), ui->actionStats, this);
     MenuBar::instance()->addAction(tr(""), ui->actionSettings, this);
+    ui->actionCheck_for_updates->setMenuRole(QAction::ApplicationSpecificRole);
+    MenuBar::instance()->addAction(tr("&File"), ui->actionCheck_for_updates, this);
 
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
@@ -566,4 +569,9 @@ void GameWindow::on_actionSettings_triggered()
     popup->setMinimumHeight(500);
     popup->show();
     setPopupWidget(popup);
+}
+
+void GameWindow::on_actionCheck_for_updates_triggered()
+{
+    Updater::instanceForPlatform()->checkForUpdates();
 }

@@ -76,5 +76,6 @@ int main(int argc, char *argv[])
     //    new MainWindow;
     int ret = a.exec();
 
+    delete Updater::instanceForPlatform();
     return ret;
 }
