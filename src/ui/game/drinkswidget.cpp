@@ -362,6 +362,7 @@ DrinksWidget::DrinksWidget(QWidget *parent) :
 {
     ui->setupUi(this);
     setFocusProxy(ui->lineEditSearchDrink);
+    setAttribute(Qt::WA_DeleteOnClose, true);
 
     ui->lineEditSearchDrink->installEventFilter(this);
     ui->listViewDrinks->installEventFilter(this);

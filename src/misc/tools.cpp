@@ -108,6 +108,13 @@ double Tools::percentage(double value1, double value2)
     return static_cast<double>(static_cast<int>(number*100+0.5))/100.0;
 }
 
+QPixmap Tools::colorPixmap(int w, int h, const QColor &color)
+{
+    QPixmap pm(w,h);
+    pm.fill(color);
+    return pm;
+}
+
 QPixmap Tools::playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo, int w, int h)
 {
     QPixmap pixmap(w,h);

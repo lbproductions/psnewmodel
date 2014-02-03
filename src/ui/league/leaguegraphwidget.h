@@ -8,43 +8,40 @@ class League;
 
 class LeagueGraphWidget : public GraphWidget
 {
-        Q_OBJECT
-    public:
-        enum GraphType {
-          PlacementGraph,
-          AverageGraph,
-          PointsGraph,
-          TotalPointsGraph
-        };
+    Q_OBJECT
+public:
+    enum GraphType {
+        PlacementGraph,
+        AverageGraph,
+        PointsGraph,
+        TotalPointsGraph
+    };
 
-        explicit LeagueGraphWidget(QWidget *parent = 0);
+    explicit LeagueGraphWidget(QWidget *parent = 0);
 
-        void setLeague(QSharedPointer<League> league);
+    void setLeague(QSharedPointer<League> league);
 
-        QSize sizeHint() const;
+    QSize sizeHint() const;
 
-        int translateX(int x) const;
+    int translateX(int x) const;
 
-        GraphType type();
-        void setType(GraphType type);
-        
-    signals:
-        void graphUpdated();
-        
-    public slots:
-        void updateGraphs();
+    GraphType type();
+    void setType(GraphType type);
 
-    private:
-        void paintEvent(QPaintEvent *event);
+public slots:
+    void updateGraphs();
 
-        QSharedPointer<League> m_league;
+private:
+    void paintEvent(QPaintEvent *event);
 
-        QList<QList<int> > m_matchdays;
-        QList<QList<QColor> > m_colors;
+    QSharedPointer<League> m_league;
+
+    QList<QList<int> > m_matchdays;
+    QList<QList<QColor> > m_colors;
 
 
-        GraphType m_type;
-        
+    GraphType m_type;
+
 };
 
 #endif // LEAGUEGRAPHWIDGET_H

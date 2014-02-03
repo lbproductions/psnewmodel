@@ -1,31 +1,31 @@
 #ifndef STOPGAMEWIDGET_H
 #define STOPGAMEWIDGET_H
 
-#include <QDialog>
+#include <QWidget>
 
 namespace Ui {
-    class StopGameWidget;
+class StopGameWidget;
 }
 
 class Game;
 
-class StopGameWidget : public QDialog
+class StopGameWidget : public QWidget
 {
-        Q_OBJECT
-        
-    public:
-        explicit StopGameWidget(QWidget *parent = 0);
-        ~StopGameWidget();
+    Q_OBJECT
 
-        void setGame(QSharedPointer<Game> game);
-        
-    private slots:
-        void on_buttonBox_accepted();
+public:
+    explicit StopGameWidget(QWidget *parent = 0);
+    ~StopGameWidget();
 
-    private:
-        Ui::StopGameWidget *ui;
+    void setGame(QSharedPointer<Game> game);
 
-        QSharedPointer<Game> m_game;
+private slots:
+    void on_buttonBox_accepted();
+
+private:
+    Ui::StopGameWidget *ui;
+
+    QSharedPointer<Game> m_game;
 };
 
 #endif // STOPGAMEWIDGET_H

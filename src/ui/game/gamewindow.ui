@@ -18,26 +18,12 @@
 	color: rgb(108,108,108);
 	width: 1px;
 }
-QWidget#statusBar {
-background: url(:/statusbar/dark-background.png) repeat-x;
-}
 QTableCornerButton::section {
 border: none;
 background: rgb(55,55,55);
 }
-QLabel#labelLength {
-color:white;
-}
- QLabel#labelClock {
-color:white;
-font-size: 19px;
-}
-QToolButton#toolButtonState, QToolButton#toolButtonToggleSidebar,  QToolButton#toolButtonAddRound, QToolButton#toolButtonAddDrinks, QToolButton#toolButtonAddSchmeisserei, QToolButton#toolButtonSetComment, QToolButton#toolButtonStop, QToolButton#toolButtonSettings{
-border: none;
-background: none;
-}
-QSplitter:handle {
-background-color: rgb(108,108,108);
+QWidget#widgetCreateGame {
+background: rgb(55,55,55);
 }
 QToolButton#pushButtonAddPlayers {
 	color: white;
@@ -63,7 +49,7 @@ QWidget#widgetCreateGame {
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QVBoxLayout" name="verticalLayout_5">
+   <layout class="QHBoxLayout" name="horizontalLayout_2">
     <property name="spacing">
      <number>0</number>
     </property>
@@ -80,26 +66,46 @@ QWidget#widgetCreateGame {
      <number>0</number>
     </property>
     <item>
-     <widget class="QSplitter" name="splitter">
+     <widget class="QScrollArea" name="scrollAreaCentral">
       <property name="frameShape">
-       <enum>QFrame::Box</enum>
+       <enum>QFrame::NoFrame</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Plain</enum>
       </property>
       <property name="lineWidth">
        <number>0</number>
       </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
+      <property name="widgetResizable">
+       <bool>true</bool>
       </property>
-      <property name="handleWidth">
-       <number>1</number>
-      </property>
-      <widget class="QWidget" name="verticalLayoutWidget">
-       <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,1">
+      <widget class="QWidget" name="scrollAreaWidgetContents_2">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>800</width>
+         <height>578</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout">
         <property name="spacing">
          <number>0</number>
         </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <item>
-         <layout class="QHBoxLayout" name="horizontalLayout_4" stretch="0,0,1">
+         <layout class="QHBoxLayout" name="horizontalLayoutOverview" stretch="0,0,1">
           <property name="spacing">
            <number>0</number>
           </property>
@@ -347,259 +353,78 @@ QWidget#widgetCreateGame {
          </widget>
         </item>
         <item>
-         <widget class="ScrollArea" name="scrollAreaGraph">
-          <property name="styleSheet">
-           <string notr="true"/>
+         <layout class="QHBoxLayout" name="horizontalLayoutGraph">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+          <property name="leftMargin">
+           <number>0</number>
           </property>
-          <property name="verticalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAsNeeded</enum>
-          </property>
-          <property name="widgetResizable">
-           <bool>true</bool>
-          </property>
-          <widget class="GraphAxis" name="scrollAreaWidgetContents">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>668</width>
-             <height>93</height>
-            </rect>
-           </property>
-           <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
-            <property name="spacing">
-             <number>0</number>
+          <item>
+           <widget class="GraphAxis" name="graphAxis" native="true">
+            <layout class="QVBoxLayout" name="verticalLayout_3">
+             <item>
+              <widget class="GameLengthWidget" name="gameLengthWidget" native="true"/>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="GameGraphWidget" name="graphWidget" native="true">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
             </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="GraphAxis" name="graphAxis" native="true">
-              <layout class="QVBoxLayout" name="verticalLayout_3">
-               <item>
-                <widget class="GameLengthWidget" name="gameLengthWidget" native="true"/>
-               </item>
-              </layout>
-             </widget>
-            </item>
-            <item>
-             <widget class="GameGraphWidget" name="graphWidget" native="true">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <layout class="QHBoxLayout" name="horizontalLayout"/>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </widget>
+            <layout class="QHBoxLayout" name="horizontalLayout"/>
+           </widget>
+          </item>
+         </layout>
         </item>
        </layout>
       </widget>
-      <widget class="ShadowFrame" name="widgetStatisticsFrame" native="true">
-       <property name="maximumSize">
-        <size>
-         <width>300</width>
-         <height>16777215</height>
-        </size>
-       </property>
-      </widget>
-     </widget>
-    </item>
-    <item>
-     <widget class="QWidget" name="statusBar" native="true">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>52</width>
-        <height>52</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>16777215</width>
-        <height>52</height>
-       </size>
-      </property>
-      <layout class="QHBoxLayout" name="horizontalLayout_2">
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>12</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
-       <item>
-        <widget class="QLabel" name="labelLength">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer_2">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QToolButton" name="toolButtonAddRound">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resource/statusbar/statusbar.qrc">
-           <normaloff>:/statusbar/newround.png</normaloff>:/statusbar/newround.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-         <property name="toolButtonStyle">
-          <enum>Qt::ToolButtonIconOnly</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="toolButtonAddSchmeisserei">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resource/statusbar/statusbar.qrc">
-           <normaloff>:/statusbar/schmeisserei.png</normaloff>:/statusbar/schmeisserei.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="toolButtonAddDrinks">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resource/statusbar/statusbar.qrc">
-           <normaloff>:/statusbar/drink.png</normaloff>:/statusbar/drink.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QToolButton" name="toolButtonSetComment">
-         <property name="text">
-          <string/>
-         </property>
-         <property name="icon">
-          <iconset resource="../../resource/statusbar/statusbar.qrc">
-           <normaloff>:/statusbar/comment.png</normaloff>:/statusbar/comment.png</iconset>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>32</width>
-           <height>32</height>
-          </size>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <spacer name="horizontalSpacer">
-         <property name="orientation">
-          <enum>Qt::Horizontal</enum>
-         </property>
-         <property name="sizeHint" stdset="0">
-          <size>
-           <width>40</width>
-           <height>20</height>
-          </size>
-         </property>
-        </spacer>
-       </item>
-       <item>
-        <widget class="QToolButton" name="toolButtonToggleSidebar">
-         <property name="minimumSize">
-          <size>
-           <width>17</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>17</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="iconSize">
-          <size>
-           <width>17</width>
-           <height>16</height>
-          </size>
-         </property>
-         <property name="toolButtonStyle">
-          <enum>Qt::ToolButtonTextOnly</enum>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QLabel" name="labelClock">
-         <property name="text">
-          <string/>
-         </property>
-        </widget>
-       </item>
-      </layout>
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>800</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuGame">
+    <property name="title">
+     <string>Game</string>
+    </property>
+    <addaction name="actionPlayPause"/>
+    <addaction name="actionSet_comment"/>
+    <addaction name="actionStop_Game"/>
+    <addaction name="actionAdd_drinks"/>
+    <addaction name="separator"/>
+    <addaction name="actionAdd_round"/>
+    <addaction name="actionAdd_Hochzeit"/>
+    <addaction name="actionAdd_Solo"/>
+    <addaction name="actionAdd_Trumpfabgabe"/>
+    <addaction name="actionAdd_schmeisserei"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionStats"/>
+    <addaction name="actionSettings"/>
+    <addaction name="actionClose_window"/>
+   </widget>
+   <addaction name="menuView"/>
+   <addaction name="menuGame"/>
   </widget>
   <action name="actionPlayPause">
    <property name="icon">
@@ -611,42 +436,42 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionAdd_round">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/newround.png</normaloff>:/statusbar/newround.png</iconset>
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/addnormalround.png</normaloff>:/gamewindow/addnormalround.png</iconset>
    </property>
    <property name="text">
-    <string>Add round...</string>
+    <string>Add Round...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+R</string>
    </property>
   </action>
   <action name="actionAdd_schmeisserei">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/schmeisserei.png</normaloff>:/statusbar/schmeisserei.png</iconset>
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/schmeisserei.png</normaloff>:/gamewindow/schmeisserei.png</iconset>
    </property>
    <property name="text">
-    <string>Add schmeisserei...</string>
+    <string>Add Schmeisserei...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
    </property>
   </action>
-  <action name="actionToggleSidebar">
-   <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/sidebar-left.png</normaloff>:/statusbar/sidebar-left.png</iconset>
-   </property>
-   <property name="text">
-    <string>Hide sidebar</string>
-   </property>
-  </action>
   <action name="actionAdd_drinks">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
-    <iconset resource="../../resource/statusbar/statusbar.qrc">
-     <normaloff>:/statusbar/drink.png</normaloff>:/statusbar/drink.png</iconset>
+    <iconset>
+     <normaloff>:/gamewindow/drink</normaloff>:/gamewindow/drink</iconset>
    </property>
    <property name="text">
     <string>Add drinks...</string>
@@ -656,20 +481,26 @@ QWidget#widgetCreateGame {
    </property>
   </action>
   <action name="actionStats">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>Stats</string>
+    <string>Show statistics</string>
    </property>
   </action>
   <action name="actionStop_Game">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="../../resource/statusbar/statusbar.qrc">
      <normaloff>:/statusbar/stop.png</normaloff>:/statusbar/stop.png</iconset>
    </property>
    <property name="text">
-    <string>Stop Game</string>
+    <string>End Game...</string>
    </property>
    <property name="shortcut">
-    <string>Ctrl+S</string>
+    <string>Ctrl+E</string>
    </property>
   </action>
   <action name="actionSettings">
@@ -681,14 +512,63 @@ QWidget#widgetCreateGame {
     <string>Settings</string>
    </property>
   </action>
+  <action name="actionAdd_Hochzeit">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/hochzeit.png</normaloff>:/gamewindow/hochzeit.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Hochzeit...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Solo">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/solo.png</normaloff>:/gamewindow/solo.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Solo...</string>
+   </property>
+  </action>
+  <action name="actionAdd_Trumpfabgabe">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+     <normaloff>:/gamewindow/trumpfabgabe.png</normaloff>:/gamewindow/trumpfabgabe.png</iconset>
+   </property>
+   <property name="text">
+    <string>Add Trumpfabgabe...</string>
+   </property>
+  </action>
+  <action name="actionSet_comment">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Edit comment...</string>
+   </property>
+   <property name="toolTip">
+    <string>Edit comment</string>
+   </property>
+  </action>
+  <action name="actionClose_window">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
-  <customwidget>
-   <class>ScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header location="global">ui/widgets/scrollarea.h</header>
-   <container>1</container>
-  </customwidget>
   <customwidget>
    <class>GraphAxis</class>
    <extends>QWidget</extends>
@@ -699,12 +579,6 @@ QWidget#widgetCreateGame {
    <class>GameGraphWidget</class>
    <extends>QWidget</extends>
    <header location="global">ui/game/gamegraphwidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>ShadowFrame</class>
-   <extends>QWidget</extends>
-   <header location="global">ui/widgets/shadowframe.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -726,6 +600,7 @@ QWidget#widgetCreateGame {
  </customwidgets>
  <resources>
   <include location="../../resource/statusbar/statusbar.qrc"/>
+  <include location="../../resource/gamewindow/gamewindow.qrc"/>
  </resources>
  <connections/>
 </ui>

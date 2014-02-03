@@ -9,6 +9,8 @@
 MenuBar::MenuBar(QWidget *parent) :
     QMenuBar(parent)
 {
+    Q_ASSERT_X(false,Q_FUNC_INFO,"Do not use this menu bar. Its fuckin' bugged.");
+
     connect(QApplication::instance(), SIGNAL(focusChanged(QWidget*,QWidget*)),
             this, SLOT(enableActionsBasedOnCurrentWindow()));
 
@@ -55,10 +57,10 @@ void MenuBar::addAction(const QString &menu, QAction *action, QWidget *widget)
         a = m_actions.value(menu).value(action->text());
     }
     else {
-        a = m->addAction(action->icon(), action->text());
-        copyActionState(action, a);
-        m_actions[menu].insert(action->text(), a);
-        connect(a, &QAction::triggered,
+        a = action;
+        m->insertAction(nullptr, action);
+        m_actions[menu].insert(action->text(), action);
+        connect(action, &QAction::triggered,
                 this, &MenuBar::triggerAction);
     }
 
@@ -79,7 +81,11 @@ void MenuBar::triggerAction()
         return;
 
     QPointer<QAction> widgetAction = m_actionsPerWidget.value(w).value(a);
+
     if(!widgetAction)
+        return;
+
+    if(widgetAction == a)
         return;
 
     widgetAction->trigger();

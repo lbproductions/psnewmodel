@@ -4,8 +4,11 @@
 
 #include <data/game.h>
 #include <data/player.h>
+#include <misc/tools.h>
 
 #include <misc/settings.h>
+
+#include <QAction>
 
 GameInformationModel::GameInformationModel(QObject *parent) :
     QAbstractTableModel(parent)
@@ -127,8 +130,10 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
     if(orientation == Qt::Horizontal)
         return QVariant();
 
-    int extraRow = section - m_game->players().size();
+    if(role == ActionRole)
+        return actionVariant(section);
 
+    int extraRow = section - m_game->players().size();
     if(extraRow == GameOverviewModel::HochzeitenRow) {
         return tr("Hochzeiten");
     }
@@ -139,6 +144,9 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
         return tr("Soli");
     }
     else if(extraRow == GameOverviewModel::SchweinereienRow) {
+        if(role == Qt::DecorationRole) {
+            return QPixmap(":/gamewindow/schweinerei");
+        }
         return tr("Schweinereien");
     }
     else if(extraRow == GameOverviewModel::SchmeissereienRow) {
@@ -151,23 +159,48 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
         return tr("Drinks");
     }
     else {
+        QSharedPointer<Player> player;
+        if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
+            player = m_game->players().at(section);
+        }
+        else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
+            player = m_game->playersSortedByPlacement().at(section);
+        }
+
         if(role == Qt::DisplayRole) {
-            if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
-                return m_game->players().at(section)->name();
-            }
-            else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
-                return m_game->playersSortedByPlacement().at(section)->name();
-            }
+            return player->name();
         }
         else if(role == Qt::DecorationRole) {
-            if(GameSettings::instance().playerSort() == GameSettings::SortByPosition) {
-                return m_game->players().at(section)->color();
-            }
-            else if(GameSettings::instance().playerSort() == GameSettings::SortByPlacement) {
-                return m_game->playersSortedByPlacement().at(section)->color();
-            }
+            return player->color();
+        }
+        else if(role == GameInformationModel::PlayerRole) {
+            return QVariant::fromValue<QSharedPointer<Player>>(player);
         }
     }
 
     return QVariant();
+}
+
+void GameInformationModel::triggerAction(int section)
+{
+    if(!m_actions.contains(section))
+        return;
+
+    QAction *action = m_actions.value(section);
+    if(!action->isChecked())
+        action->trigger();
+}
+
+void GameInformationModel::setHeaderAction(int section, QAction *action)
+{
+    m_actions.insert(section, action);
+
+    connect(action, &QAction::changed, [=] {
+        emit headerDataChanged(Qt::Horizontal, section, section);
+    });
+}
+
+QVariant GameInformationModel::actionVariant(int section) const
+{
+    return QVariant::fromValue<QAction *>(m_actions.value(section));
 }

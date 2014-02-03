@@ -59,12 +59,10 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
 
-
     StartWindow* startWindow = new StartWindow();
     startWindow->show();
 
-    //    new MainWindow;
     int ret = a.exec();
-
+    delete startWindow;
     return ret;
 }

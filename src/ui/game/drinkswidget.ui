@@ -24,12 +24,14 @@
   </property>
   <property name="styleSheet">
    <string notr="true">QWidget {
-	background: rgb(44,44,44);
+	background: rgb(35,35,35);
 	color: rgb(209,209,209);
 }
 
 QFrame#frame {
-	border: 2px solid rgb(128,128,128);
+	border:none;
+	border-right: 4px solid rgb(35,35,35);
+	border-right: 2px solid rgb(128,128,128);
 }
 
 
@@ -114,7 +116,7 @@ QPushButton#pushButtonAdd {
           <property name="minimumSize">
            <size>
             <width>0</width>
-            <height>28</height>
+            <height>29</height>
            </size>
           </property>
           <property name="maximumSize">

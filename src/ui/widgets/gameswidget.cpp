@@ -1,10 +1,11 @@
 #include "gameswidget.h"
-#include "ui_gameswidget.h"
 
 #include <misc/tools.h>
 #include <data/game.h>
 #include <data/place.h>
 #include <ui/game/gamewindow.h>
+
+#include <QHeaderView>
 
 GamesWidget::GamesWidget(QWidget *parent) :
     QTreeWidget(parent)

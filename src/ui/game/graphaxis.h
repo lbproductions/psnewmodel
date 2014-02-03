@@ -5,6 +5,7 @@
 
 class GraphWidget;
 
+
 class GraphAxis : public QWidget
 {
     Q_OBJECT
@@ -12,8 +13,7 @@ public:
     explicit GraphAxis(QWidget *parent = 0);
 
     void paintEvent(QPaintEvent *e) Q_DECL_OVERRIDE;
-    
-    GraphWidget *graph() const;
+
     void setGraph(GraphWidget *graph);
 
 private:

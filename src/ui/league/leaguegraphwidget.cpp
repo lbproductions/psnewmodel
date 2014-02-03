@@ -80,13 +80,13 @@ QSize LeagueGraphWidget::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
     if(m_league)
-        size.setWidth((League::currentMatchDayNumber + 1) * m_cellWidth + originX());
+        size.setWidth((League::currentMatchDayNumber + 1) * m_columnWidth + originX());
     return size;
 }
 
 int LeagueGraphWidget::translateX(int x) const
 {
-    return x * m_cellWidth - 1;
+    return x * m_columnWidth - 1;
 }
 
 LeagueGraphWidget::GraphType LeagueGraphWidget::type()
@@ -222,10 +222,10 @@ void LeagueGraphWidget::paintEvent(QPaintEvent *event)
                 painter.setBrush(colors.at(playerIndex));
 
                 QPolygonF polygon;
-                polygon << QPoint(translateX(matchdayNumber)+playerIndex*cellWidth()/currentMatchday.size(), originY())
-                        << QPoint(translateX(matchdayNumber)+playerIndex*cellWidth()/currentMatchday.size(), translateY(y))
-                        << QPoint(translateX(matchdayNumber)+(playerIndex+1)*cellWidth()/currentMatchday.size(), translateY(y))
-                        << QPoint(translateX(matchdayNumber)+(playerIndex+1)*cellWidth()/currentMatchday.size(), originY());
+                polygon << QPoint(translateX(matchdayNumber)+playerIndex*columnWidth()/currentMatchday.size(), originY())
+                        << QPoint(translateX(matchdayNumber)+playerIndex*columnWidth()/currentMatchday.size(), translateY(y))
+                        << QPoint(translateX(matchdayNumber)+(playerIndex+1)*columnWidth()/currentMatchday.size(), translateY(y))
+                        << QPoint(translateX(matchdayNumber)+(playerIndex+1)*columnWidth()/currentMatchday.size(), originY());
 
                 painter.drawPolygon(polygon);
             }
@@ -276,5 +276,5 @@ void LeagueGraphWidget::updateGraphs()
         return;
     setLeague(m_league);
 
-    emit graphUpdated();
+    emit updated();
 }

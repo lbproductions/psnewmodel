@@ -1,10 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>NewRoundDialog</class>
- <widget class="QDialog" name="NewRoundDialog">
-  <property name="windowModality">
-   <enum>Qt::NonModal</enum>
-  </property>
+ <widget class="QWidget" name="NewRoundDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -20,12 +17,6 @@
    <string notr="true">QLabel { color: white; }
 QDialog { background: rgb(51,51,51)}
 QCheckBox { color: white; }</string>
-  </property>
-  <property name="sizeGripEnabled">
-   <bool>false</bool>
-  </property>
-  <property name="modal">
-   <bool>true</bool>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <property name="spacing">
@@ -43,86 +34,6 @@ QCheckBox { color: white; }</string>
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayoutButtons">
-     <property name="spacing">
-      <number>12</number>
-     </property>
-     <property name="leftMargin">
-      <number>0</number>
-     </property>
-     <property name="rightMargin">
-      <number>0</number>
-     </property>
-     <item>
-      <widget class="QPushButton" name="pushButtonNormal">
-       <property name="text">
-        <string>Normal Round</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="checked">
-        <bool>true</bool>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonHochzeit">
-       <property name="text">
-        <string>Hochzeit</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonSolo">
-       <property name="text">
-        <string>Solo</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-     <item>
-      <widget class="QPushButton" name="pushButtonTrumpfabgabe">
-       <property name="text">
-        <string>Trumpfabgabe</string>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="autoDefault">
-        <bool>false</bool>
-       </property>
-       <attribute name="buttonGroup">
-        <string notr="true">buttonGroup</string>
-       </attribute>
-      </widget>
-     </item>
-    </layout>
-   </item>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">

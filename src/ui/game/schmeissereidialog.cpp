@@ -6,21 +6,27 @@
 #include <data/schmeisserei.h>
 
 #include <QPushButton>
+#include <functional>
+
 
 SchmeissereiDialog::SchmeissereiDialog(QWidget *parent) :
-    QDialog(parent),
+    QWidget(parent),
     ui(new Ui::SchmeissereiWidget)
 {
     ui->setupUi(this);
+    setAttribute(Qt::WA_DeleteOnClose, true);
     connect(ui->buttonBox, &QDialogButtonBox::accepted,
             this, &SchmeissereiDialog::save);
     connect(ui->buttonBox, &QDialogButtonBox::rejected,
-            this, &SchmeissereiDialog::reject);
-    connect(ui->comboBoxPlayer, SIGNAL(currentIndexChanged(int)),
-            this, SLOT(checkContents()));
+            this, &SchmeissereiDialog::close);
+
+    void (QComboBox::*currentIndexChangedSignal)(int) = &QComboBox::currentIndexChanged;
+    connect(ui->comboBoxPlayer, currentIndexChangedSignal,
+            this, &SchmeissereiDialog::checkContents);
 
     checkContents();
 }
+
 
 SchmeissereiDialog::~SchmeissereiDialog()
 {
@@ -69,7 +75,7 @@ void SchmeissereiDialog::save()
     m_round->addSchmeisserei(schmeisserei);
     Qp::update(schmeisserei);
     Qp::update(m_round);
-    accept();
+    close();
 }
 
 void SchmeissereiDialog::checkContents()

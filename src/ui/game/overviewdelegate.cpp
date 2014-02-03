@@ -14,6 +14,10 @@ OverviewDelegate::OverviewDelegate(QObject *parent) :
 
 void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    if(!m_model || !m_model->game())
+        return;
+
+    QSharedPointer<Game> game = m_model->game();
     painter->save();
 
     int extraRow = -1;
@@ -26,7 +30,9 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
 
     painter->drawRect(r);
     painter->setPen(QPen(palette.highlight().color()));
-    painter->drawLine(r.topRight(), r.bottomRight());
+    if(index.column() < game->totalRoundCount())
+        painter->drawLine(r.topRight(), r.bottomRight());
+
     painter->drawLine(r.bottomLeft(), r.bottomRight());
     if(index.row() == 0) {
         painter->drawLine(r.topLeft(), r.topRight());
@@ -44,35 +50,31 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     }
 
     // Draw white dividing line
-    if(m_model) {
-        if(m_model->game()) {
-            painter->save();
-            QSharedPointer<Game> game = m_model->game();
-            extraRow = index.row() - game->players().size();
+    painter->save();
+    extraRow = index.row() - game->players().size();
 
-            painter->setPen(QPen(palette.highlight().color()));
-            if(game->players().size() - 1 == index.row()) {
-                painter->drawLine(r.bottomLeft(),r.bottomRight());
+    painter->setPen(QPen(palette.highlight().color()));
+    if(game->players().size() - 1 == index.row()) {
+        QRect r2 = r.adjusted(0,0,1,0);
+        painter->drawLine(r2.bottomLeft(),r2.bottomRight());
 
-                painter->setPen(QPen(palette.highlight().color().darker(150)));
-                QRect r2 = r.adjusted(-1,0,0,1);
-                painter->drawLine(r2.bottomLeft(),r2.bottomRight());
-            }
-            if(game->players().size() == index.row()) {
-                QRect r2 = r.adjusted(0,0,1,0);
-                painter->drawLine(r2.topLeft(),r2.topRight());
-            }
-            if(index.column() == game->totalRoundCount()) {
-                QPen pen = painter->pen();
-                pen.setWidth(2);
-                pen.setBrush(Qt::white);
-                painter->setPen(pen);
-                QRect r2 = r.adjusted(0,0,1,0);
-                painter->drawLine(r2.topLeft(), r2.bottomLeft());
-            }
-            painter->restore();
-        }
+        painter->setPen(QPen(palette.highlight().color().darker(150)));
+        r2 = r2.adjusted(-1,0,0,1);
+        painter->drawLine(r2.bottomLeft(),r2.bottomRight());
     }
+    if(game->players().size() == index.row()) {
+        QRect r2 = r.adjusted(0,0,1,0);
+        painter->drawLine(r2.topLeft(),r2.topRight());
+    }
+    if(index.column() == game->totalRoundCount()) {
+        QPen pen = painter->pen();
+        pen.setWidth(2);
+        pen.setBrush(Qt::white);
+        painter->setPen(pen);
+        QRect r2 = r.adjusted(0,1,1,1);
+        painter->drawLine(r2.topLeft(), r2.bottomLeft());
+    }
+    painter->restore();
 
     // draw box text
     QString text = index.data().toString();
@@ -94,7 +96,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     color = index.data(GameOverviewModel::MitspielerColorRole).value<QColor>();
     if(color.isValid()) {
         painter->setBrush(color);
-        painter->drawRect(QRect(option.rect.topLeft() + QPoint(16,8), option.rect.topLeft() + QPoint(32,24)));
+        painter->drawRect(playerColorRect(option.rect, false));
     }
 
     // Draw spieler
@@ -106,7 +108,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             pen.setBrush(Qt::white);
             painter->setPen(pen);
         }
-        painter->drawRect(QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19)));
+        painter->drawRect(playerColorRect(option.rect, true));
     }
 
     // Draw schmeissereien
@@ -117,10 +119,11 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             if(colors.size() > 1)
                 painter->setPen(QPen(palette.highlight().color()));
 
-            QRect rect = QRect(option.rect.topLeft() + QPoint(4,3), option.rect.topLeft() + QPoint(20,19));
-            double dx = 19;
+            QRect rect = QRect(playerColorRect(option.rect, true));
+            double dx = rect.width();
             double dy = 8;
-            dx /= colors.size();
+            if(colors.size() > 1)
+                dx /= colors.size() - 1;
             dy /= colors.size();
             foreach(QColor color, colors) {
                 painter->setBrush(color);
@@ -192,5 +195,22 @@ GameOverviewModel *OverviewDelegate::model() const
 void OverviewDelegate::setGameModel(GameOverviewModel *model)
 {
     m_model = model;
+}
+
+QRect OverviewDelegate::playerColorRect(const QRect &rect, bool first) const
+{
+    int h = 16;
+    int w = qMin(16, rect.width() / 3 + 3);
+    int x, y;
+    if(first) {
+        x = rect.topLeft().x() + rect.width() / 2 - w;
+        y = rect.topLeft().y() + 5;
+    }
+    else {
+        x = rect.bottomRight().x() - rect.width() / 2;
+        y = rect.bottomRight().y() - h - 5;
+    }
+
+    return QRect(QPoint(x, y), QSize(w, h));
 }
 

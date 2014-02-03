@@ -89,7 +89,8 @@ SOURCES += main.cpp \
     ui/game/recontrastatswidget.cpp \
     ui/game/resumewidget.cpp \
     ui/game/pointsstatswidget.cpp \
-    ui/game/drinkswidget.cpp
+    ui/game/drinkswidget.cpp \
+    ui/game/dialogcontroller.cpp
 
 
 HEADERS  += \
@@ -162,7 +163,8 @@ HEADERS  += \
     ui/game/recontrastatswidget.h \
     ui/game/resumewidget.h \
     ui/game/pointsstatswidget.h \
-    ui/game/drinkswidget.h
+    ui/game/drinkswidget.h \
+    ui/game/dialogcontroller.h
 
 
 FORMS += \
