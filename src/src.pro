@@ -1,6 +1,9 @@
 QPERSISTENCE_PATH = ../lib/QPersistence
 include($$QPERSISTENCE_PATH/QPersistence.pri)
 
+SPARKLE_PATH = ../lib/Sparkle
+include($$SPARKLE_PATH/Sparkle.pri)
+
 ### General config ###
 
 TARGET          = psnewmodel
@@ -12,10 +15,52 @@ CONFIG          += c++11
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
 
 
+### Info.plist ###
+
+TARGET_PLIST = $${OUT_PWD}/$${TARGET}.app/Contents/Info.plist
+QMAKE_INFO_PLIST    = $$PWD/misc/Info.plist
+PRE_TARGETDEPS      += $$TARGET_PLIST
+
+
+### Deployment ###
+
+DEPLOY_FILENAME = $${TARGET}-$${VERSION}.zip
+DEPLOY_FILE = $${OUT_PWD}/../$${TARGET}-$${VERSION}.zip
+SPARKLE_APPCAST = $$PWD/misc/updater/sparkle-appcast.xml
+DEPLOY_TARGET.target    = deploy
+
+DEPLOY_TARGET.commands  = /usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $${VERSION}\" $$TARGET_PLIST
+DEPLOY_TARGET.commands  += ;/usr/bin/zip -q $$DEPLOY_FILE -r $${OUT_PWD}/$${TARGET}.app
+DEPLOY_TARGET.commands  += ;rm $$SPARKLE_APPCAST
+DEPLOY_TARGET.commands  += ;cp $$PWD/misc/updater/sparkle-appcast.template.xml $$SPARKLE_APPCAST
+DEPLOY_TARGET.commands  += ;awk \'\{ gsub(/\\[DSASIGNATURE\\]/, \
+                            \"\'\"`/usr/bin/ruby \"$$PWD/misc/updater/sign_update.rb\" $$DEPLOY_FILE ~/.sparkle/dsa_priv.pem`\"\'\"); print \}\' \
+                            $$SPARKLE_APPCAST > $${SPARKLE_APPCAST}.tmp && mv $${SPARKLE_APPCAST}.tmp $$SPARKLE_APPCAST
+DEPLOY_TARGET.commands  += ;sed -i \'\' \'s/\\[DATE\\]/\'\"`date`\"\'/g\' "$$SPARKLE_APPCAST"
+DEPLOY_TARGET.commands  += ;sed -i \'\' \'s/\\[LENGTH\\]/\'\"`stat -f "%z" "$$DEPLOY_FILE"`\"\'/g\' "$$SPARKLE_APPCAST"
+DEPLOY_TARGET.commands  += ;sed -i \'\' \'s/\\[VERSION\\]/$$VERSION/g\' "$$SPARKLE_APPCAST"
+DEPLOY_TARGET.commands  += ;sed -i \'\' \'s/\\[FILENAME\\]/$$DEPLOY_FILENAME/g\' "$$SPARKLE_APPCAST"
+
+QMAKE_EXTRA_TARGETS += DEPLOY_TARGET
+
+
+
 ### Qp ###
 
 INCLUDEPATH     += $$QPERSISTENCE_INCLUDEPATH
 LIBS            += $$QPERSISTENCE_LIBS
+
+
+### Sparkle ###
+
+INCLUDEPATH     += $$SPARKLE_INCLUDEPATH
+LIBS            += $$SPARKLE_LIBS
+QMAKE_LFLAGS    += $$SPARKLE_LFLAGS
+QMAKE_BUNDLE_DATA += SPARKLE_FRAMEWORK
+
+SPARKLE_SIGNATURE.files = $$PWD/misc/updater/dsa_pub.pem
+SPARKLE_SIGNATURE.path  = Contents/Resources
+QMAKE_BUNDLE_DATA       += SPARKLE_SIGNATURE
 
 
 ### Files ###
@@ -89,7 +134,8 @@ SOURCES += main.cpp \
     ui/game/recontrastatswidget.cpp \
     ui/game/resumewidget.cpp \
     ui/game/pointsstatswidget.cpp \
-    ui/game/drinkswidget.cpp
+    ui/game/drinkswidget.cpp \
+    misc/updater/updater.cpp
 
 
 HEADERS  += \
@@ -162,7 +208,10 @@ HEADERS  += \
     ui/game/recontrastatswidget.h \
     ui/game/resumewidget.h \
     ui/game/pointsstatswidget.h \
-    ui/game/drinkswidget.h
+    ui/game/drinkswidget.h \
+    misc/cocoainitializer.h \
+    misc/updater/sparkleupdater.h \
+    misc/updater/updater.h
 
 
 FORMS += \
@@ -226,4 +275,9 @@ OTHER_FILES += \
     resource/drinks/potts.png \
     resource/drinks/mixerycola05.png \
     resource/drinks/hoevels.png \
-    resource/drinks/krombacher_weizen.png
+    resource/drinks/krombacher_weizen.png \
+    misc/Info.plist
+
+OBJECTIVE_SOURCES += \
+    misc/cocoainitializer.mm \
+    misc/updater/sparkleupdater.mm

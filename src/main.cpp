@@ -13,6 +13,9 @@
 #include <data/old_offlineGameInformation.h>
 #include <data/old_dokoofflinegamebuddys.h>
 
+#include <misc/updater/updater.h>
+#include <misc/cocoainitializer.h>
+
 #include <ui/mainwindow.h>
 #include <ui/widgets/popupwidget.h>
 #include <ui/game/gamewindow.h>
@@ -21,12 +24,19 @@
 #include <QSqlDatabase>
 #include <QPersistence.h>
 
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
     a.setApplicationName("psnewmodel");
     a.setOrganizationName("lbproductions");
+    a.setOrganizationDomain("lbproductions.github.com");
+
+    CocoaInitializer cocoaInitializer;
+    Q_UNUSED(cocoaInitializer);
+
+    Updater::instanceForPlatform()->checkForUpdatesInBackground();
 
     /*
     if(a.arguments().size() != 2) {
