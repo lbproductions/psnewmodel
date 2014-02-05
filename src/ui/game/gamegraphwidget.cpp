@@ -17,7 +17,7 @@ QSize GameGraphWidget::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
     if(m_game)
-        size.setWidth((m_game->totalRoundCount() + 1) * 40 + originX());
+        size.setWidth((m_game->totalRoundCount() + 1) * columnWidth() + originX());
     return size;
 }
 
@@ -209,5 +209,5 @@ void GameGraphWidget::updateGraphs()
         return;
     setGame(m_game);
 
-    emit graphUpdated();
+    emit updated();
 }

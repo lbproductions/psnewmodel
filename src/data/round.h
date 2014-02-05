@@ -129,6 +129,13 @@ public:
         ErsterTrumpf
     };
 
+    enum Type {
+        NormalRound,
+        Hochzeit,
+        Solo,
+        Trumpfabgabe
+    };
+
     explicit Round(QObject *parent = 0);
     ~Round();
 
@@ -146,6 +153,8 @@ public:
 
     QString comment() const;
     void setComment(const QString &comment);
+
+    Type type() const;
 
     int points() const;
     int points(QSharedPointer<Player> player) const;

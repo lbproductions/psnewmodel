@@ -49,6 +49,7 @@ QMAKE_EXTRA_TARGETS += DEPLOY_TARGET
 
 INCLUDEPATH     += $$QPERSISTENCE_INCLUDEPATH
 LIBS            += $$QPERSISTENCE_LIBS
+POST_TARGETDEPS += $$QPERSISTENCE_POST_TARGETDEPS
 
 
 ### Sparkle ###
@@ -135,7 +136,8 @@ SOURCES += main.cpp \
     ui/game/resumewidget.cpp \
     ui/game/pointsstatswidget.cpp \
     ui/game/drinkswidget.cpp \
-    misc/updater/updater.cpp
+    misc/updater/updater.cpp \
+    ui/game/dialogcontroller.cpp
 
 
 HEADERS  += \
@@ -202,7 +204,6 @@ HEADERS  += \
     ui/widgets/biggestdistancewidget.h \
     ui/game/settingswidget.h \
     misc/settings.h \
-    local_dbconfig.h \
     ui/widgets/clickablelabel.h \
     ui/game/gamelengthwidget.h \
     ui/game/recontrastatswidget.h \
@@ -211,7 +212,8 @@ HEADERS  += \
     ui/game/drinkswidget.h \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
-    misc/updater/updater.h
+    misc/updater/updater.h \
+    ui/game/dialogcontroller.h
 
 
 FORMS += \

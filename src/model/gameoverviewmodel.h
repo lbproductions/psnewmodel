@@ -14,8 +14,8 @@ public:
     enum ExtraRows {
         NormalRoundRow,
         HochzeitenRow,
-        TrumpfabgabenRow,
         SoliRow,
+        TrumpfabgabenRow,
         SchweinereienRow,
         SchmeissereienRow,
         DrinksRow

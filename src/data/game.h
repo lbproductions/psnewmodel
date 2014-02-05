@@ -34,7 +34,7 @@ class Game: public QObject
         Q_PROPERTY(QList<QSharedPointer<League> > leagues READ leagues WRITE setLeagues)
 
         Q_PROPERTY(QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation READ offlineGameInformation WRITE setOfflineGameInformation)
-        Q_PROPERTY(QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys READ dokoOfflineGameBuddys WRITE setDokoOfflineGameBuddys)
+//        Q_PROPERTY(QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys READ dokoOfflineGameBuddys WRITE setDokoOfflineGameBuddys)
 
         Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:site",
                     "reverserelation=games")

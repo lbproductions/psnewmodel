@@ -1,9 +1,10 @@
 #include "graphaxis.h"
 
-#include <ui/widgets/graphwidget.h>
+#include "ui/widgets/graphwidget.h"
 
 #include <QPainter>
 #include <QDebug>
+#include <QPaintEvent>
 
 GraphAxis::GraphAxis(QWidget *parent) :
     QWidget(parent),
@@ -16,15 +17,16 @@ void GraphAxis::paintEvent(QPaintEvent *e)
     QWidget::paintEvent(e);
 
     QPainter painter(this);
+    QRect rect = e->rect();
 
-    painter.setPen(QPen(QColor(0,0,0,0)));
-    painter.setBrush(palette().color(QPalette::Base));
-    painter.drawRect(QRect(0,0,width(),height()));
+    painter.setPen(Qt::transparent);
+    painter.setBrush(palette().base().color());
+    painter.drawRect(rect);
 
     QPen pen(palette().highlight().color());
     pen.setWidth(1);
     painter.setPen(pen);
-    painter.drawLine(QPointF(width() - 1, 0), QPointF(width() - 1, height()));
+    painter.drawLine(rect.topRight(),rect.bottomRight());
 
     if(!m_graph)
         return;
@@ -34,7 +36,6 @@ void GraphAxis::paintEvent(QPaintEvent *e)
     y /= 10;
     y -= 1;
     y *= 10;
-
 
     QTextOption to;
     to.setAlignment(Qt::AlignRight);
@@ -51,19 +52,14 @@ void GraphAxis::paintEvent(QPaintEvent *e)
             painter.setPen(pen);
         }
         painter.drawText(QRect(QPoint(width() - 35, m_graph->translateY(y) - 8),
-                               QSize(30,20))
-                         , QString::number(y), to);
+                               QSize(30,20)),
+                         QString::number(y), to);
     }
-}
-
-GraphWidget *GraphAxis::graph() const
-{
-    return m_graph;
 }
 
 void GraphAxis::setGraph(GraphWidget *graph)
 {
     m_graph = graph;
 
-    connect(m_graph, SIGNAL(graphUpdated()), this, SLOT(repaint()));
+    connect(graph, &GraphWidget::updated, [=]{repaint();});
 }

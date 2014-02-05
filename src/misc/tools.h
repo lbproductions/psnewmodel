@@ -35,6 +35,7 @@ public:
 
     static double percentage(double value1, double value2);
 
+    static QPixmap colorPixmap(int w, int h, const QColor &color);
     static QPixmap playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo, int w = 16, int h = 16);
 };
 

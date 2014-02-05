@@ -96,6 +96,21 @@ void Round::setComment(const QString &comment)
     m_comment = comment;
 }
 
+Round::Type Round::type() const
+{
+    if(soloPlayer()) {
+        return Solo;
+    }
+    else if(hochzeitPlayer()) {
+        return Hochzeit;
+    }
+    else if(trumpfabgabePlayer()) {
+        return Trumpfabgabe;
+    }
+
+    return NormalRound;
+}
+
 int Round::points() const
 {
     QSharedPointer<Player> player = re1Player();

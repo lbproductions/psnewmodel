@@ -18,6 +18,8 @@ public:
 
 private:
     GameOverviewModel *m_model;
+
+    QRect playerColorRect(const QRect &rect, bool first) const;
 };
 
 #endif // OVERVIEWDELEGATE_H

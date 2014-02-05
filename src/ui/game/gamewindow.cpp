@@ -13,6 +13,7 @@
 #include "settingswidget.h"
 #include "gamestatswidget.h"
 #include "resumewidget.h"
+#include "dialogcontroller.h"
 
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
@@ -32,18 +33,15 @@
 #include <QPushButton>
 #include <QModelIndex>
 #include <QPropertyAnimation>
-
+#include <QMouseEvent>
+#include <QEvent>
 #include <QMessageBox>
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
-    m_gameOverViewModel(new GameOverviewModel(this)),
-    m_popupWidget(nullptr)
+    m_minimumColumnWidth(20)
 {
-    ui->setupUi(this);
-
-    setAttribute(Qt::WA_DeleteOnClose, true);
     QPalette darkPalette = palette();
     darkPalette.setColor(QPalette::Window, QColor(71,71,71));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
@@ -59,6 +57,10 @@ GameWindow::GameWindow(QWidget *parent) :
     darkPalette.setColor(QPalette::HighlightedText, QColor(187,187,187));
     setPalette(darkPalette);
 
+    ui->setupUi(this);
+
+    setAttribute(Qt::WA_DeleteOnClose, true);
+
     ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
 
     ui->tableViewInformation->hide();
@@ -70,10 +72,11 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->listWidgetPlayers->setPalette(darkPalette);
     ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width());
 
-    ui->splitter->setPalette(darkPalette);
+    m_gameOverViewModel = new GameOverviewModel(this);
     ui->tableViewOverview->setPalette(darkPalette);
     ui->tableViewOverview->setModel(m_gameOverViewModel);
-    connect(ui->tableViewOverview, SIGNAL(doubleClicked(const QModelIndex&)), this, SLOT(on_TableViewOverviewDoubleClicked(const QModelIndex&)));
+    connect(ui->tableViewOverview, &QTableView::doubleClicked,
+            this, &GameWindow::onTableViewOverviewDoubleClicked);
     OverviewDelegate *delegate = new OverviewDelegate(this);
     delegate->setGameModel(m_gameOverViewModel);
     ui->tableViewOverview->setItemDelegate(delegate);
@@ -90,53 +93,52 @@ GameWindow::GameWindow(QWidget *parent) :
     OverviewHorizontalHeaderView *horizontalHeaderView2 = new OverviewHorizontalHeaderView(Qt::Horizontal, this);
     ui->tableViewInformation->setHorizontalHeader(horizontalHeaderView2);
 
-    connect(ui->scrollAreaGraph->horizontalScrollBar(), &QScrollBar::valueChanged,
-            ui->tableViewOverview->horizontalScrollBar(), &QScrollBar::setValue);
-
     ui->graphWidget->setPalette(darkPalette);
     ui->graphAxis->setPalette(darkPalette);
     ui->graphAxis->setGraph(ui->graphWidget);
     ui->graphWidget->stackUnder(ui->graphAxis);
 
-    ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
+    QActionGroup *actionGroup = new QActionGroup(this);
+    actionGroup->addAction(ui->actionAdd_drinks);
+    actionGroup->addAction(ui->actionAdd_Hochzeit);
+    actionGroup->addAction(ui->actionAdd_round);
+    actionGroup->addAction(ui->actionAdd_schmeisserei);
+    actionGroup->addAction(ui->actionAdd_Solo);
+    actionGroup->addAction(ui->actionAdd_Trumpfabgabe);
+    actionGroup->addAction(ui->actionStop_Game);
+    actionGroup->addAction(ui->actionSet_comment);
+    actionGroup->addAction(ui->actionStats);
+    actionGroup->setExclusive(true);
+    m_informationModel->setHeaderAction(GameOverviewModel::NormalRoundRow, ui->actionAdd_round);
+    m_informationModel->setHeaderAction(GameOverviewModel::SchmeissereienRow, ui->actionAdd_schmeisserei);
+    m_informationModel->setHeaderAction(GameOverviewModel::DrinksRow, ui->actionAdd_drinks);
+    m_informationModel->setHeaderAction(GameOverviewModel::HochzeitenRow, ui->actionAdd_Hochzeit);
+    m_informationModel->setHeaderAction(GameOverviewModel::TrumpfabgabenRow, ui->actionAdd_Trumpfabgabe);
+    m_informationModel->setHeaderAction(GameOverviewModel::SoliRow, ui->actionAdd_Solo);
 
-    m_statsWidget = new StatisticsWidget(ui->widgetStatisticsFrame);
-    ui->widgetStatisticsFrame->setWidget(m_statsWidget);
+    m_dialogController = new DialogController(this);
 
-    QTimer *lengthTimer = new QTimer(this);
-    connect(lengthTimer, &QTimer::timeout,
-            this, &GameWindow::updateTimes);
-    lengthTimer->start(1000);
-
-    ui->toolButtonAddRound->setDefaultAction(ui->actionAdd_round);
-    ui->toolButtonAddSchmeisserei->setDefaultAction(ui->actionAdd_schmeisserei);
-    ui->toolButtonAddDrinks->setDefaultAction(ui->actionAdd_drinks);
-    ui->toolButtonToggleSidebar->setDefaultAction(ui->actionToggleSidebar);
-    ui->toolButtonToggleSidebar->setText(QString());
-
-    connect(ui->splitter, SIGNAL(splitterMoved(int,int)),
-            this, SLOT(setSidebarToggleActionBasedUponSidebarState()));
-
-    enableActionsBasedOnState();
-    setSidebarToggleToHide();
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionPlayPause, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionStop_Game, this);
-    MenuBar::instance()->menu(tr("&Game"))->addSeparator();
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_round, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_schmeisserei, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionAdd_drinks, this);
-    MenuBar::instance()->addAction(tr("&View"), ui->actionToggleSidebar, this);
-    MenuBar::instance()->addAction(tr("&Game"), ui->actionStats, this);
-    MenuBar::instance()->addAction(tr(""), ui->actionSettings, this);
-    ui->actionCheck_for_updates->setMenuRole(QAction::ApplicationSpecificRole);
-    MenuBar::instance()->addAction(tr("&File"), ui->actionCheck_for_updates, this);
+    connect(m_dialogController, &DialogController::dialogClosed,
+            this, &GameWindow::onDialogClosed);
 
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
 
-    updateTimes();
+    //    QTimer *lengthTimer = new QTimer(this);
+    //    connect(lengthTimer, &QTimer::timeout,
+    //            this, &GameWindow::updateTimes);
+    //    lengthTimer->start(1000);
 
-    connect(&GameSettings::instance(), SIGNAL(showExtraRowsChanged(bool)), this, SLOT(updateSizes()));
+    enableActionsBasedOnState();
+
+    void (GameSettings::*showExtraRowsChangedSignal)(bool) = &GameSettings::showExtraRowsChanged;
+    connect(&GameSettings::instance(), showExtraRowsChangedSignal, this, &GameWindow::updateSizes);
+
+    connect(ui->actionClose_window, &QAction::triggered, this, &QWidget::close);
+
+    installEventFilter(this);
+    ui->tableViewInformation->viewport()->installEventFilter(this);
+    ui->tableViewOverview->viewport()->installEventFilter(this);
 }
 
 GameWindow::~GameWindow()
@@ -148,79 +150,81 @@ GameWindow::~GameWindow()
     delete ui;
 }
 
-QSharedPointer<Game> GameWindow::game() const
-{
-    return m_game;
-}
-
 void GameWindow::setGame(const QSharedPointer<Game> &game)
 {
     ui->widgetCreateGame->hide();
     ui->tableViewOverview->show();
     ui->tableViewInformation->show();
+
     m_game = game;
+
     m_gameOverViewModel->setGame(game);
     m_informationModel->setGame(game);
     ui->graphWidget->setGame(game);
-
-    m_statsWidget->setGame(game);
-
     ui->gameLengthWidget->setGame(game);
 
     if(m_game->state() == Game::Paused) {
-        m_resumeWidget->resize(this->width(), this->height());
+        m_resumeWidget->resize(width(), height());
         m_resumeWidget->setVisible(true);
-        connect(m_resumeWidget, SIGNAL(widgetClicked()), this, SLOT(on_actionPlayPause_triggered()));
+        connect(m_resumeWidget, &ResumeWidget::widgetClicked,
+                this, &GameWindow::on_actionPlayPause_triggered);
     }
 
-    connect(m_game.data(), SIGNAL(newRoundStarted()), this, SLOT(onNewRoundStarted()));
-    connect(m_game.data(), SIGNAL(stateChanged()), this, SLOT(enableActionsBasedOnState()));
+    connect(m_game.data(), &Game::newRoundStarted, this, &GameWindow::onNewRoundStarted);
+    connect(m_game.data(), &Game::stateChanged, this, &GameWindow::enableActionsBasedOnState);
 
     enableActionsBasedOnState();
-    updateTimes();
     updateSizes();
 }
 
-void GameWindow::wheelEvent(QWheelEvent *e)
+bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    if(popupWidget())
-        return;
-
-    if(e->pixelDelta().x() > 0)
-        ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() + e->pixelDelta().x());
-    else
-        ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() - e->pixelDelta().y());
-}
-
-void GameWindow::mousePressEvent(QMouseEvent *e)
-{
-    if(popupWidget()) {
-        if(!popupWidget()->geometry().adjusted(30,30,-30,-30).contains(e->pos())) {
-            popupWidget()->close();
-            popupWidget()->deleteLater();
-            setPopupWidget(nullptr);
-        }
+    if(event->type() == QEvent::MouseButtonRelease) {
+        QPoint pos = static_cast<QMouseEvent *>(event)->pos();
+        m_dialogController->closeDialogOnMousePress(pos);
     }
 
-    QMainWindow::mousePressEvent(e);
+    return QObject::eventFilter(obj, event);
+}
+
+void GameWindow::updateSizes()
+{
+    int overviewHeight = ui->tableViewOverview->horizontalHeader()->height() +
+            (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0);
+    ui->tableViewOverview->setFixedHeight(overviewHeight);
+    ui->tableViewInformation->setFixedHeight(overviewHeight);
+    m_dialogController->setDialogOffsetTop(1 + ui->tableViewInformation->horizontalHeader()->height());
+    m_dialogController->setDialogOffsetLeft(29);
+    m_dialogController->setDialogHeight(overviewHeight - m_dialogController->dialogOffsetTop() - 1);
+    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
+    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
 }
 
 void GameWindow::resizeEvent(QResizeEvent *)
 {
-    if(popupWidget()) {
-        popupWidget()->close();
-        popupWidget()->deleteLater();
-        setPopupWidget(nullptr);
-    }
+    m_resumeWidget->resize(width(), height());
 
-    m_resumeWidget->resize(this->width(), this->height());
+    if(!m_game)
+        return;
+
+    int w = width();
+    int roundCount = m_game->totalRoundCount();
+
+    w -= ui->tableViewInformation->width();
+    w /= roundCount + 1;
+    w = qMax(m_minimumColumnWidth, w);
+
+    ui->tableViewOverview->horizontalHeader()->setDefaultSectionSize(w);
+    ui->graphWidget->setColumnWidth(w);
 }
 
-void GameWindow::on_actionPlayPause_triggered()
+void GameWindow::onDialogClosed()
 {
-    m_game->togglePlayPause();
-    m_game->save();
-    enableActionsBasedOnState();
+    if(!ui->actionAdd_drinks->actionGroup()->checkedAction())
+        return;
+
+    ui->actionAdd_drinks->actionGroup()->checkedAction()->setChecked(false);
+    ui->tableViewInformation->horizontalHeader()->repaint();
 }
 
 void GameWindow::enableActionsBasedOnState()
@@ -229,6 +233,10 @@ void GameWindow::enableActionsBasedOnState()
     ui->actionAdd_round->setEnabled(false);
     ui->actionAdd_schmeisserei->setEnabled(false);
     ui->actionStop_Game->setEnabled(false);
+    ui->actionAdd_drinks->setEnabled(false);
+    ui->actionAdd_Hochzeit->setEnabled(false);
+    ui->actionAdd_Solo->setEnabled(false);
+    ui->actionAdd_Trumpfabgabe->setEnabled(false);
 
     if(!m_game)
         return;
@@ -240,6 +248,10 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
         ui->actionStop_Game->setEnabled(true);
+        ui->actionAdd_drinks->setEnabled(true);
+        ui->actionAdd_Hochzeit->setEnabled(true);
+        ui->actionAdd_Solo->setEnabled(true);
+        ui->actionAdd_Trumpfabgabe->setEnabled(true);
 
         m_resumeWidget->setVisible(false);
     }
@@ -252,30 +264,23 @@ void GameWindow::enableActionsBasedOnState()
     else {
         ui->actionPlayPause->setText(tr("Pause"));
     }
-
 }
 
-void GameWindow::on_actionAdd_round_triggered()
+/**********************************************************
+ * State
+ */
+void GameWindow::on_actionPlayPause_triggered()
 {
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
+    m_game->togglePlayPause();
+    m_game->save();
+    enableActionsBasedOnState();
+}
 
-    PopupWidget *popup = new PopupWidget(this);
-
-    NewRoundDialog *dialog = new NewRoundDialog(popup);
-    dialog->setRound(m_game->currentRound());
-    dialog->setWindowFlags(Qt::Widget);
-
-    popup->setWidget(dialog);
-    popup->setMinimumWidth(500);
-    popup->setMinimumHeight(500);
-    popup->anchorTo(ui->toolButtonAddRound);
-    popup->show();
-    setPopupWidget(popup);
-
-    //connect(dialog, &QDialog::accepted,
-    //this, &GameWindow::onNewRoundStarted);
+void GameWindow::on_actionStop_Game_triggered()
+{
+    StopGameWidget* widget = new StopGameWidget(this);
+    widget->setGame(m_game);
+    m_dialogController->showDialog(widget);
 }
 
 void GameWindow::onNewRoundStarted()
@@ -293,111 +298,78 @@ void GameWindow::onNewRoundStarted()
     }
 }
 
+/**********************************************************
+ * Dialogs and popups
+ */
+void GameWindow::on_actionAdd_round_triggered()
+{
+    NewRoundDialog *dialog = new NewRoundDialog(this);
+    dialog->setRound(m_game->currentRound());
+    m_dialogController->showDialog(dialog);
+}
+
+void GameWindow::on_actionAdd_Hochzeit_triggered()
+{
+    NewRoundDialog *dialog = new NewRoundDialog(this);
+    dialog->setRound(m_game->currentRound());
+    dialog->setCurrentPage(Round::Hochzeit);
+    m_dialogController->showDialog(dialog);
+}
+
+void GameWindow::on_actionAdd_Solo_triggered()
+{
+    NewRoundDialog *dialog = new NewRoundDialog(this);
+    dialog->setRound(m_game->currentRound());
+    dialog->setCurrentPage(Round::Solo);
+    m_dialogController->showDialog(dialog);
+}
+
+void GameWindow::on_actionAdd_Trumpfabgabe_triggered()
+{
+    NewRoundDialog *dialog = new NewRoundDialog(this);
+    dialog->setRound(m_game->currentRound());
+    dialog->setCurrentPage(Round::Trumpfabgabe);
+    m_dialogController->showDialog(dialog);
+}
+
 void GameWindow::on_actionAdd_schmeisserei_triggered()
 {
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    SchmeissereiDialog *dialog = new SchmeissereiDialog(popup);
+    SchmeissereiDialog *dialog = new SchmeissereiDialog(this);
     dialog->setGame(m_game);
-    dialog->setWindowFlags(Qt::Widget);
-
-    popup->setWidget(dialog);
-    popup->setMinimumWidth(300);
-    popup->setMinimumHeight(300);
-    popup->anchorTo(ui->toolButtonAddSchmeisserei);
-    popup->show();
-    setPopupWidget(popup);
+    m_dialogController->showDialog(dialog);
 }
 
 void GameWindow::on_actionAdd_drinks_triggered()
 {
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    DrinksWidget *drinksWidget = new DrinksWidget(popup);
+    DrinksWidget *drinksWidget = new DrinksWidget(ui->centralwidget);
     drinksWidget->setRound(m_game->currentRound());
-//    showCardWidget(drinksWidget);
-
-    popup->setWidget(drinksWidget);
-    popup->setMinimumWidth(drinksWidget->minimumWidth() + 200);
-    popup->setMinimumHeight(400);
-    popup->anchorTo(ui->toolButtonAddDrinks);
-    popup->show();
-    setPopupWidget(popup);
+    m_dialogController->showDialog(drinksWidget);
 }
 
 
-void GameWindow::updateTimes()
+void GameWindow::on_actionSet_comment_triggered()
 {
-    ui->labelClock->setText(QTime::currentTime().toString());
-
-    if(m_game)
-        ui->labelLength->setText(m_game->length().toString());
+    CommentWidget* commentWidget = new CommentWidget(this);
+    commentWidget->setGame(m_game);
+    m_dialogController->showDialog(commentWidget);
 }
 
-void GameWindow::on_actionToggleSidebar_triggered()
+
+void GameWindow::on_actionStats_triggered()
 {
-    if(ui->widgetStatisticsFrame->isVisible()) {
-        QList<int> sizes = ui->splitter->sizes();
-        if(sizes.last() == 0) {
-            sizes[sizes.size() - 1] = 100;
-            ui->splitter->setSizes(sizes);
-            setSidebarToggleToHide();
-        }
-        else {
-            ui->widgetStatisticsFrame->hide();
-            setSidebarToggleToShow();
-        }
-    }
-    else {
-        ui->widgetStatisticsFrame->show();
-        setSidebarToggleToHide();
-    }
+    GameStatsWidget* widget = new GameStatsWidget(this);
+    widget->setGames(QList<QSharedPointer<Game> >() << m_game);
+    m_dialogController->showDialog(widget);
 }
 
-void GameWindow::setSidebarToggleActionBasedUponSidebarState()
+void GameWindow::on_actionSettings_triggered()
 {
-    if(ui->widgetStatisticsFrame->isVisible()
-            && ui->splitter->sizes().last() > 0) {
-        setSidebarToggleToHide();
-    }
-    else {
-        setSidebarToggleToShow();
-    }
+    SettingsWidget* setWidget = new SettingsWidget(this);
+    m_dialogController->showDialog(setWidget);
 }
 
-void GameWindow::setSidebarToggleToHide()
+void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
 {
-    ui->actionToggleSidebar->setText(tr("Hide sidebar"));
-    ui->toolButtonToggleSidebar->setText(QString());
-    ui->toolButtonToggleSidebar->setStyleSheet("QToolButton#toolButtonToggleSidebar {"
-                                               "border-image: url(:/statusbar/sidebar-right.png);"
-                                               "}"
-                                               "QToolButton#toolButtonToggleSidebar:pressed {"
-                                               "border-image: url(:/statusbar/sidebar-right-pressed.png);"
-                                               "}");
-}
-
-void GameWindow::setSidebarToggleToShow()
-{
-    ui->actionToggleSidebar->setText(tr("Show sidebar"));
-    ui->toolButtonToggleSidebar->setText(QString());
-    ui->toolButtonToggleSidebar->setStyleSheet("QToolButton#toolButtonToggleSidebar {"
-                                               "border-image: url(:/statusbar/sidebar-left.png);"
-                                               "}"
-                                               "QToolButton#toolButtonToggleSidebar:pressed {"
-                                               "border-image: url(:/statusbar/sidebar-left-pressed.png);"
-                                               "}");
-}
-
-void GameWindow::on_TableViewOverviewDoubleClicked(const QModelIndex& index)
-{
-
     int roundIndex = index.column();
 
     if(roundIndex < 0 || roundIndex >= m_game->rounds().size())
@@ -406,22 +378,51 @@ void GameWindow::on_TableViewOverviewDoubleClicked(const QModelIndex& index)
     QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
     NewRoundDialog* dlg = new NewRoundDialog(this);
     dlg->setRound(round, NewRoundDialog::EditRound);
-    dlg->exec();
+    m_dialogController->showDialog(dlg);
 
+    switch(round->type()) {
+    case Round::NormalRound:
+        ui->actionAdd_round->setChecked(true);
+        break;
+    case Round::Hochzeit:
+        ui->actionAdd_Hochzeit->setChecked(true);
+        break;
+    case Round::Solo:
+        ui->actionAdd_Solo->setChecked(true);
+        break;
+    case Round::Trumpfabgabe:
+        ui->actionAdd_Trumpfabgabe->setChecked(true);
+        break;
+    }
+}
+
+
+/**********************************************************
+ * PRE-Game
+ */
+bool sortPlayers(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)
+{
+    QList<QSharedPointer<Game>> g1 = p1->games();
+    if(g1.isEmpty())
+        return false;
+
+    QList<QSharedPointer<Game>> g2 = p2->games();
+    if(g2.isEmpty())
+        return true;
+
+    return g1.last()->creationTime() > g2.last()->creationTime();
 }
 
 void GameWindow::on_pushButtonAddPlayers_clicked()
 {
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
+    QList<QSharedPointer<Player>> players = Qp::readAll<Player>();
+    qSort(players.begin(), players.end(), sortPlayers);
 
-    PopupWidget *popup = new PopupWidget(this);
-
-    PlayersListWidget *list = new PlayersListWidget(popup);
+    PlayersListWidget *list = new PlayersListWidget(this);
     list->setPalette(palette());
     list->setAttribute(Qt::WA_MacShowFocusRect, false);
-    list->add(Qp::readAll<Player>());
+    list->add(players);
+    list->setFixedWidth(300);
 
     foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->items())
         list->remove(p);
@@ -429,13 +430,10 @@ void GameWindow::on_pushButtonAddPlayers_clicked()
     connect(list, &PlayersListWidget::playerActivated,
             this, &GameWindow::addPlayerToGame);
 
-    popup->setWidget(list);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(500);
-    popup->setArrowPosition(PopupWidget::Left);
-    popup->anchorTo(ui->pushButtonAddPlayers);
-    popup->show();
-    setPopupWidget(popup);
+    m_dialogController->setDialogOffsetTop(ui->widgetCreateGame->layout()->contentsMargins().top() + 1);
+    m_dialogController->setDialogOffsetLeft(ui->listWidgetPlayers->width());
+    m_dialogController->setDialogHeight(ui->listWidgetPlayers->height() + ui->pushButtonAddPlayers->height() - 1);
+    m_dialogController->showDialog(list);
 }
 
 void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
@@ -445,43 +443,6 @@ void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
     ui->listWidgetPlayers->add(player);
     if(ui->listWidgetPlayers->count() >= 4)
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
-}
-
-QWidget *GameWindow::popupWidget() const
-{
-    return m_popupWidget;
-}
-
-void GameWindow::setPopupWidget(QWidget *extraWidget)
-{
-    m_popupWidget = extraWidget;
-}
-
-void GameWindow::showCardWidget(QWidget *widget)
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-
-    widget->setFixedHeight(ui->tableViewInformation->height() - 22);
-    widget->show();
-    setPopupWidget(widget);
-
-    int width = widget->width();
-    int height = widget->height();
-    QPoint topRight = mapToGlobal(geometry().topRight());
-
-    QPropertyAnimation *animation  = new QPropertyAnimation(widget, "geometry");
-    animation->setStartValue(QRect(topRight - QPoint(-1, 64),
-                                   QSize(width, height)));
-    animation->setEndValue(QRect(topRight - QPoint(width - 1, 64),
-                                  QSize(width, height)));
-    animation->setDuration(300);
-    animation->setEasingCurve(QEasingCurve::OutExpo);
-    animation->start();
-
-    connect(animation, &QPropertyAnimation::finished,
-            animation, &QPropertyAnimation::deleteLater);
 }
 
 void GameWindow::on_buttonBox_accepted()
@@ -498,77 +459,6 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     game->setState(Game::Running);
     setGame(game);
-}
-
-void GameWindow::on_toolButtonSetComment_clicked()
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    CommentWidget* commentWidget = new CommentWidget(this);
-    commentWidget->setGame(m_game);
-
-    popup->setWidget(commentWidget);
-    popup->setMinimumWidth(500);
-    popup->setMinimumHeight(500);
-    popup->anchorTo(ui->toolButtonSetComment);
-    popup->show();
-    setPopupWidget(popup);
-}
-
-void GameWindow::updateSizes()
-{
-    ui->tableViewOverview->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
-                                          (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
-    ui->tableViewInformation->setFixedHeight(ui->tableViewOverview->horizontalHeader()->height() +
-                                             (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0));
-    ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
-    ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
-}
-
-void GameWindow::on_actionStats_triggered()
-{
-    if(!m_game)
-        return;
-
-    GameStatsWidget* widget = new GameStatsWidget();
-    widget->setGames(QList<QSharedPointer<Game> >() << m_game);
-    widget->show();
-}
-
-void GameWindow::on_actionStop_Game_triggered()
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    StopGameWidget* widget = new StopGameWidget(this);
-    widget->setGame(m_game);
-
-    popup->setWidget(widget);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(200);
-    popup->show();
-    setPopupWidget(popup);
-}
-
-void GameWindow::on_actionSettings_triggered()
-{
-    if(popupWidget()) {
-        popupWidget()->close();
-    }
-    PopupWidget *popup = new PopupWidget(this);
-
-    SettingsWidget* setWidget = new SettingsWidget(this);
-
-    popup->setWidget(setWidget);
-    popup->setMinimumWidth(400);
-    popup->setMinimumHeight(500);
-    popup->show();
-    setPopupWidget(popup);
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()

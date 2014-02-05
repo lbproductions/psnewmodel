@@ -17,6 +17,7 @@ class GameInformationModel;
 class OverviewPlayerHeaderView;
 class StatisticsWidget;
 class ResumeWidget;
+class DialogController;
 
 class GameWindow : public QMainWindow
 {
@@ -25,57 +26,42 @@ class GameWindow : public QMainWindow
 public:
     explicit GameWindow(QWidget *parent = 0);
     ~GameWindow();
-    
-    QSharedPointer<Game> game() const;
+
     void setGame(const QSharedPointer<Game> &game);
 
-    void wheelEvent(QWheelEvent *e);
-
-    void mousePressEvent(QMouseEvent *e);
-
+protected:
     void resizeEvent(QResizeEvent *);
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
-    void on_actionPlayPause_triggered();
-
     void enableActionsBasedOnState();
 
-    void on_actionAdd_round_triggered();
-    void onNewRoundStarted();
-
-    void on_actionAdd_schmeisserei_triggered();
-
-    void on_actionToggleSidebar_triggered();
-    void setSidebarToggleActionBasedUponSidebarState();
-    void setSidebarToggleToHide();
-    void setSidebarToggleToShow();
-
-    void on_TableViewOverviewDoubleClicked(const QModelIndex &index);
-
-    void updateTimes();
-
     void on_pushButtonAddPlayers_clicked();
-
     void addPlayerToGame(QSharedPointer<Player> player);
-
-    QWidget *popupWidget() const;
-    void setPopupWidget(QWidget *popupWidget);
-
-    void showCardWidget(QWidget *widget);
-
     void on_buttonBox_accepted();
 
-    void on_actionAdd_drinks_triggered();
-
-    void on_toolButtonSetComment_clicked();
-
-    void updateSizes();
-
-    void on_actionStats_triggered();
-
+    void on_actionPlayPause_triggered();
     void on_actionStop_Game_triggered();
 
+    void on_actionAdd_round_triggered();
+    void on_actionAdd_drinks_triggered();
+    void on_actionAdd_schmeisserei_triggered();
+    void on_actionStats_triggered();
     void on_actionSettings_triggered();
+    void onTableViewOverviewDoubleClicked(const QModelIndex &index);
+
+    void onNewRoundStarted();
+    void updateSizes();
+
+    void on_actionAdd_Hochzeit_triggered();
+
+    void on_actionAdd_Solo_triggered();
+
+    void on_actionAdd_Trumpfabgabe_triggered();
+
+    void onDialogClosed();
+
+    void on_actionSet_comment_triggered();
 
     void on_actionCheck_for_updates_triggered();
 
@@ -83,15 +69,15 @@ private:
     Ui::GameWindow *ui;
 
     QSharedPointer<Game> m_game;
+
     GameOverviewModel *m_gameOverViewModel;
     GameInformationModel *m_informationModel;
-
-    QPointer<QWidget> m_popupWidget;
-
     OverviewPlayerHeaderView *m_verticalHeaderView;
-    StatisticsWidget* m_statsWidget;
 
     ResumeWidget* m_resumeWidget;
+    DialogController *m_dialogController;
+
+    int m_minimumColumnWidth;
 };
 
 #endif // GAMEWINDOW_H

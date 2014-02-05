@@ -8,12 +8,12 @@
       <item>
 	    <title>Version 0.0.0</title>
         <sparkle:releaseNotesLink>https://github.com/lbproductions/psnewmodel/releases/tag/0.0.0/</sparkle:releaseNotesLink>
-	    <pubDate>Mon Feb  3 19:59:31 CET 2014</pubDate>
+	    <pubDate>Wed Feb  5 12:37:49 CET 2014</pubDate>
         <enclosure url="https://github.com/lbproductions/psnewmodel/releases/download/0.0.0/psnewmodel-0.0.0.zip"
             sparkle:version="0.0.0"
-            length="6813115"
+            length="6819498"
             type="application/octet-stream"
-            sparkle:dsaSignature="MCwCFAZZ5nHXf5vhAaHRvLz2v4yh5CquAhQMU0cSjV+r7PBSNmb/bj5yeUQzbQ==" />
+            sparkle:dsaSignature="MC4CFQC1UAC2vLvfHLYhouoipNbTKV06qwIVANq6lSuHg5LSB0WM2qjQYKIeGuN1" />
 	 </item>
    </channel>
 </rss>

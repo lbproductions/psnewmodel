@@ -10,7 +10,6 @@ OverviewHorizontalHeaderView::OverviewHorizontalHeaderView(Qt::Orientation orien
     setDefaultSectionSize(40);
 }
 
-
 void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
 {
     painter->save();
