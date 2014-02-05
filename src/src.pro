@@ -138,7 +138,8 @@ SOURCES += main.cpp \
     ui/game/drinkswidget.cpp \
     ui/game/dialogcontroller.cpp \
     library.cpp \
-    misc/updater/updater.cpp
+    misc/updater/updater.cpp \
+    ui/widgets/sharelibrarywidget.cpp
 
 
 HEADERS  += \
@@ -215,7 +216,8 @@ HEADERS  += \
     library.h \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
-    misc/updater/updater.h
+    misc/updater/updater.h \
+    ui/widgets/sharelibrarywidget.h
 
 
 FORMS += \
@@ -237,7 +239,8 @@ FORMS += \
     ui/game/settingswidget.ui \
     ui/game/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
-    ui/game/drinkswidget.ui
+    ui/game/drinkswidget.ui \
+    ui/widgets/sharelibrarywidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

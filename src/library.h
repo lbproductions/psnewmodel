@@ -13,11 +13,13 @@ public:
     bool open();
     void close();
 
-    static QString fileNameFromSettings();
+    static QString currentFileName();
     static void saveFileNameInSettings(const QString &fileName);
 
     static QString fileExtension();
     static QString defaultFileName();
+
+    static void openLibrary(const QString &fileName);
 
 private:
     bool setupDatabase();

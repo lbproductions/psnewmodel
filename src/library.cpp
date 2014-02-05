@@ -18,6 +18,7 @@
 #include <QIcon>
 #include <QSqlError>
 #include <QSettings>
+#include <QProcess>
 
 namespace {
 static const QString DATABASE_CONNECTION_NAME("persistence");
@@ -54,7 +55,15 @@ QString Library::fileExtension()
 
 QString Library::defaultFileName()
 {
-    return QString(QApplication::applicationName() + fileExtension());
+    return QString("database" + fileExtension());
+}
+
+void Library::openLibrary(const QString &fileName)
+{
+    saveFileNameInSettings(fileName);
+
+    QProcess::startDetached(QApplication::applicationFilePath());
+    QApplication::quit();
 }
 
 bool Library::setupDatabase()
@@ -89,7 +98,7 @@ QString Library::getDatabaseFile() const
         return databaseFilePath;
 
     // settings (opened at last start)
-    databaseFilePath = fileNameFromSettings();
+    databaseFilePath = currentFileName();
     if(!databaseFilePath.isEmpty())
         return databaseFilePath;
 
@@ -138,7 +147,7 @@ QString Library::fileNameFromArguments() const
     return databaseFilePath;
 }
 
-QString Library::fileNameFromSettings()
+QString Library::currentFileName()
 {
     QSettings settings;
     QString databaseFilePath = settings.value("library/databasefilename").toString();

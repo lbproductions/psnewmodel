@@ -35,6 +35,8 @@ private slots:
 
     void on_actionOpen_library_triggered();
 
+    void on_actionShare_Library_triggered();
+
 private:
     Ui::MainWindow *ui;
     PlayersListModel* m_playerListModel;

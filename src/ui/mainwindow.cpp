@@ -4,6 +4,7 @@
 #include "playerinformationdialog.h"
 #include "drinkinformationdialog.h"
 #include "game/gamewindow.h"
+#include "widgets/sharelibrarywidget.h"
 
 #include <library.h>
 #include <model/playerslistmodel.h>
@@ -18,7 +19,7 @@
 #include <QSettings>
 #include <QStandardPaths>
 #include <QFileDialog>
-#include <QProcess>
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -197,12 +198,31 @@ void MainWindow::on_actionOpen_library_triggered()
     if(fileName.isEmpty())
         return;
 
-    if(fileName == Library::fileNameFromSettings())
+    if(fileName == Library::currentFileName())
         return;
 
     GameSettings::saveOpenFileLocation(fileName);
-    Library::saveFileNameInSettings(fileName);
+    Library::openLibrary(fileName);
+}
 
-    QProcess::startDetached(QApplication::applicationFilePath());
-    QApplication::quit();
+void MainWindow::on_actionShare_Library_triggered()
+{
+    QDir dir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+
+    QPixmap dropboxPixmap(":/general/dropbox");
+
+    if(!dir.cd("Dropbox")) {
+        QMessageBox msg(this);
+        msg.setWindowModality(Qt::WindowModal);
+        msg.setWindowTitle(QObject::tr("No Dropbox"));
+        msg.setIconPixmap(dropboxPixmap);
+        msg.setText(QObject::tr("Could not find your Dropbox"));
+        msg.setInformativeText(QObject::tr("If you want to share your libraries with other people, you have to install dropbox on your computer.\n"
+                                           "Also your Dropbox currently has to be in its default location."));
+        msg.exec();
+        return;
+    }
+
+    ShareLibraryWidget dialog(this);
+    dialog.exec();
 }
