@@ -3,12 +3,19 @@
 #include <library.h>
 #include <ui/startwindow.h>
 
+#include <QSettings>
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
     a.setApplicationName("psnewmodel");
     a.setOrganizationName("LB Productions");
+
+    if(a.arguments().contains("-C")) {
+        QSettings s;
+        s.clear();
+    }
 
     Library library;
     if(!library.open())
