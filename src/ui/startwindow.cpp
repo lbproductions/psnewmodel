@@ -19,7 +19,7 @@ StartWindow::StartWindow(QWidget *parent) :
     QWidget(parent)
 {
     QList<QSharedPointer<Game> > allGames = Qp::readAll<Game>();
-    for(int i = 0; i<5; i++) {
+    for(int i = 0; i<5 && i < allGames.size(); i++) {
         m_games.append(allGames.takeLast());
     }
 
