@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
     Qp::registerClass<Schmeisserei>();
     Qp::registerClass<League>();
     Qp::registerClass<OLD_OfflineGameInformation>();
-    Qp::registerClass<OLD_DokoOfflineGameBuddys>();
+//    Qp::registerClass<OLD_DokoOfflineGameBuddys>();
     Qp::adjustDatabaseSchema();
 
     QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
