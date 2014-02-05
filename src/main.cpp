@@ -1,6 +1,7 @@
 #include <QApplication>
 
 #include <library.h>
+#include <misc/updater/updater.h>
 #include <ui/startwindow.h>
 
 #include <QSettings>
@@ -11,6 +12,12 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
     a.setApplicationName("psnewmodel");
     a.setOrganizationName("LB Productions");
+    a.setOrganizationDomain("lbproductions.github.com");
+
+    CocoaInitializer cocoaInitializer;
+    Q_UNUSED(cocoaInitializer);
+
+    Updater::instanceForPlatform()->checkForUpdatesInBackground();
 
     if(a.arguments().contains("-C")) {
         QSettings s;
@@ -27,6 +34,8 @@ int main(int argc, char *argv[])
     int ret = a.exec();
 
     library.close();
+    delete Updater::instanceForPlatform();
+    Qp::database().close();
 
     return ret;
 }

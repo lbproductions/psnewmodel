@@ -63,6 +63,8 @@ private slots:
 
     void on_actionSet_comment_triggered();
 
+    void on_actionCheck_for_updates_triggered();
+
 private:
     Ui::GameWindow *ui;
 

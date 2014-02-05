@@ -421,6 +421,7 @@ QWidget#widgetCreateGame {
     </property>
     <addaction name="actionStats"/>
     <addaction name="actionSettings"/>
+    <addaction name="actionCheck_for_updates"/>
     <addaction name="actionClose_window"/>
    </widget>
    <addaction name="menuView"/>
@@ -565,6 +566,14 @@ QWidget#widgetCreateGame {
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+   </property>
+  </action>
+  <action name="actionCheck_for_updates">
+   <property name="text">
+    <string>Check for updates...</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
    </property>
   </action>
  </widget>

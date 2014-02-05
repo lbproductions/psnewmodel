@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<rss version="2.0" xmlns:sparkle="http://www.andymatuschak.org/xml-namespaces/sparkle"  xmlns:dc="http://purl.org/dc/elements/1.1/">
+   <channel>
+      <title>ProjectStats Changelog</title>
+      <link>https://github.com/lbproductions/psnewmodel/tree/sparkle-updater/src/misc/updater/sparkle-appcast.xml</link>
+      <description>Description</description>
+      <language>en</language>
+      <item>
+	    <title>Version 0.0.0</title>
+        <sparkle:releaseNotesLink>https://github.com/lbproductions/psnewmodel/releases/tag/0.0.0/</sparkle:releaseNotesLink>
+	    <pubDate>Wed Feb  5 12:37:49 CET 2014</pubDate>
+        <enclosure url="https://github.com/lbproductions/psnewmodel/releases/download/0.0.0/psnewmodel-0.0.0.zip"
+            sparkle:version="0.0.0"
+            length="6819498"
+            type="application/octet-stream"
+            sparkle:dsaSignature="MC4CFQC1UAC2vLvfHLYhouoipNbTKV06qwIVANq6lSuHg5LSB0WM2qjQYKIeGuN1" />
+	 </item>
+   </channel>
+</rss>

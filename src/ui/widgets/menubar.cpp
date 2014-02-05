@@ -156,4 +156,5 @@ void MenuBar::copyActionState(QAction *src, QAction *dest)
     dest->setChecked(src->isChecked());
     dest->setText(src->text());
     dest->setIcon(src->icon());
+    dest->setMenuRole(src->menuRole());
 }

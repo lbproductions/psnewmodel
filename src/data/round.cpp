@@ -142,18 +142,30 @@ void Round::setPoints(QSharedPointer<Player> player, int points)
     ps.insert(Qp::primaryKey(player), points);
     m_pointsCached.insert(player, points);
     _setPoints(ps);
+
+    // Invalidate total points cache of following rows
+    QList<QSharedPointer<Round> > rounds = game()->rounds();
+    int n = number();
+    int size = rounds.size();
+    for(int i = n; i < size; ++i) {
+        rounds.at(i)->m_totalPointsCached.remove(player);
+    }
 }
 
 int Round::totalPoints(QSharedPointer<Player> player) const
 {
-    int result = 0;
+    auto it = m_totalPointsCached.find(player);
+    if(it != m_totalPointsCached.end())
+        return it.value();
 
+    int result = 0;
     QList<QSharedPointer<Round> > rounds = game()->rounds();
     int n = number();
     for(int i = 0; i <= n; ++i) {
         result += rounds.at(i)->points(player);
     }
 
+    m_totalPointsCached.insert(player, result);
     return result;
 }
 
@@ -355,6 +367,10 @@ QSharedPointer<Player> Round::re2Player() const
 
 void Round::setRe2Player(const QSharedPointer<Player> &re2Player)
 {
+    if(!re2Player)
+        return;
+
+    re2Player->addRe2Round(Qp::sharedFrom(this));
     m_re2Player.relate(re2Player);
 }
 
@@ -370,6 +386,10 @@ QSharedPointer<Player> Round::re1Player() const
 
 void Round::setRe1Player(const QSharedPointer<Player> &re1Player)
 {
+    if(!re1Player)
+        return;
+
+    re1Player->addRe1Round(Qp::sharedFrom(this));
     m_re1Player.relate(re1Player);
 }
 
@@ -513,6 +533,10 @@ QSharedPointer<Player> Round::contra1Player() const
 
 void Round::setContra1Player(QSharedPointer<Player> arg)
 {
+    if(!arg)
+        return;
+
+    arg->addContra1Round(Qp::sharedFrom(this));
     m_contra1Player.relate(arg);
 }
 
@@ -523,6 +547,10 @@ QSharedPointer<Player> Round::contra2Player() const
 
 void Round::setContra2Player(QSharedPointer<Player> arg)
 {
+    if(!arg)
+        return;
+
+    arg->addContra2Round(Qp::sharedFrom(this));
     m_contra2Player.relate(arg);
 }
 
@@ -533,6 +561,10 @@ QSharedPointer<Player> Round::contra3Player() const
 
 void Round::setContra3Player(QSharedPointer<Player> arg)
 {
+    if(!arg)
+        return;
+
+    arg->addContra3Round(Qp::sharedFrom(this));
     m_contra3Player.relate(arg);
 }
 

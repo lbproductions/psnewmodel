@@ -25,6 +25,7 @@
 #include <data/player.h>
 #include <misc/tools.h>
 #include <misc/settings.h>
+#include <misc/updater/updater.h>
 
 #include <QPersistence.h>
 #include <QScrollBar>
@@ -458,4 +459,9 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     game->setState(Game::Running);
     setGame(game);
+}
+
+void GameWindow::on_actionCheck_for_updates_triggered()
+{
+    Updater::instanceForPlatform()->checkForUpdates();
 }

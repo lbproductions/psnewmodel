@@ -182,6 +182,13 @@ class Player : public QObject
         void setContra2Rounds(QList<QSharedPointer<Round> > arg);
         void setContra3Rounds(QList<QSharedPointer<Round> > arg);
 
+        friend class Round;
+        void addRe1Round(QSharedPointer<Round> round);
+        void addRe2Round(QSharedPointer<Round> round);
+        void addContra1Round(QSharedPointer<Round> round);
+        void addContra2Round(QSharedPointer<Round> round);
+        void addContra3Round(QSharedPointer<Round> round);
+
         QString m_name;
         Gender m_gender;
         int m_weight;
@@ -196,6 +203,10 @@ class Player : public QObject
         QpWeakRelation<League> m_leagues;
         QpWeakRelation<Game> m_games;
         QpStrongRelation<Schmeisserei> m_schmeissereien;
+
+        mutable QList<QSharedPointer<Round>> m_roundsCached;
+        mutable QList<QSharedPointer<Round>> m_contraRoundsCached;
+        mutable QList<QSharedPointer<Round>> m_reRoundsCached;
 
         QpWeakRelation<Round> m_hochzeitRounds;
         QpWeakRelation<Round> m_trumpfabgabeRounds;

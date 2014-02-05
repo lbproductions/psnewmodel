@@ -5,8 +5,8 @@
 #include <QGroupBox>
 #include <QLabel>
 
+#include <ui/mainwindow.h>
 #include "game/gamewindow.h"
-#include "widgets/menubar.h"
 #include "league/addleaguedialog.h"
 #include "league/leaguewindow.h"
 
@@ -116,7 +116,8 @@ void StartWindow::onNewGameButtonPressed()
 
 void StartWindow::onLibraryButtonPressed()
 {
-    MenuBar::instance()->showLibrary();
+    MainWindow *w = new MainWindow;
+    w->show();
 }
 
 void StartWindow::onGameTreeWidgetDoubleClicked(QTreeWidgetItem* item, int /*column*/)
