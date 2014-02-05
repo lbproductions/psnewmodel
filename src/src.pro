@@ -158,7 +158,6 @@ HEADERS  += \
     ui/widgets/biggestdistancewidget.h \
     ui/game/settingswidget.h \
     misc/settings.h \
-    local_dbconfig.h \
     ui/widgets/clickablelabel.h \
     ui/game/gamelengthwidget.h \
     ui/game/recontrastatswidget.h \

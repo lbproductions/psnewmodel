@@ -1,7 +1,5 @@
 #include <QApplication>
 
-#include "local_dbconfig.h"
-
 #include <data/drink.h>
 #include <data/game.h>
 #include <data/livedrink.h>
@@ -18,28 +16,64 @@
 #include <ui/game/gamewindow.h>
 #include <ui/startwindow.h>
 
-#include <QSqlDatabase>
 #include <QPersistence.h>
+
+#include <QSqlDatabase>
+#include <QFile>
+#include <QStandardPaths>
+#include <QDir>
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
     a.setApplicationName("psnewmodel");
-    a.setOrganizationName("lbproductions");
+    a.setOrganizationName("LB Productions");
 
-    /*
-    if(a.arguments().size() != 2) {
-        qDebug() << "Usage: psnewmodel <sqlite_database>";
-        return 0;
+    QString databaseFilePath;
+    if(a.arguments().size() == 2) {
+        databaseFilePath = a.arguments().at(1);
+
+        // An explicitly specified file has to exists
+        QFile dbFile(databaseFilePath);
+        if(!dbFile.exists()) {
+            qWarning() << "The database does not exist:";
+            qWarning() << databaseFilePath;
+            return 0;
+        }
     }
-    */
+    else {
+        QString dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
+        QDir dataDir(dataPath);
+        if(!dataDir.mkpath(dataPath)) {
+            qWarning() << "Could not create path:";
+            qWarning() << dataPath;
+            return 0;
+        }
+
+        databaseFilePath = dataDir.absoluteFilePath("database.sqlite");
+
+        QFile dbFile(databaseFilePath);
+        if(!dbFile.exists()) {
+            qDebug() << "Creating new database: " << databaseFilePath;
+            if(!dbFile.open(QFile::WriteOnly)) {
+                qWarning() << "Could not create database:";
+                qWarning() << databaseFilePath;
+                return 0;
+            }
+            dbFile.close();
+        }
+    }
+
+    qDebug() << "Using database: ";
+    qDebug() << databaseFilePath;
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
-    //db.setDatabaseName(a.arguments().at(1));
-    db.setDatabaseName(DBPATH);
-    //db.setDatabaseName("projectstatsNewDB.db");
-    db.open();
+    db.setDatabaseName(databaseFilePath);
+    if(!db.open()) {
+        qDebug() << "Could not open database!";
+        return 0;
+    }
 
     Qp::registerMappableTypes<int, int>();
     Qp::setDatabase(db);
@@ -63,6 +97,9 @@ int main(int argc, char *argv[])
     startWindow->show();
 
     int ret = a.exec();
+
+    Qp::database().close();
     delete startWindow;
+
     return ret;
 }
