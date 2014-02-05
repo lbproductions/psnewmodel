@@ -2,7 +2,8 @@
 
 #include <library.h>
 #include <misc/updater/updater.h>
-#include <ui/startwindow.h>
+#include <ui/mainwindow.h>
+#include <misc/cocoainitializer.h>
 
 #include <QSettings>
 
@@ -17,7 +18,8 @@ int main(int argc, char *argv[])
     CocoaInitializer cocoaInitializer;
     Q_UNUSED(cocoaInitializer);
 
-    Updater::instanceForPlatform()->checkForUpdatesInBackground();
+    Updater *updater = Updater::instanceForPlatform();
+    updater->checkForUpdatesInBackground();
 
     if(a.arguments().contains("-C")) {
         QSettings s;
@@ -28,14 +30,13 @@ int main(int argc, char *argv[])
     if(!library.open())
         return 0;
 
-    StartWindow startWindow;
-    startWindow.show();
+    MainWindow *mainWindow = new MainWindow;
+    mainWindow->show();
 
     int ret = a.exec();
 
     library.close();
-    delete Updater::instanceForPlatform();
-    Qp::database().close();
+    delete updater;
 
     return ret;
 }

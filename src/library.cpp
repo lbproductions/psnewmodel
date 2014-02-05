@@ -47,6 +47,16 @@ void Library::close()
         Qp::database().close();
 }
 
+QString Library::fileExtension()
+{
+    return QString(".psdb");
+}
+
+QString Library::defaultFileName()
+{
+    return QString(QApplication::applicationName() + fileExtension());
+}
+
 bool Library::setupDatabase()
 {
     QString databaseFilePath = getDatabaseFile();
@@ -92,7 +102,7 @@ QString Library::getDatabaseFile() const
     return fileNameLocal();
 }
 
-void Library::saveFileNameInSettings(const QString &fileName) const
+void Library::saveFileNameInSettings(const QString &fileName)
 {
     QSettings settings;
     settings.setValue("library/databasefilename", fileName);
@@ -128,7 +138,7 @@ QString Library::fileNameFromArguments() const
     return databaseFilePath;
 }
 
-QString Library::fileNameFromSettings() const
+QString Library::fileNameFromSettings()
 {
     QSettings settings;
     QString databaseFilePath = settings.value("library/databasefilename").toString();
@@ -149,7 +159,7 @@ QString Library::fileNameInDropbox() const
 
     QString dirName = QApplication::applicationName();
 
-    QString databaseFilePath = dataDir.absoluteFilePath(dirName + "/database.sqlite");
+    QString databaseFilePath = dataDir.absoluteFilePath(dirName + QDir::separator() + defaultFileName());
     if(QFile(databaseFilePath).exists())
         return databaseFilePath;
 
@@ -182,7 +192,7 @@ QString Library::fileNameInDropbox() const
         return QString();
     }
 
-    databaseFilePath = dataDir.absoluteFilePath("database.sqlite");
+    databaseFilePath = dataDir.absoluteFilePath(defaultFileName());
 
     if(!createFileIfNotExists(databaseFilePath)) {
         QMessageBox msg;
@@ -216,7 +226,7 @@ QString Library::fileNameLocal() const
         return QString();
     }
 
-    QString databaseFilePath = dataDir.absoluteFilePath("database.sqlite");
+    QString databaseFilePath = dataDir.absoluteFilePath(defaultFileName());
 
     if(!createFileIfNotExists(databaseFilePath)) {
         QMessageBox msg;

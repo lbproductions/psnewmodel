@@ -5,15 +5,20 @@
 #include "drinkinformationdialog.h"
 #include "game/gamewindow.h"
 
+#include <library.h>
 #include <model/playerslistmodel.h>
 #include <model/gamelistmodel.h>
 #include <model/drinkslistmodel.h>
 #include <misc/tools.h>
+#include <misc/settings.h>
 
 #include <QApplication>
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QSettings>
+#include <QStandardPaths>
+#include <QFileDialog>
+#include <QProcess>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -45,6 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->actionPlayerInformation, &QAction::trigger);
     connect(ui->actionInformation, &QAction::triggered,
             ui->actionDrinkInformation, &QAction::trigger);
+    connect(ui->actionClose, &QAction::triggered, this, &QWidget::close);
 
     ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
     connect(ui->treeViewPlayers, &QTreeView::doubleClicked,
@@ -182,4 +188,21 @@ void MainWindow::on_actionNew_Game_triggered()
 {
     GameWindow *window = new GameWindow;
     window->show();
+}
+
+void MainWindow::on_actionOpen_library_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Library"), GameSettings::openFileLocation());
+
+    if(fileName.isEmpty())
+        return;
+
+    if(fileName == Library::fileNameFromSettings())
+        return;
+
+    GameSettings::saveOpenFileLocation(fileName);
+    Library::saveFileNameInSettings(fileName);
+
+    QProcess::startDetached(QApplication::applicationFilePath());
+    QApplication::quit();
 }

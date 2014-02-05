@@ -13,16 +13,20 @@ public:
     bool open();
     void close();
 
+    static QString fileNameFromSettings();
+    static void saveFileNameInSettings(const QString &fileName);
+
+    static QString fileExtension();
+    static QString defaultFileName();
+
 private:
     bool setupDatabase();
     bool setupPersistence();
     bool fillCaches();
 
     QString getDatabaseFile() const;
-    void saveFileNameInSettings(const QString &fileName) const;
 
     QString fileNameFromArguments() const;
-    QString fileNameFromSettings() const;
     QString fileNameInDropbox() const;
     QString fileNameLocal() const;
 
