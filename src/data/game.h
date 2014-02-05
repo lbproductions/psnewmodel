@@ -176,6 +176,7 @@ class Game: public QObject
         QpStrongRelation<Player> m_players;
         QpStrongRelation<Round> m_rounds;
         QpWeakRelation<League> m_leagues;
+        mutable QSharedPointer<Round> m_currentRoundCached;
 
         QpStrongRelation<OLD_OfflineGameInformation> m_offlineGameInformation;
         QpStrongRelation<OLD_DokoOfflineGameBuddys> m_dokoOfflineGameBuddys;

@@ -304,16 +304,24 @@ void Game::setPlayers(const QList<QSharedPointer<Player> > &players)
 
 QList<QSharedPointer<Round> > Game::rounds() const
 {
-    return m_rounds.resolveList();
+    QList<QSharedPointer<Round> > rs = m_rounds.resolveList();
+    Q_ASSERT_X(!rs.isEmpty(), Q_FUNC_INFO, QString("Game ID %1 has no round.")
+               .arg(Qp::primaryKey(Qp::sharedFrom(this))).toUtf8());
+
+    return rs;
 }
 
 QSharedPointer<Round> Game::currentRound() const
 {
+    if(m_currentRoundCached)
+        return m_currentRoundCached;
+
     QList<QSharedPointer<Round> > rs = rounds();
     if(rs.isEmpty())
         return QSharedPointer<Round>();
 
-    return rs.last();
+    m_currentRoundCached = rs.last();
+    return m_currentRoundCached;
 }
 
 QList<QSharedPointer<Player> > Game::playersSortedByPlacement() const
@@ -657,6 +665,7 @@ QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > Game::dokoOfflineGameBuddys() 
 int Game::placement(QSharedPointer<Player> player, int roundNumber) const
 {
     QList<QSharedPointer<Round> > rs = rounds();
+
     if(roundNumber >= rs.size())
         roundNumber = rs.size() - 1;
 
@@ -698,11 +707,13 @@ void Game::setRounds(const QList<QSharedPointer<Round> > &rounds)
 {
     m_rounds.clear();
     m_rounds.relate(rounds);
+    m_currentRoundCached = QSharedPointer<Round>();
 }
 
 void Game::addRound(QSharedPointer<Round> round)
 {
     m_rounds.relate(round);
+    m_currentRoundCached = QSharedPointer<Round>();
 }
 
 void Game::setMitPflichtSolo(bool arg)

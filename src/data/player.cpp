@@ -236,9 +236,12 @@ QList<QSharedPointer<Round> > Player::re2Rounds() const
 
 QList<QSharedPointer<Round> > Player::reRounds() const
 {
-    QList<QSharedPointer<Round> > result = re1Rounds();
-    result.append(re2Rounds());
-    return result;
+    if(!m_reRoundsCached.isEmpty())
+        return m_reRoundsCached;
+
+    m_reRoundsCached = re1Rounds();
+    m_reRoundsCached.append(re2Rounds());
+    return m_reRoundsCached;
 }
 
 double Player::rePercentage() const
@@ -258,18 +261,23 @@ double Player::reWinsPercentage() const
 
 QList<QSharedPointer<Round> > Player::rounds() const
 {
-    QList<QSharedPointer<Round> > result;
-    result.append(reRounds());
-    result.append(contraRounds());
-    return result;
+    if(!m_roundsCached.isEmpty())
+        return m_roundsCached;
+
+    m_roundsCached = reRounds();
+    m_roundsCached.append(contraRounds());
+    return m_roundsCached;
 }
 
 QList<QSharedPointer<Round> > Player::contraRounds() const
 {
-    QList<QSharedPointer<Round> > result = contra1Rounds();
-    result.append(contra2Rounds());
-    result.append(contra3Rounds());
-    return result;
+    if(!m_contraRoundsCached.isEmpty())
+        return m_contraRoundsCached;
+
+    m_contraRoundsCached = contra1Rounds();
+    m_contraRoundsCached.append(contra2Rounds());
+    m_contraRoundsCached.append(contra3Rounds());
+    return m_contraRoundsCached;
 }
 
 double Player::contraPercentage() const
@@ -304,6 +312,8 @@ double Player::roundWinsPercentage() const
 
 void Player::setRe2Rounds(const QList<QSharedPointer<Round> > &re2Rounds)
 {
+    m_reRoundsCached.clear();
+    m_roundsCached.clear();
     m_re2Rounds.relate(re2Rounds);
 }
 
@@ -314,6 +324,8 @@ QList<QSharedPointer<Round> > Player::re1Rounds() const
 
 void Player::setRe1Rounds(const QList<QSharedPointer<Round> > &re1Rounds)
 {
+    m_reRoundsCached.clear();
+    m_roundsCached.clear();
     m_re1Rounds.relate(re1Rounds);
 }
 
@@ -389,17 +401,53 @@ QList<QSharedPointer<Round> > Player::contra3Rounds() const
 
 void Player::setContra1Rounds(QList<QSharedPointer<Round> > arg)
 {
+    m_contraRoundsCached.clear();
+    m_roundsCached.clear();
     m_contra1Rounds.relate(arg);
 }
 
 void Player::setContra2Rounds(QList<QSharedPointer<Round> > arg)
 {
+    m_contraRoundsCached.clear();
+    m_roundsCached.clear();
     m_contra2Rounds.relate(arg);
 }
 
 void Player::setContra3Rounds(QList<QSharedPointer<Round> > arg)
 {
+    m_contraRoundsCached.clear();
+    m_roundsCached.clear();
     m_contra3Rounds.relate(arg);
+}
+
+void Player::addRe1Round(QSharedPointer<Round> round)
+{
+    m_reRoundsCached.clear();
+    m_re1Rounds.relate(round);
+}
+
+void Player::addRe2Round(QSharedPointer<Round> round)
+{
+    m_reRoundsCached.clear();
+    m_re2Rounds.relate(round);
+}
+
+void Player::addContra1Round(QSharedPointer<Round> round)
+{
+    m_contraRoundsCached.clear();
+    m_contra1Rounds.relate(round);
+}
+
+void Player::addContra2Round(QSharedPointer<Round> round)
+{
+    m_contraRoundsCached.clear();
+    m_contra2Rounds.relate(round);
+}
+
+void Player::addContra3Round(QSharedPointer<Round> round)
+{
+    m_contraRoundsCached.clear();
+    m_contra3Rounds.relate(round);
 }
 
 QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
