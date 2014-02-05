@@ -4,7 +4,7 @@
 #include <data/player.h>
 #include <misc/tools.h>
 
-#include <QHeaderView>
+#include  <QHeaderView>
 
 GamesTogetherWidget::GamesTogetherWidget(QWidget *parent) :
     QTreeWidget(parent)
