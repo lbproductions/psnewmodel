@@ -5,7 +5,6 @@
 #include "drinkinformationdialog.h"
 #include "game/gamewindow.h"
 
-#include <ui/widgets/menubar.h>
 #include <model/playerslistmodel.h>
 #include <model/gamelistmodel.h>
 #include <model/drinkslistmodel.h>
@@ -57,13 +56,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
-    MenuBar::instance()->addAction(tr("&File"), ui->actionNew_Game, this);
-    MenuBar::instance()->addAction(tr("&File"), ui->actionInformation, this);
-    MenuBar::instance()->addAction(tr("&View"), ui->actionPlayers, this);
-    MenuBar::instance()->addAction(tr("&View"), ui->actionGames, this);
-    MenuBar::instance()->addAction(tr("&View"), ui->actionPlaces, this);
-    MenuBar::instance()->addAction(tr("&View"), ui->actionDrinks, this);
-    MenuBar::instance()->menu(tr("&View"))->addSeparator();
 
     on_actionPlayers_triggered();
 }
@@ -72,8 +64,6 @@ MainWindow::~MainWindow()
 {
     saveWindowState();
     delete ui;
-
-
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
