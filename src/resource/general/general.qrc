@@ -11,5 +11,6 @@
         <file>popup-arrow-top.png</file>
         <file>logo.png</file>
         <file>icon.icns</file>
+        <file alias="dropbox">dropbox.png</file>
     </qresource>
 </RCC>

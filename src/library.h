@@ -18,6 +18,16 @@ private:
     bool setupPersistence();
     bool fillCaches();
 
+    QString getDatabaseFile() const;
+    void saveFileNameInSettings(const QString &fileName) const;
+
+    QString fileNameFromArguments() const;
+    QString fileNameFromSettings() const;
+    QString fileNameInDropbox() const;
+    QString fileNameLocal() const;
+
+    bool createFileIfNotExists(const QString &fileName) const;
+
     // Caches
     QList<QSharedPointer<Player> > m_players;
     QList<QSharedPointer<Game> > m_games;
