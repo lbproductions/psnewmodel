@@ -9,7 +9,7 @@ include($$SPARKLE_PATH/Sparkle.pri)
 TARGET          = psnewmodel
 VERSION         = 0.0.0
 TEMPLATE        = app
-ICON            = icon.icns
+ICON            = resource/general/icon4.icns
 QT              += sql widgets
 CONFIG          += c++11
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
