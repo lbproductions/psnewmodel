@@ -19,10 +19,15 @@
 #include <QSqlError>
 #include <QSettings>
 #include <QProcess>
+#include <QPushButton>
 
 namespace {
 static const QString DATABASE_CONNECTION_NAME("persistence");
 }
+
+QList<QSharedPointer<Player> > Library::m_players;
+QList<QSharedPointer<Game> > Library::m_games;
+QList<QSharedPointer<Round> > Library::m_rounds;
 
 Library::Library()
 {
@@ -46,6 +51,15 @@ void Library::close()
 {
     if(Qp::database().isOpen())
         Qp::database().close();
+
+    QFile file(currentFileName()+ ".lock");
+
+    if(!file.exists())
+        return;
+
+    if(!file.remove()) {
+        qWarning() << "Could not remove lock!";
+    }
 }
 
 QString Library::fileExtension()
@@ -60,6 +74,7 @@ QString Library::defaultFileName()
 
 void Library::openLibrary(const QString &fileName)
 {
+    close();
     saveFileNameInSettings(fileName);
 
     QProcess::startDetached(QApplication::applicationFilePath());
@@ -76,6 +91,11 @@ bool Library::setupDatabase()
     qDebug() << "Using database: ";
     qDebug() << databaseFilePath;
 
+    if(!lockDatabase(databaseFilePath)) {
+        qDebug() << "Database is locked";
+        return false;
+    }
+
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DATABASE_CONNECTION_NAME);
     db.setDatabaseName(databaseFilePath);
 
@@ -90,7 +110,40 @@ bool Library::setupDatabase()
     return true;
 }
 
-QString Library::getDatabaseFile() const
+bool Library::lockDatabase(const QString &databaseFilePath)
+{
+    QFile file(databaseFilePath+ ".lock");
+
+    if(!file.exists()) {
+        if(file.open(QFile::WriteOnly)) {
+            file.close();
+            return true;
+        }
+    }
+
+    qDebug() << "Database is locked!";
+
+    QMessageBox msg;
+    msg.setText(QObject::tr("Your library is locked"));
+    msg.setIcon(QMessageBox::Warning);
+    msg.setInformativeText(QObject::tr("Someone else might be using the library. You can unlock and proceed at the risk of running into problems later. If this is no shared library, it should be safe to continue."));
+    msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
+    msg.button(QMessageBox::Yes)->setText(QObject::tr("Unlock"));
+    msg.button(QMessageBox::No)->setText(QObject::tr("Quit"));
+    int answer = msg.exec();
+
+    if(answer == QMessageBox::No)
+        return false;
+
+    Q_ASSERT(answer == QMessageBox::Yes);
+    if(!file.remove()) {
+        qWarning() << "Could not remove lock";
+        return false;
+    }
+    return true;
+}
+
+QString Library::getDatabaseFile()
 {
     // command line argument
     QString databaseFilePath = fileNameFromArguments();
@@ -117,7 +170,7 @@ void Library::saveFileNameInSettings(const QString &fileName)
     settings.setValue("library/databasefilename", fileName);
 }
 
-QString Library::fileNameFromArguments() const
+QString Library::fileNameFromArguments()
 {
     QStringList arguments = QApplication::arguments();
     arguments.removeFirst(); // appname
@@ -159,7 +212,7 @@ QString Library::currentFileName()
     return databaseFilePath;
 }
 
-QString Library::fileNameInDropbox() const
+QString Library::fileNameInDropbox()
 {
     QString dataPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
     QDir dataDir(dataPath);
@@ -217,7 +270,7 @@ QString Library::fileNameInDropbox() const
     return databaseFilePath;
 }
 
-QString Library::fileNameLocal() const
+QString Library::fileNameLocal()
 {
     QString dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);
     QDir dataDir(dataPath);
@@ -250,7 +303,7 @@ QString Library::fileNameLocal() const
     return databaseFilePath;
 }
 
-bool Library::createFileIfNotExists(const QString &fileName) const
+bool Library::createFileIfNotExists(const QString &fileName)
 {
     QFile dbFile(fileName);
     if(!dbFile.exists()) {

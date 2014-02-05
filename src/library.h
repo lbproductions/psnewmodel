@@ -10,8 +10,8 @@ class Library
 public:
     Library();
 
-    bool open();
-    void close();
+    static bool open();
+    static void close();
 
     static QString currentFileName();
     static void saveFileNameInSettings(const QString &fileName);
@@ -22,22 +22,24 @@ public:
     static void openLibrary(const QString &fileName);
 
 private:
-    bool setupDatabase();
-    bool setupPersistence();
-    bool fillCaches();
+    static bool setupDatabase();
+    static bool setupPersistence();
+    static bool fillCaches();
 
-    QString getDatabaseFile() const;
+    static bool lockDatabase(const QString &databaseFilePath);
 
-    QString fileNameFromArguments() const;
-    QString fileNameInDropbox() const;
-    QString fileNameLocal() const;
+    static QString getDatabaseFile();
 
-    bool createFileIfNotExists(const QString &fileName) const;
+    static QString fileNameFromArguments();
+    static QString fileNameInDropbox();
+    static QString fileNameLocal();
+
+    static bool createFileIfNotExists(const QString &fileName);
 
     // Caches
-    QList<QSharedPointer<Player> > m_players;
-    QList<QSharedPointer<Game> > m_games;
-    QList<QSharedPointer<Round> > m_rounds;
+    static QList<QSharedPointer<Player> > m_players;
+    static QList<QSharedPointer<Game> > m_games;
+    static QList<QSharedPointer<Round> > m_rounds;
 };
 
 #endif // LIBRARY_H
