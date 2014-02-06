@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>653</width>
-    <height>290</height>
+    <width>808</width>
+    <height>271</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -48,6 +48,15 @@ QTreeView::item:selected {
     background: rgb(80,80,80);
 }
 
+QTreeView {
+	border-right: 1px solid  rgb(108,108,108);
+}
+
+QTreeView::item:selected {
+	border-right: 1px solid  rgb(108,108,108);
+    background: rgb(80,80,80);
+}s
+
 QLineEdit {
 	border: none;
 	border-bottom: 1px solid  rgb(108,108,108);
@@ -87,7 +96,7 @@ QPushButton#pushButtonAdd {
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="1,1,0,1,0">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -223,6 +232,29 @@ QPushButton#pushButtonAdd {
         <property name="headerHidden">
          <bool>true</bool>
         </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QStackedWidget" name="stackedWidgetExistingDrinks">
+        <widget class="QWidget" name="page" native="true">
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <property name="spacing">
+           <number>0</number>
+          </property>
+          <property name="leftMargin">
+           <number>0</number>
+          </property>
+          <property name="topMargin">
+           <number>0</number>
+          </property>
+          <property name="rightMargin">
+           <number>0</number>
+          </property>
+          <property name="bottomMargin">
+           <number>0</number>
+          </property>
+         </layout>
+        </widget>
        </widget>
       </item>
      </layout>
