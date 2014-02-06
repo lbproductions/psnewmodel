@@ -159,6 +159,7 @@ void Game::setState(State state)
         return;
     case Running:
         r->setState(Round::Running);
+        connectAllRoundSignals();
         emit stateChanged();
         return;
     case Paused:
@@ -182,8 +183,6 @@ void Game::togglePlayPause()
     }
     else if(s == Game::Paused) {
         setState(Game::Running);
-
-        connectAllRoundSignals();
     }
 }
 
