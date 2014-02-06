@@ -161,18 +161,18 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->tableViewInformation->show();
 
     m_game = game;
+    if(m_game->state() == Game::Running)
+        m_game->setState(Game::Paused);
 
     m_gameOverViewModel->setGame(game);
     m_informationModel->setGame(game);
     ui->graphWidget->setGame(game);
     ui->gameLengthWidget->setGame(game);
 
-    if(m_game->state() == Game::Paused) {
-        m_resumeWidget->resize(width(), height());
-        m_resumeWidget->setVisible(true);
-        connect(m_resumeWidget, &ResumeWidget::widgetClicked,
-                this, &GameWindow::on_actionPlayPause_triggered);
-    }
+    m_resumeWidget->resize(width(), height());
+    m_resumeWidget->setVisible(true);
+    connect(m_resumeWidget, &ResumeWidget::widgetClicked,
+            this, &GameWindow::on_actionPlayPause_triggered);
 
     connect(m_game.data(), &Game::newRoundStarted, this, &GameWindow::onNewRoundStarted);
     connect(m_game.data(), &Game::stateChanged, this, &GameWindow::enableActionsBasedOnState);
@@ -489,8 +489,8 @@ void GameWindow::on_buttonBox_accepted()
 
     game->setType(Game::Doppelkopf);
     game->startNextRound();
-    game->setState(Game::Running);
     setGame(game);
+    game->setState(Game::Running);
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()
