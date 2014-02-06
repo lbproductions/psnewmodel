@@ -108,8 +108,8 @@ int main(int argc, char *argv[])
     int ret = a.exec();
 
     delete Updater::instanceForPlatform();
-    Qp::database().close();
     delete startWindow;
+    Qp::database().close();
 
     return ret;
 }
