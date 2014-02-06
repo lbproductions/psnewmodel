@@ -23,6 +23,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     int extraRow = -1;
     QPalette palette = static_cast<QWidget *>(this->parent())->palette();
 
+    painter->setFont(model()->data(index, Qt::FontRole).value<QFont>());
     painter->setPen(QPen(Qt::transparent));
     painter->setBrush(palette.color(QPalette::Base));
 
@@ -81,7 +82,6 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if(!text.isEmpty()) {
         painter->setPen(palette.color(QPalette::Text));
         QFont font = painter->font();
-        font.setPointSize(13);
         if(index.data(GameOverviewModel::TotalPointsRole).toBool()) {
             font.setBold(true);
         }

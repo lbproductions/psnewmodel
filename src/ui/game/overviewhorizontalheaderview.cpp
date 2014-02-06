@@ -10,6 +10,14 @@ OverviewHorizontalHeaderView::OverviewHorizontalHeaderView(Qt::Orientation orien
     setDefaultSectionSize(40);
 }
 
+QSize OverviewHorizontalHeaderView::sizeHint() const
+{
+    QSize size = QHeaderView::sizeHint();
+    size.setHeight(30);
+    return size;
+}
+
+
 void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
 {
     painter->save();
@@ -19,6 +27,7 @@ void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &
     painter->setPen(QPen(Qt::transparent));
     painter->setBrush(palette.color(QPalette::Base));
     painter->drawRect(rect);
+    painter->setFont(model()->headerData(logicalIndex, orientation(), Qt::FontRole).value<QFont>());
 
     QString text = model()->headerData(logicalIndex, orientation()).toString();
     if(!text.isEmpty()) {

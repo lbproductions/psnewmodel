@@ -65,6 +65,10 @@ private slots:
 
     void on_actionCheck_for_updates_triggered();
 
+    void on_actionZoom_in_triggered();
+
+    void on_actionZoom_out_triggered();
+
 private:
     Ui::GameWindow *ui;
 

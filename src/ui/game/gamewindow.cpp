@@ -497,3 +497,15 @@ void GameWindow::on_actionCheck_for_updates_triggered()
 {
     Updater::instanceForPlatform()->checkForUpdates();
 }
+
+void GameWindow::on_actionZoom_in_triggered()
+{
+    m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() + 1);
+    m_informationModel->setFontSize(m_informationModel->fontSize() + 1);
+}
+
+void GameWindow::on_actionZoom_out_triggered()
+{
+    m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() - 1);
+    m_informationModel->setFontSize(m_informationModel->fontSize() - 1);
+}

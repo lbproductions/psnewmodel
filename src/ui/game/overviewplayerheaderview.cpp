@@ -177,6 +177,7 @@ void OverviewPlayerHeaderView::paintText(const QString &text, const QRect &rect,
     painter->save();
     QTextOption textOption = getTextOption();
     QRect textRect = getTextRect(rect);
+    painter->setFont(model()->headerData(0, orientation(), Qt::FontRole).value<QFont>());
     painter->setPen(palette().color(QPalette::Text));
     painter->drawText(textRect, text, textOption);
     painter->restore();
