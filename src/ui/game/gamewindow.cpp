@@ -261,19 +261,23 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionAdd_schmeisserei->setEnabled(true);
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
-        ui->actionStop_Game->setEnabled(true);
         ui->actionAdd_drinks->setEnabled(true);
         ui->actionAdd_Hochzeit->setEnabled(true);
         ui->actionAdd_Solo->setEnabled(true);
         ui->actionAdd_Trumpfabgabe->setEnabled(true);
 
+        if(m_game->rounds().size() > 1)
+            ui->actionStop_Game->setEnabled(true);
+
         m_resumeWidget->setVisible(false);
     }
     else if(state == Game::Paused) {
         ui->actionPlayPause->setEnabled(true);
-        ui->actionStop_Game->setEnabled(true);
         ui->actionPlayPause->setText(tr("Play"));
         m_resumeWidget->setVisible(true);
+
+        if(m_game->rounds().size() > 1)
+            ui->actionStop_Game->setEnabled(true);
     }
     else {
         ui->actionPlayPause->setText(tr("Pause"));
@@ -299,6 +303,7 @@ void GameWindow::on_actionStop_Game_triggered()
 
 void GameWindow::onNewRoundStarted()
 {
+    enableActionsBasedOnState();
     ui->graphWidget->updateGraphs();
 
     if(GameSettings::instance().gamePercentageWarning()) {
