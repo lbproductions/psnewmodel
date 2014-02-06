@@ -166,6 +166,9 @@ class Game: public QObject
         void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
         void setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games);
 
+        void connectRoundSignals(QSharedPointer<Round> round);
+        void connectAllRoundSignals();
+
         QString m_name;
         Type m_type;
         QDateTime m_creationTime;

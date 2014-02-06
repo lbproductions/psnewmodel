@@ -182,6 +182,8 @@ void Game::togglePlayPause()
     }
     else if(s == Game::Paused) {
         setState(Game::Running);
+
+        connectAllRoundSignals();
     }
 }
 
@@ -469,9 +471,7 @@ void Game::startNextRound()
     round->setStartTime(QDateTime::currentDateTime());
     round->setNumber(nextNumber);
     round->setState(Round::Running);
-    connect(round.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(schmeissereiAdded()));
-    connect(round.data(), SIGNAL(drinkAdded()), this, SIGNAL(drinksChanged()));
-    connect(round.data(), SIGNAL(drinkRemoved()), this, SIGNAL(drinksChanged()));
+    connectRoundSignals(round);
     addRound(round);
     save();
 
@@ -747,4 +747,18 @@ void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameI
 void Game::setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games)
 {
     m_dokoOfflineGameBuddys.relate(games);
+}
+
+void Game::connectRoundSignals(QSharedPointer<Round> round)
+{
+    connect(round.data(), &Round::schmeissereiAdded, this, &Game::schmeissereiAdded);
+    connect(round.data(), &Round::drinkAdded, this, &Game::drinksChanged);
+    connect(round.data(), &Round::drinkRemoved, this, &Game::drinksChanged);
+}
+
+void Game::connectAllRoundSignals()
+{
+    foreach(QSharedPointer<Round> round, rounds()) {
+        connectRoundSignals(round);
+    }
 }
