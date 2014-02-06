@@ -179,9 +179,19 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
 
 bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 {
+    static ulong mouseClickLastTime = -1;
+
     if(event->type() == QEvent::MouseButtonRelease) {
-        QPoint pos = static_cast<QMouseEvent *>(event)->pos();
-        m_dialogController->closeDialogOnMousePress(pos);
+        // This is shit: QTBUG-25831
+        // TODO: Change when Qt 5.3 is released...
+
+        QMouseEvent *me = static_cast<QMouseEvent *>(event);
+        bool isDoubleClick = isDoubleClick = (me->timestamp() - mouseClickLastTime )
+                < static_cast<ulong>(QApplication::doubleClickInterval());
+        mouseClickLastTime = me->timestamp();
+
+        if(!isDoubleClick)
+            m_dialogController->closeDialogOnMousePress(me->pos());
     }
 
     return QObject::eventFilter(obj, event);
@@ -375,6 +385,7 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
     if(roundIndex < 0 || roundIndex >= m_game->rounds().size())
         return;
 
+    qDebug() << roundIndex;
     QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
     NewRoundDialog* dlg = new NewRoundDialog(this);
     dlg->setRound(round, NewRoundDialog::EditRound);
