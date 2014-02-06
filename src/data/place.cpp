@@ -110,6 +110,11 @@ void Place::addPlayer(QSharedPointer<Player> player)
     m_players.relate(player);
 }
 
+void Place::addGame(QSharedPointer<Game> game)
+{
+    m_games.relate(game);
+}
+
 void Place::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
     m_players.clear();

@@ -37,6 +37,8 @@
 #include <QEvent>
 #include <QMessageBox>
 
+bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2);
+
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
@@ -66,7 +68,9 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->tableViewInformation->hide();
     ui->tableViewOverview->hide();
 
-    ui->comboBoxSite->addPlaces(Qp::readAll<Place>());
+    QList<QSharedPointer<Place>> places = Qp::readAll<Place>();
+    qSort(places.begin(), places.end(), sortPlaces);
+    ui->comboBoxSite->addPlaces(places);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->listWidgetPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listWidgetPlayers->setPalette(darkPalette);
@@ -385,7 +389,6 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
     if(roundIndex < 0 || roundIndex >= m_game->rounds().size())
         return;
 
-    qDebug() << roundIndex;
     QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
     NewRoundDialog* dlg = new NewRoundDialog(this);
     dlg->setRound(round, NewRoundDialog::EditRound);
@@ -412,6 +415,19 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
  * PRE-Game
  */
 bool sortPlayers(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)
+{
+    QList<QSharedPointer<Game>> g1 = p1->games();
+    if(g1.isEmpty())
+        return false;
+
+    QList<QSharedPointer<Game>> g2 = p2->games();
+    if(g2.isEmpty())
+        return true;
+
+    return g1.last()->creationTime() > g2.last()->creationTime();
+}
+
+bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2)
 {
     QList<QSharedPointer<Game>> g1 = p1->games();
     if(g1.isEmpty())

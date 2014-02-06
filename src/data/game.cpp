@@ -259,6 +259,7 @@ QSharedPointer<Place> Game::site() const
 
 void Game::setSite(QSharedPointer<Place> site)
 {
+    site->addGame(Qp::sharedFrom(this));
     m_site.relate(site);
 }
 
@@ -305,9 +306,6 @@ void Game::setPlayers(const QList<QSharedPointer<Player> > &players)
 QList<QSharedPointer<Round> > Game::rounds() const
 {
     QList<QSharedPointer<Round> > rs = m_rounds.resolveList();
-    Q_ASSERT_X(!rs.isEmpty(), Q_FUNC_INFO, QString("Game ID %1 has no round.")
-               .arg(Qp::primaryKey(Qp::sharedFrom(this))).toUtf8());
-
     return rs;
 }
 

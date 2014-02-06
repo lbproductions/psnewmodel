@@ -60,6 +60,9 @@ private:
     friend class Player;
     void addPlayer(QSharedPointer<Player> player);
 
+    friend class Game;
+    void addGame(QSharedPointer<Game> game);
+
     void setPlayers(const QList<QSharedPointer<Player> > &players);
     void setGames(const QList<QSharedPointer<Game> > &games);
 
