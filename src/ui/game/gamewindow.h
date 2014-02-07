@@ -82,6 +82,8 @@ private:
     DialogController *m_dialogController;
 
     int m_minimumColumnWidth;
+
+    static QMultiHash<QSharedPointer<Game>, GameWindow *> s_gameWindows;
 };
 
 #endif // GAMEWINDOW_H

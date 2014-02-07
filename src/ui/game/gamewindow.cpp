@@ -39,11 +39,13 @@
 
 bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2);
 
+QMultiHash<QSharedPointer<Game>, GameWindow *> GameWindow::s_gameWindows;
+
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
     m_minimumColumnWidth(20)
-{
+{   
     QPalette darkPalette = palette();
     darkPalette.setColor(QPalette::Window, QColor(71,71,71));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
@@ -149,8 +151,11 @@ GameWindow::GameWindow(QWidget *parent) :
 GameWindow::~GameWindow()
 {
     if(m_game) {
-        m_game->pause();
-        m_game->save();
+        s_gameWindows.remove(m_game, this);
+        if(s_gameWindows.values(m_game).isEmpty()) {
+            m_game->pause();
+            m_game->save();
+        }
     }
     delete ui;
 }
@@ -162,8 +167,11 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->tableViewInformation->show();
 
     m_game = game;
-    if(m_game->state() == Game::Running)
+
+    if(m_game->state() == Game::Running && s_gameWindows.values(m_game).isEmpty())
         m_game->setState(Game::Paused);
+
+    s_gameWindows.insert(m_game, this);
 
     m_gameOverViewModel->setGame(game);
     m_informationModel->setGame(game);
