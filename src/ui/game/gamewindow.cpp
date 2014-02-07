@@ -75,6 +75,7 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->listWidgetPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listWidgetPlayers->setPalette(darkPalette);
     ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width());
+    ui->buttonBox->setFixedWidth(ui->comboBoxSite->width() + ui->labelSite->width() + 200);
 
     m_gameOverViewModel = new GameOverviewModel(this);
     ui->tableViewOverview->setPalette(darkPalette);
@@ -495,6 +496,8 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     setGame(game);
     game->setState(Game::Running);
+    resize(size() + QSize(1,0));
+    resize(size() - QSize(1,0));
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()
