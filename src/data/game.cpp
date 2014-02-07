@@ -525,7 +525,8 @@ bool Game::hasPflichtSolo(QSharedPointer<Player> player) const
 int Game::normalRoundCount(int roundCount)
 {
     int result = 0;
-    foreach(QSharedPointer<Round> round, rounds()) {
+    QList<QSharedPointer<Round> > rs = rounds();
+    foreach(QSharedPointer<Round> round, rs) {
         if(roundCount == 0)
             break;
 
@@ -534,6 +535,11 @@ int Game::normalRoundCount(int roundCount)
             ++result;
         }
     }
+
+    // Subtract current round
+    if(state() != Game::Finished && roundCount >= rs.size())
+        --result;
+
     return result;
 }
 
