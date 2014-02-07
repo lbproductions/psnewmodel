@@ -46,6 +46,8 @@ public:
     int fontSize() const;
     void setFontSize(int fontSize);
 
+    void updateViews();
+
 private:
     QSharedPointer<Game> m_game;
     int m_fontSize;

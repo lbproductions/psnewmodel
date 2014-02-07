@@ -331,6 +331,11 @@ void GameOverviewModel::setFontSize(int fontSize)
     endResetModel();
 }
 
+void GameOverviewModel::updateViews()
+{
+    beginResetModel();
+    endResetModel();
+}
 
 QColor GameOverviewModel::colorFromPoints(int points)
 {

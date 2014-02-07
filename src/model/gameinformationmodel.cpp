@@ -228,6 +228,12 @@ void GameInformationModel::setFontSize(int fontSize)
     endResetModel();
 }
 
+void GameInformationModel::updateViews()
+{
+    beginResetModel();
+    endResetModel();
+}
+
 QVariant GameInformationModel::actionVariant(int section) const
 {
     return QVariant::fromValue<QAction *>(m_actions.value(section));

@@ -234,6 +234,10 @@ void GameWindow::resizeEvent(QResizeEvent *)
 
 void GameWindow::onDialogClosed()
 {
+    ui->graphWidget->updateGraphs();
+    m_gameOverViewModel->updateViews();
+    m_informationModel->updateViews();
+
     if(!ui->actionAdd_drinks->actionGroup()->checkedAction())
         return;
 
