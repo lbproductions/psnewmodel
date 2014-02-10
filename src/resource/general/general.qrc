@@ -12,5 +12,7 @@
         <file>logo.png</file>
         <file>icon.icns</file>
         <file alias="dropbox">dropbox.png</file>
+        <file>close-window-hover.png</file>
+        <file>close-window.png</file>
     </qresource>
 </RCC>

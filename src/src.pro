@@ -13,6 +13,7 @@ ICON            = icon.icns
 QT              += sql widgets
 CONFIG          += c++11
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
+DEFINES         += APP_VERSION=\\\"$$VERSION\\\"
 
 
 ### Info.plist ###
@@ -150,7 +151,8 @@ SOURCES += main.cpp \
     ui/game/dialogcontroller.cpp \
     library.cpp \
     misc/updater/updater.cpp \
-    ui/widgets/sharelibrarywidget.cpp
+    ui/widgets/sharelibrarywidget.cpp \
+    ui/chooselibrarywidget.cpp
 
 
 HEADERS  += \
@@ -228,7 +230,8 @@ HEADERS  += \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
-    ui/widgets/sharelibrarywidget.h
+    ui/widgets/sharelibrarywidget.h \
+    ui/chooselibrarywidget.h
 
 
 FORMS += \
@@ -251,7 +254,8 @@ FORMS += \
     ui/game/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
     ui/game/drinkswidget.ui \
-    ui/widgets/sharelibrarywidget.ui
+    ui/widgets/sharelibrarywidget.ui \
+    ui/chooselibrarywidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
