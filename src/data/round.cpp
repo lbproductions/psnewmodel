@@ -251,11 +251,13 @@ QList<QSharedPointer<Player> > Round::playingPlayers() const
 
     int countPlayers = ps.size();
     int cardMixerPos = cardMixerPosition();
+    int zusaetzlichAussetzenderSpieler = number() / countPlayers;
+
     for(int i = cardMixerPos + 1, anzahl = 0; anzahl < 4; ++i, ++anzahl)
     {
         i = i % countPlayers;
 
-        if(countPlayers > 5 && anzahl+1 == countPlayers / 2)
+        if(countPlayers > 5 && anzahl == zusaetzlichAussetzenderSpieler)
             ++i;
 
         i = i % countPlayers;
