@@ -38,7 +38,8 @@ int LeagueGamePlacementModel::columnCount(const QModelIndex &parent) const
     if(!m_league)
         return 0;
 
-    return League::currentMatchDayNumber + 1; // +1 for graph column with placements
+    return 52;
+    //return League::currentMatchDayNumber + 1; // +1 for graph column with placements
 }
 
 int LeagueGamePlacementModel::rowCount(const QModelIndex &parent) const

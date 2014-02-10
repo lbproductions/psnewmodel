@@ -20,7 +20,9 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::LeagueWindow),
     m_classementModel(new LeagueClassementModel(this)),
-    m_gamePlacementModel(new LeagueGamePlacementModel(this))
+    m_gamePlacementModel(new LeagueGamePlacementModel(this)),
+    m_minimumColumnWidth(20),
+    m_maximumColumnWidth(100)
 {
     ui->setupUi(this);
     setAttribute(Qt::WA_DeleteOnClose, true);
@@ -45,6 +47,7 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
 
     LeagueDelegate* classementDelegate = new LeagueDelegate(this);
     classementDelegate->setModel(LeagueDelegate::ClassementModel);
+    classementDelegate->setClassementModel(m_classementModel);
     ui->tableViewPlayer->setItemDelegate(classementDelegate);
 
     LeaguePlayerHeaderView* playerHeaderView = new LeaguePlayerHeaderView(Qt::Vertical, this);
@@ -52,10 +55,12 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->tableViewPlayer->setVerticalHeader(playerHeaderView);
 
     LeagueHorizontalHeaderView* horizontalHeader = new LeagueHorizontalHeaderView(Qt::Horizontal, this);
+    horizontalHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
     ui->tableViewPlayer->setHorizontalHeader(horizontalHeader);
 
     LeagueDelegate* placementDelegate = new LeagueDelegate(this);
     placementDelegate->setModel(LeagueDelegate::PlacementModel);
+    placementDelegate->setClassementModel(m_classementModel);
     ui->tableViewPlacement->setModel(m_gamePlacementModel);
     ui->tableViewPlacement->setPalette(darkPalette);
     ui->tableViewPlacement->setItemDelegate(placementDelegate);
@@ -161,6 +166,23 @@ void LeagueWindow::wheelEvent(QWheelEvent *e)
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() + e->pixelDelta().x());
     else
         ui->scrollAreaGraph->horizontalScrollBar()->setValue(ui->scrollAreaGraph->horizontalScrollBar()->value() - e->pixelDelta().y());
+}
+
+void LeagueWindow::resizeEvent(QResizeEvent *)
+{
+    if(!m_league)
+        return;
+
+    int w = width();
+    int roundCount = m_league->calculatedGames().size();
+
+    w -= ui->tableViewPlayer->width();
+    w /= roundCount + 1;
+    w = qMax(m_minimumColumnWidth, w);
+    w = qMin(m_maximumColumnWidth, w);
+
+    ui->tableViewPlacement->horizontalHeader()->setDefaultSectionSize(w);
+    ui->graphWidget->setColumnWidth(w);
 }
 
 void LeagueWindow::on_comboBoxAverage_currentIndexChanged(const QString &arg1)
