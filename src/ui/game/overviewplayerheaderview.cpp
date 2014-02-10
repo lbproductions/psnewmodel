@@ -137,7 +137,7 @@ QTextOption OverviewPlayerHeaderView::getTextOption()
 
 QRect OverviewPlayerHeaderView::getTextRect(const QRect &rect)
 {
-    return rect.adjusted(32,0,0,0);
+    return rect.adjusted(rect.height() + 4,0,0,0);
 }
 
 void OverviewPlayerHeaderView::paintBackground(const QColor &color, const QRect &rect, QPainter *painter) const

@@ -84,6 +84,9 @@ private:
     int m_minimumColumnWidth;
 
     static QMultiHash<QSharedPointer<Game>, GameWindow *> s_gameWindows;
+
+    void saveWindowState();
+    void restoreWindowState();
 };
 
 #endif // GAMEWINDOW_H

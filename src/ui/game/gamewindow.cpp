@@ -36,6 +36,7 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <QMessageBox>
+#include <QSettings>
 
 bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2);
 
@@ -146,6 +147,8 @@ GameWindow::GameWindow(QWidget *parent) :
     installEventFilter(this);
     ui->tableViewInformation->viewport()->installEventFilter(this);
     ui->tableViewOverview->viewport()->installEventFilter(this);
+
+    restoreWindowState();
 }
 
 GameWindow::~GameWindow()
@@ -157,7 +160,25 @@ GameWindow::~GameWindow()
             m_game->save();
         }
     }
+    saveWindowState();
     delete ui;
+}
+
+void GameWindow::saveWindowState()
+{
+    QSettings settings;
+    settings.setValue("gamewindow/geometry", saveGeometry());
+    settings.setValue("gamewindow/windowState", saveState());
+    settings.setValue("gamewindow/fontsize", m_gameOverViewModel->fontSize());
+}
+
+void GameWindow::restoreWindowState()
+{
+    QSettings settings;
+    restoreGeometry(settings.value("gamewindow/geometry").toByteArray());
+    restoreState(settings.value("gamewindow/windowState").toByteArray());
+    m_gameOverViewModel->setFontSize(settings.value("gamewindow/fontsize", 16).toInt());
+    m_informationModel->setFontSize(settings.value("gamewindow/fontsize", 16).toInt());
 }
 
 void GameWindow::setGame(const QSharedPointer<Game> &game)
@@ -218,6 +239,8 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 
 void GameWindow::updateSizes()
 {
+    ui->tableViewOverview->verticalHeader()->setDefaultSectionSize(m_gameOverViewModel->fontSize() + 15);
+    ui->tableViewInformation->verticalHeader()->setDefaultSectionSize(m_gameOverViewModel->fontSize() + 15);
     int overviewHeight = ui->tableViewOverview->horizontalHeader()->height() +
             (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0);
     ui->tableViewOverview->setFixedHeight(overviewHeight);
@@ -227,6 +250,8 @@ void GameWindow::updateSizes()
     m_dialogController->setDialogHeight(overviewHeight - m_dialogController->dialogOffsetTop() - 1);
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
+    resize(size() + QSize(1,0));
+    resize(size() - QSize(1,0));
 }
 
 void GameWindow::resizeEvent(QResizeEvent *)
@@ -510,8 +535,6 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     setGame(game);
     game->setState(Game::Running);
-    resize(size() + QSize(1,0));
-    resize(size() - QSize(1,0));
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()
@@ -523,10 +546,12 @@ void GameWindow::on_actionZoom_in_triggered()
 {
     m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() + 1);
     m_informationModel->setFontSize(m_informationModel->fontSize() + 1);
+    updateSizes();
 }
 
 void GameWindow::on_actionZoom_out_triggered()
 {
     m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() - 1);
     m_informationModel->setFontSize(m_informationModel->fontSize() - 1);
+    updateSizes();
 }
