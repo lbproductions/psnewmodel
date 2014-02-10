@@ -9,9 +9,11 @@ Matchday::Matchday(QObject *parent) :
 {
 }
 
-void Matchday::setLeague(QSharedPointer<League> league)
+Matchday::~Matchday()
 {
-    m_league = league;
+    m_playersSortedByAverage.clear();
+    m_averages.clear();
+    m_game.clear();
 }
 
 void Matchday::setGame(QSharedPointer<Game> game)
