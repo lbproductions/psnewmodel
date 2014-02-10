@@ -51,7 +51,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     QSharedPointer<Player> player = model()->headerData(logicalIndex, orientation(), GameInformationModel::PlayerRole).value<QSharedPointer<Player>>();
 
     bool isCurrentCardMixer = game->state() != Game::Finished
-            && game->currentCardMixer() == player;
+            && player && game->currentCardMixer() == player;
     QColor playerColor;
     if(player)
         playerColor = player->color();
