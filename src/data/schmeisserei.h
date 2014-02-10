@@ -17,6 +17,10 @@ class Schmeisserei : public QObject
     Q_PROPERTY(Type type READ type WRITE setType)
     Q_PROPERTY(QSharedPointer<Round> round READ round WRITE setRound)
     Q_PROPERTY(QSharedPointer<Player> player READ player WRITE setPlayer)
+    Q_PROPERTY(int kingsCount READ kingsCount WRITE setKingsCount)
+    Q_PROPERTY(int trumpfCount READ trumpfCount WRITE setTrumpfCount)
+    Q_PROPERTY(int points READ points WRITE setPoints)
+
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:player",
                 "reverserelation=schmeissereien")
@@ -49,10 +53,22 @@ public:
     static QString typeStringFromType(Type type);
     static Type typeFromString(const QString &typeString);
 
+    int kingsCount() const;
+    void setKingsCount(int arg);
+
+    int trumpfCount() const;
+    void setTrumpfCount(int arg);
+
+    int points() const;
+    void setPoints(int arg);
+
 private:
     Type m_type;
     QpWeakRelation<Round> m_round;
     QpWeakRelation<Player> m_player;
+    int m_kingsCount;
+    int m_trumpfabgabeCount;
+    int m_points;
 };
 
 
