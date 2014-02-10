@@ -31,8 +31,14 @@ public:
     void triggerAction(int section);
     void setHeaderAction(int section, QAction *action);
 
+    int fontSize() const;
+    void setFontSize(int fontSize);
+
+    void updateViews();
+
 private:
     QSharedPointer<Game> m_game;
+    int m_fontSize;
 
     QVariant actionVariant(int section) const;
 

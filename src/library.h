@@ -40,6 +40,7 @@ private:
     static QList<QSharedPointer<Player> > m_players;
     static QList<QSharedPointer<Game> > m_games;
     static QList<QSharedPointer<Round> > m_rounds;
+    static QList<QSharedPointer<LiveDrink> > m_liveDrinks;
 };
 
 #endif // LIBRARY_H

@@ -65,6 +65,10 @@ private slots:
 
     void on_actionCheck_for_updates_triggered();
 
+    void on_actionZoom_in_triggered();
+
+    void on_actionZoom_out_triggered();
+
 private:
     Ui::GameWindow *ui;
 
@@ -78,6 +82,11 @@ private:
     DialogController *m_dialogController;
 
     int m_minimumColumnWidth;
+
+    static QMultiHash<QSharedPointer<Game>, GameWindow *> s_gameWindows;
+
+    void saveWindowState();
+    void restoreWindowState();
 };
 
 #endif // GAMEWINDOW_H

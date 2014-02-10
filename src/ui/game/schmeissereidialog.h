@@ -28,6 +28,8 @@ private slots:
 
     void on_spinBoxRoundNumber_valueChanged(int value);
 
+    void on_comboBoxType_currentIndexChanged(const QString &text);
+
 private:
     Ui::SchmeissereiWidget *ui;
 

@@ -9,9 +9,12 @@
 #include <misc/settings.h>
 
 #include <QAction>
+#include <QFont>
+#include <QGuiApplication>
 
 GameInformationModel::GameInformationModel(QObject *parent) :
-    QAbstractTableModel(parent)
+    QAbstractTableModel(parent),
+    m_fontSize(13)
 {
 }
 
@@ -73,6 +76,13 @@ QVariant GameInformationModel::data(const QModelIndex &index, int role) const
     if(!index.isValid())
         return QVariant();
 
+    if(role == Qt::FontRole) {
+        QFont font = QGuiApplication::font();
+
+        font.setPixelSize(m_fontSize);
+        return QVariant::fromValue<QFont>(font);
+    }
+
     if(role == GameOverviewModel::TotalPointsRole) {
         return true;
     }
@@ -132,6 +142,13 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
 
     if(role == ActionRole)
         return actionVariant(section);
+
+    if(role == Qt::FontRole) {
+        QFont font = QGuiApplication::font();
+
+        font.setPixelSize(m_fontSize);
+        return QVariant::fromValue<QFont>(font);
+    }
 
     int extraRow = section - m_game->players().size();
     if(extraRow == GameOverviewModel::HochzeitenRow) {
@@ -198,6 +215,23 @@ void GameInformationModel::setHeaderAction(int section, QAction *action)
     connect(action, &QAction::changed, [=] {
         emit headerDataChanged(Qt::Horizontal, section, section);
     });
+}
+int GameInformationModel::fontSize() const
+{
+    return m_fontSize;
+}
+
+void GameInformationModel::setFontSize(int fontSize)
+{
+    beginResetModel();
+    m_fontSize = fontSize;
+    endResetModel();
+}
+
+void GameInformationModel::updateViews()
+{
+    beginResetModel();
+    endResetModel();
 }
 
 QVariant GameInformationModel::actionVariant(int section) const

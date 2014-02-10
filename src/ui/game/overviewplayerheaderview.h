@@ -34,7 +34,7 @@ private:
 
     void paintBackground(const QColor &color, const QRect &rect, QPainter *painter) const;
     void paintSidebar(const QPixmap &icon, int logicalIndex, int playerCount,
-                      bool isHoveringActionIndex, QAction *action, const QRect &rect, QPainter *painter) const;
+                      bool isHoveringActionIndex, bool isCardMixer, QAction *action, const QRect &rect, QPainter *painter) const;
     void paintText(const QString &text, const QRect &rect, QPainter *painter) const;
     void paintBorders(int logicalIndex, int playerCount, const QRect &rect, QPainter *painter) const;
     void paintCardMixerAndPflichtsolo(bool hasPflichtSolo, bool isCurrentCardMixer, const QRect &rect, QPainter *painter) const;

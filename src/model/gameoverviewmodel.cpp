@@ -7,12 +7,15 @@
 
 #include <misc/settings.h>
 
+#include <QFont>
 #include <QDebug>
+#include <QGuiApplication>
 
 const int GameOverviewModel::ExtraRowsCount(7);
 
 GameOverviewModel::GameOverviewModel(QObject *parent) :
-    QAbstractTableModel(parent)
+    QAbstractTableModel(parent),
+    m_fontSize(13)
 {
 }
 
@@ -79,6 +82,13 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
 {
     if(!index.isValid())
         return QVariant();
+
+    if(role == Qt::FontRole) {
+        QFont font = QGuiApplication::font();
+
+        font.setPixelSize(m_fontSize);
+        return QVariant::fromValue<QFont>(font);
+    }
 
     int row = index.row();
     int column = index.column();
@@ -265,6 +275,14 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
 QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
     if(orientation == Qt::Horizontal) {
+
+        if(role == Qt::FontRole) {
+            QFont font = QGuiApplication::font();
+
+            font.setPixelSize(m_fontSize);
+            return QVariant::fromValue<QFont>(font);
+        }
+
         if(role == Qt::DisplayRole) {
             int roundIndex = section;
             if(roundIndex < m_game->rounds().size()) {
@@ -300,6 +318,23 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
     //    }
 
     return QVariant();
+}
+int GameOverviewModel::fontSize() const
+{
+    return m_fontSize;
+}
+
+void GameOverviewModel::setFontSize(int fontSize)
+{
+    beginResetModel();
+    m_fontSize = fontSize;
+    endResetModel();
+}
+
+void GameOverviewModel::updateViews()
+{
+    beginResetModel();
+    endResetModel();
 }
 
 QColor GameOverviewModel::colorFromPoints(int points)

@@ -28,6 +28,7 @@ static const QString DATABASE_CONNECTION_NAME("persistence");
 QList<QSharedPointer<Player> > Library::m_players;
 QList<QSharedPointer<Game> > Library::m_games;
 QList<QSharedPointer<Round> > Library::m_rounds;
+QList<QSharedPointer<LiveDrink> > Library::m_liveDrinks;
 
 Library::Library()
 {
@@ -348,5 +349,6 @@ bool Library::fillCaches()
     m_players = Qp::readAll<Player>();
     m_games = Qp::readAll<Game>();
     m_rounds = Qp::readAll<Round>();
+    m_liveDrinks = Qp::readAll<LiveDrink>();
     return true;
 }

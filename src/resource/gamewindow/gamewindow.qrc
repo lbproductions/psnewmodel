@@ -13,5 +13,6 @@
         <file>solo.png</file>
         <file alias="schweinerei">schweine.png</file>
         <file>trumpfabgabe.png</file>
+        <file>magnifyingglass.png</file>
     </qresource>
 </RCC>

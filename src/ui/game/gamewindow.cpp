@@ -36,12 +36,17 @@
 #include <QMouseEvent>
 #include <QEvent>
 #include <QMessageBox>
+#include <QSettings>
+
+bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2);
+
+QMultiHash<QSharedPointer<Game>, GameWindow *> GameWindow::s_gameWindows;
 
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
     m_minimumColumnWidth(20)
-{
+{   
     QPalette darkPalette = palette();
     darkPalette.setColor(QPalette::Window, QColor(71,71,71));
     darkPalette.setColor(QPalette::WindowText, Qt::white);
@@ -66,11 +71,14 @@ GameWindow::GameWindow(QWidget *parent) :
     ui->tableViewInformation->hide();
     ui->tableViewOverview->hide();
 
-    ui->comboBoxSite->addPlaces(Qp::readAll<Place>());
+    QList<QSharedPointer<Place>> places = Qp::readAll<Place>();
+    qSort(places.begin(), places.end(), sortPlaces);
+    ui->comboBoxSite->addPlaces(places);
     ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(false);
     ui->listWidgetPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listWidgetPlayers->setPalette(darkPalette);
     ui->graphAxis->setFixedWidth(ui->listWidgetPlayers->width());
+    ui->buttonBox->setFixedWidth(ui->comboBoxSite->width() + ui->labelSite->width() + 200);
 
     m_gameOverViewModel = new GameOverviewModel(this);
     ui->tableViewOverview->setPalette(darkPalette);
@@ -139,15 +147,38 @@ GameWindow::GameWindow(QWidget *parent) :
     installEventFilter(this);
     ui->tableViewInformation->viewport()->installEventFilter(this);
     ui->tableViewOverview->viewport()->installEventFilter(this);
+
+    restoreWindowState();
 }
 
 GameWindow::~GameWindow()
 {
     if(m_game) {
-        m_game->pause();
-        m_game->save();
+        s_gameWindows.remove(m_game, this);
+        if(s_gameWindows.values(m_game).isEmpty()) {
+            m_game->pause();
+            m_game->save();
+        }
     }
+    saveWindowState();
     delete ui;
+}
+
+void GameWindow::saveWindowState()
+{
+    QSettings settings;
+    settings.setValue("gamewindow/geometry", saveGeometry());
+    settings.setValue("gamewindow/windowState", saveState());
+    settings.setValue("gamewindow/fontsize", m_gameOverViewModel->fontSize());
+}
+
+void GameWindow::restoreWindowState()
+{
+    QSettings settings;
+    restoreGeometry(settings.value("gamewindow/geometry").toByteArray());
+    restoreState(settings.value("gamewindow/windowState").toByteArray());
+    m_gameOverViewModel->setFontSize(settings.value("gamewindow/fontsize", 16).toInt());
+    m_informationModel->setFontSize(settings.value("gamewindow/fontsize", 16).toInt());
 }
 
 void GameWindow::setGame(const QSharedPointer<Game> &game)
@@ -158,17 +189,20 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
 
     m_game = game;
 
+    if(m_game->state() == Game::Running && s_gameWindows.values(m_game).isEmpty())
+        m_game->setState(Game::Paused);
+
+    s_gameWindows.insert(m_game, this);
+
     m_gameOverViewModel->setGame(game);
     m_informationModel->setGame(game);
     ui->graphWidget->setGame(game);
     ui->gameLengthWidget->setGame(game);
 
-    if(m_game->state() == Game::Paused) {
-        m_resumeWidget->resize(width(), height());
-        m_resumeWidget->setVisible(true);
-        connect(m_resumeWidget, &ResumeWidget::widgetClicked,
-                this, &GameWindow::on_actionPlayPause_triggered);
-    }
+    m_resumeWidget->resize(width(), height());
+    m_resumeWidget->setVisible(true);
+    connect(m_resumeWidget, &ResumeWidget::widgetClicked,
+            this, &GameWindow::on_actionPlayPause_triggered);
 
     connect(m_game.data(), &Game::newRoundStarted, this, &GameWindow::onNewRoundStarted);
     connect(m_game.data(), &Game::stateChanged, this, &GameWindow::enableActionsBasedOnState);
@@ -179,9 +213,25 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
 
 bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 {
+    static ulong mouseClickLastTime = -1;
+
     if(event->type() == QEvent::MouseButtonRelease) {
-        QPoint pos = static_cast<QMouseEvent *>(event)->pos();
-        m_dialogController->closeDialogOnMousePress(pos);
+        // This is shit: QTBUG-25831
+        // TODO: Change when Qt 5.3 is released...
+
+        QMouseEvent *me = static_cast<QMouseEvent *>(event);
+        bool isDoubleClick = isDoubleClick = (me->timestamp() - mouseClickLastTime )
+                < static_cast<ulong>(QApplication::doubleClickInterval());
+        mouseClickLastTime = me->timestamp();
+
+        if(!isDoubleClick)
+            m_dialogController->closeDialogOnMousePress(me->pos());
+    }
+    if(event->type() == QEvent::KeyPress) {
+        QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+        if(ke->key() == Qt::Key_Escape) {
+            m_dialogController->closeDialog();
+        }
     }
 
     return QObject::eventFilter(obj, event);
@@ -189,6 +239,8 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
 
 void GameWindow::updateSizes()
 {
+    ui->tableViewOverview->verticalHeader()->setDefaultSectionSize(m_gameOverViewModel->fontSize() + 15);
+    ui->tableViewInformation->verticalHeader()->setDefaultSectionSize(m_gameOverViewModel->fontSize() + 15);
     int overviewHeight = ui->tableViewOverview->horizontalHeader()->height() +
             (m_gameOverViewModel->rowCount()) * ui->tableViewOverview->rowHeight(0);
     ui->tableViewOverview->setFixedHeight(overviewHeight);
@@ -198,6 +250,8 @@ void GameWindow::updateSizes()
     m_dialogController->setDialogHeight(overviewHeight - m_dialogController->dialogOffsetTop() - 1);
     ui->tableViewInformation->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 39);
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
+    resize(size() + QSize(1,0));
+    resize(size() - QSize(1,0));
 }
 
 void GameWindow::resizeEvent(QResizeEvent *)
@@ -220,6 +274,10 @@ void GameWindow::resizeEvent(QResizeEvent *)
 
 void GameWindow::onDialogClosed()
 {
+    ui->graphWidget->updateGraphs();
+    m_gameOverViewModel->updateViews();
+    m_informationModel->updateViews();
+
     if(!ui->actionAdd_drinks->actionGroup()->checkedAction())
         return;
 
@@ -247,19 +305,23 @@ void GameWindow::enableActionsBasedOnState()
         ui->actionAdd_schmeisserei->setEnabled(true);
         ui->actionPlayPause->setEnabled(true);
         ui->actionPlayPause->setText(tr("Pause"));
-        ui->actionStop_Game->setEnabled(true);
         ui->actionAdd_drinks->setEnabled(true);
         ui->actionAdd_Hochzeit->setEnabled(true);
         ui->actionAdd_Solo->setEnabled(true);
         ui->actionAdd_Trumpfabgabe->setEnabled(true);
 
+        if(m_game->rounds().size() > 1)
+            ui->actionStop_Game->setEnabled(true);
+
         m_resumeWidget->setVisible(false);
     }
     else if(state == Game::Paused) {
         ui->actionPlayPause->setEnabled(true);
-        ui->actionStop_Game->setEnabled(true);
         ui->actionPlayPause->setText(tr("Play"));
         m_resumeWidget->setVisible(true);
+
+        if(m_game->rounds().size() > 1)
+            ui->actionStop_Game->setEnabled(true);
     }
     else {
         ui->actionPlayPause->setText(tr("Pause"));
@@ -285,6 +347,7 @@ void GameWindow::on_actionStop_Game_triggered()
 
 void GameWindow::onNewRoundStarted()
 {
+    enableActionsBasedOnState();
     ui->graphWidget->updateGraphs();
 
     if(GameSettings::instance().gamePercentageWarning()) {
@@ -413,6 +476,19 @@ bool sortPlayers(const QSharedPointer<Player> &p1, const QSharedPointer<Player> 
     return g1.last()->creationTime() > g2.last()->creationTime();
 }
 
+bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2)
+{
+    QList<QSharedPointer<Game>> g1 = p1->games();
+    if(g1.isEmpty())
+        return false;
+
+    QList<QSharedPointer<Game>> g2 = p2->games();
+    if(g2.isEmpty())
+        return true;
+
+    return g1.last()->creationTime() > g2.last()->creationTime();
+}
+
 void GameWindow::on_pushButtonAddPlayers_clicked()
 {
     QList<QSharedPointer<Player>> players = Qp::readAll<Player>();
@@ -457,11 +533,25 @@ void GameWindow::on_buttonBox_accepted()
 
     game->setType(Game::Doppelkopf);
     game->startNextRound();
-    game->setState(Game::Running);
     setGame(game);
+    game->setState(Game::Running);
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()
 {
     Updater::instanceForPlatform()->checkForUpdates();
+}
+
+void GameWindow::on_actionZoom_in_triggered()
+{
+    m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() + 1);
+    m_informationModel->setFontSize(m_informationModel->fontSize() + 1);
+    updateSizes();
+}
+
+void GameWindow::on_actionZoom_out_triggered()
+{
+    m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() - 1);
+    m_informationModel->setFontSize(m_informationModel->fontSize() - 1);
+    updateSizes();
 }

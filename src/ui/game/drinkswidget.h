@@ -12,6 +12,7 @@ class DrinkPlayersModel;
 class Round;
 class QItemSelection;
 class LiveDrinkRoundModel;
+class Player;
 
 class DrinksWidget : public QWidget
 {
@@ -46,6 +47,8 @@ private:
     QSharedPointer<Round> m_round;
     LiveDrinkRoundModel *m_drinkRoundModel;
 
+    void showExistingDrinks();
+    void showExistingDrinksForPlayer(QSharedPointer<Player> player, QWidget *widget);
 };
 
 #endif // DRINKSWIDGET_H

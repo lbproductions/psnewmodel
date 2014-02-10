@@ -13,7 +13,9 @@
 #include <QPersistence.h>
 
 #include <QKeyEvent>
+#include <QLabel>
 #include <QStandardItemModel>
+#include <QScrollBar>
 
 /*********************************************************************
  * DrinksSortFilterModel
@@ -119,22 +121,30 @@ bool DrinkPlayersModel::setData(const QModelIndex &index, const QVariant &value,
 
 QVariant DrinkPlayersModel::data(const QModelIndex &index, int role) const
 {
-    if(role != Qt::CheckStateRole)
-        return QpSortFilterProxyObjectModel<Player>::data(index, role);
+    if(role == Qt::CheckStateRole) {
+        if(!m_game || !m_drink)
+            return Qt::Unchecked;
 
-    if(!m_game || !m_drink)
-        return Qt::Unchecked;
+        QSharedPointer<Player> player = objectByIndex(index);
+        if(m_checkStates.contains(player))
+            return m_checkStates.value(player);
 
-    QSharedPointer<Player> player = objectByIndex(index);
-    if(m_checkStates.contains(player))
-        return m_checkStates.value(player);
+        int count = m_game->drinkCounts(player).value(m_drink);
+        if(count == 0)
+            return Qt::Unchecked;
 
-    int count = m_game->drinkCounts(player).value(m_drink);
-    if(count == 0)
-        return Qt::Unchecked;
+        m_checkStates.insert(player, Qt::Checked);
+        return Qt::Checked;
+    }
+    else if(role == Qt::DecorationRole) {
+        if(!m_game || !m_drink)
+            return QVariant();
 
-    m_checkStates.insert(player, Qt::Checked);
-    return Qt::Checked;
+        QSharedPointer<Player> player = objectByIndex(index);
+        return player->colorPixmap();
+    }
+
+    return QpSortFilterProxyObjectModel<Player>::data(index, role);
 }
 
 Qt::ItemFlags DrinkPlayersModel::flags(const QModelIndex &index) const
@@ -539,6 +549,7 @@ void DrinksWidget::addLiveDrinkForSelection()
     }
 
     ui->treeViewDrinkRound->expandAll();
+    showExistingDrinks();
 }
 
 void DrinksWidget::removeSelectedDrinks()
@@ -547,6 +558,7 @@ void DrinksWidget::removeSelectedDrinks()
 
     m_drinkRoundModel->removeSelectedDrinks(list);
     ui->treeViewDrinkRound->expandAll();
+    showExistingDrinks();
 }
 
 
@@ -559,6 +571,7 @@ void DrinksWidget::on_pushButtonRemove_clicked()
 {
     removeSelectedDrinks();
 }
+
 QSharedPointer<Round> DrinksWidget::round() const
 {
     return m_round;
@@ -572,5 +585,57 @@ void DrinksWidget::setRound(const QSharedPointer<Round> &round)
     m_playersModel->sourceModel()->setObjects(m_round->game()->players());
     m_playersModel->setRound(m_round);
     ui->treeViewDrinkRound->expandAll();
+    showExistingDrinks();
+}
+
+void DrinksWidget::showExistingDrinks()
+{
+    QWidget *widget = new QWidget(ui->stackedWidgetExistingDrinks);
+    widget->setLayout(new QVBoxLayout);
+
+    foreach(QSharedPointer<Player> player, m_round->game()->players()) {
+        showExistingDrinksForPlayer(player, widget);
+    }
+
+    QWidget *spacer = new QWidget(this);
+    spacer->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+    widget->layout()->addWidget(spacer);
+
+    delete ui->stackedWidgetExistingDrinks->currentWidget();
+    ui->stackedWidgetExistingDrinks->addWidget(widget);
+    ui->stackedWidgetExistingDrinks->setCurrentWidget(widget);
+}
+
+void DrinksWidget::showExistingDrinksForPlayer(QSharedPointer<Player> player, QWidget *widget)
+{
+    QLabel *labelName = new QLabel(player->name(), this);
+    QLabel *labelPixmap = new QLabel(this);
+    labelPixmap->setPixmap(player->colorPixmap());
+    QLabel *labelDrinks = new QLabel(this);
+
+    QMap<QSharedPointer<Drink>, int> drinkCounts = m_round->game()->drinkCounts(player);
+
+    QStringList drinks;
+
+    auto end = drinkCounts.end();
+    for(auto it = drinkCounts.begin(); it != end; it++) {
+        drinks.append(QString("%1x %2")
+                      .arg(it.value())
+                      .arg(it.key()->name()));
+    }
+
+    QString text = drinks.join("\n");
+    if(text.isEmpty())
+        text = "-";
+    labelDrinks->setText(text);
+
+    QVBoxLayout *layout = new QVBoxLayout;
+    layout->setSpacing(5);
+    QHBoxLayout *headerLayout = new QHBoxLayout;
+    headerLayout->addWidget(labelPixmap, 0);
+    headerLayout->addWidget(labelName, 1);
+    layout->addLayout(headerLayout);
+    layout->addWidget(labelDrinks);
+    static_cast<QVBoxLayout *>(widget->layout())->addLayout(layout);
 }
 

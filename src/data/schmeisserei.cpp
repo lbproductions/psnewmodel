@@ -78,3 +78,33 @@ Schmeisserei::Type Schmeisserei::typeFromString(const QString &typeString)
     return static_cast<Schmeisserei::Type>(typeIndex);
 
 }
+
+int Schmeisserei::kingsCount() const
+{
+    return m_kingsCount;
+}
+
+int Schmeisserei::trumpfCount() const
+{
+    return m_trumpfabgabeCount;
+}
+
+int Schmeisserei::points() const
+{
+    return m_points;
+}
+
+void Schmeisserei::setKingsCount(int arg)
+{
+    m_kingsCount = arg;
+}
+
+void Schmeisserei::setTrumpfCount(int arg)
+{
+    m_trumpfabgabeCount = arg;
+}
+
+void Schmeisserei::setPoints(int arg)
+{
+    m_points = arg;
+}

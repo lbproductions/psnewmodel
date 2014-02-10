@@ -159,6 +159,7 @@ void Game::setState(State state)
         return;
     case Running:
         r->setState(Round::Running);
+        connectAllRoundSignals();
         emit stateChanged();
         return;
     case Paused:
@@ -259,6 +260,7 @@ QSharedPointer<Place> Game::site() const
 
 void Game::setSite(QSharedPointer<Place> site)
 {
+    site->addGame(Qp::sharedFrom(this));
     m_site.relate(site);
 }
 
@@ -467,9 +469,7 @@ void Game::startNextRound()
     round->setStartTime(QDateTime::currentDateTime());
     round->setNumber(nextNumber);
     round->setState(Round::Running);
-    connect(round.data(), SIGNAL(schmeissereiAdded()), this, SIGNAL(schmeissereiAdded()));
-    connect(round.data(), SIGNAL(drinkAdded()), this, SIGNAL(drinksChanged()));
-    connect(round.data(), SIGNAL(drinkRemoved()), this, SIGNAL(drinksChanged()));
+    connectRoundSignals(round);
     addRound(round);
     save();
 
@@ -524,7 +524,8 @@ bool Game::hasPflichtSolo(QSharedPointer<Player> player) const
 int Game::normalRoundCount(int roundCount)
 {
     int result = 0;
-    foreach(QSharedPointer<Round> round, rounds()) {
+    QList<QSharedPointer<Round> > rs = rounds();
+    foreach(QSharedPointer<Round> round, rs) {
         if(roundCount == 0)
             break;
 
@@ -533,6 +534,11 @@ int Game::normalRoundCount(int roundCount)
             ++result;
         }
     }
+
+    // Subtract current round
+    if(state() != Game::Finished && roundCount >= rs.size())
+        --result;
+
     return result;
 }
 
@@ -745,4 +751,18 @@ void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameI
 void Game::setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games)
 {
     m_dokoOfflineGameBuddys.relate(games);
+}
+
+void Game::connectRoundSignals(QSharedPointer<Round> round)
+{
+    connect(round.data(), &Round::schmeissereiAdded, this, &Game::schmeissereiAdded);
+    connect(round.data(), &Round::drinkAdded, this, &Game::drinksChanged);
+    connect(round.data(), &Round::drinkRemoved, this, &Game::drinksChanged);
+}
+
+void Game::connectAllRoundSignals()
+{
+    foreach(QSharedPointer<Round> round, rounds()) {
+        connectRoundSignals(round);
+    }
 }

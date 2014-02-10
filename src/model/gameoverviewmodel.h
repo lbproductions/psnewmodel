@@ -43,8 +43,14 @@ public:
     QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
 
+    int fontSize() const;
+    void setFontSize(int fontSize);
+
+    void updateViews();
+
 private:
     QSharedPointer<Game> m_game;
+    int m_fontSize;
 
 
     static QColor colorFromPoints(int points);
