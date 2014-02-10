@@ -206,6 +206,12 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
         if(!isDoubleClick)
             m_dialogController->closeDialogOnMousePress(me->pos());
     }
+    if(event->type() == QEvent::KeyPress) {
+        QKeyEvent *ke = static_cast<QKeyEvent *>(event);
+        if(ke->key() == Qt::Key_Escape) {
+            m_dialogController->closeDialog();
+        }
+    }
 
     return QObject::eventFilter(obj, event);
 }

@@ -26,7 +26,7 @@ public:
 signals:
     void dialogClosed();
 
-private slots:
+public slots:
     void closeDialog();
 
 private:
