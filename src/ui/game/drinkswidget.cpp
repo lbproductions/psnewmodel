@@ -15,6 +15,7 @@
 #include <QKeyEvent>
 #include <QLabel>
 #include <QStandardItemModel>
+#include <QScrollBar>
 
 /*********************************************************************
  * DrinksSortFilterModel

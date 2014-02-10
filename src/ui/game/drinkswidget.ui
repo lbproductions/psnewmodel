@@ -23,25 +23,36 @@
    <string>Form</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">QWidget {
-	background: rgb(35,35,35);
-	color: rgb(209,209,209);
-}
-
-QFrame#frame {
+   <string notr="true">QFrame#frame {
 	border:none;
 	border-right: 4px solid rgb(35,35,35);
 	border-right: 2px solid rgb(128,128,128);
 }
 
+QScrollBar {
+    background: rgba(0,0,0,0);
+	margin: 3px;
+}
+QScrollBar::handle {
+    background: rgb(77,77,77);
+	border: 1px solid rgb(55,55,55);
+	border-radius: 4px;
+}
+ QScrollBar::add-line,  QScrollBar::sub-line {
+     border: none;
+	background: rgba(0,0,0,0);
+ }
 
 QListView {
+	background: rgb(35,35,35);
+	color: rgb(209,209,209);
 	border-right: 1px solid  rgb(108,108,108);
 }
 
 QListView::item:selected {
     background: rgb(80,80,80);
-	border-right: 1px solid rgb(108,108,108);
+	border-right: 1px solid rgba(0,0,0,0);
+	margin-right: -10px;
 }
 
 QTreeView::item:selected {
@@ -49,25 +60,37 @@ QTreeView::item:selected {
 }
 
 QTreeView {
+	background: rgb(35,35,35);
+	color: rgb(209,209,209);
 	border-right: 1px solid  rgb(108,108,108);
 }
 
 QTreeView::item:selected {
 	border-right: 1px solid  rgb(108,108,108);
     background: rgb(80,80,80);
-}s
-
-QLineEdit {
-	border: none;
-	border-bottom: 1px solid  rgb(108,108,108);
-	border-right: 1px solid  rgb(108,108,108);
 }
 
+QLineEdit {
+	background: rgb(44,44,44);
+	color: rgb(230,230,230);
+	border: none;
+	border-bottom: 1px solid  rgb(118,118,118);
+}
+
+QToolButton {
+	background: rgb(44,44,44);
+	color: rgb(230,230,230);
+	border: none;
+	border-bottom: 1px solid  rgb(118,118,118);
+	border-right: 1px solid  rgb(118,118,118);
+}
 QPushButton {
+	background: rgb(35,35,35);
 	color: rgb(209,209,209);
 	border: none;
 	border-right: 1px solid  rgb(108,108,108);
 }
+
 QPushButton#pushButtonAdd {
 	border-bottom: 1px solid  rgb(108,108,108);
 }</string>
@@ -121,23 +144,68 @@ QPushButton#pushButtonAdd {
          <number>0</number>
         </property>
         <item>
-         <widget class="QLineEdit" name="lineEditSearchDrink">
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>29</height>
-           </size>
+         <layout class="QHBoxLayout" name="horizontalLayout_4">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>35</height>
-           </size>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-          <property name="clearButtonEnabled">
-           <bool>true</bool>
-          </property>
-         </widget>
+          <item>
+           <widget class="QLineEdit" name="lineEditSearchDrink">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="placeholderText">
+             <string>Filter drinks...</string>
+            </property>
+            <property name="clearButtonEnabled">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QToolButton" name="toolButtonSearch">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>35</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>35</width>
+              <height>35</height>
+             </size>
+            </property>
+            <property name="text">
+             <string/>
+            </property>
+            <property name="icon">
+             <iconset resource="../../resource/gamewindow/gamewindow.qrc">
+              <normaloff>:/gamewindow/magnifyingglass.png</normaloff>:/gamewindow/magnifyingglass.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>32</width>
+              <height>32</height>
+             </size>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <widget class="QListView" name="listViewDrinks">
@@ -236,7 +304,7 @@ QPushButton#pushButtonAdd {
       </item>
       <item>
        <widget class="QStackedWidget" name="stackedWidgetExistingDrinks">
-        <widget class="QWidget" name="page" native="true">
+        <widget class="QWidget" name="page">
          <layout class="QHBoxLayout" name="horizontalLayout_3">
           <property name="spacing">
            <number>0</number>
@@ -263,11 +331,12 @@ QPushButton#pushButtonAdd {
   </layout>
  </widget>
  <tabstops>
-  <tabstop>lineEditSearchDrink</tabstop>
   <tabstop>listViewDrinks</tabstop>
   <tabstop>pushButtonRemove</tabstop>
   <tabstop>pushButtonAdd</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../resource/gamewindow/gamewindow.qrc"/>
+ </resources>
  <connections/>
 </ui>
