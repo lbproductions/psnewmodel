@@ -101,6 +101,7 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Player> > players = Qp::readAll<Player>();
     QList<QSharedPointer<Game> > games = Qp::readAll<Game>();
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
+    QList<QSharedPointer<LiveDrink> > liveDrinks = Qp::readAll<LiveDrink>();
 
     StartWindow* startWindow = new StartWindow();
     startWindow->show();
