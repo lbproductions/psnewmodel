@@ -148,7 +148,8 @@ SOURCES += main.cpp \
     ui/game/pointsstatswidget.cpp \
     ui/game/drinkswidget.cpp \
     misc/updater/updater.cpp \
-    ui/game/dialogcontroller.cpp
+    ui/game/dialogcontroller.cpp \
+    data/gamecomparestatistics.cpp
 
 
 HEADERS  += \
@@ -224,7 +225,8 @@ HEADERS  += \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
-    ui/game/dialogcontroller.h
+    ui/game/dialogcontroller.h \
+    data/gamecomparestatistics.h
 
 
 FORMS += \
