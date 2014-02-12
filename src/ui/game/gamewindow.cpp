@@ -526,6 +526,7 @@ void GameWindow::on_buttonBox_accepted()
     QSharedPointer<Game> game = Qp::create<Game>();
     game->setMitPflichtSolo(ui->checkBoxMitPflichtSoli->isChecked());
     game->setSite(ui->comboBoxSite->currentPlace());
+    game->setAdditionalMissingPlayer(Game::MissingInTurn);
 
     foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->items()) {
         game->addPlayer(p);

@@ -17,6 +17,7 @@ Game::Game(QObject *parent) :
     m_type(UnkownType),
     m_creationTime(QDateTime::currentDateTime()),
     m_mitPflichtSolo(false),
+    m_additionalMissingPlayer(MissingOppositeOfCardMixer),
     m_site("site", this),
     m_players("players", this),
     m_rounds("rounds", this),
@@ -722,6 +723,16 @@ void Game::addRound(QSharedPointer<Round> round)
 void Game::setMitPflichtSolo(bool arg)
 {
     m_mitPflichtSolo = arg;
+}
+
+Game::AdditionalMissingPlayer Game::aditionalMissingPlayer() const
+{
+    return m_additionalMissingPlayer;
+}
+
+void Game::setAdditionalMissingPlayer(Game::AdditionalMissingPlayer arg)
+{
+    m_additionalMissingPlayer = arg;
 }
 
 bool Game::mitPflichtSolo() const
