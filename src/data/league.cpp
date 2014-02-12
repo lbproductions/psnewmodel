@@ -84,7 +84,6 @@ void League::calculateMatchdays()
         QList<QPair<QSharedPointer<Player>,double> > players = sortPlayersAfterAverage();
 
         QSharedPointer<Matchday> matchday = QSharedPointer<Matchday>(new Matchday(this));
-        matchday->setLeague(QSharedPointer<League>(this));
         matchday->setGame(m_calculatedGames.last());
         matchday->setNumber(i+1);
 
@@ -220,6 +219,7 @@ void League::setName(const QString name)
 
 void League::recalculate()
 {
+    m_matchdays.clear();
     m_playerStatistics.clear();
     m_calculatedGames.clear();
 }

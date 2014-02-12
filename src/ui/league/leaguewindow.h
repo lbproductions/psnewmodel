@@ -22,6 +22,8 @@ class LeagueWindow : public QMainWindow
 
         void wheelEvent(QWheelEvent *e);
 
+        void resizeEvent(QResizeEvent *);
+
         static int tableWidth;
 
     signals:
@@ -46,6 +48,9 @@ private:
 
         LeagueClassementModel* m_classementModel;
         LeagueGamePlacementModel* m_gamePlacementModel;
+
+        int m_minimumColumnWidth;
+        int m_maximumColumnWidth;
         
 };
 
