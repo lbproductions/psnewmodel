@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>604</width>
-    <height>340</height>
+    <width>738</width>
+    <height>406</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -38,14 +38,18 @@ QToolButton#toolButtonOpen {
 	padding-left: 12px;
 }
 
-QToolButton#toolButtonCreate {
+QFrame#frameButton1,QFrame#frameButton1_2 {
 	background: none;
 	border: none;
 	font-size: 12px;
 }
 
-QToolButton#toolButtonCreate:hover {
+QFrame#frameButton1:hover, QFrame#frameButton1_2:hover {
 	background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(245, 245, 245, 255), stop:0.251232 rgba(255, 255, 255, 255), stop:0.738916 rgba(255, 255, 255, 255), stop:1 rgba(246, 246, 246, 255));
+}
+
+QLabel#labelTitle1, QLabel#labelTitle1_2 {
+	font-weight: bold;
 }
 
 QWidget#pageNoProjects {
@@ -56,7 +60,7 @@ QFrame#lineVertical {
 background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(254, 254, 254, 255), stop:0.305419 rgba(174, 174, 174, 255), stop:0.699507 rgba(174, 174, 174, 255), stop:1 rgba(239, 239, 239, 255));
 }
 
-QFrame#line1, QFrame#line2 {
+QFrame#line1, QFrame#line2, QFrame#line3 {
 background: qlineargradient(spread:pad, x1:0, y1:0, x2:1, y2:0, stop:0 rgba(241, 241, 241, 255), stop:0.305419 rgba(171, 171, 171, 255), stop:0.694581 rgba(171, 171, 171, 255), stop:1 rgba(242, 242, 242, 255))
 }
 
@@ -67,9 +71,14 @@ QLabel#labelNoRecent {
 
 QLabel#labelVersion {
 	color: rgb(128, 128, 128);
+}
+
+QCheckBox {
+	color: rgb(100, 100, 100);
+	font-size: 11px;
 }</string>
   </property>
-  <layout class="QHBoxLayout" name="horizontalLayout" stretch="3,0,2">
+  <layout class="QHBoxLayout" name="horizontalLayout" stretch="5,0,3">
    <property name="spacing">
     <number>0</number>
    </property>
@@ -212,91 +221,227 @@ QLabel#labelVersion {
           <property name="sizeHint" stdset="0">
            <size>
             <width>20</width>
-            <height>40</height>
+            <height>20</height>
            </size>
           </property>
          </spacer>
         </item>
         <item>
-         <widget class="QFrame" name="line1">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>1</height>
-           </size>
+         <layout class="QVBoxLayout" name="verticalLayout_4">
+          <property name="spacing">
+           <number>0</number>
           </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
+          <property name="leftMargin">
+           <number>12</number>
           </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
+          <property name="topMargin">
+           <number>0</number>
           </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_7">
-           <item>
-            <spacer name="horizontalSpacer_2">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+          <property name="rightMargin">
+           <number>12</number>
+          </property>
+          <item>
+           <widget class="QFrame" name="line1">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>1</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_7">
+             <item>
+              <spacer name="horizontalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>300</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="Frame" name="frameButton1">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
+             <property name="leftMargin">
+              <number>12</number>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>300</width>
-               <height>20</height>
-              </size>
+             <property name="topMargin">
+              <number>4</number>
              </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
-        </item>
-        <item>
-         <widget class="QToolButton" name="toolButtonCreate">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="minimumSize">
-           <size>
-            <width>0</width>
-            <height>40</height>
-           </size>
-          </property>
-          <property name="text">
-           <string>Create new library...</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QFrame" name="line2">
-          <property name="maximumSize">
-           <size>
-            <width>16777215</width>
-            <height>1</height>
-           </size>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QHBoxLayout" name="horizontalLayout_6">
-           <item>
-            <spacer name="horizontalSpacer">
-             <property name="orientation">
-              <enum>Qt::Horizontal</enum>
+             <property name="rightMargin">
+              <number>4</number>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>300</width>
-               <height>20</height>
-              </size>
+             <property name="bottomMargin">
+              <number>4</number>
              </property>
-            </spacer>
-           </item>
-          </layout>
-         </widget>
+             <property name="horizontalSpacing">
+              <number>16</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>5</number>
+             </property>
+             <item row="1" column="1">
+              <widget class="QLabel" name="labelDescription1">
+               <property name="text">
+                <string>Creates a local library and let's you start playing without further thinking.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="labelTitle1">
+               <property name="text">
+                <string>Just play!</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" rowspan="2">
+              <widget class="QLabel" name="labelIcon1">
+               <property name="text">
+                <string>Icon</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="line2">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>1</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_6">
+             <item>
+              <spacer name="horizontalSpacer">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>300</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="Frame" name="frameButton1_2">
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
+             <property name="leftMargin">
+              <number>12</number>
+             </property>
+             <property name="topMargin">
+              <number>4</number>
+             </property>
+             <property name="rightMargin">
+              <number>4</number>
+             </property>
+             <property name="bottomMargin">
+              <number>4</number>
+             </property>
+             <property name="horizontalSpacing">
+              <number>16</number>
+             </property>
+             <property name="verticalSpacing">
+              <number>5</number>
+             </property>
+             <item row="1" column="1">
+              <widget class="QLabel" name="labelDescription1_2">
+               <property name="text">
+                <string>Put the library into your Dropbox and share it with your fellow players.</string>
+               </property>
+               <property name="wordWrap">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="1">
+              <widget class="QLabel" name="labelTitle1_2">
+               <property name="text">
+                <string>Choose the location of your library...</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0" rowspan="2">
+              <widget class="QLabel" name="labelIcon1_2">
+               <property name="text">
+                <string>Icon</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QFrame" name="line3">
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>1</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <spacer name="horizontalSpacer_6">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>300</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+            </layout>
+           </widget>
+          </item>
+         </layout>
         </item>
         <item>
          <spacer name="verticalSpacer">
@@ -310,6 +455,13 @@ QLabel#labelVersion {
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="checkBoxAutoOpen">
+          <property name="text">
+           <string>Automatically open this library on next start</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -441,9 +593,17 @@ QLabel#labelVersion {
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>Frame</class>
+   <extends>QFrame</extends>
+   <header location="global">ui/widgets/frame.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
-  <include location="../resource/gamewindow/gamewindow.qrc"/>
   <include location="../resource/general/general.qrc"/>
+  <include location="../resource/gamewindow/gamewindow.qrc"/>
  </resources>
  <connections/>
 </ui>

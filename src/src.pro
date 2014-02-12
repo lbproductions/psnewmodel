@@ -152,7 +152,8 @@ SOURCES += main.cpp \
     library.cpp \
     misc/updater/updater.cpp \
     ui/widgets/sharelibrarywidget.cpp \
-    ui/chooselibrarywidget.cpp
+    ui/chooselibrarywidget.cpp \
+    ui/widgets/frame.cpp
 
 
 HEADERS  += \
@@ -231,7 +232,8 @@ HEADERS  += \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
     ui/widgets/sharelibrarywidget.h \
-    ui/chooselibrarywidget.h
+    ui/chooselibrarywidget.h \
+    ui/widgets/frame.h
 
 
 FORMS += \

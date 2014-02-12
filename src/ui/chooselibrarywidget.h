@@ -21,6 +21,10 @@ protected:
     void mousePressEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
     void mouseReleaseEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
 
+private slots:
+    void on_frameButton1_clicked();
+    void on_frameButton1_2_clicked();
+
 private:
     Ui::ChooseLibraryWidget *ui;
 

@@ -4,6 +4,7 @@
 #include <QApplication>
 #include <QPainter>
 #include <QMouseEvent>
+#include <QDebug>
 
 ChooseLibraryWidget::ChooseLibraryWidget(QWidget *parent) :
     QWidget(parent),
@@ -80,4 +81,14 @@ void ChooseLibraryWidget::mouseReleaseEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton) {
         m_moving = false;
     }
+}
+
+void ChooseLibraryWidget::on_frameButton1_clicked()
+{
+    qDebug() << "just play";
+}
+
+void ChooseLibraryWidget::on_frameButton1_2_clicked()
+{
+    qDebug() << "choose library";
 }
