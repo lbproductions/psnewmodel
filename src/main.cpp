@@ -13,6 +13,7 @@
 
 #include <misc/updater/updater.h>
 #include <misc/cocoainitializer.h>
+#include <misc/crashreporter.h>
 
 #include <ui/mainwindow.h>
 #include <ui/widgets/popupwidget.h>
@@ -26,6 +27,10 @@
 #include <QStandardPaths>
 #include <QDir>
 
+void crash() {
+    delete reinterpret_cast<QString*>(0xFEE1DEAD);
+}
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
@@ -37,7 +42,12 @@ int main(int argc, char *argv[])
     CocoaInitializer cocoaInitializer;
     Q_UNUSED(cocoaInitializer);
 
-    Updater::instanceForPlatform()->checkForUpdatesInBackground();
+    CrashReporter::init();
+
+    crash();
+
+    Updater *updater = Updater::instanceForPlatform();
+    updater->checkForUpdatesInBackground();
 
     QString databaseFilePath;
     if(a.arguments().size() == 2) {

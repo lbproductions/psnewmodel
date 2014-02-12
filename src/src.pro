@@ -4,6 +4,9 @@ include($$QPERSISTENCE_PATH/QPersistence.pri)
 SPARKLE_PATH = ../lib/Sparkle
 include($$SPARKLE_PATH/Sparkle.pri)
 
+BREAKPAD_PATH = ../lib/Breakpad
+include($$BREAKPAD_PATH/Breakpad.pri)
+
 ### General config ###
 
 TARGET          = psnewmodel
@@ -27,10 +30,12 @@ PRE_TARGETDEPS      += $$TARGET_PLIST
 DEPLOY_FILENAME = $${TARGET}-$${VERSION}.zip
 DEPLOY_FILE = $${OUT_PWD}/../$${TARGET}-$${VERSION}.zip
 SPARKLE_APPCAST = $$PWD/misc/updater/sparkle-appcast.xml
-DEPLOY_TARGET.target    = deploy
 
+DEPLOY_TARGET.target    = deploy
+DEPLOY_TARGET.depends   = dump_syms
 DEPLOY_TARGET.commands  = macdeployqt $${OUT_PWD}/$${TARGET}.app
 DEPLOY_TARGET.commands  += ;/usr/libexec/PlistBuddy -c \"Set :CFBundleVersion $${VERSION}\" $$TARGET_PLIST
+DEPLOY_TARGET.commands  += ;/usr/libexec/PlistBuddy -c \"Set :BreakpadVersion $${VERSION}\" $$TARGET_PLIST
 DEPLOY_TARGET.commands  += ;rm -R $${OUT_PWD}/$${TARGET}.app/Contents/PlugIns/accessible
 DEPLOY_TARGET.commands  += ;rm -R $${OUT_PWD}/$${TARGET}.app/Contents/PlugIns/printsupport
 DEPLOY_TARGET.commands  += ;rm $${OUT_PWD}/$${TARGET}.app/Contents/PlugIns/imageformats/libqmng.dylib
@@ -55,8 +60,7 @@ DEPLOY_TARGET.commands  += ;sed -i \'\' \'s/\\[FILENAME\\]/$$DEPLOY_FILENAME/g\'
 QMAKE_EXTRA_TARGETS += DEPLOY_TARGET
 
 
-
-### Qp ###
+### QPersistence ###
 
 INCLUDEPATH     += $$QPERSISTENCE_INCLUDEPATH
 LIBS            += $$QPERSISTENCE_LIBS
@@ -74,6 +78,26 @@ SPARKLE_SIGNATURE.files = $$PWD/misc/updater/dsa_pub.pem
 SPARKLE_SIGNATURE.path  = Contents/Resources
 QMAKE_BUNDLE_DATA       += SPARKLE_SIGNATURE
 
+
+### Breakpad ###
+
+INCLUDEPATH     += $$BREAKPAD_INCLUDEPATH
+LIBS            += $$BREAKPAD_LIBS
+QMAKE_LFLAGS    += $$BREAKPAD_LFLAGS
+QMAKE_BUNDLE_DATA += BREAKPAD_FRAMEWORK
+
+BREAKPAD_DUMP_SYMBOLS.target    = dump_syms
+BREAKPAD_DUMP_SYMBOLS.commands  += dsymutil $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}
+BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug
+BREAKPAD_DUMP_SYMBOLS.commands  += ;strip -S $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug -o $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}
+BREAKPAD_DUMP_SYMBOLS.commands  += ;rm $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug
+BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.dSYM $${OUT_PWD}
+BREAKPAD_DUMP_SYMBOLS.commands  += ;$$BREAKPAD_DUMP_SYM $${OUT_PWD}/$${TARGET}.dSYM > $${OUT_PWD}/$${TARGET}.sym
+BREAKPAD_DUMP_SYMBOLS.commands  += ;mkdir -p $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
+BREAKPAD_DUMP_SYMBOLS.commands  += ;touch $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`/$$VERSION
+BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.sym \
+                                       $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
+QMAKE_EXTRA_TARGETS += BREAKPAD_DUMP_SYMBOLS
 
 ### Files ###
 
@@ -224,7 +248,9 @@ HEADERS  += \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
-    ui/game/dialogcontroller.h
+    ui/game/dialogcontroller.h \
+    ui/widgets/sharelibrarywidget.h \
+    misc/crashreporter.h
 
 
 FORMS += \
@@ -293,4 +319,5 @@ OTHER_FILES += \
 
 OBJECTIVE_SOURCES += \
     misc/cocoainitializer.mm \
-    misc/updater/sparkleupdater.mm
+    misc/updater/sparkleupdater.mm \
+    misc/crashreporter.mm

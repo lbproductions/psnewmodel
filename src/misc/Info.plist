@@ -22,5 +22,62 @@
     <string>@SHORT_VERSION@</string>
     <key>SUPublicDSAKeyFile</key>
     <string>dsa_pub.pem</string>
+
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.github.lbproductions.projectstats</string>
+            <key>UTTypeReferenceURL</key>
+            <string>https://github.com/lbproductions/psnewmodel/</string>
+            <key>UTTypeDescription</key>
+            <string>ProjectStats Library</string>
+            <key>UTTypeIconFile</key>
+            <string>public.jpeg.icns</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>psdb</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>database/psdb</string>
+            </dict>
+        </dict>
+    </array>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>com.github.lbproductions.projectstats</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>com.github.lbproductions.projectstats</string>
+            </array>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+        </dict>
+    </array>
+
+    <key>BreakpadProduct</key>
+    <string>ProjectStats</string>
+    <key>BreakpadProductDisplay</key>
+    <string>ProjectStats</string>
+    <key>BreakpadVendor</key>
+    <string>Niklas or Niclas</string>
+    <key>BreakpadVersion</key>
+    <string>@SHORT_VERSION@</string>
+    <key>BreakpadURL</key>
+    <string>http://localhost:1127/post</string>
+    <key>BreakpadReportInterval</key>
+    <string>0</string>
+    <key>BreakpadLogFiles</key>
+    <array>
+    <string>/Users/niklaswulf/breakpad.log</string>
+    </array>
+    <key>BreakpadLogFileTailSize</key>
+    <string>40000</string>
 </dict>
 </plist>
