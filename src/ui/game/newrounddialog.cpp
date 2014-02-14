@@ -54,6 +54,11 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
     QSharedPointer<Game> game = round->game();
     m_context = context;
 
+    ui->textEditHochzeitComment->setText(round->comment());
+    ui->textEditNormalComment->setText(round->comment());
+    ui->textEditSoloComment->setText(round->comment());
+    ui->textEditTrumpfabgabeComment->setText(round->comment());
+
     ui->comboBoxWinner->addItem(tr("Re"));
     ui->comboBoxWinner->addItem(tr("Contra"));
 
@@ -65,6 +70,16 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
 
     ui->comboBoxHochzeitWinner->addItem(tr("Re"));
     ui->comboBoxHochzeitWinner->addItem(tr("Contra"));
+
+    ui->spinBoxHochzeitContraPoints->setValue(round->contraGamePoints());
+    ui->spinBoxNormalContraPoints->setValue(round->contraGamePoints());
+    ui->spinBoxSoloContraPoints->setValue(round->contraGamePoints());
+    ui->spinBoxTrumpfabgabeContraPoints->setValue(round->contraGamePoints());
+
+    ui->spinBoxHochzeitRePoints->setValue(round->reGamePoints());
+    ui->spinBoxNormalRePoints->setValue(round->reGamePoints());
+    ui->spinBoxSoloRePoints->setValue(round->reGamePoints());
+    ui->spinBoxTrumpfabgabeRePoints->setValue(round->reGamePoints());
 
     m_doppelkopfRound = round;
     ui->comboBoxNormalRe1->addPlayers(round->playingPlayers());
@@ -394,6 +409,14 @@ void NewRoundDialog::save()
     default:
         break;
     }
+
+    QSharedPointer<Game> game = m_doppelkopfRound->game();
+    game->save();
+
+    if(m_context == NewRound) {
+        game->startNextRound();
+    }
+
     close();
 }
 
@@ -435,11 +458,6 @@ void NewRoundDialog::saveNormalRound()
     else
     {
         m_doppelkopfRound->setWinnerParty(Round::Contra);
-    }
-
-    if(m_context == NewRound) {
-        QSharedPointer<Game> game = m_doppelkopfRound->game();
-        game->startNextRound();
     }
 }
 
@@ -484,11 +502,6 @@ void NewRoundDialog::saveHochzeitRound()
     else
     {
         m_doppelkopfRound->setWinnerParty(Round::Contra);
-    }
-
-    if(m_context == NewRound) {
-        QSharedPointer<Game> game = m_doppelkopfRound->game();
-        game->startNextRound();
     }
 }
 
@@ -539,11 +552,6 @@ void NewRoundDialog::saveSoloRound()
     {
         m_doppelkopfRound->setWinnerParty(Round::Contra);
     }
-
-    if(m_context == NewRound) {
-        QSharedPointer<Game> game = m_doppelkopfRound->game();
-        game->startNextRound();
-    }
 }
 
 void NewRoundDialog::saveTrumpfabgabeRound()
@@ -590,11 +598,6 @@ void NewRoundDialog::saveTrumpfabgabeRound()
     else
     {
         m_doppelkopfRound->setWinnerParty(Round::Contra);
-    }
-
-    if(m_context == NewRound) {
-        QSharedPointer<Game> game = m_doppelkopfRound->game();
-        game->startNextRound();
     }
 }
 
