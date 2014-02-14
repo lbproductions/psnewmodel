@@ -284,9 +284,9 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
         }
 
         int roundIndex = section;
-        int count = m_game->rounds().size();
+        int count = m_game->finishedRoundCount();
         int total = m_game->totalRoundCount();
-        int roundsLeft = total - count + 1;
+        int roundsLeft = total - count;
         int playerSize = m_game->players().size();
 
         if(role == Qt::DisplayRole) {
