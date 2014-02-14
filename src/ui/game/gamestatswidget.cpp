@@ -6,6 +6,7 @@
 
 #include "recontrastatswidget.h"
 #include "pointsstatswidget.h"
+#include "drinkstatswidget.h"
 #include <ui/widgets/gamestogetherwidget.h>
 #include <ui/widgets/solooverviewwidget.h>
 
@@ -35,6 +36,9 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     m_soloWidget = new SoloOverviewWidget(this);
     addWidget(tr("Soli"), m_soloWidget);
 
+    m_drinksWidget = new DrinkStatsWidget(this);
+    addWidget(tr("Drinks"), m_drinksWidget);
+
     ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeWidget->setPalette(Tools::darkPalette(this));
 
@@ -59,6 +63,8 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
     m_gamesTogetherWidget->setGames(games);
 
     m_soloWidget->setGames(games);
+
+    m_drinksWidget->setGames(games);
 }
 
 void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)
