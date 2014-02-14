@@ -11,8 +11,8 @@
 PointsStatsWidget::PointsStatsWidget(QWidget *parent) :
     QTreeWidget(parent)
 {
-    setColumnCount(5);
-    setHeaderLabels(QStringList() << tr("Player") << tr("RoundWins") << tr("AverageWinPoints") << tr("AverageReWinPoints") << tr("AverageContraWinPoints"));
+    setColumnCount(6);
+    setHeaderLabels(QStringList() << tr("Player") << tr("RoundWins") << tr("AverageWinPoints") << tr("AverageReWinPoints") << tr("AverageContraWinPoints") << tr("TotalPoints"));
     setSortingEnabled(true);
 
     this->setPalette(Tools::darkPalette(this));
@@ -45,6 +45,7 @@ void PointsStatsWidget::setGames(QList<QSharedPointer<Game> > games)
                 item->setData(2, Qt::DisplayRole, stats->averagePointsPerRound());
                 item->setData(3, Qt::DisplayRole, stats->averageRePointsPerRound());
                 item->setData(4, Qt::DisplayRole, stats->averageContraPointsPerRound());
+                item->setData(5, Qt::DisplayRole, stats->gamePoints());
                 this->addTopLevelItem(item);
             }
         }
