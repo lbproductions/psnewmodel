@@ -18,6 +18,8 @@ DrinkStatsWidget::DrinkStatsWidget(QWidget *parent) :
     ui->treeWidget->header()->setStyleSheet(Tools::darkHeaderViewStyleSheet());
 
     ui->treeWidget->setHeaderLabels(QStringList() << tr("Player") << tr("DrinkCount") << tr("DrinksVolume") << tr("AlcVolume"));
+
+    ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
 DrinkStatsWidget::~DrinkStatsWidget()

@@ -17,6 +17,8 @@ SoloOverviewWidget::SoloOverviewWidget(QWidget *parent) :
     this->setPalette(Tools::darkPalette(this));
     ui->treeWidget->setPalette(Tools::darkPalette(ui->treeWidget));
     ui->treeWidget->header()->setStyleSheet(Tools::darkHeaderViewStyleSheet());
+
+    ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
 SoloOverviewWidget::~SoloOverviewWidget()
