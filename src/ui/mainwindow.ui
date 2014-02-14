@@ -424,7 +424,6 @@ QFrame#frameSidebar {
     <addaction name="actionInformation"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_library"/>
-    <addaction name="actionShare_Library"/>
     <addaction name="actionClose"/>
    </widget>
    <addaction name="menuFile"/>
@@ -530,11 +529,6 @@ QFrame#frameSidebar {
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
-   </property>
-  </action>
-  <action name="actionShare_Library">
-   <property name="text">
-    <string>Share Library...</string>
    </property>
   </action>
  </widget>

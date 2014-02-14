@@ -197,64 +197,6 @@ QString Library::fileNameFromSettings()
     return databaseFilePath;
 }
 
-QString Library::fileNameInDropbox()
-{
-    QString dataPath = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
-    QDir dataDir(dataPath);
-    if(!dataDir.cd("Dropbox"))
-        return QString();
-
-    QString dirName = QApplication::applicationName();
-
-    QString databaseFilePath = dataDir.absoluteFilePath(dirName + QDir::separator() + defaultFileName());
-    if(QFile(databaseFilePath).exists())
-        return databaseFilePath;
-
-
-    QPixmap dropboxPixmap(":/general/dropbox");
-
-    QMessageBox msg;
-    msg.setWindowTitle(QObject::tr("Found your Dropbox!"));
-    msg.setIconPixmap(dropboxPixmap);
-    msg.setText(QObject::tr("Do you want to save your library in your Dropbox folder?"));
-    msg.setInformativeText(QObject::tr("ProjectStats would save all games inside a new folder right inside your Dropbox."));
-    msg.setStandardButtons(QMessageBox::Yes | QMessageBox::No);
-    int answer = msg.exec();
-
-    if(answer != QMessageBox::Yes)
-        return QString();
-
-
-    if(!dataDir.mkpath(dirName) || !dataDir.cd(dirName)) {
-        qWarning() << "Could not create or cd to path:";
-        qWarning() << dataPath;
-
-        QMessageBox msg;
-        msg.setWindowTitle(QObject::tr("Error"));
-        msg.setText(QObject::tr("Could not create a new folder in your Dropbox!"));
-        msg.setIconPixmap(dropboxPixmap);
-        msg.setInformativeText(QObject::tr("%1").arg(dirName));
-        msg.exec();
-
-        return QString();
-    }
-
-    databaseFilePath = dataDir.absoluteFilePath(defaultFileName());
-
-    if(!createFileIfNotExists(databaseFilePath)) {
-        QMessageBox msg;
-        msg.setWindowTitle(QObject::tr("Error"));
-        msg.setIconPixmap(dropboxPixmap);
-        msg.setText(QObject::tr("Could not create database in your Dropbox!"));
-        msg.setInformativeText(QObject::tr("%1").arg(databaseFilePath));
-        msg.exec();
-
-        return QString();
-    }
-
-    return databaseFilePath;
-}
-
 QString Library::fileNameLocal()
 {
     QString dataPath = QStandardPaths::writableLocation(QStandardPaths::DataLocation);

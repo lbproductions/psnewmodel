@@ -151,7 +151,6 @@ SOURCES += main.cpp \
     ui/game/dialogcontroller.cpp \
     library.cpp \
     misc/updater/updater.cpp \
-    ui/widgets/sharelibrarywidget.cpp \
     ui/chooselibrarywidget.cpp \
     ui/widgets/frame.cpp \
     data/gamecomparestatistics.cpp \
@@ -234,7 +233,6 @@ HEADERS  += \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
-    ui/widgets/sharelibrarywidget.h \
     ui/chooselibrarywidget.h \
     ui/widgets/frame.h \
     data/gamecomparestatistics.h \
@@ -262,7 +260,6 @@ FORMS += \
     ui/game/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
     ui/game/drinkswidget.ui \
-    ui/widgets/sharelibrarywidget.ui \
     ui/chooselibrarywidget.ui \
     ui/game/drinkstatswidget.ui \
     ui/game/gamecomparestatswidget.ui

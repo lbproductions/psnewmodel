@@ -96,8 +96,15 @@ ChooseLibraryWidget::ChooseLibraryWidget(QWidget *parent) :
 
     m_recentLibraries = settings.value("chooselibrarywidget/recentlibraries").toStringList();
     foreach(QString path, m_recentLibraries) {
-        ui->listWidgetRecent->addItem(path);
+        QFile file(path);
+
+        if(!file.exists())
+            m_recentLibraries.removeAll(path);
+        else
+            ui->listWidgetRecent->addItem(path);
     }
+
+    settings.setValue("chooselibrarywidget/recentlibraries", m_recentLibraries);
 
     if(!m_recentLibraries.isEmpty())
         ui->stackedWidget->setCurrentWidget(ui->pageList);
@@ -241,7 +248,10 @@ void ChooseLibraryWidget::openLibrary(const QString &libraryPath)
         }
         else {
             library->setFileName(libraryPath);
-            library->open();
+            if(!library->open()) {
+                QApplication::quit();
+                return;
+            }
         }
     }
 

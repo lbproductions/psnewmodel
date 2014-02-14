@@ -22,7 +22,6 @@ public:
 
     static QString fileNameFromSettings();
     static QString fileNameFromArguments();
-    static QString fileNameInDropbox();
     static QString fileNameLocal();
 
     static bool createFileIfNotExists(const QString &fileNameFromSettings);
