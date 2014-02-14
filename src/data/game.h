@@ -92,6 +92,7 @@ public:
     void setState(State state);
     void togglePlayPause();
     void pause();
+    void finish();
 
     QPixmap statePixmap() const;
 
@@ -175,6 +176,7 @@ private:
     void setPlayers(const QList<QSharedPointer<Player> > &players);
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
     void addRound(QSharedPointer<Round> round);
+    void removeRound(QSharedPointer<Round> round);
     void setLeagues(const QList<QSharedPointer<League> > &arg);
     void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
     void setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games);

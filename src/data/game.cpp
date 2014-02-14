@@ -154,9 +154,7 @@ void Game::setState(State state)
 
     switch(state) {
     case Finished:
-        r->setState(Round::Finished);
-        Qp::remove<Round>(r);
-        emit stateChanged();
+        finish();
         return;
     case Running:
         r->setState(Round::Running);
@@ -191,6 +189,23 @@ void Game::pause()
 {
     if(state() == Game::Running)
         setState(Game::Paused);
+}
+
+void Game::finish()
+{
+    QSharedPointer<Round> r = currentRound();
+    Q_ASSERT(r);
+
+    removeRound(r);
+    Qp::remove<Round>(r);
+    r->deleteLater();
+
+    r = currentRound();
+    Q_ASSERT(r);
+
+    r->setState(Round::Finished);
+
+    emit stateChanged();
 }
 
 QPixmap Game::statePixmap() const
@@ -717,6 +732,12 @@ void Game::setRounds(const QList<QSharedPointer<Round> > &rounds)
 void Game::addRound(QSharedPointer<Round> round)
 {
     m_rounds.relate(round);
+    m_currentRoundCached = QSharedPointer<Round>();
+}
+
+void Game::removeRound(QSharedPointer<Round> round)
+{
+    m_rounds.unrelate(round);
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
