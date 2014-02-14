@@ -13,6 +13,7 @@ ICON            = icon.icns
 QT              += sql widgets
 CONFIG          += c++11
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
+DEFINES         += APP_VERSION=\\\"$$VERSION\\\"
 
 
 ### Info.plist ###
@@ -147,8 +148,11 @@ SOURCES += main.cpp \
     ui/game/resumewidget.cpp \
     ui/game/pointsstatswidget.cpp \
     ui/game/drinkswidget.cpp \
-    misc/updater/updater.cpp \
     ui/game/dialogcontroller.cpp \
+    library.cpp \
+    misc/updater/updater.cpp \
+    ui/chooselibrarywidget.cpp \
+    ui/widgets/frame.cpp \
     data/gamecomparestatistics.cpp \
     ui/game/drinkstatswidget.cpp \
     ui/game/gamecomparestatswidget.cpp
@@ -224,10 +228,13 @@ HEADERS  += \
     ui/game/resumewidget.h \
     ui/game/pointsstatswidget.h \
     ui/game/drinkswidget.h \
+    ui/game/dialogcontroller.h \
+    library.h \
     misc/cocoainitializer.h \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
-    ui/game/dialogcontroller.h \
+    ui/chooselibrarywidget.h \
+    ui/widgets/frame.h \
     data/gamecomparestatistics.h \
     ui/game/drinkstatswidget.h \
     ui/game/gamecomparestatswidget.h
@@ -253,6 +260,7 @@ FORMS += \
     ui/game/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
     ui/game/drinkswidget.ui \
+    ui/chooselibrarywidget.ui \
     ui/game/drinkstatswidget.ui \
     ui/game/gamecomparestatswidget.ui
 

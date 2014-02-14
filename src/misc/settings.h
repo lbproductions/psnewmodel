@@ -24,6 +24,10 @@ class GameSettings : public QObject
             DeficitToLeader
         };
 
+        static QString openFileLocation();
+        static void saveOpenFileLocation(const QString &location);
+
+
         static GameSettings& instance();
 
         PlayerSort playerSort();

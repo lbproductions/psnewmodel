@@ -14,5 +14,6 @@
         <file alias="schweinerei">schweine.png</file>
         <file>trumpfabgabe.png</file>
         <file>magnifyingglass.png</file>
+        <file>open-arrow.png</file>
     </qresource>
 </RCC>

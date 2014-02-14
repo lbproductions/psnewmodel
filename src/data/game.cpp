@@ -322,8 +322,7 @@ void Game::setPlayers(const QList<QSharedPointer<Player> > &players)
 
 QList<QSharedPointer<Round> > Game::rounds() const
 {
-    QList<QSharedPointer<Round> > rs = m_rounds.resolveList();
-    return rs;
+    return m_rounds.resolveList();
 }
 
 QSharedPointer<Round> Game::currentRound() const

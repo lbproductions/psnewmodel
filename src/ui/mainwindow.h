@@ -33,6 +33,8 @@ private slots:
 
     void on_treeViewGames_doubleClicked(const QModelIndex &index);
 
+    void on_actionOpen_library_triggered();
+
 private:
     Ui::MainWindow *ui;
     PlayersListModel* m_playerListModel;
