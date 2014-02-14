@@ -48,7 +48,15 @@ void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &
     painter->setPen(palette.color(QPalette::Text));
     painter->drawText(rect, text, option);
 
-    if(game->players().size() > 0 && logicalIndex % game->players().size() == 0) {
+    if(logicalIndex == game->totalRoundCount()) {
+        QPen pen = painter->pen();
+        pen.setWidth(2);
+        pen.setBrush(Qt::white);
+        painter->setPen(pen);
+        QRect r2 = rect.adjusted(0,1,1,1);
+        painter->drawLine(r2.topLeft(), r2.bottomLeft());
+    }
+    else if(game->players().size() > 0 && logicalIndex % game->players().size() == 0) {
         painter->setPen(QPen(palette.highlight().color()));
         painter->drawLine(rect.topLeft() - QPoint(1,0), rect.bottomLeft() - QPoint(1,0));
     }
