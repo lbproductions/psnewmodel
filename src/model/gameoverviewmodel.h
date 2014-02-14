@@ -28,7 +28,8 @@ public:
         IsReRole,
         TotalPointsRole,
         PflichtSoloRole,
-        SchmeissereienRole
+        SchmeissereienRole,
+        AlignmentRole
     };
 
     explicit GameOverviewModel(QObject *parent = 0);

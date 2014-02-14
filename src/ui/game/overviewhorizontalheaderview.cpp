@@ -1,5 +1,8 @@
 #include "overviewhorizontalheaderview.h"
 
+#include <data/game.h>
+#include <model/gameoverviewmodel.h>
+
 #include <QTextOption>
 #include <QPainter>
 
@@ -20,7 +23,13 @@ QSize OverviewHorizontalHeaderView::sizeHint() const
 
 void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const
 {
+
+    QSharedPointer<Game> game = static_cast<GameOverviewModel *>(model())->game();
+    if(!game)
+        return;
+
     painter->save();
+
 
     QPalette palette = parentWidget()->palette();
 
@@ -30,14 +39,18 @@ void OverviewHorizontalHeaderView::paintSection(QPainter *painter, const QRect &
     painter->setFont(model()->headerData(logicalIndex, orientation(), Qt::FontRole).value<QFont>());
 
     QString text = model()->headerData(logicalIndex, orientation()).toString();
-    if(!text.isEmpty()) {
+
+    QTextOption option;
+    option.setWrapMode(QTextOption::NoWrap);
+    Qt::AlignmentFlag a = static_cast<Qt::AlignmentFlag>(model()->headerData(logicalIndex, orientation(),
+                                              GameOverviewModel::AlignmentRole).value<int>());
+    option.setAlignment(a | Qt::AlignVCenter);
+    painter->setPen(palette.color(QPalette::Text));
+    painter->drawText(rect, text, option);
+
+    if(game->players().size() > 0 && logicalIndex % game->players().size() == 0) {
         painter->setPen(QPen(palette.highlight().color()));
         painter->drawLine(rect.topLeft() - QPoint(1,0), rect.bottomLeft() - QPoint(1,0));
-
-        painter->setPen(palette.color(QPalette::Text));
-        QTextOption option;
-        option.setAlignment(Qt::AlignCenter);
-        painter->drawText(rect, text, option);
     }
 
     painter->restore();
