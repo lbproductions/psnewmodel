@@ -13,6 +13,7 @@ class ReContraStatsWidget;
 class PointsStatsWidget;
 class GamesTogetherWidget;
 class SoloOverviewWidget;
+class DrinkStatsWidget;
 
 class GameStatsWidget : public QWidget
 {
@@ -40,6 +41,7 @@ class GameStatsWidget : public QWidget
         PointsStatsWidget* m_pointsStatsWidget;
         GamesTogetherWidget* m_gamesTogetherWidget;
         SoloOverviewWidget* m_soloWidget;
+        DrinkStatsWidget* m_drinksWidget;
 
         int m_widgetCounter;
 };

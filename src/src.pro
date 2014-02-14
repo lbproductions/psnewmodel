@@ -149,7 +149,8 @@ SOURCES += main.cpp \
     ui/game/drinkswidget.cpp \
     misc/updater/updater.cpp \
     ui/game/dialogcontroller.cpp \
-    data/gamecomparestatistics.cpp
+    data/gamecomparestatistics.cpp \
+    ui/game/drinkstatswidget.cpp
 
 
 HEADERS  += \
@@ -226,7 +227,8 @@ HEADERS  += \
     misc/updater/sparkleupdater.h \
     misc/updater/updater.h \
     ui/game/dialogcontroller.h \
-    data/gamecomparestatistics.h
+    data/gamecomparestatistics.h \
+    ui/game/drinkstatswidget.h
 
 
 FORMS += \
@@ -248,7 +250,8 @@ FORMS += \
     ui/game/settingswidget.ui \
     ui/game/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
-    ui/game/drinkswidget.ui
+    ui/game/drinkswidget.ui \
+    ui/game/drinkstatswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
