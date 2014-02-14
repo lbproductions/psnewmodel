@@ -13,6 +13,64 @@
 #include <QSettings>
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QStyledItemDelegate>
+#include <QStandardPaths>
+
+class RecentLibraryItemDelegate : public QStyledItemDelegate
+{
+public:
+    RecentLibraryItemDelegate(QObject *parent) : QStyledItemDelegate(parent)
+    {}
+
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE
+    {
+        QSize size = QStyledItemDelegate::sizeHint(option, index);
+        size.setHeight(48);
+        size.setWidth(option.widget->width());
+        return size;
+    }
+
+    void paint(QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index) const Q_DECL_OVERRIDE
+    {
+        static QDir dir(QStandardPaths::writableLocation(QStandardPaths::HomeLocation));
+        static QString local = Library::fileNameLocal();
+
+        if(option.state & QStyle::State_Selected) {
+            painter->save();
+            painter->setPen(Qt::transparent);
+            painter->setBrush(option.palette.highlight());
+            painter->drawRect(option.rect);
+            painter->restore();
+        }
+
+        painter->save();
+
+        QString filePath = index.data().toString();
+        QFileInfo fileInfo(filePath);
+        QString name = fileInfo.baseName();
+        QString path = fileInfo.path();
+        path.replace(dir.path(), tr("~"));
+
+        if(filePath == local) {
+            name = tr("Local");
+            path = tr("Just play!");
+        }
+
+        QRect rect = option.rect;
+        rect.adjust(8,5,-5,-5);
+        QTextOption to;
+        to.setWrapMode(QTextOption::NoWrap);
+        painter->drawText(rect, name, to);
+
+        painter->setPen(Qt::gray);
+        to.setAlignment(Qt::AlignBottom | Qt::AlignLeft);
+        painter->drawText(rect, path, to);
+        painter->restore();
+
+        // TODO: Library icons
+    }
+};
+
 
 ChooseLibraryWidget::ChooseLibraryWidget(QWidget *parent) :
     QWidget(parent),
@@ -32,6 +90,17 @@ ChooseLibraryWidget::ChooseLibraryWidget(QWidget *parent) :
 
     QSettings settings;
     ui->checkBoxAutoOpen->setChecked(settings.value("chooselibrarywidget/autoopenlibrary", true).toBool());
+
+    ui->listWidgetRecent->setItemDelegate(new RecentLibraryItemDelegate(this));
+    ui->listWidgetRecent->setAttribute(Qt::WA_MacShowFocusRect, false);
+
+    m_recentLibraries = settings.value("chooselibrarywidget/recentlibraries").toStringList();
+    foreach(QString path, m_recentLibraries) {
+        ui->listWidgetRecent->addItem(path);
+    }
+
+    if(!m_recentLibraries.isEmpty())
+        ui->stackedWidget->setCurrentWidget(ui->pageList);
 
     connect(ui->toolButtonClose, &QToolButton::clicked, this, &QWidget::close);
 }
@@ -160,8 +229,11 @@ void ChooseLibraryWidget::openLibrary(const QString &libraryPath)
 {
     QSettings settings;
 
-    Library *library = Library::instance();
+    m_recentLibraries.removeAll(libraryPath);
+    m_recentLibraries.prepend(libraryPath);
+    settings.setValue("chooselibrarywidget/recentlibraries", m_recentLibraries);
 
+    Library *library = Library::instance();
     if(library->fileName() != libraryPath) {
         if(library->isOpen()) {
             Library::restartAndOpenLibrary(libraryPath);
@@ -191,4 +263,12 @@ void ChooseLibraryWidget::on_toolButtonOpen_clicked()
 
     GameSettings::saveOpenFileLocation(fileName);
     openLibrary(fileName);
+}
+
+void ChooseLibraryWidget::on_listWidgetRecent_activated(const QModelIndex &index)
+{
+    QString path = index.data().toString();
+    if(path.isEmpty())
+        return;
+    openLibrary(path);
 }

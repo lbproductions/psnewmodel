@@ -29,11 +29,14 @@ private slots:
 
     void on_toolButtonOpen_clicked();
 
+    void on_listWidgetRecent_activated(const QModelIndex &index);
+
 private:
     Ui::ChooseLibraryWidget *ui;
 
     void openLibrary(const QString &libraryPath);
 
+    QStringList m_recentLibraries;
     bool m_moving;
     QPoint m_offset;
 };

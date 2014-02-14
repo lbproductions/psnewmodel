@@ -517,7 +517,7 @@ QCheckBox {
          <item>
           <widget class="QLabel" name="labelNoRecent">
            <property name="text">
-            <string>No Recent Projects</string>
+            <string>No Recent Libraries</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -602,8 +602,8 @@ QCheckBox {
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../resource/general/general.qrc"/>
   <include location="../resource/gamewindow/gamewindow.qrc"/>
+  <include location="../resource/general/general.qrc"/>
  </resources>
  <connections/>
 </ui>
