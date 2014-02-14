@@ -290,27 +290,29 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
         int playerSize = m_game->players().size();
 
         if(role == Qt::DisplayRole) {
+            if(roundIndex >= total)
+                return QVariant();
 
-            if(roundIndex < count) {
-                if(playerSize > 0 && roundIndex % playerSize == 0)
-                    return roundIndex + 1;
+            if(roundIndex < count && playerSize > 0 && roundIndex % playerSize == 0) {
+                return roundIndex + 1;
             }
-            else if(roundsLeft > 2) {
+            else if(roundsLeft > 0) {
                 if(roundIndex == total - 2)
                     return tr("%1").arg(roundsLeft);
                 if(roundIndex == total - 1)
                     return tr(" left");
             }
         }
+
         if(role == AlignmentRole) {
-            if(roundsLeft > 1) {
+            if(roundsLeft > 0) {
                 if(roundIndex == total - 2)
                     return Qt::AlignRight;
                 if(roundIndex == total - 1)
                     return Qt::AlignLeft;
-                else
-                    return Qt::AlignCenter;
             }
+
+            return Qt::AlignCenter;
         }
     }
     //    else {
