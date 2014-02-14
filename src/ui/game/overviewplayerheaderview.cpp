@@ -221,23 +221,22 @@ void OverviewPlayerHeaderView::paintBorders(int logicalIndex, int playerCount, c
 void OverviewPlayerHeaderView::paintCardMixerAndPflichtsolo(bool hasPflichtSolo, bool isCurrentCardMixer, const QRect &rect, QPainter *painter) const
 {
     painter->save();
-    if(isCurrentCardMixer && hasPflichtSolo) {
-        QRect cRect = rect.adjusted(0,0,-5,0);
-        static QPixmap pixmap = QPixmap(":/sidebar/games_green.png").scaledToHeight(cRect.height()-10);
-        int offset = rect.height() - pixmap.height();
-        painter->drawPixmap(rect.topRight().x()-pixmap.width()-5, cRect.topRight().y()+offset/2, pixmap);
-    }
-    else if(isCurrentCardMixer) {
-        QRect cRect = rect.adjusted(0,0,-5,0);
-        static QPixmap pixmap = QPixmap(":/sidebar/games.png").scaledToHeight(cRect.height()-10);
-        int offset = rect.height() - pixmap.height();
-        painter->drawPixmap(rect.topRight().x()-pixmap.width()-5, cRect.topRight().y()+offset/2, pixmap);
-    }
-    else if(hasPflichtSolo) {
+
+    if(hasPflichtSolo) {
         QRect cRect = rect.adjusted(0,0,-15,0);
+        painter->setRenderHint(QPainter::Antialiasing);
+        painter->setPen(Qt::transparent);
         painter->setBrush(Qt::green);
         painter->drawEllipse(QPoint(cRect.topRight().x(), cRect.topRight().y()+cRect.height()/2), 7, 7);
     }
+
+    if(isCurrentCardMixer) {
+        QRect cRect = rect.adjusted(0,0,-5,0);
+        static QPixmap pixmap = QPixmap(":/sidebar/games.png").scaledToHeight(cRect.height()-10);
+        int offset = rect.height() - pixmap.height();
+        painter->drawPixmap(rect.topLeft().x() + 5, cRect.topLeft().y()+offset/2, pixmap);
+    }
+
     painter->restore();
 }
 

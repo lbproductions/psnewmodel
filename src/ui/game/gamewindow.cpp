@@ -199,13 +199,15 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
     ui->graphWidget->setGame(game);
     ui->gameLengthWidget->setGame(game);
 
-    m_resumeWidget->resize(width(), height());
-    m_resumeWidget->setVisible(true);
-    connect(m_resumeWidget, &ResumeWidget::widgetClicked,
-            this, &GameWindow::on_actionPlayPause_triggered);
+    if(m_game->state() != Game::Finished) {
+        m_resumeWidget->resize(width(), height());
+        m_resumeWidget->setVisible(true);
+        connect(m_resumeWidget, &ResumeWidget::widgetClicked,
+                this, &GameWindow::on_actionPlayPause_triggered);
 
-    connect(m_game.data(), &Game::newRoundStarted, this, &GameWindow::onNewRoundStarted);
-    connect(m_game.data(), &Game::stateChanged, this, &GameWindow::enableActionsBasedOnState);
+        connect(m_game.data(), &Game::newRoundStarted, this, &GameWindow::onNewRoundStarted);
+        connect(m_game.data(), &Game::stateChanged, this, &GameWindow::enableActionsBasedOnState);
+    }
 
     enableActionsBasedOnState();
     updateSizes();
@@ -526,6 +528,7 @@ void GameWindow::on_buttonBox_accepted()
     QSharedPointer<Game> game = Qp::create<Game>();
     game->setMitPflichtSolo(ui->checkBoxMitPflichtSoli->isChecked());
     game->setSite(ui->comboBoxSite->currentPlace());
+    game->setAdditionalMissingPlayer(Game::MissingInTurn);
 
     foreach(QSharedPointer<Player> p, ui->listWidgetPlayers->items()) {
         game->addPlayer(p);

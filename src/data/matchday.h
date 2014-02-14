@@ -13,8 +13,7 @@ class Matchday : public QObject
         Q_OBJECT
     public:
         explicit Matchday(QObject *parent = 0);
-
-        void setLeague(QSharedPointer<League> league);
+        ~Matchday();
 
         void setGame(QSharedPointer<Game> game);
         QSharedPointer<Game> game();
@@ -36,7 +35,6 @@ class Matchday : public QObject
     public slots:
 
     private:
-        QSharedPointer<League> m_league;
         QSharedPointer<Game> m_game;
 
         QList<QSharedPointer<Player> > m_playersSortedByAverage;

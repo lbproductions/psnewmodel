@@ -31,6 +31,6 @@ void StopGameWidget::on_buttonBox_accepted()
     if(!m_game)
         return;
 
-    m_game->setState(Game::Finished);
+    m_game->finish();
     close();
 }

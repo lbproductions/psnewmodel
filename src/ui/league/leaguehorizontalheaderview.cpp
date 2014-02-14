@@ -6,7 +6,7 @@
 LeagueHorizontalHeaderView::LeagueHorizontalHeaderView(Qt::Orientation orientation, QWidget *parent) :
     QHeaderView(orientation, parent)
 {
-    setSectionResizeMode(QHeaderView::ResizeToContents);
+    setSectionResizeMode(QHeaderView::Fixed);
     setDefaultSectionSize(LeagueWindow::tableWidth);
 }
 

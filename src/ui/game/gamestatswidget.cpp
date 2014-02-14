@@ -3,12 +3,14 @@
 
 #include <misc/tools.h>
 #include <data/game.h>
+#include <data/league.h>
 
 #include "recontrastatswidget.h"
 #include "pointsstatswidget.h"
+#include "drinkstatswidget.h"
 #include <ui/widgets/gamestogetherwidget.h>
 #include <ui/widgets/solooverviewwidget.h>
-
+#include "gamecomparestatswidget.h"
 #include <QSettings>
 #include <misc/tools.h>
 
@@ -35,6 +37,12 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     m_soloWidget = new SoloOverviewWidget(this);
     addWidget(tr("Soli"), m_soloWidget);
 
+    m_drinksWidget = new DrinkStatsWidget(this);
+    addWidget(tr("Drinks"), m_drinksWidget);
+
+    m_gameCompareStatsWidget = new GameCompareStatsWidget(this);
+    addWidget(tr("GameCompare"), m_gameCompareStatsWidget);
+
     ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeWidget->setPalette(Tools::darkPalette(this));
 
@@ -59,6 +67,26 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
     m_gamesTogetherWidget->setGames(games);
 
     m_soloWidget->setGames(games);
+
+    m_drinksWidget->setGames(games);
+
+}
+
+void GameStatsWidget::setLeague(QSharedPointer<League> league)
+{
+    m_games = league->calculatedGames();
+
+    m_reContraWidget->setGames(m_games);
+
+    m_pointsStatsWidget->setGames(m_games);
+
+    m_gamesTogetherWidget->setGames(m_games);
+
+    m_soloWidget->setGames(m_games);
+
+    m_drinksWidget->setGames(m_games);
+
+    m_gameCompareStatsWidget->setLeague(league);
 }
 
 void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)

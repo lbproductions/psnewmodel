@@ -15,6 +15,9 @@ class LeagueDelegate : public QStyledItemDelegate
         };
 
         explicit LeagueDelegate(QObject *parent = 0);
+        ~LeagueDelegate();
+
+        void setClassementModel(LeagueClassementModel* model);
 
         void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
 
@@ -28,6 +31,8 @@ class LeagueDelegate : public QStyledItemDelegate
 
     private:
         Model m_model;
+
+        LeagueClassementModel* m_classementModel;
         
 };
 

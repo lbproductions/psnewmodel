@@ -15,6 +15,10 @@ GamesWidget::GamesWidget(QWidget *parent) :
 
     this->setColumnCount(6);
     this->setHeaderLabels(QStringList() << tr("State") << tr("Name") <<tr("Players") << tr("Date") << tr("Place") << tr("Completed"));
+
+    setAttribute(Qt::WA_MacShowFocusRect, false);
+
+    connect(this, SIGNAL(itemDoubleClicked(QTreeWidgetItem*,int)), this, SLOT(onItemDoubleClicked(QTreeWidgetItem*,int)));
 }
 
 GamesWidget::~GamesWidget()
