@@ -50,7 +50,7 @@ void ShareLibraryWidget::on_buttonBox_accepted()
         return;
     }
 
-    QFile file(Library::currentFileName());
+    QFile file(Library::fileNameFromSettings());
     Q_ASSERT(file.exists());
 
     if(!file.copy(dir.absoluteFilePath(Library::defaultFileName()))) {
@@ -62,7 +62,7 @@ void ShareLibraryWidget::on_buttonBox_accepted()
 
     // TODO: Remove the original file after sharing it?
 
-    Library::openLibrary(file.fileName());
+    Library::restartAndOpenLibrary(file.fileName());
 }
 
 void ShareLibraryWidget::on_lineEditShareName_textChanged(const QString &text)

@@ -25,13 +25,15 @@ namespace {
 static const QString DATABASE_CONNECTION_NAME("persistence");
 }
 
-QList<QSharedPointer<Player> > Library::m_players;
-QList<QSharedPointer<Game> > Library::m_games;
-QList<QSharedPointer<Round> > Library::m_rounds;
-QList<QSharedPointer<LiveDrink> > Library::m_liveDrinks;
-
-Library::Library()
+Library::Library() :
+    m_isOpen(false)
 {
+}
+
+Library *Library::instance()
+{
+    static Library library;
+    return &library;
 }
 
 bool Library::open()
@@ -45,6 +47,7 @@ bool Library::open()
     if(!fillCaches())
         return false;
 
+    m_isOpen = true;
     return true;
 }
 
@@ -53,14 +56,19 @@ void Library::close()
     if(Qp::database().isOpen())
         Qp::database().close();
 
-    QFile file(currentFileName()+ ".lock");
+    QFile file(fileNameFromSettings()+ ".lock");
 
     if(!file.exists())
         return;
 
-    if(!file.remove()) {
+    if(!file.remove())
         qWarning() << "Could not remove lock!";
-    }
+
+}
+
+QString Library::fileName() const
+{
+    return m_fileName;
 }
 
 QString Library::fileExtension()
@@ -73,40 +81,36 @@ QString Library::defaultFileName()
     return QString("database" + fileExtension());
 }
 
-void Library::openLibrary(const QString &fileName)
+void Library::restartAndOpenLibrary(const QString &fileName)
 {
-    close();
-    saveFileNameInSettings(fileName);
+    instance()->close();
+    instance()->setFileName(fileName);
 
-    QProcess::startDetached(QApplication::applicationFilePath());
+    QProcess::startDetached(QApplication::applicationFilePath(), QStringList() << fileName);
     QApplication::quit();
 }
 
 bool Library::setupDatabase()
 {
-    QString databaseFilePath = getDatabaseFile();
-
-    if(databaseFilePath.isEmpty())
+    if(m_fileName.isEmpty())
         return false;
 
     qDebug() << "Using database: ";
-    qDebug() << databaseFilePath;
+    qDebug() << m_fileName;
 
-    if(!lockDatabase(databaseFilePath)) {
+    if(!lockDatabase(m_fileName)) {
         qDebug() << "Database is locked";
         return false;
     }
 
     QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE", DATABASE_CONNECTION_NAME);
-    db.setDatabaseName(databaseFilePath);
+    db.setDatabaseName(m_fileName);
 
     if(!db.open()) {
         qDebug() << "Could not open database:";
         qDebug() << db.lastError();
         return false;
     }
-
-    saveFileNameInSettings(databaseFilePath);
 
     return true;
 }
@@ -144,29 +148,9 @@ bool Library::lockDatabase(const QString &databaseFilePath)
     return true;
 }
 
-QString Library::getDatabaseFile()
+void Library::setFileName(const QString &fileName)
 {
-    // command line argument
-    QString databaseFilePath = fileNameFromArguments();
-    if(!databaseFilePath.isEmpty())
-        return databaseFilePath;
-
-    // settings (opened at last start)
-    databaseFilePath = currentFileName();
-    if(!databaseFilePath.isEmpty())
-        return databaseFilePath;
-
-    // dropbox
-    databaseFilePath = fileNameInDropbox();
-    if(!databaseFilePath.isEmpty())
-        return databaseFilePath;
-
-    // local file in QStandardPaths::DataLocation as last
-    return fileNameLocal();
-}
-
-void Library::saveFileNameInSettings(const QString &fileName)
-{
+    m_fileName = fileName;
     QSettings settings;
     settings.setValue("library/databasefilename", fileName);
 }
@@ -201,7 +185,7 @@ QString Library::fileNameFromArguments()
     return databaseFilePath;
 }
 
-QString Library::currentFileName()
+QString Library::fileNameFromSettings()
 {
     QSettings settings;
     QString databaseFilePath = settings.value("library/databasefilename").toString();
@@ -313,6 +297,12 @@ bool Library::createFileIfNotExists(const QString &fileName)
             qWarning() << "Could not create file:";
             qWarning() << fileName;
 
+            QMessageBox msg;
+            msg.setText(QObject::tr("Could not create file '%1'!")
+                        .arg(fileName));
+            msg.setIcon(QMessageBox::Critical);
+            msg.exec();
+
             return false;
         }
         dbFile.close();
@@ -320,7 +310,10 @@ bool Library::createFileIfNotExists(const QString &fileName)
 
     return true;
 }
-
+bool Library::isOpen() const
+{
+    return m_isOpen;
+}
 
 bool Library::setupPersistence()
 {

@@ -8,39 +8,43 @@
 class Library
 {
 public:
-    Library();
+    static Library *instance();
+    bool open();
+    void close();
 
-    static bool open();
-    static void close();
+    bool isOpen() const;
 
-    static QString currentFileName();
-    static void saveFileNameInSettings(const QString &fileName);
+    QString fileName() const;
+    void setFileName(const QString &fileNameFromSettings);
 
     static QString fileExtension();
     static QString defaultFileName();
 
-    static void openLibrary(const QString &fileName);
-
-private:
-    static bool setupDatabase();
-    static bool setupPersistence();
-    static bool fillCaches();
-
-    static bool lockDatabase(const QString &databaseFilePath);
-
-    static QString getDatabaseFile();
-
+    static QString fileNameFromSettings();
     static QString fileNameFromArguments();
     static QString fileNameInDropbox();
     static QString fileNameLocal();
 
-    static bool createFileIfNotExists(const QString &fileName);
+    static bool createFileIfNotExists(const QString &fileNameFromSettings);
+    static void restartAndOpenLibrary(const QString &fileNameFromSettings);
+
+private:
+    Library();
+
+    bool setupDatabase();
+    bool setupPersistence();
+    bool fillCaches();
+
+    static bool lockDatabase(const QString &databaseFilePath);
 
     // Caches
-    static QList<QSharedPointer<Player> > m_players;
-    static QList<QSharedPointer<Game> > m_games;
-    static QList<QSharedPointer<Round> > m_rounds;
-    static QList<QSharedPointer<LiveDrink> > m_liveDrinks;
+    QList<QSharedPointer<Player> > m_players;
+    QList<QSharedPointer<Game> > m_games;
+    QList<QSharedPointer<Round> > m_rounds;
+    QList<QSharedPointer<LiveDrink> > m_liveDrinks;
+
+    QString m_fileName;
+    bool m_isOpen;
 };
 
 #endif // LIBRARY_H

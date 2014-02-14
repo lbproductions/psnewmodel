@@ -133,7 +133,7 @@ void GameCompareStatsWidget::update()
     }
 }
 
-void GameCompareStatsWidget::showEvent(QShowEvent *)
+void GameCompareStatsWidget::showOrOpenLibrary(QShowEvent *)
 {
     update();
 }

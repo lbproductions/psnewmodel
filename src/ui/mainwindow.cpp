@@ -5,21 +5,21 @@
 #include "drinkinformationdialog.h"
 #include "game/gamewindow.h"
 #include "widgets/sharelibrarywidget.h"
+#include "chooselibrarywidget.h"
 
 #include <library.h>
 #include <model/playerslistmodel.h>
 #include <model/gamelistmodel.h>
 #include <model/drinkslistmodel.h>
 #include <misc/tools.h>
-#include <misc/settings.h>
 
 #include <QApplication>
 #include <QSortFilterProxyModel>
 #include <QTimer>
 #include <QSettings>
 #include <QStandardPaths>
-#include <QFileDialog>
 #include <QMessageBox>
+#include <QDir>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -193,16 +193,10 @@ void MainWindow::on_actionNew_Game_triggered()
 
 void MainWindow::on_actionOpen_library_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Library"), GameSettings::openFileLocation());
+    close();
 
-    if(fileName.isEmpty())
-        return;
-
-    if(fileName == Library::currentFileName())
-        return;
-
-    GameSettings::saveOpenFileLocation(fileName);
-    Library::openLibrary(fileName);
+    ChooseLibraryWidget *widget = new ChooseLibraryWidget;
+    widget->show();
 }
 
 void MainWindow::on_actionShare_Library_triggered()

@@ -15,6 +15,8 @@ public:
     explicit ChooseLibraryWidget(QWidget *parent = 0);
     ~ChooseLibraryWidget();
 
+    void showOrOpenLibrary();
+
 protected:
     void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -25,8 +27,12 @@ private slots:
     void on_frameButton1_clicked();
     void on_frameButton1_2_clicked();
 
+    void on_toolButtonOpen_clicked();
+
 private:
     Ui::ChooseLibraryWidget *ui;
+
+    void openLibrary(const QString &libraryPath);
 
     bool m_moving;
     QPoint m_offset;

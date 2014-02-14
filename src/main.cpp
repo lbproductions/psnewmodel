@@ -27,16 +27,12 @@ int main(int argc, char *argv[])
         s.clear();
     }
 
-    Library library;
-    if(!library.open())
-        return 0;
-
     ChooseLibraryWidget *mainWindow = new ChooseLibraryWidget;
-    mainWindow->show();
+    mainWindow->showOrOpenLibrary();
 
     int ret = a.exec();
 
-    library.close();
+    Library::instance()->close();
     delete updater;
 
     return ret;
