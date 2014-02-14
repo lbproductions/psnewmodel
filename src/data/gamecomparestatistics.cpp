@@ -32,6 +32,10 @@ int GameCompareStatistics::placementOfGame(QSharedPointer<Game> game, Slot::Cont
 
 int GameCompareStatistics::value(QSharedPointer<Game> game, Slot::Context context, int roundNumber)
 {
+    if(game->rounds().size() <= roundNumber) {
+        return -1;
+    }
+
     if(!m_initialized) {
         initialize();
     }
@@ -39,28 +43,37 @@ int GameCompareStatistics::value(QSharedPointer<Game> game, Slot::Context contex
     return m_slots.value(roundNumber)->value(game->rounds().at(roundNumber), context);
 }
 
-void GameCompareStatistics::setGames(QList<QSharedPointer<Game> > games)
+void GameCompareStatistics::filterGames(QList<QSharedPointer<Game> > games)
 {
-    reset();
-
     m_games = games;
     m_useAllGames = false;
 }
 
 QList<QSharedPointer<Game> > GameCompareStatistics::games()
 {
+    if(!m_initialized) {
+        initialize();
+    }
+
     if(m_useAllGames) {
-        return Qp::readAll<Game>();
+        return m_allGames;
     }
     else {
         return m_games;
     }
 }
 
+void GameCompareStatistics::resetFilter()
+{
+    m_games.clear();
+    m_useAllGames = true;
+}
+
 void GameCompareStatistics::reset()
 {
     m_slots.clear();
     m_games.clear();
+    m_allGames.clear();
 
     m_initialized = false;
     m_useAllGames = true;
@@ -74,16 +87,22 @@ void GameCompareStatistics::updateRound(QSharedPointer<QObject> object)
 
 void GameCompareStatistics::initialize()
 {
+    if(m_initialized)
+        return;
+
     QElapsedTimer timer;
     timer.start();
 
 
-    foreach(QSharedPointer<Game> game, games()) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(!m_slots.keys().contains(round->number())) {
-                Slot* slot = new Slot(this);
-                m_slots.insert(round->number(), slot);
+    foreach(QSharedPointer<Game> game, Qp::readAll<Game>()) {
+        if(game->rounds().size() > 0 && game->type() == Game::Doppelkopf) {
+            foreach(QSharedPointer<Round> round, game->rounds()) {
+                if(!m_slots.keys().contains(round->number())) {
+                    Slot* slot = new Slot(this);
+                    m_slots.insert(round->number(), slot);
+                }
             }
+            m_allGames.append(game);
         }
     }
 
@@ -93,17 +112,19 @@ void GameCompareStatistics::initialize()
         }
     }
 
-    foreach(QSharedPointer<Game> game, games()) {
+    foreach(QSharedPointer<Game> game, m_allGames) {
         foreach(QSharedPointer<Round> round, game->rounds()) {
             m_slots.value(round->number())->addRound(round);
         }
     }
 
     qDebug() << "Initialize of GameCompareStatistics took" << timer.elapsed() << "milliseconds";
-    qDebug() << "Count of games: " << games().size();
+    qDebug() << "Count of games: " << m_allGames.size();
     qDebug() << "Count of slots: " << m_slots.keys().size();
 
     m_initialized = true;
+
+    emit initializeFinished();
 }
 
 
@@ -139,7 +160,7 @@ int Slot::placement(QSharedPointer<Game> game, Slot::Context context)
     int placement = 1;
 
     foreach(GamePair pair, pairs) {
-        if(pair.second > value) {
+        if(GameCompareStatistics::instance().games().contains(pair.first) && pair.second > value) {
             placement++;
         }
     }
@@ -157,9 +178,16 @@ void Slot::addRound(QSharedPointer<Round> round)
     }
     if(round->soloPlayer()) {
         addValue(round, Solo, 1);
+        if(round->isPflicht()) {
+            addValue(round, Pflichtsolo, 1);
+        }
+        else {
+           addValue(round, Pflichtsolo, 0);
+        }
     }
     else {
         addValue(round, Solo, 0);
+        addValue(round, Pflichtsolo, 0);
     }
     if(round->trumpfabgabePlayer()) {
         addValue(round, Trumpfabgabe, 1);

@@ -107,7 +107,7 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
 
     ui->gamesWidget->setGames(m_league->calculatedGames());
 
-    ui->gameStatsWidget->setGames(m_league->calculatedGames());
+    ui->gameStatsWidget->setLeague(m_league);
 }
 
 void LeagueWindow::on_pushButtonCurrent_clicked()

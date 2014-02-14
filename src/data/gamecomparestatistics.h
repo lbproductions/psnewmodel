@@ -54,19 +54,25 @@ public:
     int placementOfGame(QSharedPointer<Game> game, Slot::Context context, int roundNumber);
     int value(QSharedPointer<Game> game, Slot::Context context, int roundNumber);
 
-    void setGames(QList<QSharedPointer<Game> > games);
+    void filterGames(QList<QSharedPointer<Game> > games);
     QList<QSharedPointer<Game> > games();
+    void resetFilter();
 
     void reset();
+
+    void initialize();
 
 private slots:
     void updateRound(QSharedPointer<QObject> object);
 
-private:
-    void initialize();
+signals:
+    void initializeToValueCompleted(int percentage);
+    void initializeFinished();
 
+private:
     QMap<int, Slot*> m_slots;
     QList<QSharedPointer<Game> > m_games;
+    QList<QSharedPointer<Game> > m_allGames;
 
     bool m_initialized;
     bool m_useAllGames;
