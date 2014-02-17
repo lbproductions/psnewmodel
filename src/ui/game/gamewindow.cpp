@@ -20,8 +20,8 @@
 #include <ui/widgets/popupwidget.h>
 #include <data/game.h>
 #include <data/place.h>
-#include <model/gameoverviewmodel.h>
-#include <model/gameinformationmodel.h>
+#include <ui/model/gameoverviewmodel.h>
+#include <ui/model/gameinformationmodel.h>
 #include <data/player.h>
 #include <misc/tools.h>
 #include <misc/settings.h>

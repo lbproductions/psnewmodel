@@ -103,13 +103,12 @@ int main(int argc, char *argv[])
     QList<QSharedPointer<Round> > rounds = Qp::readAll<Round>();
     QList<QSharedPointer<LiveDrink> > liveDrinks = Qp::readAll<LiveDrink>();
 
-    StartWindow* startWindow = new StartWindow();
+    MainWindow* startWindow = new MainWindow();
     startWindow->show();
 
     int ret = a.exec();
 
     delete Updater::instanceForPlatform();
-    delete startWindow;
     Qp::database().close();
 
     return ret;

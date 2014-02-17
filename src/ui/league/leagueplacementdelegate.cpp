@@ -2,7 +2,7 @@
 
 #include <QPainter>
 
-#include <model/leagueclassementmodel.h>
+#include <ui/model/leagueclassementmodel.h>
 #include <data/league.h>
 #include "leaguewindow.h"
 

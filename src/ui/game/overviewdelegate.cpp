@@ -1,6 +1,6 @@
 #include "overviewdelegate.h"
 
-#include <model/gameoverviewmodel.h>
+#include <ui/model/gameoverviewmodel.h>
 #include <data/game.h>
 #include <data/round.h>
 

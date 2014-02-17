@@ -1,13 +1,13 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include "playerinformationdialog.h"
-#include "drinkinformationdialog.h"
+#include "dialogs/playerinformationdialog.h"
+#include "dialogs/drinkinformationdialog.h"
 #include "game/gamewindow.h"
 
-#include <model/playerslistmodel.h>
-#include <model/gamelistmodel.h>
-#include <model/drinkslistmodel.h>
+#include <ui/model/playerslistmodel.h>
+#include <ui/model/gamelistmodel.h>
+#include <ui/model/drinkslistmodel.h>
 #include <misc/tools.h>
 
 #include <QApplication>
@@ -24,13 +24,15 @@ MainWindow::MainWindow(QWidget *parent) :
     setAttribute(Qt::WA_DeleteOnClose, true);
 
     QActionGroup *actionGroup = new QActionGroup(this);
+    actionGroup->addAction(ui->actionStart);
     actionGroup->addAction(ui->actionDrinks);
     actionGroup->addAction(ui->actionGames);
     actionGroup->addAction(ui->actionPlaces);
     actionGroup->addAction(ui->actionPlayers);
     actionGroup->setExclusive(true);
-    ui->actionPlayers->setChecked(true);
+    ui->actionStart->setChecked(true);
 
+    ui->toolButtonStart->setDefaultAction(ui->actionStart);
     ui->toolButtonDrinks->setDefaultAction(ui->actionDrinks);
     ui->toolButtonGames->setDefaultAction(ui->actionGames);
     ui->toolButtonPlaces->setDefaultAction(ui->actionPlaces);
@@ -54,10 +56,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
             this, &MainWindow::on_actionDrinkInformation_triggered);
 
+    ui->pageStart->init(this);
+
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
-
-    on_actionPlayers_triggered();
 }
 
 MainWindow::~MainWindow()
@@ -80,7 +82,6 @@ void MainWindow::saveWindowState()
     settings.setValue("mainwindow/treeviewplayers/state", ui->treeViewPlayers->header()->saveState());
     settings.setValue("mainwindow/treeviewgames/state", ui->treeViewGames->header()->saveState());
     settings.setValue("mainwindow/treeviewdrinks/state", ui->treeViewDrinks->header()->saveState());
-    settings.setValue("mainwindow/splitter", ui->splitter->saveState());
 }
 
 void MainWindow::restoreWindowState()
@@ -91,7 +92,11 @@ void MainWindow::restoreWindowState()
     ui->treeViewPlayers->header()->restoreState(settings.value("mainwindow/treeviewplayers/state").toByteArray());
     ui->treeViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
     ui->treeViewDrinks->header()->restoreState(settings.value("mainwindow/treeviewdrinks/state").toByteArray());
-    ui->splitter->restoreState(settings.value("mainwindow/splitter").toByteArray());
+}
+
+void MainWindow::on_actionStart_triggered()
+{
+    ui->stackedWidget->setCurrentWidget(ui->pageStart);
 }
 
 void MainWindow::on_actionPlayers_triggered()

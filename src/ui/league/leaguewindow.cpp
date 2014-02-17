@@ -7,8 +7,8 @@
 #include <QWheelEvent>
 
 #include <data/league.h>
-#include <model/leagueclassementmodel.h>
-#include <model/leaguegameplacementmodel.h>
+#include <ui/model/leagueclassementmodel.h>
+#include <ui/model/leaguegameplacementmodel.h>
 
 #include "leaguehorizontalheaderview.h"
 #include "leagueplacementdelegate.h"
