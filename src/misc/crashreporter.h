@@ -4,7 +4,7 @@
 class CrashReporter
 {
 public:
-    CrashReporter();
+    static void init();
 };
 
 #endif // CRASHREPORTER_H

@@ -4,8 +4,13 @@
 #include <misc/updater/updater.h>
 #include <ui/chooselibrarywidget.h>
 #include <misc/cocoainitializer.h>
+#include <misc/crashreporter.h>
 
 #include <QSettings>
+
+void crash() {
+    delete reinterpret_cast<QString*>(0xFEE1DEAD);
+}
 
 int main(int argc, char *argv[])
 {
@@ -21,6 +26,8 @@ int main(int argc, char *argv[])
 
     Updater *updater = Updater::instanceForPlatform();
     updater->checkForUpdatesInBackground();
+
+    CrashReporter::init();
 
     if(a.arguments().contains("-C")) {
         QSettings s;

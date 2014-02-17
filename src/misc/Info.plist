@@ -22,6 +22,7 @@
     <string>@SHORT_VERSION@</string>
     <key>SUPublicDSAKeyFile</key>
     <string>dsa_pub.pem</string>
+
     <key>UTExportedTypeDeclarations</key>
     <array>
         <dict>
@@ -59,5 +60,24 @@
             <string>Editor</string>
         </dict>
     </array>
+
+    <key>BreakpadProduct</key>
+    <string>ProjectStats</string>
+    <key>BreakpadProductDisplay</key>
+    <string>ProjectStats</string>
+    <key>BreakpadVendor</key>
+    <string>Niklas or Niclas</string>
+    <key>BreakpadVersion</key>
+    <string>@SHORT_VERSION@</string>
+    <key>BreakpadURL</key>
+    <string>http://localhost:1127/post</string>
+    <key>BreakpadReportInterval</key>
+    <string>0</string>
+    <key>BreakpadLogFiles</key>
+    <array>
+    <string>/Users/niklaswulf/breakpad.log</string>
+    </array>
+    <key>BreakpadLogFileTailSize</key>
+    <string>40000</string>
 </dict>
 </plist>
