@@ -3,27 +3,56 @@
 #include <QPainter>
 
 #include <model/leagueclassementmodel.h>
+#include <data/league.h>
 #include "leaguewindow.h"
 
 LeagueDelegate::LeagueDelegate(QObject *parent) :
-    QStyledItemDelegate(parent)
+    QStyledItemDelegate(parent),
+    m_classementModel(0)
 {
+}
+
+LeagueDelegate::~LeagueDelegate()
+{
+    if(m_classementModel) {
+        m_classementModel = 0;
+        delete m_classementModel;
+    }
+}
+
+void LeagueDelegate::setClassementModel(LeagueClassementModel *model)
+{
+    m_classementModel = model;
 }
 
 void LeagueDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    if(m_classementModel == 0)
+        return;
+
+    QSharedPointer<League> league = m_classementModel->league();
     painter->save();
 
     QPalette palette = static_cast<QWidget *>(this->parent())->palette();
-
-    painter->setPen(QPen(palette.color(QPalette::Highlight)));
+    painter->setPen(QPen(Qt::transparent));
     painter->setBrush(palette.color(QPalette::Base));
 
-    QRect r = option.rect.adjusted(-1,0,0,-1);
-    if(index.row() != 0)
-        r.adjust(0,-1,0,0);
+    QRect r = option.rect;
 
     painter->drawRect(r);
+    painter->setPen(QPen(palette.highlight().color()));
+    if(index.column() < league->calculatedGames().size())
+        painter->drawLine(r.topRight(), r.bottomRight());
+
+    painter->drawLine(r.bottomLeft(), r.bottomRight());
+    if(index.row() == 0) {
+        painter->drawLine(r.topLeft(), r.topRight());
+        r.adjust(0,1,0,0);
+    }
+
+    painter->setPen(QPen(Qt::transparent));
+
+    r.adjust(0,0,-1,-1);
 
     QColor color = index.data(Qt::BackgroundColorRole).value<QColor>();
     if(color.isValid()) {

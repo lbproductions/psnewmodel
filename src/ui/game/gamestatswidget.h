@@ -4,15 +4,19 @@
 #include <QWidget>
 #include <QTreeWidgetItem>
 
+
 namespace Ui {
     class GameStatsWidget;
 }
 
 class Game;
+class League;
 class ReContraStatsWidget;
 class PointsStatsWidget;
 class GamesTogetherWidget;
 class SoloOverviewWidget;
+class DrinkStatsWidget;
+class GameCompareStatsWidget;
 
 class GameStatsWidget : public QWidget
 {
@@ -23,6 +27,7 @@ class GameStatsWidget : public QWidget
         ~GameStatsWidget();
 
         void setGames(QList<QSharedPointer<Game> > games);
+        void setLeague(QSharedPointer<League> league);
 
    private slots:
         void onItemClicked(QTreeWidgetItem* item);
@@ -40,6 +45,8 @@ class GameStatsWidget : public QWidget
         PointsStatsWidget* m_pointsStatsWidget;
         GamesTogetherWidget* m_gamesTogetherWidget;
         SoloOverviewWidget* m_soloWidget;
+        DrinkStatsWidget* m_drinksWidget;
+        GameCompareStatsWidget* m_gameCompareStatsWidget;
 
         int m_widgetCounter;
 };

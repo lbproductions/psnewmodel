@@ -283,13 +283,36 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
             return QVariant::fromValue<QFont>(font);
         }
 
+        int roundIndex = section;
+        int count = m_game->finishedRoundCount();
+        int total = m_game->totalRoundCount();
+        int roundsLeft = total - count;
+        int playerSize = m_game->players().size();
+
         if(role == Qt::DisplayRole) {
-            int roundIndex = section;
-            if(roundIndex < m_game->rounds().size()) {
-                if(m_game->players().size() > 0 &&
-                        roundIndex % m_game->players().size() == 0)
-                    return roundIndex + 1;
+            if(roundIndex >= total)
+                return QVariant();
+
+            if(roundIndex < count && playerSize > 0 && roundIndex % playerSize == 0) {
+                return roundIndex + 1;
             }
+            else if(roundsLeft > 0) {
+                if(roundIndex == total - 2)
+                    return tr("%1").arg(roundsLeft);
+                if(roundIndex == total - 1)
+                    return tr(" left");
+            }
+        }
+
+        if(role == AlignmentRole) {
+            if(roundsLeft > 0) {
+                if(roundIndex == total - 2)
+                    return Qt::AlignRight;
+                if(roundIndex == total - 1)
+                    return Qt::AlignLeft;
+            }
+
+            return Qt::AlignCenter;
         }
     }
     //    else {

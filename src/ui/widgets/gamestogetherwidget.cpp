@@ -15,6 +15,7 @@ GamesTogetherWidget::GamesTogetherWidget(QWidget *parent) :
     this->setColumnCount(4);
     this->setHeaderLabels(QStringList() << tr("Players") << tr("Wins") << tr("Rounds") << tr("WinPercentage"));
 
+    setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
 GamesTogetherWidget::~GamesTogetherWidget()

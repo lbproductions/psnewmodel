@@ -72,7 +72,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         pen.setWidth(2);
         pen.setBrush(Qt::white);
         painter->setPen(pen);
-        QRect r2 = r.adjusted(0,1,1,1);
+        QRect r2 = r.adjusted(0,0,1,1);
         painter->drawLine(r2.topLeft(), r2.bottomLeft());
     }
     painter->restore();

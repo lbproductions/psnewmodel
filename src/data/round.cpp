@@ -252,6 +252,8 @@ QList<QSharedPointer<Player> > Round::playingPlayers() const
     int countPlayers = ps.size();
     int cardMixerPos = cardMixerPosition();
     int zusaetzlichAussetzenderSpieler = number() / countPlayers;
+    if(game()->aditionalMissingPlayer() == Game::MissingOppositeOfCardMixer)
+        zusaetzlichAussetzenderSpieler = countPlayers / 2 - 1;
 
     for(int i = cardMixerPos + 1, anzahl = 0; anzahl < 4; ++i, ++anzahl)
     {

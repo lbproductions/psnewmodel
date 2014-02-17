@@ -17,6 +17,7 @@ Game::Game(QObject *parent) :
     m_type(UnkownType),
     m_creationTime(QDateTime::currentDateTime()),
     m_mitPflichtSolo(false),
+    m_additionalMissingPlayer(MissingOppositeOfCardMixer),
     m_site("site", this),
     m_players("players", this),
     m_rounds("rounds", this),
@@ -153,9 +154,7 @@ void Game::setState(State state)
 
     switch(state) {
     case Finished:
-        r->setState(Round::Finished);
-        Qp::remove<Round>(r);
-        emit stateChanged();
+        finish();
         return;
     case Running:
         r->setState(Round::Running);
@@ -190,6 +189,23 @@ void Game::pause()
 {
     if(state() == Game::Running)
         setState(Game::Paused);
+}
+
+void Game::finish()
+{
+    QSharedPointer<Round> r = currentRound();
+    Q_ASSERT(r);
+
+    removeRound(r);
+    Qp::remove<Round>(r);
+    r->deleteLater();
+
+    r = currentRound();
+    Q_ASSERT(r);
+
+    r->setState(Round::Finished);
+
+    emit stateChanged();
 }
 
 QPixmap Game::statePixmap() const
@@ -719,9 +735,25 @@ void Game::addRound(QSharedPointer<Round> round)
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
+void Game::removeRound(QSharedPointer<Round> round)
+{
+    m_rounds.unrelate(round);
+    m_currentRoundCached = QSharedPointer<Round>();
+}
+
 void Game::setMitPflichtSolo(bool arg)
 {
     m_mitPflichtSolo = arg;
+}
+
+Game::AdditionalMissingPlayer Game::aditionalMissingPlayer() const
+{
+    return m_additionalMissingPlayer;
+}
+
+void Game::setAdditionalMissingPlayer(Game::AdditionalMissingPlayer arg)
+{
+    m_additionalMissingPlayer = arg;
 }
 
 bool Game::mitPflichtSolo() const
