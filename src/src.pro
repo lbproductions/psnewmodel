@@ -10,9 +10,9 @@ include($$BREAKPAD_PATH/Breakpad.pri)
 ### General config ###
 
 TARGET          = psnewmodel
-VERSION         = 0.0.0
+VERSION         = 0.0.1
 TEMPLATE        = app
-ICON            = resource/general/icon4.icns
+ICON            = resource/general/icon2.icns
 QT              += sql widgets
 CONFIG          += c++11
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
@@ -260,7 +260,6 @@ HEADERS  += \
     misc/updater/updater.h \
     ui/chooselibrarywidget.h \
     ui/widgets/frame.h \
-    ui/widgets/sharelibrarywidget.h \
     misc/crashreporter.h \
     data/gamecomparestatistics.h \
     ui/game/drinkstatswidget.h \

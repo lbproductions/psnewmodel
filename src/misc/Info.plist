@@ -5,7 +5,7 @@
     <key>NSPrincipalClass</key>
     <string>NSApplication</string>
     <key>CFBundleIconFile</key>
-    <string>icon.icns</string>
+    <string>icon2.icns</string>
     <key>CFBundlePackageType</key>
     <string>APPL</string>
     <key>CFBundleGetInfoString</key>
@@ -66,7 +66,7 @@
     <key>BreakpadProductDisplay</key>
     <string>ProjectStats</string>
     <key>BreakpadVendor</key>
-    <string>Niklas or Niclas</string>
+    <string>Niklas and Niclas</string>
     <key>BreakpadVersion</key>
     <string>@SHORT_VERSION@</string>
     <key>BreakpadURL</key>
@@ -75,7 +75,7 @@
     <string>0</string>
     <key>BreakpadLogFiles</key>
     <array>
-    <string>/Users/niklaswulf/breakpad.log</string>
+    <string>breakpad.log</string>
     </array>
     <key>BreakpadLogFileTailSize</key>
     <string>40000</string>
