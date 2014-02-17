@@ -2,7 +2,7 @@
 #include "ui_playerinformationdialog.h"
 
 #include <data/player.h>
-#include <model/playerslistmodel.h>
+#include <ui/model/playerslistmodel.h>
 
 #include <QPushButton>
 

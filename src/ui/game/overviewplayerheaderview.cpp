@@ -1,6 +1,6 @@
 #include "overviewplayerheaderview.h"
 
-#include <model/gameinformationmodel.h>
+#include <ui/model/gameinformationmodel.h>
 #include <data/game.h>
 #include <data/player.h>
 #include <misc/tools.h>

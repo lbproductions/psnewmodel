@@ -1,10 +1,18 @@
 <RCC>
     <qresource prefix="/sidebar">
         <file alias="item-background-selected">item-background-selected.png</file>
-        <file>players.png</file>
-        <file>drinks.png</file>
+        <file alias="button_background_c_arrow">button_background_c.png</file>
+        <file alias="button_background_nc">button_background_nc.png</file>
+        <file alias="button_background_p">button_background_p.png</file>
+        <file alias="button_background_c">button_background_noarrow_c.png</file>
+        <file>players_nc.png</file>
+        <file>players_c.png</file>
+        <file>games_c.png</file>
+        <file>games_nc.png</file>
+        <file>drink_c.png</file>
+        <file>drink_nc.png</file>
+        <file>places_c.png</file>
+        <file>places_nc.png</file>
         <file>games.png</file>
-        <file>places.png</file>
-        <file>games_green.png</file>
     </qresource>
 </RCC>

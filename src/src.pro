@@ -112,15 +112,15 @@ SOURCES += main.cpp \
     data/playerstatistics.cpp \
     data/round.cpp \
     data/schmeisserei.cpp \
-    model/drinkslistmodel.cpp \
-    model/gamelistmodel.cpp \
-    model/playerslistmodel.cpp \
+    ui/model/drinkslistmodel.cpp \
+    ui/model/gamelistmodel.cpp \
+    ui/model/playerslistmodel.cpp \
     ui/mainwindow.cpp \
-    ui/playerinformationdialog.cpp \
+    ui/dialogs/playerinformationdialog.cpp \
     ui/widgets/imagewell.cpp \
     misc/tools.cpp \
     ui/game/gamewindow.cpp \
-    model/gameoverviewmodel.cpp \
+    ui/model/gameoverviewmodel.cpp \
     ui/game/overviewplayerheaderview.cpp \
     ui/game/overviewhorizontalheaderview.cpp \
     ui/game/overviewdelegate.cpp \
@@ -131,13 +131,13 @@ SOURCES += main.cpp \
     ui/game/schmeissereidialog.cpp \
     ui/game/statisticswidget.cpp \
     ui/widgets/shadowframe.cpp \
-    ui/drinkinformationdialog.cpp \
+    ui/dialogs/drinkinformationdialog.cpp \
     ui/widgets/menubar.cpp \
     ui/widgets/playerslistwidget.cpp \
     ui/widgets/placescombobox.cpp \
     ui/widgets/playerslistdelegate.cpp \
     ui/widgets/popupwidget.cpp \
-    model/gameinformationmodel.cpp \
+    ui/model/gameinformationmodel.cpp \
     ui/widgets/objectlistwidget.cpp \
     ui/widgets/drinkslistwidget.cpp \
     data/old_offlineGameInformation.cpp \
@@ -146,10 +146,10 @@ SOURCES += main.cpp \
     ui/game/playerstatswidget.cpp \
     ui/league/addleaguedialog.cpp \
     ui/league/leaguewindow.cpp \
-    model/leagueclassementmodel.cpp \
+    ui/model/leagueclassementmodel.cpp \
     ui/league/leagueplayerheaderview.cpp \
     ui/league/leagueplacementdelegate.cpp \
-    model/leaguegameplacementmodel.cpp \
+    ui/model/leaguegameplacementmodel.cpp \
     ui/league/leaguehorizontalheaderview.cpp \
     data/matchday.cpp \
     ui/widgets/graphwidget.cpp \
@@ -179,7 +179,8 @@ SOURCES += main.cpp \
     ui/widgets/frame.cpp \
     data/gamecomparestatistics.cpp \
     ui/game/drinkstatswidget.cpp \
-    ui/game/gamecomparestatswidget.cpp
+    ui/game/gamecomparestatswidget.cpp \
+    ui/widgets/startwidget.cpp
 
 
 HEADERS  += \
@@ -192,15 +193,15 @@ HEADERS  += \
     data/playerstatistics.h \
     data/round.h \
     data/schmeisserei.h \
-    model/drinkslistmodel.h \
-    model/gamelistmodel.h \
-    model/playerslistmodel.h \
+    ui/model/drinkslistmodel.h \
+    ui/model/gamelistmodel.h \
+    ui/model/playerslistmodel.h \
     ui/mainwindow.h \
-    ui/playerinformationdialog.h \
+    ui/dialogs/playerinformationdialog.h \
     ui/widgets/imagewell.h \
     misc/tools.h \
     ui/game/gamewindow.h \
-    model/gameoverviewmodel.h \
+    ui/model/gameoverviewmodel.h \
     ui/game/overviewplayerheaderview.h \
     ui/game/overviewhorizontalheaderview.h \
     ui/game/overviewdelegate.h \
@@ -211,13 +212,13 @@ HEADERS  += \
     ui/game/schmeissereidialog.h \
     ui/game/statisticswidget.h \
     ui/widgets/shadowframe.h \
-    ui/drinkinformationdialog.h \
+    ui/dialogs/drinkinformationdialog.h \
     ui/widgets/menubar.h \
     ui/widgets/playerslistwidget.h \
     ui/widgets/placescombobox.h \
     ui/widgets/playerslistdelegate.h \
     ui/widgets/popupwidget.h \
-    model/gameinformationmodel.h \
+    ui/model/gameinformationmodel.h \
     ui/widgets/objectlistwidget.h \
     ui/widgets/drinkslistwidget.h \
     data/old_offlineGameInformation.h \
@@ -226,10 +227,10 @@ HEADERS  += \
     ui/game/playerstatswidget.h \
     ui/league/addleaguedialog.h \
     ui/league/leaguewindow.h \
-    model/leagueclassementmodel.h \
+    ui/model/leagueclassementmodel.h \
     ui/league/leagueplayerheaderview.h \
     ui/league/leagueplacementdelegate.h \
-    model/leaguegameplacementmodel.h \
+    ui/model/leaguegameplacementmodel.h \
     ui/league/leaguehorizontalheaderview.h \
     data/matchday.h \
     ui/widgets/graphwidget.h \
@@ -264,17 +265,18 @@ HEADERS  += \
     misc/crashreporter.h \
     data/gamecomparestatistics.h \
     ui/game/drinkstatswidget.h \
-    ui/game/gamecomparestatswidget.h
+    ui/game/gamecomparestatswidget.h \
+    ui/widgets/startwidget.h
 
 
 FORMS += \
     ui/mainwindow.ui \
-    ui/playerinformationdialog.ui \
+    ui/dialogs/playerinformationdialog.ui \
     ui/game/gamewindow.ui \
     ui/game/newrounddialog.ui \
     ui/game/schmeissereidialog.ui \
     ui/game/statisticswidget.ui \
-    ui/drinkinformationdialog.ui \
+    ui/dialogs/drinkinformationdialog.ui \
     ui/league/addleaguedialog.ui \
     ui/league/leaguewindow.ui \
     ui/widgets/solooverviewwidget.ui \
@@ -289,7 +291,8 @@ FORMS += \
     ui/game/drinkswidget.ui \
     ui/chooselibrarywidget.ui \
     ui/game/drinkstatswidget.ui \
-    ui/game/gamecomparestatswidget.ui
+    ui/game/gamecomparestatswidget.ui \
+    ui/widgets/startwidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

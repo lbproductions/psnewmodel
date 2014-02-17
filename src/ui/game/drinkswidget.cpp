@@ -3,8 +3,8 @@
 
 #include "data/player.h"
 #include "data/drink.h"
-#include "model/drinkslistmodel.h"
-#include "model/playerslistmodel.h"
+#include "ui/model/drinkslistmodel.h"
+#include "ui/model/playerslistmodel.h"
 #include "misc/tools.h"
 #include "data/game.h"
 #include "data/livedrink.h"

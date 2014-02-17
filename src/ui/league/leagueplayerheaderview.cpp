@@ -2,7 +2,7 @@
 
 #include <QPainter>
 
-#include <model/leagueclassementmodel.h>
+#include <ui/model/leagueclassementmodel.h>
 
 LeaguePlayerHeaderView::LeaguePlayerHeaderView(Qt::Orientation orientation, QWidget *parent):
     QHeaderView(orientation, parent),

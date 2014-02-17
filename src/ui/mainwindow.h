@@ -21,6 +21,7 @@ public:
 private slots:
     void on_actionNew_Game_triggered();
 
+    void on_actionStart_triggered();
     void on_actionPlayers_triggered();
     void on_actionGames_triggered();
     void on_actionPlaces_triggered();
@@ -36,6 +37,8 @@ private slots:
     void on_actionOpen_library_triggered();
 
 private:
+    friend class StartWidget;
+
     Ui::MainWindow *ui;
     PlayersListModel* m_playerListModel;
 

@@ -1,7 +1,7 @@
 #include "overviewhorizontalheaderview.h"
 
 #include <data/game.h>
-#include <model/gameoverviewmodel.h>
+#include <ui/model/gameoverviewmodel.h>
 
 #include <QTextOption>
 #include <QPainter>
