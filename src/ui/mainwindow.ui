@@ -624,6 +624,8 @@ border-bottom: 1px solid rgb(77,77,77);
    </property>
    <property name="shortcut">
     <string>Ctrl+W</string>
+    </property>
+  </action>
   <action name="actionStart">
    <property name="checkable">
     <bool>true</bool>
