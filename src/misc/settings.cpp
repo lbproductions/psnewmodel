@@ -1,6 +1,7 @@
 #include "settings.h"
 
 #include <QSettings>
+#include <QStandardPaths>
 
 GameSettings::GameSettings(QObject *_parent):
     QObject(_parent),
@@ -25,6 +26,30 @@ GameSettings::~GameSettings()
     settings.setValue("gamewindow/settings/tableDisplay", m_tableDisplay);
     settings.setValue("gamewindow/settings/showExtraRows", m_showExtraRows);
     settings.setValue("gamewindow/settings/gamePercentageWarning", m_gamePercentageWarning);
+}
+
+QString GameSettings::openFileLocation()
+{
+    QSettings settings;
+    QString dir = settings.value("openFileLocation").toString();
+    if(!dir.isEmpty())
+        return dir;
+
+    dir = QStandardPaths::writableLocation(QStandardPaths::HomeLocation);
+
+#ifdef Q_OS_MAC
+    // Bug in QFileDialog
+    // http://stackoverflow.com/questions/16194475/qfiledialoggetopenfilename-doesnt-set-the-initial-directory-on-mac-os-10-8-mo
+    dir.append("/someDummyFile");
+#endif
+
+    return dir;
+}
+
+void GameSettings::saveOpenFileLocation(const QString &location)
+{
+    QSettings settings;
+    settings.setValue("openFileLocation", location);
 }
 
 GameSettings &GameSettings::instance()

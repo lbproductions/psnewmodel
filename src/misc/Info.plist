@@ -22,5 +22,42 @@
     <string>@SHORT_VERSION@</string>
     <key>SUPublicDSAKeyFile</key>
     <string>dsa_pub.pem</string>
+    <key>UTExportedTypeDeclarations</key>
+    <array>
+        <dict>
+            <key>UTTypeIdentifier</key>
+            <string>com.github.lbproductions.projectstats</string>
+            <key>UTTypeReferenceURL</key>
+            <string>https://github.com/lbproductions/psnewmodel/</string>
+            <key>UTTypeDescription</key>
+            <string>ProjectStats Library</string>
+            <key>UTTypeIconFile</key>
+            <string>public.jpeg.icns</string>
+            <key>UTTypeTagSpecification</key>
+            <dict>
+                <key>public.filename-extension</key>
+                <array>
+                    <string>psdb</string>
+                </array>
+                <key>public.mime-type</key>
+                <string>database/psdb</string>
+            </dict>
+        </dict>
+    </array>
+    <key>CFBundleDocumentTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleTypeName</key>
+            <string>com.github.lbproductions.projectstats</string>
+            <key>LSItemContentTypes</key>
+            <array>
+                <string>com.github.lbproductions.projectstats</string>
+            </array>
+            <key>LSHandlerRank</key>
+            <string>Owner</string>
+            <key>CFBundleTypeRole</key>
+            <string>Editor</string>
+        </dict>
+    </array>
 </dict>
 </plist>

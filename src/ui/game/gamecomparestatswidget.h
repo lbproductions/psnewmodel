@@ -32,7 +32,7 @@ private slots:
     void update();
 
 private:
-    void showEvent(QShowEvent *);
+    void showOrOpenLibrary(QShowEvent *);
 
     Ui::GameCompareStatsWidget *ui;
 

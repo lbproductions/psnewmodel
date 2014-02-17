@@ -80,7 +80,7 @@ void GameLengthWidget::paintEvent(QPaintEvent *event)
     double currentHeight = event->rect().bottomLeft().y() - heightOffset * 0.75 + 1;
     painter.setPen(Qt::white);
 
-    if(m_context == TotalTime) {
+    if(m_context == TotalTime && !m_game->rounds().isEmpty()) {
         painter.drawText(QRect(event->rect().bottomRight().x()-scalaWidth, currentHeight - 7, scalaWidth, 15), Qt::AlignRight,
                          m_game->rounds().first()->startTime().time().toString("hh:mm"));
     }

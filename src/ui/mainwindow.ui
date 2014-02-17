@@ -422,6 +422,9 @@ QFrame#frameSidebar {
     </property>
     <addaction name="actionNew_Game"/>
     <addaction name="actionInformation"/>
+    <addaction name="separator"/>
+    <addaction name="actionOpen_library"/>
+    <addaction name="actionClose"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -510,6 +513,22 @@ QFrame#frameSidebar {
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="actionOpen_library">
+   <property name="text">
+    <string>Open Library...</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
    </property>
   </action>
  </widget>
