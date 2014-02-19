@@ -36,10 +36,13 @@ public:
 private:
     QPixmap m_pixmap;
     QPixmap m_pixmapDarker;
+    QPixmap m_displayPixmap;
 
     QColor m_color;
 
     Type m_type;
+
+    void generatePixmaps(const QPixmap pixmap);
 
     QLabel *m_pixmapLabel;
     static QString SupportedFormats();

@@ -1,6 +1,7 @@
 #include "imagewell.h"
 
 #include <misc/tools.h>
+#include <misc/settings.h>
 
 #include <QMouseEvent>
 #include <QFileDialog>
@@ -32,24 +33,8 @@ QPixmap ImageWell::pixmap() const
 void ImageWell::setPixmap(const QPixmap &pixmap)
 {
     m_pixmap = pixmap;
-
-    QPixmap displayPm = pixmap;
-    if(displayPm.isNull()) {
-        displayPm = QPixmap(48,48);
-        displayPm.fill(QColor(240,240,240));
-    }
-
-    m_pixmapLabel->setPixmap(displayPm.scaled(48, 48));
-
-    m_pixmapDarker = displayPm.scaled(48, 48);
-    QPainter p(&m_pixmapDarker);
-    QBrush b(QColor(0,0,0,50));
-    p.setBrush(b);
-    QPen pen = p.pen();
-    pen.setWidth(0);
-    pen.setColor(QColor(0,0,0,0));
-    p.setPen(pen);
-    p.drawRect(0, 0, 48, 48);
+    generatePixmaps(pixmap);
+    m_pixmapLabel->setPixmap(m_displayPixmap);
 }
 
 void ImageWell::setPixmapFromFile(const QString &fileName)
@@ -69,13 +54,16 @@ void ImageWell::mouseReleaseEvent(QMouseEvent *event)
     if(m_type == PixmapWell) {
         QString file = QFileDialog::getOpenFileName(this,
                                      "Choose picture",
-                                     QString(),
+                                     GameSettings::openFileLocation(),
                                      SupportedFormats());
         if(!file.isEmpty())
             setPixmapFromFile(file);
+
+        GameSettings::saveOpenFileLocation(file);
     }
     else if(m_type == ColorWell) {
         QColorDialog dialog;
+        dialog.setCurrentColor(m_color);
         int ret = dialog.exec();
         if(ret == QDialog::Accepted)
             setColor(dialog.currentColor());
@@ -89,7 +77,7 @@ void ImageWell::enterEvent(QEvent *)
 
 void ImageWell::leaveEvent(QEvent *)
 {
-    m_pixmapLabel->setPixmap(m_pixmap);
+    m_pixmapLabel->setPixmap(m_displayPixmap);
 }
 
 QString ImageWell::SupportedFormats()
@@ -124,4 +112,26 @@ ImageWell::Type ImageWell::type() const
 void ImageWell::setType(const Type &type)
 {
     m_type = type;
+}
+
+void ImageWell::generatePixmaps(const QPixmap pixmap)
+{
+    m_displayPixmap = pixmap;
+    if(m_displayPixmap.isNull()) {
+        m_displayPixmap = QPixmap(48,48);
+        m_displayPixmap.fill(QColor(240,240,240));
+    }
+    m_displayPixmap = m_displayPixmap.scaledToHeight(48);
+    if(m_displayPixmap.width() > 48)
+        m_displayPixmap = m_displayPixmap.scaledToWidth(48);
+
+    m_pixmapDarker = m_displayPixmap;
+    QPainter p(&m_pixmapDarker);
+    QBrush b(QColor(0,0,0,50));
+    p.setBrush(b);
+    QPen pen = p.pen();
+    pen.setWidth(0);
+    pen.setColor(QColor(0,0,0,0));
+    p.setPen(pen);
+    p.drawRect(0, 0, 48, 48);
 }
