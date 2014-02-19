@@ -202,7 +202,7 @@ void MainWindow::on_actionPlaces_triggered()
         ui->treeViewPlaces->setModel(model);
 
         QSettings settings;
-//        if(!settings.contains("mainwindow/treeviewplaces/state")) {
+        if(!settings.contains("mainwindow/treeviewplaces/state")) {
             ui->treeViewPlaces->sortByColumn(PlacesListModel::GameCountColumn, Qt::DescendingOrder);
             QHeaderView *h = ui->treeViewPlaces->header();
             h->resizeSection(PlacesListModel::CityEmblemColumn, 22);
@@ -212,7 +212,7 @@ void MainWindow::on_actionPlaces_triggered()
             h->resizeSection(PlacesListModel::HouseNumberColumn, 40);
             h->resizeSection(PlacesListModel::CommentColumn, 100);
             h->resizeSection(PlacesListModel::PlayersColumn, 140);
-//        }
+        }
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pagePlaces);
