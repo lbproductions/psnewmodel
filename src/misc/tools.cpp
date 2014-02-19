@@ -45,8 +45,10 @@ QVariant Tools::percentageString(double percentage)
 {
     if(percentage < 0)
         return QVariant();
+    if(percentage < 1)
+        percentage *= 100;
 
-    return QString("%1 %").arg(percentage * 100, 4, 'f', 2);
+    return QString("%1 %").arg(percentage, 4, 'f', 2);
 }
 
 QVariant Tools::ifPositive(int number)

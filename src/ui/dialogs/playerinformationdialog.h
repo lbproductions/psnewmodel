@@ -8,7 +8,7 @@ class PlayerInformationDialog;
 }
 
 class Player;
-class PlayersListModel;
+class PlayersSortFilterModel;
 
 class PlayerInformationDialog : public QDialog
 {
@@ -19,7 +19,7 @@ public:
     ~PlayerInformationDialog();
     
     QSharedPointer<Player> player() const;
-    void setPlayerFromModel(PlayersListModel *model, int index);
+    void setPlayerFromModel(PlayersSortFilterModel *model, int index);
 
 public slots:
     void accept();
@@ -29,13 +29,16 @@ public slots:
 
     void saveCurrentPlayer();
 
+private slots:
+    void on_actionClose_triggered();
+
 private:
     void setPlayer(const QSharedPointer<Player> &player);
 
     Ui::PlayerInformationDialog *ui;
 
     int m_currentIndex;
-    PlayersListModel *m_model;
+    PlayersSortFilterModel *m_model;
     QSharedPointer<Player> m_player;
     QPushButton *m_pushButtonNextPlayer;
     QPushButton *m_pushButtonPrevPlayer;

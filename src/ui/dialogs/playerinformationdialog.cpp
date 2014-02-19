@@ -5,6 +5,7 @@
 #include <ui/model/playerslistmodel.h>
 
 #include <QPushButton>
+#include <QMenuBar>
 
 PlayerInformationDialog::PlayerInformationDialog(QWidget *parent) :
     QDialog(parent),
@@ -22,6 +23,8 @@ PlayerInformationDialog::PlayerInformationDialog(QWidget *parent) :
             this, &PlayerInformationDialog::previousPlayer);
     connect(m_pushButtonNextPlayer, &QPushButton::clicked,
             this, &PlayerInformationDialog::nextPlayer);
+
+    addAction(ui->actionClose);
 }
 
 PlayerInformationDialog::~PlayerInformationDialog()
@@ -60,7 +63,7 @@ void PlayerInformationDialog::setPlayer(const QSharedPointer<Player> &player)
         ui->radioButtonFemale->setChecked(true);
 }
 
-void PlayerInformationDialog::setPlayerFromModel(PlayersListModel *model, int index)
+void PlayerInformationDialog::setPlayerFromModel(PlayersSortFilterModel *model, int index)
 {
     m_model = model;
     m_currentIndex = index;
@@ -115,4 +118,9 @@ void PlayerInformationDialog::saveCurrentPlayer()
         m_player->setGender(Player::Female);
 
     Qp::update(m_player);
+}
+
+void PlayerInformationDialog::on_actionClose_triggered()
+{
+    close();
 }

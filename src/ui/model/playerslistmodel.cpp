@@ -44,24 +44,24 @@ QVariant PlayersListModel::headerData(int section, Qt::Orientation orientation, 
             return tr("Last Game");
         case LastWinColumn:
             return tr("Last Win");
-        case LossesColumn:
+        case LossesCountColumn:
             return tr("#Losses");
-        case WinsColumn:
+        case WinsCountColumn:
             return tr("#Wins");
         case ContraCountColumn:
             return tr("#Contra");
         case ContraPercentageColumn:
             return tr("%");
         case ContraWinsColumn:
-            return tr("#Contra Wins");
+            return tr("#Wins");
         case ContraWinsPercentageColumn:
             return tr("%");
         case ReCountColumn:
-            return tr("#Re Rounds");
+            return tr("#Re");
         case RePercentageColumn:
             return tr("%");
         case ReWinsColumn:
-            return tr("#Re Wins");
+            return tr("#Wins");
         case ReWinsPercentageColumn:
             return tr("%");
         case HochzeitenCountColumn:
@@ -118,9 +118,9 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
                 if(game)
                     return game->creationTime().date();
                 return QDate();
-            case LossesColumn:
+            case LossesCountColumn:
                 return player->losses();
-            case WinsColumn:
+            case WinsCountColumn:
                 return player->wins();
             case ContraCountColumn:
                 return player->contraRounds().size();
@@ -149,7 +149,7 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
             case TrumpfabgabenCountColumn:
                 return player->trumpfabgabeRounds().size();
             case AverageColumn:
-                return player->average();
+                return QString("%1").arg(player->average(), 4, 'f', 2);
             case PointsColumn:
                 return player->points();
             case AvatarColumn:
@@ -172,4 +172,20 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
+
+
+PlayersSortFilterModel::PlayersSortFilterModel(PlayersListModel *sourceModel, QObject *parent) :
+    QpSortFilterProxyObjectModel(sourceModel, parent)
+{
+}
+
+bool PlayersSortFilterModel::filterAcceptsRow(int /*source_row*/, const QModelIndex &/*source_parent*/) const
+{
+    return true;
+}
+
+bool PlayersSortFilterModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    return QSortFilterProxyModel::lessThan(left, right);
 }

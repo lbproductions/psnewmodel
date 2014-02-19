@@ -21,9 +21,7 @@ ImageWell::ImageWell(QWidget *parent) :
     layout()->setContentsMargins(0,0,0,0);
     Tools::setStyleSheetFromResource(":/stylesheets/imagewell.qss", this);
 
-    QPixmap pm(48,48);
-    pm.fill(QColor(240,240,240));
-    setPixmap(pm);
+    setPixmap(QPixmap());
 }
 
 QPixmap ImageWell::pixmap() const
@@ -34,16 +32,16 @@ QPixmap ImageWell::pixmap() const
 void ImageWell::setPixmap(const QPixmap &pixmap)
 {
     m_pixmap = pixmap;
-    if(pixmap.isNull()) {
-        QPixmap pm(48,48);
-        pm.fill(QColor(240,240,240));
-        setPixmap(pm);
-        return;
+
+    QPixmap displayPm = pixmap;
+    if(displayPm.isNull()) {
+        displayPm = QPixmap(48,48);
+        displayPm.fill(QColor(240,240,240));
     }
 
-    m_pixmapLabel->setPixmap(m_pixmap.scaled(48, 48));
+    m_pixmapLabel->setPixmap(displayPm.scaled(48, 48));
 
-    m_pixmapDarker = m_pixmap.scaled(48, 48);
+    m_pixmapDarker = displayPm.scaled(48, 48);
     QPainter p(&m_pixmapDarker);
     QBrush b(QColor(0,0,0,50));
     p.setBrush(b);
@@ -91,7 +89,7 @@ void ImageWell::enterEvent(QEvent *)
 
 void ImageWell::leaveEvent(QEvent *)
 {
-    m_pixmapLabel->setPixmap(m_pixmap.scaled(48,48));
+    m_pixmapLabel->setPixmap(m_pixmap);
 }
 
 QString ImageWell::SupportedFormats()

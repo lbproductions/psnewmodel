@@ -108,10 +108,46 @@ void MainWindow::on_actionStart_triggered()
 void MainWindow::on_actionPlayers_triggered()
 {
     if(!ui->treeViewPlayers->model()) {
-        m_playerListModel = new PlayersListModel(this);
-        QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
-        sortModel->setSourceModel(m_playerListModel);
-        ui->treeViewPlayers->setModel(sortModel);
+        QSettings settings;
+        m_playerListModel = new PlayersSortFilterModel(new PlayersListModel(this), this);
+        ui->treeViewPlayers->setModel(m_playerListModel);
+
+        if(!settings.contains("mainwindow/treeviewplayers/state")) {
+            ui->treeViewPlayers->sortByColumn(PlayersListModel::NameColumn, Qt::AscendingOrder);
+            QHeaderView *h = ui->treeViewPlayers->header();
+            h->resizeSection(PlayersListModel::AvatarColumn, 24);
+            h->resizeSection(PlayersListModel::ColorColumn, 24);
+            h->resizeSection(PlayersListModel::GameCountColumn, 45);
+            h->resizeSection(PlayersListModel::WinsCountColumn, 40);
+            h->resizeSection(PlayersListModel::LossesCountColumn, 80);
+
+            h->resizeSection(PlayersListModel::PointsColumn, 60);
+            h->resizeSection(PlayersListModel::AverageColumn, 60);
+            h->resizeSection(PlayersListModel::GamePointsColumn, 100);
+
+            h->resizeSection(PlayersListModel::LastGameColumn, 75);
+            h->resizeSection(PlayersListModel::LastWinColumn, 110);
+
+            h->resizeSection(PlayersListModel::ContraCountColumn, 50);
+            h->resizeSection(PlayersListModel::ContraPercentageColumn, 60);
+            h->resizeSection(PlayersListModel::ContraWinsColumn, 50);
+            h->resizeSection(PlayersListModel::ContraWinsPercentageColumn, 130);
+
+            h->resizeSection(PlayersListModel::ReCountColumn, 45);
+            h->resizeSection(PlayersListModel::RePercentageColumn, 60);
+            h->resizeSection(PlayersListModel::ReWinsColumn, 50);
+            h->resizeSection(PlayersListModel::ReWinsPercentageColumn, 130);
+
+            h->resizeSection(PlayersListModel::HochzeitenCountColumn, 60);
+            h->resizeSection(PlayersListModel::SchmeissereienCountColumn, 60);
+            h->resizeSection(PlayersListModel::SchweinereienCountColumn, 60);
+            h->resizeSection(PlayersListModel::SoloCountColumn, 60);
+            h->resizeSection(PlayersListModel::TrumpfabgabenCountColumn, 150);
+
+            h->resizeSection(PlayersListModel::GenderColumn, 60);
+            h->resizeSection(PlayersListModel::HeightColumn, 50);
+            h->resizeSection(PlayersListModel::WeightColumn, 50);
+        }
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pagePlayers);

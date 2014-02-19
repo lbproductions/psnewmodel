@@ -96,7 +96,7 @@
             </size>
            </property>
            <property name="inputMask">
-            <string>000; </string>
+            <string>000</string>
            </property>
            <property name="text">
             <string/>
@@ -132,7 +132,7 @@
             </size>
            </property>
            <property name="inputMask">
-            <string>000; </string>
+            <string>000</string>
            </property>
           </widget>
          </item>
@@ -233,6 +233,14 @@
     </widget>
    </item>
   </layout>
+  <action name="actionClose">
+   <property name="text">
+    <string>Close</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+W</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>

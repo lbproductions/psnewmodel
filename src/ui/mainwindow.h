@@ -7,7 +7,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class PlayersListModel;
+class PlayersSortFilterModel;
 
 class MainWindow : public QMainWindow
 {
@@ -40,7 +40,7 @@ private:
     friend class StartWidget;
 
     Ui::MainWindow *ui;
-    PlayersListModel* m_playerListModel;
+    PlayersSortFilterModel* m_playerListModel;
 
     void saveWindowState();
 };
