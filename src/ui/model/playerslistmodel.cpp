@@ -173,19 +173,3 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
 
     return QVariant();
 }
-
-
-PlayersSortFilterModel::PlayersSortFilterModel(PlayersListModel *sourceModel, QObject *parent) :
-    QpSortFilterProxyObjectModel(sourceModel, parent)
-{
-}
-
-bool PlayersSortFilterModel::filterAcceptsRow(int /*source_row*/, const QModelIndex &/*source_parent*/) const
-{
-    return true;
-}
-
-bool PlayersSortFilterModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-{
-    return QSortFilterProxyModel::lessThan(left, right);
-}

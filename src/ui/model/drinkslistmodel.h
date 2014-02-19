@@ -27,15 +27,4 @@ public:
 
 };
 
-class DrinksSortFilterModel : public QpSortFilterProxyObjectModel<Drink>
-{
-    Q_OBJECT
-public:
-    explicit DrinksSortFilterModel(DrinksListModel *sourceModel, QObject *parent = 0);
-
-protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
-};
-
 #endif // DRINKSLISTMODEL_H

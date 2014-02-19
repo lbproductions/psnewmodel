@@ -8,7 +8,8 @@ class PlayerInformationDialog;
 }
 
 class Player;
-class PlayersSortFilterModel;
+template<class T>
+class QpSortFilterProxyObjectModel;
 
 class PlayerInformationDialog : public QDialog
 {
@@ -19,7 +20,7 @@ public:
     ~PlayerInformationDialog();
     
     QSharedPointer<Player> player() const;
-    void setPlayerFromModel(PlayersSortFilterModel *model, int index);
+    void setPlayerFromModel(QpSortFilterProxyObjectModel<Player> *model, int index);
 
 public slots:
     void accept();
@@ -38,7 +39,7 @@ private:
     Ui::PlayerInformationDialog *ui;
 
     int m_currentIndex;
-    PlayersSortFilterModel *m_model;
+    QpSortFilterProxyObjectModel<Player> *m_model;
     QSharedPointer<Player> m_player;
     QPushButton *m_pushButtonNextPlayer;
     QPushButton *m_pushButtonPrevPlayer;

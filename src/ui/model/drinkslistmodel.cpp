@@ -78,18 +78,3 @@ QVariant DrinksListModel::data(const QModelIndex &index, int role) const
     return QVariant();
 
 }
-
-DrinksSortFilterModel::DrinksSortFilterModel(DrinksListModel *sourceModel, QObject *parent) :
-    QpSortFilterProxyObjectModel<Drink>(sourceModel, parent)
-{
-}
-
-bool DrinksSortFilterModel::filterAcceptsRow(int /*source_row*/, const QModelIndex &/*source_parent*/) const
-{
-    return true;
-}
-
-bool DrinksSortFilterModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
-{
-    return QSortFilterProxyModel::lessThan(left, right);
-}

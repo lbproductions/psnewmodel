@@ -109,7 +109,7 @@ void MainWindow::on_actionPlayers_triggered()
 {
     if(!ui->treeViewPlayers->model()) {
         QSettings settings;
-        m_playerListModel = new PlayersSortFilterModel(new PlayersListModel(this), this);
+        m_playerListModel = new QpSortFilterProxyObjectModel<Player>(new PlayersListModel(this), this);
         ui->treeViewPlayers->setModel(m_playerListModel);
 
         if(!settings.contains("mainwindow/treeviewplayers/state")) {
@@ -156,10 +156,35 @@ void MainWindow::on_actionPlayers_triggered()
 void MainWindow::on_actionGames_triggered()
 {
     if(!ui->treeViewGames->model()) {
-        GameListModel *modelGames = new GameListModel(this);
-        QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
-        sortModel->setSourceModel(modelGames);
-        ui->treeViewGames->setModel(sortModel);
+        QSettings settings;
+        QpSortFilterProxyObjectModel<Game> *modelGames = new QpSortFilterProxyObjectModel<Game>(new GameListModel(this), this);
+        ui->treeViewGames->setModel(modelGames);
+
+        if(!settings.contains("mainwindow/treeviewgames/state")) {
+            ui->treeViewGames->sortByColumn(GameListModel::DateColumn, Qt::DescendingOrder);
+            QHeaderView *h = ui->treeViewGames->header();
+            h->resizeSection(GameListModel::StateColumn, 22);
+            h->resizeSection(GameListModel::HostColumn, 22);
+            h->resizeSection(GameListModel::DateColumn, 85);
+            h->resizeSection(GameListModel::NameColumn, 210);
+            h->resizeSection(GameListModel::RoundCountColumn, 70);
+            h->resizeSection(GameListModel::PercentageComplete, 70);
+            h->resizeSection(GameListModel::LengthColumn, 100);
+
+            h->resizeSection(GameListModel::PlayerCountColumn, 85);
+            h->resizeSection(GameListModel::PlayersColumn, 270);
+            h->resizeSection(GameListModel::SiteColumn, 300);
+
+            h->resizeSection(GameListModel::TotalPointsColumn, 70);
+            h->resizeSection(GameListModel::ReWinRoundsCountColumn, 70);
+            h->resizeSection(GameListModel::ContraWinRoundsCountColumn, 70);
+            h->resizeSection(GameListModel::HochzeitCountColumn, 70);
+            h->resizeSection(GameListModel::SchmeissereienCountColumn, 70);
+            h->resizeSection(GameListModel::SchweinereienCountColumn, 70);
+            h->resizeSection(GameListModel::SoloCountColumn, 70);
+            h->resizeSection(GameListModel::TrumpfabgabenColumn, 70);
+            h->resizeSection(GameListModel::DrinkCount, 70);
+        }
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pageGames);
@@ -173,7 +198,7 @@ void MainWindow::on_actionPlaces_triggered()
 void MainWindow::on_actionDrinks_triggered()
 {
     if(!ui->treeViewDrinks->model()) {
-        DrinksSortFilterModel *modelDrinks = new DrinksSortFilterModel(new DrinksListModel(this), this);
+        QpSortFilterProxyObjectModel<Drink> *modelDrinks = new QpSortFilterProxyObjectModel<Drink>(new DrinksListModel(this), this);
         ui->treeViewDrinks->setModel(modelDrinks);
     }
 

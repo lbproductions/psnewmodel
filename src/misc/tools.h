@@ -25,7 +25,7 @@ public:
 
     static QString darkHeaderViewStyleSheet();
 
-    static QVariant percentageString(double percentage);
+    static QVariant percentageString(double percentage, int precision = 2);
     static QVariant ifPositive(int number);
     static QVariant scaledPixmap(const QPixmap &pm, int h = 16, int w = 16);
 
@@ -35,7 +35,9 @@ public:
 
     static double percentage(double value1, double value2);
 
+    static QPixmap colorListPixmap(int w, int h, const QList<QColor> colors);
     static QPixmap colorPixmap(int w, int h, const QColor &color);
+    static QPixmap colorEllipse(int w, int h, const QColor &color);
     static QPixmap playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo, int w = 16, int h = 16);
 };
 

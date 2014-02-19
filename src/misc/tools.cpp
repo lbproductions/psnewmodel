@@ -41,14 +41,14 @@ QString Tools::darkHeaderViewStyleSheet()
                                       + "border: 1px solid #6c6c6c;}";
 }
 
-QVariant Tools::percentageString(double percentage)
+QVariant Tools::percentageString(double percentage, int precision)
 {
     if(percentage < 0)
         return QVariant();
     if(percentage < 1)
         percentage *= 100;
 
-    return QString("%1 %").arg(percentage, 4, 'f', 2);
+    return QString("%1 %").arg(percentage, 0, 'f', precision);
 }
 
 QVariant Tools::ifPositive(int number)
@@ -110,11 +110,51 @@ double Tools::percentage(double value1, double value2)
     return static_cast<double>(static_cast<int>(number*100+0.5))/100.0;
 }
 
+QPixmap Tools::colorListPixmap(int w, int h, const QList<QColor> colors)
+{
+    if(colors.isEmpty())
+        return QPixmap();
+
+    QPixmap pm((w+1) * colors.count(), h);
+    pm.fill(Qt::transparent);
+
+    QPainter p(&pm);
+    p.setPen(Qt::transparent);
+
+    QPoint colorPos = QPoint(0, 0);
+    foreach(QColor color, colors) {
+        p.setBrush(color);
+
+        if(color == QColor(Qt::white))
+            p.setPen(Qt::gray);
+        else
+            p.setPen(color);
+
+        p.drawRect(QRect(colorPos, QSize(w-1,h-1)));
+        colorPos += QPoint(w+1,0);
+    }
+
+    return pm;
+}
+
 QPixmap Tools::colorPixmap(int w, int h, const QColor &color)
 {
     QPixmap pm(w,h);
     pm.fill(color);
     return pm;
+}
+
+QPixmap Tools::colorEllipse(int w, int h, const QColor &color)
+{
+    QPixmap pm(w,h);
+    pm.fill(Qt::transparent);
+    QPainter p(&pm);
+    p.setPen(Qt::transparent);
+    p.setRenderHint(QPainter::Antialiasing);
+    p.setBrush(color);
+    p.drawEllipse(0,0,w,h);
+    return pm;
+
 }
 
 QPixmap Tools::playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo, int w, int h)

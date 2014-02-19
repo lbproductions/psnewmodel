@@ -54,16 +54,5 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 };
 
-class PlayersSortFilterModel : public QpSortFilterProxyObjectModel<Player>
-{
-    Q_OBJECT
-public:
-    explicit PlayersSortFilterModel(PlayersListModel *sourceModel, QObject *parent = 0);
-
-protected:
-    bool filterAcceptsRow(int source_row, const QModelIndex &source_parent) const Q_DECL_OVERRIDE;
-    bool lessThan(const QModelIndex &left, const QModelIndex &right) const Q_DECL_OVERRIDE;
-};
-
 #endif // PLAYERSLISTMODEL_H
 

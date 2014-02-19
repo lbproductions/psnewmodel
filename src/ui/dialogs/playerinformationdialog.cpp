@@ -63,7 +63,7 @@ void PlayerInformationDialog::setPlayer(const QSharedPointer<Player> &player)
         ui->radioButtonFemale->setChecked(true);
 }
 
-void PlayerInformationDialog::setPlayerFromModel(PlayersSortFilterModel *model, int index)
+void PlayerInformationDialog::setPlayerFromModel(QpSortFilterProxyObjectModel<Player> *model, int index)
 {
     m_model = model;
     m_currentIndex = index;

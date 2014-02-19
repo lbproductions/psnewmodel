@@ -46,7 +46,7 @@ QVariant GameListModel::headerData(int section, Qt::Orientation orientation, int
     case TotalPointsColumn:
         return tr("Points");
     case RoundCountColumn:
-        return tr("#Rounds");
+        return tr("Rounds");
     case ReWinRoundsCountColumn:
         return tr("#Re Wins");
     case ContraWinRoundsCountColumn:
@@ -84,9 +84,7 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case LengthColumn:
             return game->length();
         case PercentageComplete:
-            return Tools::percentageString(game->completedPercentage());
-        case PlayerCountColumn:
-            return game->players().size();
+            return Tools::percentageString(game->completedPercentage(), 0);
         case PlayersColumn:
             return Tools::playersString(game->players());
         case SiteColumn:
@@ -96,7 +94,9 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case TotalPointsColumn:
             return game->totalPoints();
         case RoundCountColumn:
-            return game->rounds().size();
+            return tr("%1 / %2")
+                    .arg(game->finishedRoundCount(), 2)
+                    .arg(game->totalRoundCount());
         case ReWinRoundsCountColumn:
             return 0;
         case ContraWinRoundsCountColumn:
@@ -112,20 +112,36 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
         case TrumpfabgabenColumn:
             return game->trumpfabgabeCount();
         case StateColumn:
+            if(game->state() == Game::Finished)
+                return tr("\u2713");
         default:
             break;
         }
     }
 
     if(role == Qt::DecorationRole) {
+        QPixmap pm;
+        QList<QSharedPointer<Player>> list;
 
         switch(index.column()) {
-        case StateColumn:
-            return game->statePixmap();
-        default:
-            return QVariant();
+        case HostColumn:
+            list = game->site()->players();
+            if(!list.isEmpty()) {
+                pm = Tools::colorEllipse(8,8, list.first()->color());
+            }
+            return pm;
+        case PlayerCountColumn:
+            list = game->players();
+            QList<QColor> colors;
+            foreach(QSharedPointer<Player> p , list) {
+                colors << p->color();
+            }
+            pm = Tools::colorListPixmap(9,9,colors);
+
+            return pm;
         }
     }
+
 
     return QVariant();
 }
@@ -139,24 +155,20 @@ bool playersAlphabetically(const QSharedPointer<Player> &p1, const QSharedPointe
 GameSortFilterModel::GameSortFilterModel(GameListModel *sourceModel, QObject *parent) :
     QpSortFilterProxyObjectModel<Game>(sourceModel, parent)
 {
-
 }
 
 bool GameSortFilterModel::filterAcceptsObject(QSharedPointer<Game> game) const
 {
-    if(filterRole() == UnfinishedStateFilter) {
-        return game->state() != Game::Finished
-                && game->state() != Game::UnkownState;
-    }
+    if(filterRole() == UnfinishedStateFilter)
+        return game->state() != Game::Finished && game->state() != Game::UnkownState;
 
-    return QpSortFilterProxyObjectModel<Game>::filterAcceptsObject(game);
+    return true;
 }
 
 bool GameSortFilterModel::lessThan(QSharedPointer<Game> left, QSharedPointer<Game> right) const
 {
-    if(sortRole() == Date) {
+    if(sortRole() == Date)
         return left->creationTime() < right->creationTime();
-    }
 
     return QpSortFilterProxyObjectModel<Game>::lessThan(left, right);
 }
