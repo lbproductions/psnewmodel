@@ -65,6 +65,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->pageStart->init(this);
 
+    setWindowFilePath(Library::instance()->fileName());
+
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
 }
