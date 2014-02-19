@@ -648,7 +648,7 @@ void NewRoundDialog::on_spinBoxNormalContraPoints_valueChanged(int /*arg1*/)
 {
     disconnect(ui->spinBoxNormalRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxNormalRePoints_valueChanged(int)));
     ui->spinBoxNormalRePoints->setValue(240-ui->spinBoxNormalContraPoints->value());
-    disconnect(ui->spinBoxNormalRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxNormalRePoints_valueChanged(int)));
+    connect(ui->spinBoxNormalRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxNormalRePoints_valueChanged(int)));
 }
 
 void NewRoundDialog::on_spinBoxHochzeitRePoints_valueChanged(int /*arg1*/)
@@ -662,7 +662,7 @@ void NewRoundDialog::on_spinBoxHochzeitContraPoints_valueChanged(int /*arg1*/)
 {
     disconnect(ui->spinBoxHochzeitRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxHochzeitRePoints_valueChanged(int)));
     ui->spinBoxHochzeitRePoints->setValue(240-ui->spinBoxHochzeitContraPoints->value());
-    disconnect(ui->spinBoxHochzeitRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxHochzeitRePoints_valueChanged(int)));
+    connect(ui->spinBoxHochzeitRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxHochzeitRePoints_valueChanged(int)));
 }
 
 void NewRoundDialog::on_spinBoxSoloRePoints_valueChanged(int /*arg1*/)
@@ -676,7 +676,7 @@ void NewRoundDialog::on_spinBoxSoloContraPoints_valueChanged(int /*arg1*/)
 {
     disconnect(ui->spinBoxSoloRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxSoloRePoints_valueChanged(int)));
     ui->spinBoxSoloRePoints->setValue(240-ui->spinBoxSoloContraPoints->value());
-    disconnect(ui->spinBoxSoloRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxSoloRePoints_valueChanged(int)));
+    connect(ui->spinBoxSoloRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxSoloRePoints_valueChanged(int)));
 }
 
 void NewRoundDialog::on_spinBoxTrumpfabgabeRePoints_valueChanged(int /*arg1*/)
@@ -690,5 +690,5 @@ void NewRoundDialog::on_spinBoxTrumpfabgabeContraPoints_valueChanged(int /*arg1*
 {
     disconnect(ui->spinBoxTrumpfabgabeRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxTrumpfabgabeRePoints_valueChanged(int)));
     ui->spinBoxTrumpfabgabeRePoints->setValue(240-ui->spinBoxTrumpfabgabeContraPoints->value());
-    disconnect(ui->spinBoxTrumpfabgabeRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxTrumpfabgabeRePoints_valueChanged(int)));
+    connect(ui->spinBoxTrumpfabgabeRePoints, SIGNAL(valueChanged(int)), this, SLOT(on_spinBoxTrumpfabgabeRePoints_valueChanged(int)));
 }
