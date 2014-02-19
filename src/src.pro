@@ -180,7 +180,8 @@ SOURCES += main.cpp \
     ui/game/drinkstatswidget.cpp \
     ui/game/gamecomparestatswidget.cpp \
     ui/widgets/startwidget.cpp \
-    ui/widgets/noisygradientitemdelegate.cpp
+    ui/widgets/noisygradientitemdelegate.cpp \
+    ui/model/placeslistmodel.cpp
 
 
 HEADERS  += \
@@ -264,7 +265,8 @@ HEADERS  += \
     ui/game/drinkstatswidget.h \
     ui/game/gamecomparestatswidget.h \
     ui/widgets/startwidget.h \
-    ui/widgets/noisygradientitemdelegate.h
+    ui/widgets/noisygradientitemdelegate.h \
+    ui/model/placeslistmodel.h
 
 
 FORMS += \
