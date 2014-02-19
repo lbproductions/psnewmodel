@@ -19,6 +19,7 @@
   <property name="styleSheet">
    <string notr="true">QFrame#background {
 background: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 rgba(238, 238, 238, 255), stop:0.783251 rgba(227, 227, 227, 255), stop:1 rgba(237, 237, 237, 255));
+background-image: url(:/general/noisy-texture-200x200);
 }
 
 QWidget#line {

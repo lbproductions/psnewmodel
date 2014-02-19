@@ -39,7 +39,7 @@ void PlayersComboBox::addPlayer(QSharedPointer<Player> player)
         return;
 
     m_players.append(player);
-    addItem(QIcon(player->avatar()), player->name());
+    addItem(QIcon(player->colorPixmap()), player->name());
 }
 
 void PlayersComboBox::setCurrentPlayer(QSharedPointer<Player> player)
