@@ -142,7 +142,6 @@ SOURCES += main.cpp \
     ui/widgets/drinkslistwidget.cpp \
     data/old_offlineGameInformation.cpp \
     data/old_dokoofflinegamebuddys.cpp \
-    ui/startwindow.cpp \
     ui/game/playerstatswidget.cpp \
     ui/league/addleaguedialog.cpp \
     ui/league/leaguewindow.cpp \
@@ -224,7 +223,6 @@ HEADERS  += \
     ui/widgets/drinkslistwidget.h \
     data/old_offlineGameInformation.h \
     data/old_dokoofflinegamebuddys.h \
-    ui/startwindow.h \
     ui/game/playerstatswidget.h \
     ui/league/addleaguedialog.h \
     ui/league/leaguewindow.h \
