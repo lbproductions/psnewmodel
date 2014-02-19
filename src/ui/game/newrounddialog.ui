@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>447</width>
-    <height>403</height>
+    <height>406</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@ QCheckBox { color: white; }</string>
    <item>
     <widget class="QStackedWidget" name="stackedWidget">
      <property name="currentIndex">
-      <number>0</number>
+      <number>3</number>
      </property>
      <widget class="QWidget" name="page_3">
       <layout class="QFormLayout" name="formLayout_3">
@@ -558,12 +558,16 @@ p, li { white-space: pre-wrap; }
           </widget>
          </item>
          <item>
-          <widget class="QCheckBox" name="checkBoxTrumpfZurueck">
+          <widget class="QLabel" name="label_35">
            <property name="text">
-            <string>Trumpf zurück</string>
+            <string>Zurück:</string>
            </property>
-           <property name="checked">
-            <bool>true</bool>
+          </widget>
+         </item>
+         <item>
+          <widget class="QSpinBox" name="spinBoxTrumpfZurueck">
+           <property name="maximum">
+            <number>3</number>
            </property>
           </widget>
          </item>
@@ -647,7 +651,4 @@ p, li { white-space: pre-wrap; }
  </customwidgets>
  <resources/>
  <connections/>
- <buttongroups>
-  <buttongroup name="buttonGroup"/>
- </buttongroups>
 </ui>

@@ -35,7 +35,7 @@ class Round : public QObject
     Q_PROPERTY(State state READ state WRITE setState)
     Q_PROPERTY(TrumpfColor trumpfColor READ trumpfColor WRITE setTrumpfColor)
     Q_PROPERTY(int trumpfCount READ trumpfCount WRITE setTrumpfCount)
-    Q_PROPERTY(bool trumpfZurueck READ trumpfZurueck WRITE setTrumpfZurueck)
+    Q_PROPERTY(int trumpfZurueck READ trumpfZurueck WRITE setTrumpfZurueck)
     Q_PROPERTY(int reGamePoints READ reGamePoints WRITE setReGamePoints)
     Q_PROPERTY(int contraGamePoints READ contraGamePoints WRITE setContraGamePoints)
 
@@ -120,7 +120,8 @@ public:
         Herz,
         Pik,
         Kreuz,
-        Karo
+        Karo,
+        UnknownTrumpColor
     };
 
     enum HochzeitDecision {
@@ -233,8 +234,8 @@ public:
     int trumpfCount() const;
     void setTrumpfCount(int arg);
 
-    bool trumpfZurueck() const;
-    void setTrumpfZurueck(bool arg);
+    int trumpfZurueck() const;
+    void setTrumpfZurueck(int arg);
 
     int reGamePoints() const;
     void setReGamePoints(int arg);
@@ -273,7 +274,6 @@ private:
     QMap<int, int> m_points;
     mutable QMap<QSharedPointer<Player>, int> m_pointsCached; // a cache, because Qp:primaryKey is slow
     mutable QMap<QSharedPointer<Player>, int> m_totalPointsCached; // a cache, because Qp:primaryKey is slow
-    TrumpfColor m_trumpfColor;
 
     QpWeakRelation<Game> m_game;
     QpStrongRelation<LiveDrink> m_liveDrinks;
@@ -287,9 +287,10 @@ private:
     QpWeakRelation<Player> m_contra1Player;
     QpWeakRelation<Player> m_contra2Player;
     QpWeakRelation<Player> m_contra3Player;
-    Round::HochzeitDecision m_hochzeitDecision;
+    TrumpfColor m_trumpfColor;
+    HochzeitDecision m_hochzeitDecision;
     int m_trumpfCount;
-    bool m_trumpfZurueck;
+    int m_trumpfZurueck;
     int m_reGamePoints;
     int m_contraGamePoints;
 };

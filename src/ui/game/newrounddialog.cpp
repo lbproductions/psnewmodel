@@ -150,10 +150,11 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
             ui->spinBoxTrumpfCount->setMinimum(0);
             ui->spinBoxTrumpfCount->setSpecialValueText(tr("?"));
             ui->spinBoxTrumpfCount->setValue(0); // Displays as '?'
-            ui->checkBoxTrumpfZurueck->setEnabled(false);
+            ui->spinBoxTrumpfZurueck->setEnabled(false);
         }
         else {
-            ui->checkBoxTrumpfZurueck->setChecked(round->trumpfZurueck());
+            ui->spinBoxTrumpfZurueck->setMaximum(round->trumpfCount());
+            ui->spinBoxTrumpfZurueck->setValue(round->trumpfZurueck());
             ui->spinBoxTrumpfCount->setValue(round->trumpfCount());
         }
 
@@ -357,7 +358,7 @@ void NewRoundDialog::checkTrumpfabgabeRoundContents()
     ui->comboBoxTrumpfabgabePlayer->addPlayers(m_doppelkopfRound->playingPlayers());
     ui->comboBoxTrumpfabgabeAccept->addPlayers(m_doppelkopfRound->playingPlayers());
 
-    ui->checkBoxTrumpfZurueck->setEnabled(ui->spinBoxTrumpfCount->value() > 0);
+    ui->spinBoxTrumpfZurueck->setMaximum(ui->spinBoxTrumpfCount->value());
 
     if(ui->comboBoxTrumpfabgabePlayer->currentPlayer()) {
         ui->comboBoxTrumpfabgabeAccept->removePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
@@ -410,6 +411,7 @@ void NewRoundDialog::save()
         break;
     }
 
+    Qp::update(m_doppelkopfRound);
     QSharedPointer<Game> game = m_doppelkopfRound->game();
     game->save();
 
@@ -556,6 +558,10 @@ void NewRoundDialog::saveSoloRound()
 
 void NewRoundDialog::saveTrumpfabgabeRound()
 {
+    Q_ASSERT_X(ui->spinBoxTrumpfCount->value() > 0,
+               Q_FUNC_INFO,
+               "Trumpfabgabecount may not be zero??");
+
     m_doppelkopfRound->setTrumpfabgabePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
     m_doppelkopfRound->setRe1Player(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
     m_doppelkopfRound->setRe2Player(ui->comboBoxTrumpfabgabeAccept->currentPlayer());
@@ -563,10 +569,8 @@ void NewRoundDialog::saveTrumpfabgabeRound()
     if(ui->comboBoxTrumpfabgabeSchweine->currentPlayer())
         m_doppelkopfRound->setSchweinereiPlayer(ui->comboBoxTrumpfabgabeSchweine->currentPlayer());
 
-    if(ui->spinBoxTrumpfCount->value() > 0) {
-        m_doppelkopfRound->setTrumpfCount(ui->spinBoxTrumpfCount->value());
-        m_doppelkopfRound->setTrumpfZurueck(ui->checkBoxTrumpfZurueck->isChecked());
-    }
+    m_doppelkopfRound->setTrumpfCount(ui->spinBoxTrumpfCount->value());
+    m_doppelkopfRound->setTrumpfZurueck(ui->spinBoxTrumpfZurueck->value());
 
     int contraPlayers = 0;
     foreach(QSharedPointer<Player> p, m_doppelkopfRound->playingPlayers()) {
