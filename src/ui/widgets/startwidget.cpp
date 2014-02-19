@@ -7,6 +7,7 @@
 #include "noisygradientitemdelegate.h"
 #include "ui/game/gamewindow.h"
 
+#include <data/place.h>
 #include <data/player.h>
 
 #include <QPainter>
@@ -38,6 +39,7 @@ void UnfinishedGamesDelegate::paint(QPainter *painter, const QStyleOptionViewIte
     if(!game)
         return;
 
+    painter->save();
     drawTitleText(painter, option,
                                          game->creationTime().toString(Qt::SystemLocaleDate),
                                          QPoint(7,7)).topRight();
@@ -55,12 +57,35 @@ void UnfinishedGamesDelegate::paint(QPainter *painter, const QStyleOptionViewIte
         colorPos += QPoint(18,0);
     }
 
-    drawText(painter, option,
-             QString("%1 / %2 rounds")
-             .arg(game->finishedRoundCount())
-             .arg(game->totalRoundCount()),
-             QPoint(0, 0),
-             Qt::AlignRight | Qt::AlignVCenter);
+    painter->setPen(Qt::gray);
+    if(option.state & QStyle::State_Selected)
+        painter->setPen(Qt::white);
+
+    QRect rect = option.rect.adjusted(7,7,-7,-7);
+
+    painter->setRenderHint(QPainter::Antialiasing);
+    painter->drawText(rect, Qt::AlignRight | Qt::AlignTop,
+                      tr("%1 / %2 rounds")
+                      .arg(game->finishedRoundCount())
+                      .arg(game->totalRoundCount()));
+
+    rect.adjust(0,0,-13,0);
+    QRect siteRect;
+    painter->drawText(rect, Qt::AlignRight | Qt::AlignBottom,
+                      tr("%1").arg(game->site()->displayString()),
+                      &siteRect);
+
+    auto list = game->site()->players();
+    if(!list.isEmpty()) {
+        painter->setBrush(list.first()->color());
+        if(list.first()->color() == QColor(Qt::white))
+            painter->setPen(Qt::gray);
+        else
+            painter->setPen(list.first()->color());
+        painter->drawEllipse(QRect(siteRect.topRight() + QPoint(4,3), QSize(10,10)));
+    }
+
+    painter->restore();
 }
 
 QSize UnfinishedGamesDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

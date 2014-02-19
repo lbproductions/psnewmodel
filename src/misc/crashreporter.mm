@@ -9,7 +9,6 @@ void CrashReporter::init()
     BreakpadRef breakpad = NULL;
     NSDictionary* info = [[NSBundle mainBundle] infoDictionary];
     if(info){
-        qDebug() << "Initing breakpad";
         breakpad = BreakpadCreate(info);
     }
     [pool release];
