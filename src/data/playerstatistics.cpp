@@ -128,7 +128,7 @@ QSharedPointer<Game> PlayerStatistics::lastGame() const
     if(gs.isEmpty())
         return QSharedPointer<Game>();
 
-    return gs.first();
+    return gs.last();
 }
 
 QSharedPointer<Game> PlayerStatistics::lastWin() const
@@ -138,8 +138,8 @@ QSharedPointer<Game> PlayerStatistics::lastWin() const
         return QSharedPointer<Game>();
 
     QSharedPointer<Player> sharedPlayer = player();
-    foreach(QSharedPointer<Game> game, gs) {
-        if(game->placement(sharedPlayer) == 1)
+    foreach(QSharedPointer<Game> game, Qp::reversed(gs)) {
+        if(game->state() == Game::Finished && game->placement(sharedPlayer) == 1)
             return game;
     }
 
