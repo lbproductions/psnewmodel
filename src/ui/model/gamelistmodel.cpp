@@ -134,3 +134,29 @@ bool playersAlphabetically(const QSharedPointer<Player> &p1, const QSharedPointe
 {
     return p1->name() < p2->name();
 }
+
+
+GameSortFilterModel::GameSortFilterModel(GameListModel *sourceModel, QObject *parent) :
+    QpSortFilterProxyObjectModel<Game>(sourceModel, parent)
+{
+
+}
+
+bool GameSortFilterModel::filterAcceptsObject(QSharedPointer<Game> game) const
+{
+    if(filterRole() == UnfinishedStateFilter) {
+        return game->state() != Game::Finished
+                && game->state() != Game::UnkownState;
+    }
+
+    return QpSortFilterProxyObjectModel<Game>::filterAcceptsObject(game);
+}
+
+bool GameSortFilterModel::lessThan(QSharedPointer<Game> left, QSharedPointer<Game> right) const
+{
+    if(sortRole() == Date) {
+        return left->creationTime() < right->creationTime();
+    }
+
+    return QpSortFilterProxyObjectModel<Game>::lessThan(left, right);
+}

@@ -19,6 +19,9 @@ public:
 
     void init(MainWindow *window);
 
+private slots:
+    void on_listViewGames_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::StartWidget *ui;
 };

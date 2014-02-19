@@ -14,5 +14,6 @@
         <file alias="dropbox">dropbox.png</file>
         <file>close-window-hover.png</file>
         <file>close-window.png</file>
+        <file alias="noisy-texture-200x200">noisy-texture-200x200.png</file>
     </qresource>
 </RCC>

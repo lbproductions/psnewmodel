@@ -107,7 +107,7 @@ QTreeView {
        <number>0</number>
       </property>
       <item>
-       <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,1,0" columnstretch="0,1,1,1,0,0,1,1,1,0">
+       <layout class="QGridLayout" name="gridLayout" rowstretch="0,0,0,0,0,0,0,1,0" columnstretch="0,1,1,1,0,0,1,1,1">
         <property name="topMargin">
          <number>0</number>
         </property>
@@ -237,7 +237,7 @@ QTreeView {
                </widget>
               </item>
               <item>
-               <widget class="QTreeView" name="treeViewGames">
+               <widget class="QListView" name="listViewGames">
                 <property name="minimumSize">
                  <size>
                   <width>300</width>
@@ -246,7 +246,7 @@ QTreeView {
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>600</width>
+                  <width>16777215</width>
                   <height>16777215</height>
                  </size>
                 </property>
