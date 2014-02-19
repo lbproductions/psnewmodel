@@ -98,9 +98,9 @@ QVariant GameListModel::data(const QModelIndex &index, int role) const
                     .arg(game->finishedRoundCount(), 2)
                     .arg(game->totalRoundCount());
         case ReWinRoundsCountColumn:
-            return 0;
+            return game->reWinsCount();
         case ContraWinRoundsCountColumn:
-            return 0;
+            return game->contraWinCount();
         case HochzeitCountColumn:
             return game->hochzeitCount();
         case SchmeissereienCountColumn:
