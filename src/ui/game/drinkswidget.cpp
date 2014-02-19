@@ -20,10 +20,10 @@
 /*********************************************************************
  * DrinksSortFilterModel
  */
-class DrinksSortFilterModel : public QpSortFilterProxyObjectModel<Drink>
+class DrinksWidgetSortFilterModel : public QpSortFilterProxyObjectModel<Drink>
 {
 public:
-    explicit DrinksSortFilterModel(QpObjectListModel<Drink> *sourceModel, QObject *parent = 0);
+    explicit DrinksWidgetSortFilterModel(QpObjectListModel<Drink> *sourceModel, QObject *parent = 0);
 
     QSharedPointer<Round> round() const;
     void setRound(const QSharedPointer<Round> &round);
@@ -37,17 +37,17 @@ private:
     QSharedPointer<Game> m_game;
 };
 
-DrinksSortFilterModel::DrinksSortFilterModel(QpObjectListModel<Drink> *sourceModel, QObject *parent) :
+DrinksWidgetSortFilterModel::DrinksWidgetSortFilterModel(QpObjectListModel<Drink> *sourceModel, QObject *parent) :
     QpSortFilterProxyObjectModel<Drink>(sourceModel, parent)
 {
 }
 
-bool DrinksSortFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
+bool DrinksWidgetSortFilterModel::filterAcceptsRow(int source_row, const QModelIndex &source_parent) const
 {
     return QSortFilterProxyModel::filterAcceptsRow(source_row, source_parent);
 }
 
-bool DrinksSortFilterModel::lessThan(QSharedPointer<Drink> left, QSharedPointer<Drink> right) const
+bool DrinksWidgetSortFilterModel::lessThan(QSharedPointer<Drink> left, QSharedPointer<Drink> right) const
 {
     if(!m_game)
         return left->count() > right->count();
@@ -61,12 +61,12 @@ bool DrinksSortFilterModel::lessThan(QSharedPointer<Drink> left, QSharedPointer<
     return left->count() > right->count();
 }
 
-QSharedPointer<Round> DrinksSortFilterModel::round() const
+QSharedPointer<Round> DrinksWidgetSortFilterModel::round() const
 {
     return m_round;
 }
 
-void DrinksSortFilterModel::setRound(const QSharedPointer<Round> &round)
+void DrinksWidgetSortFilterModel::setRound(const QSharedPointer<Round> &round)
 {
     m_game = round->game();
     m_round = round;
@@ -385,7 +385,7 @@ DrinksWidget::DrinksWidget(QWidget *parent) :
     ui->treeViewDrinkRound->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     DrinksListModel *drinksModel = new DrinksListModel(this);
-    m_drinksModel = new DrinksSortFilterModel(drinksModel, this);
+    m_drinksModel = new DrinksWidgetSortFilterModel(drinksModel, this);
     m_drinksModel->sort(Qt::DescendingOrder);
     m_drinksModel->setFilterKeyColumn(1);
     m_drinksModel->setFilterCaseSensitivity(Qt::CaseInsensitive);

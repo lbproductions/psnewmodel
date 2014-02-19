@@ -54,9 +54,9 @@ QVariant DrinksListModel::data(const QModelIndex &index, int role) const
         case NameColumn:
             return drink->name();
         case VolumeColumn:
-            return QString("%1").arg(drink->volume());
+            return QString("%1 l").arg(drink->volume());
         case AlcoholByVolume:
-            return QString("%1").arg(drink->alcoholByVolume());
+            return QString("%1 \u2030").arg(drink->alcoholByVolume());
         case TypeColumn:
             return drink->typeString();
         case DrinkCountColumn:
@@ -77,4 +77,19 @@ QVariant DrinksListModel::data(const QModelIndex &index, int role) const
 
     return QVariant();
 
+}
+
+DrinksSortFilterModel::DrinksSortFilterModel(DrinksListModel *sourceModel, QObject *parent) :
+    QpSortFilterProxyObjectModel<Drink>(sourceModel, parent)
+{
+}
+
+bool DrinksSortFilterModel::filterAcceptsRow(int /*source_row*/, const QModelIndex &/*source_parent*/) const
+{
+    return true;
+}
+
+bool DrinksSortFilterModel::lessThan(const QModelIndex &left, const QModelIndex &right) const
+{
+    return QSortFilterProxyModel::lessThan(left, right);
 }

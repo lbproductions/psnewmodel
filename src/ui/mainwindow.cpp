@@ -173,10 +173,8 @@ void MainWindow::on_actionPlaces_triggered()
 void MainWindow::on_actionDrinks_triggered()
 {
     if(!ui->treeViewDrinks->model()) {
-        DrinksListModel *modelDrinks = new DrinksListModel(this);
-        QSortFilterProxyModel *sortModel = new QSortFilterProxyModel(this);
-        sortModel->setSourceModel(modelDrinks);
-        ui->treeViewDrinks->setModel(sortModel);
+        DrinksSortFilterModel *modelDrinks = new DrinksSortFilterModel(new DrinksListModel(this), this);
+        ui->treeViewDrinks->setModel(modelDrinks);
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pageDrinks);

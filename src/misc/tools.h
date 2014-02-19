@@ -1,7 +1,7 @@
 #ifndef TOOLS_H
 #define TOOLS_H
 
-#include "../lib/QPersistence/src/objectlistmodel.h"
+#include <QPersistence.h>
 
 #include <QAbstractItemView>
 #include <QSortFilterProxyModel>
@@ -52,12 +52,18 @@ QSharedPointer<T> Tools::selectedObjectFrom(QAbstractItemView *view)
 template<class T>
 QSharedPointer<T> Tools::objectFrom(const QModelIndex &index, QAbstractItemView *view)
 {
-    QpObjectListModelBase *model = qobject_cast<QpObjectListModelBase *>(view->model());
-    if(!model) {
-        model = static_cast<QpObjectListModelBase *>(static_cast<QSortFilterProxyModel *>(view->model())->sourceModel());
-    }
+    QpObjectListModel<T> *model = static_cast<QpObjectListModel<T> *>(
+                qobject_cast<QpObjectListModelBase *>(view->model()));
+    if(model)
+        return model->objectByIndex(index);
 
-    return qSharedPointerCast<T>(model->objectByIndexBase(index));
+    QpSortFilterProxyObjectModel<T> *model2 = static_cast<QpSortFilterProxyObjectModel<T> *>(
+                qobject_cast<QpSortFilterProxyObjectModelBase *>(view->model()));
+    if(model2)
+        return model2->objectByIndex(index);
+
+    Q_ASSERT_X(false, Q_FUNC_INFO,
+               "This method may only be used with QpObjectListModel or QpSortFilterProxyObjectModel");
 }
 
 template<class T>

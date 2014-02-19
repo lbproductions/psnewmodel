@@ -7,7 +7,7 @@ namespace Ui {
 class DrinksWidget;
 }
 
-class DrinksSortFilterModel;
+class DrinksWidgetSortFilterModel;
 class DrinkPlayersModel;
 class Round;
 class QItemSelection;
@@ -42,7 +42,7 @@ private slots:
     void on_pushButtonRemove_clicked();
 private:
     Ui::DrinksWidget *ui;
-    DrinksSortFilterModel *m_drinksModel;
+    DrinksWidgetSortFilterModel *m_drinksModel;
     DrinkPlayersModel *m_playersModel;
     QSharedPointer<Round> m_round;
     LiveDrinkRoundModel *m_drinkRoundModel;
