@@ -56,7 +56,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     if(player)
         playerColor = player->color();
 
-    bool isCurrentlyPlaying = game->currentPlayingPlayers().contains(player);
+    bool isCurrentlyNotPlaying = player && !game->currentPlayingPlayers().contains(player);
 
     QAction *action = model()->headerData(extraRow, orientation(), GameInformationModel::ActionRole).value<QAction *>();
     bool isHoveringActionIndex = (action && logicalIndex == m_hoverIndex)
@@ -70,8 +70,8 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     else if(isHoveringActionIndex) {
         backgroundColor = QColor(35,35,35);
     }
-    else if(isCurrentlyPlaying) {
-        backgroundColor = backgroundColor.lighter(130);
+    else if(isCurrentlyNotPlaying) {
+        backgroundColor = backgroundColor.lighter(170);
     }
     paintBackground(backgroundColor, rect, painter);
 
@@ -86,7 +86,12 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
     else {
         icon = model()->headerData(logicalIndex, orientation(), Qt::DecorationRole).value<QPixmap>();
     }
-    paintSidebar(icon, logicalIndex, playerCount, isHoveringActionIndex, isCurrentCardMixer, action, rect, painter);
+
+    int position = -1;
+    if(playerCount > 5) {
+        position = game->currentPlayingPlayers().indexOf(player);
+    }
+    paintSidebar(icon, logicalIndex, playerCount, position, isHoveringActionIndex, isCurrentCardMixer, action, rect, painter);
 
     // Text (player name etc)
     QString text;
@@ -94,7 +99,7 @@ void OverviewPlayerHeaderView::paintSection(QPainter *painter, const QRect &rect
         text = action->text();
     else
         text = model()->headerData(logicalIndex, orientation()).toString();
-    paintText(text, rect, painter);
+    paintText(text, rect, painter, !isCurrentlyNotPlaying);
 
     // Borders
     paintBorders(logicalIndex, playerCount, rect, painter);
@@ -152,6 +157,7 @@ void OverviewPlayerHeaderView::paintBackground(const QColor &color, const QRect 
 void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
                                             int logicalIndex,
                                             int playerCount,
+                                            int position,
                                             bool isHoveringActionIndex,
                                             bool isCardMixer,
                                             QAction *action,
@@ -179,16 +185,26 @@ void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
                           sidebarRect.bottomRight());
     }
 
+    if(position >= 0) {
+        painter->setFont(model()->headerData(0, orientation(), Qt::FontRole).value<QFont>());
+        painter->setPen(palette().color(QPalette::Text).darker(100));
+        painter->drawText(sidebarRect, Qt::AlignCenter, QString::number(position+1));
+    }
+
     painter->restore();
 }
 
-void OverviewPlayerHeaderView::paintText(const QString &text, const QRect &rect, QPainter *painter) const
+void OverviewPlayerHeaderView::paintText(const QString &text, const QRect &rect, QPainter *painter, bool active) const
 {
     painter->save();
     QTextOption textOption = getTextOption();
     QRect textRect = getTextRect(rect);
     painter->setFont(model()->headerData(0, orientation(), Qt::FontRole).value<QFont>());
-    painter->setPen(palette().color(QPalette::Text));
+    QColor textColor = palette().color(QPalette::Text);
+    if(!active) {
+        textColor = textColor.darker(150);
+    }
+    painter->setPen(textColor);
     painter->drawText(textRect, text, textOption);
     painter->restore();
 }
