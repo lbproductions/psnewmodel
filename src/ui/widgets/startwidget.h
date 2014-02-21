@@ -22,6 +22,8 @@ public:
 private slots:
     void on_listViewGames_doubleClicked(const QModelIndex &index);
 
+    void on_listViewLeague_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::StartWidget *ui;
 };

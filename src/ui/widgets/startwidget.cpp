@@ -7,6 +7,10 @@
 #include "noisygradientitemdelegate.h"
 #include "ui/game/gamewindow.h"
 
+#include "leaguesdelegate.h"
+#include "ui/model/leaguelistmodel.h"
+#include "ui/league/leaguewindow.h"
+
 #include <data/place.h>
 #include <data/player.h>
 
@@ -41,8 +45,8 @@ void UnfinishedGamesDelegate::paint(QPainter *painter, const QStyleOptionViewIte
 
     painter->save();
     drawTitleText(painter, option,
-                                         game->creationTime().toString(Qt::SystemLocaleDate),
-                                         QPoint(7,7)).topRight();
+                  game->creationTime().toString(Qt::SystemLocaleDate),
+                  QPoint(7,7)).topRight();
 
     QPoint colorPos = option.rect.bottomLeft() + QPoint(7, -23);
     foreach(QSharedPointer<Player> player, game->players()) {
@@ -119,6 +123,14 @@ StartWidget::StartWidget(MainWindow *parent) :
     ui->listViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listViewGames->setModel(model);
     ui->listViewGames->setItemDelegate(new UnfinishedGamesDelegate(ui->listViewGames, this));
+
+    LeagueSortFilterModel *leagueModel = new LeagueSortFilterModel(new LeagueListModel(this), this);
+    leagueModel->setSortRole(LeagueSortFilterModel::Name);
+    leagueModel->sort(0, Qt::DescendingOrder);
+
+    ui->listViewLeague->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewLeague->setModel(leagueModel);
+    ui->listViewLeague->setItemDelegate(new LeaguesDelegate(ui->listViewLeague, this));
 }
 
 StartWidget::~StartWidget()
@@ -129,6 +141,7 @@ StartWidget::~StartWidget()
 void StartWidget::init(MainWindow *window)
 {
     ui->toolButtonStartGame->setDefaultAction(window->ui->actionNew_Game);
+    ui->toolButtonNewLeague->setDefaultAction(window->ui->actionNew_League);
 }
 
 void StartWidget::on_listViewGames_doubleClicked(const QModelIndex &index)
@@ -140,5 +153,17 @@ void StartWidget::on_listViewGames_doubleClicked(const QModelIndex &index)
 
     GameWindow *window = new GameWindow;
     window->setGame(game);
+    window->show();
+}
+
+void StartWidget::on_listViewLeague_doubleClicked(const QModelIndex &index)
+{
+    QSharedPointer<League> league = static_cast<LeagueSortFilterModel *>(ui->listViewLeague->model())->objectByIndex(index);
+
+    if(!league)
+        return;
+
+    LeagueWindow *window = new LeagueWindow;
+    window->setLeague(league);
     window->show();
 }

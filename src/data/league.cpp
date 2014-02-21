@@ -168,7 +168,7 @@ QList<QSharedPointer<Game> > League::calculatePossibleGames() const
     QList<QSharedPointer<Game> > fittingGames;
     for(int i = 0; i < possibleGames.size(); ++i) {
         QSharedPointer<Game> game = possibleGames.at(i);
-        if(game->creationTime().date() < startDate() || game->creationTime().date() > endDate() || !hasEnoughPlayers(game) || game->completedPercentage() < m_finishedGamesPercentage) {
+        if(game->type() != Game::Doppelkopf || game->creationTime().date() < startDate() || game->creationTime().date() > endDate() || !hasEnoughPlayers(game) || game->completedPercentage() < m_finishedGamesPercentage) {
             continue;
         }
         else{

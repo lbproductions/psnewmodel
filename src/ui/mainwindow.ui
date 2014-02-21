@@ -509,6 +509,7 @@ border-bottom: 1px solid rgb(77,77,77);
      <string>File</string>
     </property>
     <addaction name="actionNew_Game"/>
+    <addaction name="actionNew_League"/>
     <addaction name="actionInformation"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_library"/>
@@ -638,6 +639,14 @@ border-bottom: 1px solid rgb(77,77,77);
    </property>
    <property name="shortcut">
     <string>Ctrl+0</string>
+   </property>
+  </action>
+  <action name="actionNew_League">
+   <property name="text">
+    <string>New League</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
  </widget>

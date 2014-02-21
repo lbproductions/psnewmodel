@@ -5,6 +5,7 @@
 #include "dialogs/drinkinformationdialog.h"
 #include "game/gamewindow.h"
 #include "chooselibrarywidget.h"
+#include "ui/league/addleaguedialog.h"
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -283,4 +284,10 @@ void MainWindow::on_actionOpen_library_triggered()
 
     ChooseLibraryWidget *widget = new ChooseLibraryWidget;
     widget->show();
+}
+
+void MainWindow::on_actionNew_League_triggered()
+{
+    AddLeagueDialog dlg(this);
+    dlg.exec();
 }

@@ -38,6 +38,8 @@ private slots:
 
     void on_actionOpen_library_triggered();
 
+    void on_actionNew_League_triggered();
+
 private:
     friend class StartWidget;
 
