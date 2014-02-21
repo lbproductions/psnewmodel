@@ -50,21 +50,6 @@
        <string notr="true"/>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
-       <property name="spacing">
-        <number>0</number>
-       </property>
-       <property name="leftMargin">
-        <number>0</number>
-       </property>
-       <property name="topMargin">
-        <number>0</number>
-       </property>
-       <property name="rightMargin">
-        <number>0</number>
-       </property>
-       <property name="bottomMargin">
-        <number>0</number>
-       </property>
        <item>
         <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
@@ -194,20 +179,6 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="groupBoxContraWins">
-         <property name="title">
-          <string>ContraWinPercentage</string>
-         </property>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBoxReWins">
-         <property name="title">
-          <string>ReWinPercentage</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QGroupBox" name="groupBoxRe">
          <property name="styleSheet">
           <string notr="true"/>
@@ -215,7 +186,23 @@
          <property name="title">
           <string>RePercentage</string>
          </property>
-         <zorder></zorder>
+         <zorder>groupBoxContraWins</zorder>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxReWins">
+         <property name="title">
+          <string>ReWinPercentage</string>
+         </property>
+         <zorder>groupBoxContraWins</zorder>
+        </widget>
+       </item>
+       <item>
+        <widget class="QGroupBox" name="groupBoxContraWins">
+         <property name="title">
+          <string>ContraWinPercentage</string>
+         </property>
+         <zorder>groupBoxRe</zorder>
         </widget>
        </item>
       </layout>
