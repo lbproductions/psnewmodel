@@ -60,6 +60,9 @@ public:
     int points() const;
     double average() const;
 
+    QTime averageRoundTime();
+    QTime averageSoloTime();
+
 private:
     Player *m_player;
     QList<QSharedPointer<Game> > m_games;

@@ -17,6 +17,7 @@ class GamesTogetherWidget;
 class SoloOverviewWidget;
 class DrinkStatsWidget;
 class GameCompareStatsWidget;
+class TimeStatsWidget;
 
 class GameStatsWidget : public QWidget
 {
@@ -47,6 +48,7 @@ class GameStatsWidget : public QWidget
         SoloOverviewWidget* m_soloWidget;
         DrinkStatsWidget* m_drinksWidget;
         GameCompareStatsWidget* m_gameCompareStatsWidget;
+        TimeStatsWidget* m_timeStatsWidget;
 
         int m_widgetCounter;
 };

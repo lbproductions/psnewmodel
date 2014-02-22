@@ -183,7 +183,8 @@ SOURCES += main.cpp \
     ui/widgets/noisygradientitemdelegate.cpp \
     ui/model/placeslistmodel.cpp \
     ui/widgets/leaguesdelegate.cpp \
-    ui/model/leaguelistmodel.cpp
+    ui/model/leaguelistmodel.cpp \
+    ui/game/timestatswidget.cpp
 
 
 HEADERS  += \
@@ -270,7 +271,8 @@ HEADERS  += \
     ui/widgets/noisygradientitemdelegate.h \
     ui/model/placeslistmodel.h \
     ui/widgets/leaguesdelegate.h \
-    ui/model/leaguelistmodel.h
+    ui/model/leaguelistmodel.h \
+    ui/game/timestatswidget.h
 
 
 FORMS += \

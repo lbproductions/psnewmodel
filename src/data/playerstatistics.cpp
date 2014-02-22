@@ -439,6 +439,42 @@ double PlayerStatistics::average() const
     }
 }
 
+QTime PlayerStatistics::averageRoundTime()
+{
+    if(rounds().size() == 0) {
+        return QTime(0,0,0);
+    }
+
+    int time = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        time += QTime(0,0,0).secsTo(round->length());
+    }
+
+    return QTime(0,0,0).addSecs((double)time/(double)rounds().size());
+}
+
+QTime PlayerStatistics::averageSoloTime()
+{
+    if(rounds().size() == 0) {
+        return QTime(0,0,0);
+    }
+
+    int time = 0;
+    int count = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->soloPlayer() == player()) {
+            time += QTime(0,0,0).secsTo(round->length());
+            count++;
+        }
+    }
+
+    if(count == 0) {
+        return QTime(0,0,0);
+    }
+
+    return QTime(0,0,0).addSecs((double)time/(double)count);
+}
+
 double PlayerStatistics::percentage(int value1, int value2)
 {
     if(value2 == 0)
