@@ -6,14 +6,14 @@
       <description>Description</description>
       <language>en</language>
       <item>
-	    <title>Version 0.0.1</title>
-        <sparkle:releaseNotesLink>https://github.com/lbproductions/psnewmodel/releases/tag/0.0.1/</sparkle:releaseNotesLink>
-	    <pubDate>Mon Feb 17 18:30:26 CET 2014</pubDate>
-        <enclosure url="https://github.com/lbproductions/psnewmodel/releases/download/0.0.1/psnewmodel-0.0.1.zip"
-            sparkle:version="0.0.1"
-            length="11352961"
+	    <title>Version 0.0.2</title>
+        <sparkle:releaseNotesLink>https://github.com/lbproductions/psnewmodel/releases/tag/0.0.2/</sparkle:releaseNotesLink>
+	    <pubDate>Thu Feb 27 17:49:14 CET 2014</pubDate>
+        <enclosure url="https://github.com/lbproductions/psnewmodel/releases/download/0.0.2/psnewmodel-0.0.2.zip"
+            sparkle:version="0.0.2"
+            length="11419107"
             type="application/octet-stream"
-            sparkle:dsaSignature="MC0CFQDYOKuG1hWMBfFezLAJqpSQxyPo/gIUTcY+lLbJF0soFZ/wQstQtALpXho=" />
+            sparkle:dsaSignature="MC0CFDTH9yfMeU1yPZBwIiv9ouxf1nmjAhUA308W4BkEeYUybLW/b2IR2kx1hDo=" />
 	 </item>
    </channel>
 </rss>
