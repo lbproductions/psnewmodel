@@ -215,6 +215,16 @@ QString Library::fileNameLocal()
         return QString();
     }
 
+    if(!dataDir.cd("projectstats.pspkg")) {
+        dataDir.mkdir("projectstats.pspkg");
+        dataDir.cd("projectstats.pspkg");
+    }
+
+    if(!dataDir.cd("database")) {
+        dataDir.mkdir("database");
+        dataDir.cd("database");
+    }
+
     QString databaseFilePath = dataDir.absoluteFilePath(defaultFileName());
 
     if(!createFileIfNotExists(databaseFilePath)) {
@@ -227,7 +237,7 @@ QString Library::fileNameLocal()
         return QString();
     }
 
-    return databaseFilePath;
+    return dataPath+"/projectstats.pspkg";
 }
 
 bool Library::createFileIfNotExists(const QString &fileName)

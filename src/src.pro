@@ -15,6 +15,7 @@ TEMPLATE        = app
 ICON            = resource/general/icon2.icns
 QT              += sql widgets
 CONFIG          += c++11
+CONFIG          += CONSOLE
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
 DEFINES         += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -184,7 +185,8 @@ SOURCES += main.cpp \
     ui/model/placeslistmodel.cpp \
     ui/widgets/leaguesdelegate.cpp \
     ui/model/leaguelistmodel.cpp \
-    ui/game/timestatswidget.cpp
+    ui/game/timestatswidget.cpp \
+    application.cpp
 
 
 HEADERS  += \
@@ -272,7 +274,8 @@ HEADERS  += \
     ui/model/placeslistmodel.h \
     ui/widgets/leaguesdelegate.h \
     ui/model/leaguelistmodel.h \
-    ui/game/timestatswidget.h
+    ui/game/timestatswidget.h \
+    application.h
 
 
 FORMS += \
