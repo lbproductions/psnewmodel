@@ -42,7 +42,7 @@ QList<QSharedPointer<Player> > League::players() const
     return m_players;
 }
 
-QList<QPair<QSharedPointer<Player>, double> > League::sortPlayersAfterAverage()
+QList<QPair<QSharedPointer<Player>, double> > League::sortPlayersByAverage()
 {
     // too lazy to implement access of league-stats in sort-funtion out of this class
     QList<QPair<QSharedPointer<Player>,double> > result;
@@ -81,7 +81,7 @@ void League::calculateMatchdays()
 
     for(int i = 0; i<source.size(); i++) {
         m_calculatedGames.append(source.at(i));
-        QList<QPair<QSharedPointer<Player>,double> > players = sortPlayersAfterAverage();
+        QList<QPair<QSharedPointer<Player>,double> > players = sortPlayersByAverage();
 
         QSharedPointer<Matchday> matchday = QSharedPointer<Matchday>(new Matchday(this));
         matchday->setGame(m_calculatedGames.last());
@@ -121,9 +121,29 @@ void League::setPlayers(const QList<QSharedPointer<Player> > &players)
     m_players = players;
 }
 
+void League::addPlayer(QSharedPointer<Player> player)
+{
+    m_players.add(player);
+}
+
+void League::removePlayer(QSharedPointer<Player> player)
+{
+    m_players.remove(player);
+}
+
 void League::setGames(const QList<QSharedPointer<Game> > &games)
 {
     m_games = games;
+}
+
+void League::addGame(QSharedPointer<Game> game)
+{
+    m_games.add(game);
+}
+
+void League::removeGame(QSharedPointer<Game> game)
+{
+    m_games.remove(game);
 }
 
 bool League::hasEnoughPlayers(QSharedPointer<Game> game) const

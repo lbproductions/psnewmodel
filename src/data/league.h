@@ -13,77 +13,77 @@ class Matchday;
 
 class League : public QObject
 {
-        Q_OBJECT
-        Q_PROPERTY(QString name READ name WRITE setName)
-        Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate)
-        Q_PROPERTY(QDate endDate READ endDate WRITE setEndDate)
-        Q_PROPERTY(double playerRatio READ playerRatio WRITE setPlayerRatio)
-        Q_PROPERTY(QList<QSharedPointer<Game> > games READ games WRITE setGames)
-        Q_PROPERTY(QList<QSharedPointer<Player> > players READ players WRITE setPlayers)
+    Q_OBJECT
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate)
+    Q_PROPERTY(QDate endDate READ endDate WRITE setEndDate)
+    Q_PROPERTY(double playerRatio READ playerRatio WRITE setPlayerRatio)
+    Q_PROPERTY(QList<QSharedPointer<Game> > games READ games WRITE setGames)
+    Q_PROPERTY(QList<QSharedPointer<Player> > players READ players WRITE setPlayers)
 
-        Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:games",
-                    "reverserelation=leagues")
-        Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:players",
-                    "reverserelation=leagues")
+    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:games",
+                "reverserelation=leagues")
+    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:players",
+                "reverserelation=leagues")
 
 
-    public:
-        explicit League(QObject *parent = 0);
+public:
+    explicit League(QObject *parent = 0);
 
-        QDate startDate() const;
-        void setStartDate(const QDate &startDate);
+    QDate startDate() const;
+    void setStartDate(const QDate &startDate);
 
-        QDate endDate() const;
-        void setEndDate(const QDate &endDate);
+    QDate endDate() const;
+    void setEndDate(const QDate &endDate);
 
-        QList<QSharedPointer<Player> > players() const;
-        void setPlayers(const  QList<QSharedPointer<Player> > &players);
+    double playerRatio() const;
+    void setPlayerRatio(const double ratio);
 
-        QList<QSharedPointer<Game> > games() const;
-        QList<QSharedPointer<Game> > calculatedGames();
-        QList<QSharedPointer<Game> > calculatePossibleGames() const;
+    double finishedGamesBorder() const;
+    void setFinishedGamesBorder(double border);
 
-        QSharedPointer<PlayerStatistics> playerStats(QSharedPointer<Player> player);
+    QString name() const;
+    void setName(const QString name);
 
-        double playerRatio() const;
-        void setPlayerRatio(const double ratio);
+    QList<QSharedPointer<Player> > players() const;
+    QList<QSharedPointer<Game> > games() const;
+    QList<QSharedPointer<Game> > calculatedGames();
+    QList<QSharedPointer<Game> > calculatePossibleGames() const;
+    QSharedPointer<PlayerStatistics> playerStats(QSharedPointer<Player> player);
 
-        QString name() const;
-        void setName(const QString name);
+    QSharedPointer<Matchday> currentMatchday();
+    QList<QSharedPointer<Matchday> > matchdays();
 
-        void recalculate();
+    void recalculate();
 
-        double finishedGamesBorder() const;
-        void setFinishedGamesBorder(double border);
+    static int currentMatchDayNumber;
 
-        static int currentMatchDayNumber;
-        QSharedPointer<Matchday> currentMatchday();
-        QList<QSharedPointer<Matchday> > matchdays();
+public slots:
+    void setPlayers(const  QList<QSharedPointer<Player> > &players);
+    void addPlayer(QSharedPointer<Player> player);
+    void removePlayer(QSharedPointer<Player> player);
 
-    private:
-        void setGames(const  QList<QSharedPointer<Game> > &games);
+    void setGames(const  QList<QSharedPointer<Game> > &games);
+    void addGame(QSharedPointer<Game> game);
+    void removeGame(QSharedPointer<Game> game);
 
-        QList<QPair<QSharedPointer<Player>, double> > sortPlayersAfterAverage();
+private:
+    QList<QPair<QSharedPointer<Player>, double> > sortPlayersByAverage();
+    void calculateMatchdays();
+    bool hasEnoughPlayers(QSharedPointer<Game> game) const;
 
-        void calculateMatchdays();
+    QDate m_startDate;
+    QDate m_endDate;
+    QString m_name;
+    double m_playerRatio;
+    double m_finishedGamesPercentage;
 
-        QDate m_startDate;
-        QDate m_endDate;
+    QpHasMany<Player> m_players;
+    QpHasMany<Game> m_games;
 
-        QString m_name;
-
-        double m_playerRatio;
-        double m_finishedGamesPercentage;
-
-        QpHasMany<Player> m_players;
-        QpHasMany<Game> m_games;
-
-        QList<QSharedPointer<Game> > m_calculatedGames;
-        QList<QSharedPointer<Matchday> > m_matchdays;
-
-        QHash<QSharedPointer<Player>, QSharedPointer<PlayerStatistics> > m_playerStatistics;
-
-        bool hasEnoughPlayers(QSharedPointer<Game> game) const;
+    QList<QSharedPointer<Game> > m_calculatedGames;
+    QList<QSharedPointer<Matchday> > m_matchdays;
+    QHash<QSharedPointer<Player>, QSharedPointer<PlayerStatistics> > m_playerStatistics;
 };
 
 #endif // LEAGUE_H

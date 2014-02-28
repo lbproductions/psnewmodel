@@ -141,7 +141,7 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
             case HochzeitenCountColumn:
                 return player->hochzeitRounds().size();
             case SchmeissereienCountColumn:
-                return player->schmeissereien().size();
+                return player->schmeissereis().size();
             case SchweinereienCountColumn:
                 return player->schweinereiRounds().size();
             case SoloCountColumn:

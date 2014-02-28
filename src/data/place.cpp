@@ -109,9 +109,19 @@ void Place::addPlayer(QSharedPointer<Player> player)
     m_players.add(player);
 }
 
+void Place::removePlayer(QSharedPointer<Player> player)
+{
+    m_players.remove(player);
+}
+
 void Place::addGame(QSharedPointer<Game> game)
 {
     m_games.add(game);
+}
+
+void Place::removeGame(QSharedPointer<Game> game)
+{
+    m_games.remove(game);
 }
 
 void Place::setPlayers(const QList<QSharedPointer<Player> > &players)

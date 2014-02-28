@@ -19,7 +19,7 @@ class Drink : public QObject
     Q_PROPERTY(Type type READ type WRITE setType)
     Q_PROPERTY(double volume READ volume WRITE setVolume)
     Q_PROPERTY(QPixmap picture READ picture WRITE setPicture)
-        Q_PROPERTY(QString iconPath READ iconPath WRITE setIconPath)
+    Q_PROPERTY(QString iconPath READ iconPath WRITE setIconPath)
     Q_PROPERTY(double alcoholByVolume READ alcoholByVolume WRITE setAlcoholByVolume)
     Q_PROPERTY(QList<QSharedPointer<LiveDrink> > liveDrinks READ liveDrinks WRITE setLiveDrinks)
 
@@ -38,7 +38,7 @@ public:
 
     explicit Drink(QObject *parent = 0);
     ~Drink();
-    
+
     QString name() const;
     void setName(const QString &name);
 
@@ -66,13 +66,12 @@ public:
     static QString typeStringFromType(Type type);
     static Type typeFromString(const QString &typeString);
 
-private:
-    friend class LiveDrink;
-
+private slots:
     void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks);
-
     void addLiveDrink(QSharedPointer<LiveDrink> drink);
     void removeLiveDrink(QSharedPointer<LiveDrink> drink);
+
+private:
     void setIconPath(QString path);
     QString iconPath() const;
 

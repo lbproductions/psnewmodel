@@ -74,8 +74,6 @@ public:
     explicit Game(QObject *parent = 0);
     ~Game();
 
-    void save();
-
     QString name() const;
     void setName(const QString &name);
 
@@ -99,7 +97,6 @@ public:
     void setMitPflichtSolo(bool arg);
 
     AdditionalMissingPlayer aditionalMissingPlayer() const;
-
     void setAdditionalMissingPlayer(AdditionalMissingPlayer arg);
 
     QTime length() const;
@@ -110,12 +107,8 @@ public:
     QTime predictedGameLength(double weight = 0.7) const;
 
     QSharedPointer<Place> site() const;
-    void setSite(QSharedPointer<Place> site);
-
     QList<QSharedPointer<League> > leagues() const;
-
     QList<QSharedPointer<Player> > players() const;
-    void addPlayer(QSharedPointer<Player> player);
     QSharedPointer<Player> currentCardMixer() const;
     QList<QSharedPointer<Player> > currentPlayingPlayers() const;
 
@@ -133,18 +126,20 @@ public:
     int pointsToLeader(QSharedPointer<Player> player);
 
     int drinkCount(QSharedPointer<Drink> drink) const;
+    int drinkCount(QSharedPointer<Player> player) const;
     QMap<QSharedPointer<Drink>, int> drinkCounts(QSharedPointer<Player> player) const;
-    int totalDrinkCount(QSharedPointer<Player> player) const;
+
     QList<QSharedPointer<LiveDrink> > liveDrinks() const;
     QList<QSharedPointer<LiveDrink> > liveDrinks(QSharedPointer<Player> player) const;
 
     void startNextRound();
+    void save();
 
     int totalRoundCount() const;
     int finishedRoundCount() const;
+    int roundsToPlay() const;
     double completedPercentage() const;
     bool isComplete() const;
-    int roundsToPlay() const;
 
     bool hasPflichtSolo(QSharedPointer<Player> player) const;
 
@@ -170,13 +165,24 @@ signals:
     void lengthChanged();
     void drinksChanged();
 
-private:
-    void setCreationTime(const QDateTime &creationTime);
-    void setPlayers(const QList<QSharedPointer<Player> > &players);
+public slots:
+    void setSite(QSharedPointer<Place> site);
+    void addPlayer(QSharedPointer<Player> player);
+
+private slots:
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
     void addRound(QSharedPointer<Round> round);
     void removeRound(QSharedPointer<Round> round);
+
+    void setPlayers(const QList<QSharedPointer<Player> > &players);
+    void removePlayer(QSharedPointer<Player> player);
+
     void setLeagues(const QList<QSharedPointer<League> > &arg);
+    void addLeague(QSharedPointer<League> arg);
+    void removeLeague(QSharedPointer<League> arg);
+
+private:
+    void setCreationTime(const QDateTime &creationTime);
     void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
     void setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games);
 
@@ -190,12 +196,12 @@ private:
     bool m_mitPflichtSolo;
     AdditionalMissingPlayer m_additionalMissingPlayer;
 
+    mutable QSharedPointer<Round> m_currentRoundCached;
+
     QpHasOne<Place> m_site;
     QpHasMany<Player> m_players;
     QpHasMany<Round> m_rounds;
     QpBelongsToMany<League> m_leagues;
-    mutable QSharedPointer<Round> m_currentRoundCached;
-
     QpHasMany<OLD_OfflineGameInformation> m_offlineGameInformation;
 
     QTimer m_lengthTimer;

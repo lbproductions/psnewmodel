@@ -288,6 +288,11 @@ void Game::addPlayer(QSharedPointer<Player> player)
     m_players.add(player);
 }
 
+void Game::removePlayer(QSharedPointer<Player> player)
+{
+    m_players.remove(player);
+}
+
 QSharedPointer<Player> Game::currentCardMixer() const
 {
     if(isComplete())
@@ -433,7 +438,7 @@ QMap<QSharedPointer<Drink>, int> Game::drinkCounts(QSharedPointer<Player> player
     return result;
 }
 
-int Game::totalDrinkCount(QSharedPointer<Player> player) const
+int Game::drinkCount(QSharedPointer<Player> player) const
 {
     int count = 0;
 
@@ -478,7 +483,6 @@ void Game::startNextRound()
     }
 
     round = Qp::create<Round>();
-    round->setGame(Qp::sharedFrom(this));
     round->setStartTime(QDateTime::currentDateTime());
     round->setNumber(nextNumber);
     round->setState(Round::Running);
@@ -638,7 +642,7 @@ int Game::schmeissereiCount(int roundCount)
             break;
 
         --roundCount;
-        result += round->schmeissereien().size();
+        result += round->schmeissereis().size();
     }
     return result;
 }
@@ -764,6 +768,16 @@ QList<QSharedPointer<League> > Game::leagues() const
 void Game::setLeagues(const QList<QSharedPointer<League> > &arg)
 {
     m_leagues = arg;
+}
+
+void Game::addLeague(QSharedPointer<League> arg)
+{
+    m_leagues.add(arg);
+}
+
+void Game::removeLeague(QSharedPointer<League> arg)
+{
+    m_leagues.remove(arg);
 }
 
 void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)

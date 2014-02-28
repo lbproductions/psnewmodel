@@ -293,13 +293,13 @@ QList<QSharedPointer<Round> > PlayerStatistics::soloRounds() const
 QList<QSharedPointer<Schmeisserei> > PlayerStatistics::schmeissereien() const
 {
     if(isAllGames())
-        return player()->schmeissereien();
+        return player()->schmeissereis();
 
     QList<QSharedPointer<Schmeisserei> > result;
     QSharedPointer<Player> sharedPlayer = player();
     foreach(QSharedPointer<Game> game, games()) {
         foreach(QSharedPointer<Round> round, game->rounds()) {
-            foreach(QSharedPointer<Schmeisserei> s, round->schmeissereien()) {
+            foreach(QSharedPointer<Schmeisserei> s, round->schmeissereis()) {
                 if(s->player() == sharedPlayer) {
                     result.append(s);
                 }

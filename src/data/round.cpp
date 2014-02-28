@@ -17,9 +17,15 @@ Round::Round(QObject *parent) :
     m_soloType(UnkownSoloType),
     m_soloIsPflicht(false),
     m_winnerParty(UnknownWinnerParty),
+    m_trumpfColor(UnknownTrumpColor),
+    m_hochzeitDecision(UnkownHochzeitDecision),
+    m_trumpfCount(-1),
+    m_trumpfZurueck(false),
+    m_reGamePoints(120),
+    m_contraGamePoints(120),
     m_game("game", this),
     m_liveDrinks("liveDrinks",this),
-    m_schmeissereien("schmeissereien",this),
+    m_schmeissereis("schmeissereis",this),
     m_hochzeitPlayer("hochzeitPlayer",this),
     m_trumpfabgabePlayer("trumpfabgabePlayer",this),
     m_soloPlayer("soloPlayer",this),
@@ -28,13 +34,7 @@ Round::Round(QObject *parent) :
     m_re2Player("re2Player",this),
     m_contra1Player("contra1Player",this),
     m_contra2Player("contra2Player",this),
-    m_contra3Player("contra3Player",this),
-    m_trumpfColor(UnknownTrumpColor),
-    m_hochzeitDecision(UnkownHochzeitDecision),
-    m_trumpfCount(-1),
-    m_trumpfZurueck(false),
-    m_reGamePoints(120),
-    m_contraGamePoints(120)
+    m_contra3Player("contra3Player",this)
 {
 }
 
@@ -429,21 +429,26 @@ void Round::setHochzeitPlayer(const QSharedPointer<Player> &hochzeitPlayer)
     m_hochzeitPlayer = hochzeitPlayer;
 }
 
-QList<QSharedPointer<Schmeisserei> > Round::schmeissereien() const
+QList<QSharedPointer<Schmeisserei> > Round::schmeissereis() const
 {
-    return m_schmeissereien;
+    return m_schmeissereis;
 }
 
 void Round::addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
 {
-    m_schmeissereien.add(schmeisserei);
+    m_schmeissereis.add(schmeisserei);
 
     emit schmeissereiAdded();
 }
 
-void Round::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
+void Round::setSchmeissereis(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
 {
-    m_schmeissereien = schmeissereien;
+    m_schmeissereis = schmeissereien;
+}
+
+void Round::removeSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
+{
+    m_schmeissereis.remove(schmeisserei);
 }
 
 

@@ -177,7 +177,7 @@ QVariant GameOverviewModel::data(const QModelIndex &index, int role) const
     }
     if(extraRow == SchmeissereienRow) {
         QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
-        QList<QSharedPointer<Schmeisserei> > schmeissereien = round->schmeissereien();
+        QList<QSharedPointer<Schmeisserei> > schmeissereien = round->schmeissereis();
 
         if(role == SchmeissereienRole) {
             QList<QColor> colors;

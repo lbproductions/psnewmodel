@@ -22,7 +22,7 @@ Player::Player(QObject *parent) :
     m_liveDrinks("liveDrinks", this),
     m_leagues("leagues", this),
     m_games("games",this),
-    m_schmeissereien("schmeissereien",this),
+    m_schmeissereis("schmeissereis",this),
     m_hochzeitRounds("hochzeitRounds",this),
     m_trumpfabgabeRounds("trumpfabgabeRounds",this),
     m_soloRounds("soloRounds",this),
@@ -111,9 +111,29 @@ void Player::setLeagues(const QList<QSharedPointer<League> > &arg)
     m_leagues = arg;
 }
 
+void Player::addLeague(QSharedPointer<League> arg)
+{
+    m_leagues.add(arg);
+}
+
+void Player::removeLeague(QSharedPointer<League> arg)
+{
+    m_leagues.remove(arg);
+}
+
 void Player::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)
 {
     m_offlineGameInformation = games;
+}
+
+void Player::addOfflineGameInformation(QSharedPointer<OLD_OfflineGameInformation> game)
+{
+    m_offlineGameInformation.add(game);
+}
+
+void Player::removeOfflineGameInformation(QSharedPointer<OLD_OfflineGameInformation> game)
+{
+    m_offlineGameInformation.remove(game);
 }
 
 
@@ -149,6 +169,16 @@ QList<QSharedPointer<Place> > Player::places() const
 void Player::setPlaces(const QList<QSharedPointer<Place> > &places)
 {
     m_places = places;
+}
+
+void Player::addPlace(QSharedPointer<Place> place)
+{
+    m_places.add(place);
+}
+
+void Player::removePlace(QSharedPointer<Place> place)
+{
+    m_places.remove(place);
 }
 
 QList<QSharedPointer<LiveDrink> > Player::liveDrinks() const
@@ -225,6 +255,16 @@ QSharedPointer<Game> Player::lastWin() const
 void Player::setGames(const QList<QSharedPointer<Game> > &games)
 {
     m_games = games;
+}
+
+void Player::addGame(QSharedPointer<Game> game)
+{
+    m_games.add(game);
+}
+
+void Player::removeGame(QSharedPointer<Game> game)
+{
+    m_games.remove(game);
 }
 
 QList<QSharedPointer<Round> > Player::re2Rounds() const
@@ -337,6 +377,16 @@ void Player::setSchweinereiRounds(const QList<QSharedPointer<Round> > &schweiner
     m_schweinereiRounds = schweinereiRounds;
 }
 
+void Player::addSchweinereiRound(QSharedPointer<Round> schweinereiRounds)
+{
+    m_schweinereiRounds.add(schweinereiRounds);
+}
+
+void Player::removeSchweinereiRound(QSharedPointer<Round> schweinereiRounds)
+{
+    m_schweinereiRounds.remove(schweinereiRounds);
+}
+
 QList<QSharedPointer<Round> > Player::soloRounds() const
 {
     return m_soloRounds;
@@ -345,6 +395,16 @@ QList<QSharedPointer<Round> > Player::soloRounds() const
 void Player::setSoloRounds(const QList<QSharedPointer<Round> > &soloRounds)
 {
     m_soloRounds = soloRounds;
+}
+
+void Player::addSoloRound(QSharedPointer<Round> soloRound)
+{
+    m_soloRounds.add(soloRound);
+}
+
+void Player::removeSoloRound(QSharedPointer<Round> soloRound)
+{
+    m_soloRounds.remove(soloRound);
 }
 
 QList<QSharedPointer<Round> > Player::trumpfabgabeRounds() const
@@ -357,6 +417,16 @@ void Player::setTrumpfabgabeRounds(const QList<QSharedPointer<Round> > &trumpfab
     m_trumpfabgabeRounds = trumpfabgabeRounds;
 }
 
+void Player::addTrumpfabgabeRound(QSharedPointer<Round> trumpfabgabeRound)
+{
+    m_trumpfabgabeRounds.add(trumpfabgabeRound);
+}
+
+void Player::removeTrumpfabgabeRound(QSharedPointer<Round> trumpfabgabeRound)
+{
+    m_trumpfabgabeRounds.remove(trumpfabgabeRound);
+}
+
 QList<QSharedPointer<Round> > Player::hochzeitRounds() const
 {
     return m_hochzeitRounds;
@@ -367,9 +437,19 @@ void Player::setHochzeitRounds(const QList<QSharedPointer<Round> > &hochzeitRoun
     m_hochzeitRounds = hochzeitRounds;
 }
 
-QList<QSharedPointer<Schmeisserei> > Player::schmeissereien() const
+void Player::addHochzeitRound(QSharedPointer<Round> hochzeitRound)
 {
-    return m_schmeissereien;
+    m_hochzeitRounds.add(hochzeitRound);
+}
+
+void Player::removeHochzeitRound(QSharedPointer<Round> hochzeitRound)
+{
+    m_hochzeitRounds.remove(hochzeitRound);
+}
+
+QList<QSharedPointer<Schmeisserei> > Player::schmeissereis() const
+{
+    return m_schmeissereis;
 }
 
 QList<QSharedPointer<OLD_OfflineGameInformation> > Player::offlineGameInformation() const
@@ -377,9 +457,19 @@ QList<QSharedPointer<OLD_OfflineGameInformation> > Player::offlineGameInformatio
     return m_offlineGameInformation;
 }
 
-void Player::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
+void Player::setSchmeissereis(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
 {
-    m_schmeissereien = schmeissereien;
+    m_schmeissereis = schmeissereien;
+}
+
+void Player::addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
+{
+    m_schmeissereis.add(schmeisserei);
+}
+
+void Player::removeSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
+{
+    m_schmeissereis.remove(schmeisserei);
 }
 
 QList<QSharedPointer<Round> > Player::contra1Rounds() const
@@ -446,6 +536,36 @@ void Player::addContra3Round(QSharedPointer<Round> round)
 {
     m_contraRoundsCached.clear();
     m_contra3Rounds.add(round);
+}
+
+void Player::removeRe1Round(QSharedPointer<Round> round)
+{
+    m_reRoundsCached.clear();
+    m_re1Rounds.remove(round);
+}
+
+void Player::removeRe2Round(QSharedPointer<Round> round)
+{
+    m_reRoundsCached.clear();
+    m_re2Rounds.remove(round);
+}
+
+void Player::removeContra1Round(QSharedPointer<Round> round)
+{
+    m_contraRoundsCached.clear();
+    m_contra1Rounds.remove(round);
+}
+
+void Player::removeContra2Round(QSharedPointer<Round> round)
+{
+    m_contraRoundsCached.clear();
+    m_contra2Rounds.remove(round);
+}
+
+void Player::removeContra3Round(QSharedPointer<Round> round)
+{
+    m_contraRoundsCached.clear();
+    m_contra3Rounds.remove(round);
 }
 
 QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
