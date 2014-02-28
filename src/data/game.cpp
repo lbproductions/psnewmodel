@@ -22,8 +22,7 @@ Game::Game(QObject *parent) :
     m_players("players", this),
     m_rounds("rounds", this),
     m_leagues("leagues",this),
-    m_offlineGameInformation("offlineGameInformation", this),
-    m_dokoOfflineGameBuddys("dokoOfflineGameBuddys",this)
+    m_offlineGameInformation("offlineGameInformation", this)
 {
     m_lengthTimer.setInterval(1000);
     m_lengthTimer.setSingleShot(false);
@@ -271,23 +270,22 @@ void Game::setName(const QString &name)
 
 QSharedPointer<Place> Game::site() const
 {
-    return m_site.resolve();
+    return m_site;
 }
 
 void Game::setSite(QSharedPointer<Place> site)
 {
-    site->addGame(Qp::sharedFrom(this));
-    m_site.relate(site);
+    m_site = site;
 }
 
 QList<QSharedPointer<Player> > Game::players() const
 {
-    return m_players.resolveList();
+    return m_players;
 }
 
 void Game::addPlayer(QSharedPointer<Player> player)
 {
-    m_players.relate(player);
+    m_players.add(player);
 }
 
 QSharedPointer<Player> Game::currentCardMixer() const
@@ -316,13 +314,12 @@ QList<QSharedPointer<Player> > Game::currentPlayingPlayers() const
 
 void Game::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
-    m_players.clear();
-    m_players.relate(players);
+    m_players = players;
 }
 
 QList<QSharedPointer<Round> > Game::rounds() const
 {
-    return m_rounds.resolveList();
+    return m_rounds;
 }
 
 QSharedPointer<Round> Game::currentRound() const
@@ -672,12 +669,7 @@ int Game::contraWinCount()
 
 QList<QSharedPointer<OLD_OfflineGameInformation> > Game::offlineGameInformation() const
 {
-    return m_offlineGameInformation.resolveList();
-}
-
-QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > Game::dokoOfflineGameBuddys() const
-{
-    return m_dokoOfflineGameBuddys.resolveList();
+    return m_offlineGameInformation;
 }
 
 int Game::placement(QSharedPointer<Player> player, int roundNumber) const
@@ -723,20 +715,19 @@ int Game::leadingRoundCount(QSharedPointer<Player> player) const
 
 void Game::setRounds(const QList<QSharedPointer<Round> > &rounds)
 {
-    m_rounds.clear();
-    m_rounds.relate(rounds);
+    m_rounds = rounds;
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
 void Game::addRound(QSharedPointer<Round> round)
 {
-    m_rounds.relate(round);
+    m_rounds.add(round);
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
 void Game::removeRound(QSharedPointer<Round> round)
 {
-    m_rounds.unrelate(round);
+    m_rounds.remove(round);
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
@@ -767,22 +758,17 @@ bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> 
 
 QList<QSharedPointer<League> > Game::leagues() const
 {
-    return m_leagues.resolveList();
+    return m_leagues;
 }
 
 void Game::setLeagues(const QList<QSharedPointer<League> > &arg)
 {
-    m_leagues.relate(arg);
+    m_leagues = arg;
 }
 
 void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)
 {
-    m_offlineGameInformation.relate(games);
-}
-
-void Game::setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games)
-{
-    m_dokoOfflineGameBuddys.relate(games);
+    m_offlineGameInformation = games;
 }
 
 void Game::connectRoundSignals(QSharedPointer<Round> round)

@@ -275,18 +275,18 @@ private:
     mutable QMap<QSharedPointer<Player>, int> m_pointsCached; // a cache, because Qp:primaryKey is slow
     mutable QMap<QSharedPointer<Player>, int> m_totalPointsCached; // a cache, because Qp:primaryKey is slow
 
-    QpWeakRelation<Game> m_game;
-    QpStrongRelation<LiveDrink> m_liveDrinks;
-    QpStrongRelation<Schmeisserei> m_schmeissereien;
-    QpWeakRelation<Player> m_hochzeitPlayer;
-    QpWeakRelation<Player> m_trumpfabgabePlayer;
-    QpWeakRelation<Player> m_soloPlayer;
-    QpWeakRelation<Player> m_schweinereiPlayer;
-    QpWeakRelation<Player> m_re1Player;
-    QpWeakRelation<Player> m_re2Player;
-    QpWeakRelation<Player> m_contra1Player;
-    QpWeakRelation<Player> m_contra2Player;
-    QpWeakRelation<Player> m_contra3Player;
+    QpBelongsToOne<Game> m_game;
+    QpHasMany<LiveDrink> m_liveDrinks;
+    QpHasMany<Schmeisserei> m_schmeissereien;
+    QpHasOne<Player> m_hochzeitPlayer;
+    QpHasOne<Player> m_trumpfabgabePlayer;
+    QpHasOne<Player> m_soloPlayer;
+    QpHasOne<Player> m_schweinereiPlayer;
+    QpHasOne<Player> m_re1Player;
+    QpHasOne<Player> m_re2Player;
+    QpHasOne<Player> m_contra1Player;
+    QpHasOne<Player> m_contra2Player;
+    QpHasOne<Player> m_contra3Player;
     TrumpfColor m_trumpfColor;
     HochzeitDecision m_hochzeitDecision;
     int m_trumpfCount;

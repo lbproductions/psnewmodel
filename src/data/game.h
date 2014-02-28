@@ -36,7 +36,6 @@ class Game: public QObject
     Q_PROPERTY(QList<QSharedPointer<League> > leagues READ leagues WRITE setLeagues)
 
     Q_PROPERTY(QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation READ offlineGameInformation WRITE setOfflineGameInformation)
-    //        Q_PROPERTY(QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys READ dokoOfflineGameBuddys WRITE setDokoOfflineGameBuddys)
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:site",
                 "reverserelation=games")
@@ -191,14 +190,13 @@ private:
     bool m_mitPflichtSolo;
     AdditionalMissingPlayer m_additionalMissingPlayer;
 
-    QpWeakRelation<Place> m_site;
-    QpStrongRelation<Player> m_players;
-    QpStrongRelation<Round> m_rounds;
-    QpWeakRelation<League> m_leagues;
+    QpHasOne<Place> m_site;
+    QpHasMany<Player> m_players;
+    QpHasMany<Round> m_rounds;
+    QpBelongsToMany<League> m_leagues;
     mutable QSharedPointer<Round> m_currentRoundCached;
 
-    QpStrongRelation<OLD_OfflineGameInformation> m_offlineGameInformation;
-    QpStrongRelation<OLD_DokoOfflineGameBuddys> m_dokoOfflineGameBuddys;
+    QpHasMany<OLD_OfflineGameInformation> m_offlineGameInformation;
 
     QTimer m_lengthTimer;
 };

@@ -39,7 +39,7 @@ void League::setEndDate(const QDate &endDate)
 
 QList<QSharedPointer<Player> > League::players() const
 {
-    return m_players.resolveList();
+    return m_players;
 }
 
 QList<QPair<QSharedPointer<Player>, double> > League::sortPlayersAfterAverage()
@@ -103,7 +103,7 @@ void League::calculateMatchdays()
 
 QList<QSharedPointer<Game> > League::games() const
 {
-    return m_games.resolveList();
+    return m_games;
 }
 
 QList<QSharedPointer<Game> > League::calculatedGames()
@@ -118,12 +118,12 @@ QList<QSharedPointer<Game> > League::calculatedGames()
 
 void League::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
-    m_players.relate(players);
+    m_players = players;
 }
 
 void League::setGames(const QList<QSharedPointer<Game> > &games)
 {
-    m_games.relate(games);
+    m_games = games;
 }
 
 bool League::hasEnoughPlayers(QSharedPointer<Game> game) const

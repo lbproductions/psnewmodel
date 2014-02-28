@@ -75,8 +75,8 @@ class League : public QObject
         double m_playerRatio;
         double m_finishedGamesPercentage;
 
-        QpWeakRelation<Player> m_players;
-        QpWeakRelation<Game> m_games;
+        QpHasMany<Player> m_players;
+        QpHasMany<Game> m_games;
 
         QList<QSharedPointer<Game> > m_calculatedGames;
         QList<QSharedPointer<Matchday> > m_matchdays;

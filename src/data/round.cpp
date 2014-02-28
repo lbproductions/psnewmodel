@@ -44,37 +44,36 @@ Round::~Round()
 
 QList<QSharedPointer<LiveDrink> > Round::liveDrinks() const
 {
-    return m_liveDrinks.resolveList();
+    return m_liveDrinks;
 }
 
 void Round::addLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_liveDrinks.relate(drink);
+    m_liveDrinks.add(drink);
 
     emit drinkAdded();
 }
 
 void Round::removeLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_liveDrinks.unrelate(drink);
+    m_liveDrinks.remove(drink);
 
     emit drinkRemoved();
 }
 
 void Round::setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
 {
-    m_liveDrinks.clear();
-    m_liveDrinks.relate(drinks);
+    m_liveDrinks = drinks;
 }
 
 QSharedPointer<Game> Round::game() const
 {
-    return m_game.resolve();
+    return m_game;
 }
 
 void Round::setGame(const QSharedPointer<Game> &game)
 {
-    m_game.relate(game);
+    m_game = game;
 }
 
 QMap<int, int> Round::_points() const
@@ -367,16 +366,12 @@ bool Round::isSolo() const
 
 QSharedPointer<Player> Round::re2Player() const
 {
-    return m_re2Player.resolve();
+    return m_re2Player;
 }
 
 void Round::setRe2Player(const QSharedPointer<Player> &re2Player)
 {
-    if(!re2Player)
-        return;
-
-    re2Player->addRe2Round(Qp::sharedFrom(this));
-    m_re2Player.relate(re2Player);
+    m_re2Player = re2Player;
 }
 
 bool Round::isRe(QSharedPointer<Player> player) const
@@ -386,74 +381,69 @@ bool Round::isRe(QSharedPointer<Player> player) const
 
 QSharedPointer<Player> Round::re1Player() const
 {
-    return m_re1Player.resolve();
+    return m_re1Player;
 }
 
 void Round::setRe1Player(const QSharedPointer<Player> &re1Player)
 {
-    if(!re1Player)
-        return;
-
-    re1Player->addRe1Round(Qp::sharedFrom(this));
-    m_re1Player.relate(re1Player);
+    m_re1Player = re1Player;
 }
 
 QSharedPointer<Player> Round::schweinereiPlayer() const
 {
-    return m_schweinereiPlayer.resolve();
+    return m_schweinereiPlayer;
 }
 
 void Round::setSchweinereiPlayer(const QSharedPointer<Player> &schweinereiPlayer)
 {
-    m_schweinereiPlayer.relate(schweinereiPlayer);
+    m_schweinereiPlayer = schweinereiPlayer;
 }
 
 QSharedPointer<Player> Round::soloPlayer() const
 {
-    return m_soloPlayer.resolve();
+    return m_soloPlayer;
 }
 
 void Round::setSoloPlayer(const QSharedPointer<Player> &soloPlayer)
 {
-    m_soloPlayer.relate(soloPlayer);
+    m_soloPlayer = soloPlayer;
 }
 
 QSharedPointer<Player> Round::trumpfabgabePlayer() const
 {
-    return m_trumpfabgabePlayer.resolve();
+    return m_trumpfabgabePlayer;
 }
 
 void Round::setTrumpfabgabePlayer(const QSharedPointer<Player> &trumpfabgabePlayer)
 {
-    m_trumpfabgabePlayer.relate(trumpfabgabePlayer);
+    m_trumpfabgabePlayer = trumpfabgabePlayer;
 }
 
 QSharedPointer<Player> Round::hochzeitPlayer() const
 {
-    return m_hochzeitPlayer.resolve();
+    return m_hochzeitPlayer;
 }
 
 void Round::setHochzeitPlayer(const QSharedPointer<Player> &hochzeitPlayer)
 {
-    m_hochzeitPlayer.relate(hochzeitPlayer);
+    m_hochzeitPlayer = hochzeitPlayer;
 }
 
 QList<QSharedPointer<Schmeisserei> > Round::schmeissereien() const
 {
-    return m_schmeissereien.resolveList();
+    return m_schmeissereien;
 }
 
 void Round::addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
 {
-    m_schmeissereien.relate(schmeisserei);
-    schmeisserei->setRound(Qp::sharedFrom(this));
+    m_schmeissereien.add(schmeisserei);
 
     emit schmeissereiAdded();
 }
 
 void Round::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
 {
-    m_schmeissereien.relate(schmeissereien);
+    m_schmeissereien = schmeissereien;
 }
 
 
@@ -533,44 +523,32 @@ void Round::setState(const State &arg)
 
 QSharedPointer<Player> Round::contra1Player() const
 {
-    return m_contra1Player.resolve();
+    return m_contra1Player;
 }
 
 void Round::setContra1Player(QSharedPointer<Player> arg)
 {
-    if(!arg)
-        return;
-
-    arg->addContra1Round(Qp::sharedFrom(this));
-    m_contra1Player.relate(arg);
+    m_contra1Player = arg;
 }
 
 QSharedPointer<Player> Round::contra2Player() const
 {
-    return m_contra2Player.resolve();
+    return m_contra2Player;
 }
 
 void Round::setContra2Player(QSharedPointer<Player> arg)
 {
-    if(!arg)
-        return;
-
-    arg->addContra2Round(Qp::sharedFrom(this));
-    m_contra2Player.relate(arg);
+    m_contra2Player = arg;
 }
 
 QSharedPointer<Player> Round::contra3Player() const
 {
-    return m_contra3Player.resolve();
+    return m_contra3Player;
 }
 
 void Round::setContra3Player(QSharedPointer<Player> arg)
 {
-    if(!arg)
-        return;
-
-    arg->addContra3Round(Qp::sharedFrom(this));
-    m_contra3Player.relate(arg);
+    m_contra3Player = arg;
 }
 
 QStringList Round::soloTypeStrings()

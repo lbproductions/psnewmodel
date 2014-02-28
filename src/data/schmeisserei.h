@@ -64,8 +64,8 @@ public:
 
 private:
     Type m_type;
-    QpWeakRelation<Round> m_round;
-    QpWeakRelation<Player> m_player;
+    QpBelongsToOne<Round> m_round;
+    QpHasOne<Player> m_player;
     int m_kingsCount;
     int m_trumpfabgabeCount;
     int m_points;

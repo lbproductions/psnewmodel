@@ -103,17 +103,17 @@ void Player::setGender(const Gender &gender)
 
 QList<QSharedPointer<League> > Player::leagues() const
 {
-    return m_leagues.resolveList();
+    return m_leagues;
 }
 
 void Player::setLeagues(const QList<QSharedPointer<League> > &arg)
 {
-    m_leagues.relate(arg);
+    m_leagues = arg;
 }
 
 void Player::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)
 {
-    m_offlineGameInformation.relate(games);
+    m_offlineGameInformation = games;
 }
 
 
@@ -143,18 +143,17 @@ void Player::setName(const QString &name)
 
 QList<QSharedPointer<Place> > Player::places() const
 {
-    return m_places.resolveList();
+    return m_places;
 }
 
 void Player::setPlaces(const QList<QSharedPointer<Place> > &places)
 {
-    m_places.clear();
-    m_places.relate(places);
+    m_places = places;
 }
 
 QList<QSharedPointer<LiveDrink> > Player::liveDrinks() const
 {
-    return m_liveDrinks.resolveList();
+    return m_liveDrinks;
 }
 
 QList<QSharedPointer<Drink> > Player::drinks() const
@@ -175,12 +174,12 @@ QList<QSharedPointer<Drink> > Player::drinks() const
 
 void Player::setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
 {
-    m_liveDrinks.relate(drinks);
+    m_liveDrinks = drinks;
 }
 
 QList<QSharedPointer<Game> > Player::games() const
 {
-    return m_games.resolveList();
+    return m_games;
 }
 
 int Player::gamePoints() const
@@ -225,13 +224,12 @@ QSharedPointer<Game> Player::lastWin() const
 
 void Player::setGames(const QList<QSharedPointer<Game> > &games)
 {
-    m_games.clear();
-    m_games.relate(games);
+    m_games = games;
 }
 
 QList<QSharedPointer<Round> > Player::re2Rounds() const
 {
-    return m_re2Rounds.resolveList();
+    return m_re2Rounds;
 }
 
 QList<QSharedPointer<Round> > Player::reRounds() const
@@ -314,140 +312,140 @@ void Player::setRe2Rounds(const QList<QSharedPointer<Round> > &re2Rounds)
 {
     m_reRoundsCached.clear();
     m_roundsCached.clear();
-    m_re2Rounds.relate(re2Rounds);
+    m_re2Rounds = re2Rounds;
 }
 
 QList<QSharedPointer<Round> > Player::re1Rounds() const
 {
-    return m_re1Rounds.resolveList();
+    return m_re1Rounds;
 }
 
 void Player::setRe1Rounds(const QList<QSharedPointer<Round> > &re1Rounds)
 {
     m_reRoundsCached.clear();
     m_roundsCached.clear();
-    m_re1Rounds.relate(re1Rounds);
+    m_re1Rounds = re1Rounds;
 }
 
 QList<QSharedPointer<Round> > Player::schweinereiRounds() const
 {
-    return m_schweinereiRounds.resolveList();
+    return m_schweinereiRounds;
 }
 
 void Player::setSchweinereiRounds(const QList<QSharedPointer<Round> > &schweinereiRounds)
 {
-    m_schweinereiRounds.relate(schweinereiRounds);
+    m_schweinereiRounds = schweinereiRounds;
 }
 
 QList<QSharedPointer<Round> > Player::soloRounds() const
 {
-    return m_soloRounds.resolveList();
+    return m_soloRounds;
 }
 
 void Player::setSoloRounds(const QList<QSharedPointer<Round> > &soloRounds)
 {
-    m_soloRounds.relate(soloRounds);
+    m_soloRounds = soloRounds;
 }
 
 QList<QSharedPointer<Round> > Player::trumpfabgabeRounds() const
 {
-    return m_trumpfabgabeRounds.resolveList();
+    return m_trumpfabgabeRounds;
 }
 
 void Player::setTrumpfabgabeRounds(const QList<QSharedPointer<Round> > &trumpfabgabeRounds)
 {
-    m_trumpfabgabeRounds.relate(trumpfabgabeRounds);
+    m_trumpfabgabeRounds = trumpfabgabeRounds;
 }
 
 QList<QSharedPointer<Round> > Player::hochzeitRounds() const
 {
-    return m_hochzeitRounds.resolveList();
+    return m_hochzeitRounds;
 }
 
 void Player::setHochzeitRounds(const QList<QSharedPointer<Round> > &hochzeitRounds)
 {
-    m_hochzeitRounds.relate(hochzeitRounds);
+    m_hochzeitRounds = hochzeitRounds;
 }
 
 QList<QSharedPointer<Schmeisserei> > Player::schmeissereien() const
 {
-    return m_schmeissereien.resolveList();
+    return m_schmeissereien;
 }
 
 QList<QSharedPointer<OLD_OfflineGameInformation> > Player::offlineGameInformation() const
 {
-    return m_offlineGameInformation.resolveList();
+    return m_offlineGameInformation;
 }
 
 void Player::setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien)
 {
-    m_schmeissereien.relate(schmeissereien);
+    m_schmeissereien = schmeissereien;
 }
 
 QList<QSharedPointer<Round> > Player::contra1Rounds() const
 {
-    return m_contra1Rounds.resolveList();
+    return m_contra1Rounds;
 }
 
 QList<QSharedPointer<Round> > Player::contra2Rounds() const
 {
-    return m_contra2Rounds.resolveList();
+    return m_contra2Rounds;
 }
 
 QList<QSharedPointer<Round> > Player::contra3Rounds() const
 {
-    return m_contra3Rounds.resolveList();
+    return m_contra3Rounds;
 }
 
 void Player::setContra1Rounds(QList<QSharedPointer<Round> > arg)
 {
     m_contraRoundsCached.clear();
     m_roundsCached.clear();
-    m_contra1Rounds.relate(arg);
+    m_contra1Rounds = arg;
 }
 
 void Player::setContra2Rounds(QList<QSharedPointer<Round> > arg)
 {
     m_contraRoundsCached.clear();
     m_roundsCached.clear();
-    m_contra2Rounds.relate(arg);
+    m_contra2Rounds = arg;
 }
 
 void Player::setContra3Rounds(QList<QSharedPointer<Round> > arg)
 {
     m_contraRoundsCached.clear();
     m_roundsCached.clear();
-    m_contra3Rounds.relate(arg);
+    m_contra3Rounds = arg;
 }
 
 void Player::addRe1Round(QSharedPointer<Round> round)
 {
     m_reRoundsCached.clear();
-    m_re1Rounds.relate(round);
+    m_re1Rounds.add(round);
 }
 
 void Player::addRe2Round(QSharedPointer<Round> round)
 {
     m_reRoundsCached.clear();
-    m_re2Rounds.relate(round);
+    m_re2Rounds.add(round);
 }
 
 void Player::addContra1Round(QSharedPointer<Round> round)
 {
     m_contraRoundsCached.clear();
-    m_contra1Rounds.relate(round);
+    m_contra1Rounds.add(round);
 }
 
 void Player::addContra2Round(QSharedPointer<Round> round)
 {
     m_contraRoundsCached.clear();
-    m_contra2Rounds.relate(round);
+    m_contra2Rounds.add(round);
 }
 
 void Player::addContra3Round(QSharedPointer<Round> round)
 {
     m_contraRoundsCached.clear();
-    m_contra3Rounds.relate(round);
+    m_contra3Rounds.add(round);
 }
 
 QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
@@ -457,10 +455,10 @@ QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
 
 void Player::addLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_liveDrinks.relate(drink);
+    m_liveDrinks.add(drink);
 }
 
 void Player::removeLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_liveDrinks.unrelate(drink);
+    m_liveDrinks.remove(drink);
 }

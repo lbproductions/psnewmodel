@@ -49,9 +49,9 @@ private:
 
     QDateTime m_time;
 
-    QpWeakRelation<Player> m_player;
-    QpWeakRelation<Round> m_round;
-    QpWeakRelation<Drink> m_drink;
+    QpHasOne<Player> m_player;
+    QpBelongsToOne<Round> m_round;
+    QpHasOne<Drink> m_drink;
 };
 
 

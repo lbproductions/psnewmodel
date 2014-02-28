@@ -198,27 +198,27 @@ class Player : public QObject
 
         QSharedPointer<PlayerStatistics> m_allGamesStatistics;
 
-        QpWeakRelation<Place> m_places;
-        QpWeakRelation<LiveDrink> m_liveDrinks;
-        QpWeakRelation<League> m_leagues;
-        QpWeakRelation<Game> m_games;
-        QpStrongRelation<Schmeisserei> m_schmeissereien;
+        QpHasMany<Place> m_places;
+        QpBelongsToMany<LiveDrink> m_liveDrinks;
+        QpBelongsToMany<League> m_leagues;
+        QpBelongsToMany<Game> m_games;
+        QpBelongsToMany<Schmeisserei> m_schmeissereien;
 
         mutable QList<QSharedPointer<Round>> m_roundsCached;
         mutable QList<QSharedPointer<Round>> m_contraRoundsCached;
         mutable QList<QSharedPointer<Round>> m_reRoundsCached;
 
-        QpWeakRelation<Round> m_hochzeitRounds;
-        QpWeakRelation<Round> m_trumpfabgabeRounds;
-        QpWeakRelation<Round> m_soloRounds;
-        QpWeakRelation<Round> m_schweinereiRounds;
-        QpWeakRelation<Round> m_re1Rounds;
-        QpWeakRelation<Round> m_re2Rounds;
-        QpWeakRelation<Round> m_contra1Rounds;
-        QpWeakRelation<Round> m_contra2Rounds;
-        QpWeakRelation<Round> m_contra3Rounds;
+        QpBelongsToMany<Round> m_hochzeitRounds;
+        QpBelongsToMany<Round> m_trumpfabgabeRounds;
+        QpBelongsToMany<Round> m_soloRounds;
+        QpBelongsToMany<Round> m_schweinereiRounds;
+        QpBelongsToMany<Round> m_re1Rounds;
+        QpBelongsToMany<Round> m_re2Rounds;
+        QpBelongsToMany<Round> m_contra1Rounds;
+        QpBelongsToMany<Round> m_contra2Rounds;
+        QpBelongsToMany<Round> m_contra3Rounds;
 
-        QpWeakRelation<OLD_OfflineGameInformation> m_offlineGameInformation;
+        QpBelongsToMany<OLD_OfflineGameInformation> m_offlineGameInformation;
 };
 
 

@@ -82,18 +82,17 @@ void Place::setPostalCode(int postalCode)
 
 QList<QSharedPointer<Player> > Place::players() const
 {
-    return m_players.resolveList();
+    return m_players;
 }
 
 QList<QSharedPointer<Game> > Place::games() const
 {
-    return m_games.resolveList();
+    return m_games;
 }
 
 void Place::setGames(const QList<QSharedPointer<Game> > &games)
 {
-    m_games.clear();
-    m_games.relate(games);
+    m_games = games;
 }
 
 
@@ -107,18 +106,17 @@ QString Place::displayString() const
 
 void Place::addPlayer(QSharedPointer<Player> player)
 {
-    m_players.relate(player);
+    m_players.add(player);
 }
 
 void Place::addGame(QSharedPointer<Game> game)
 {
-    m_games.relate(game);
+    m_games.add(game);
 }
 
 void Place::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
-    m_players.clear();
-    m_players.relate(players);
+    m_players = players;
 }
 
 

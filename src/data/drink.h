@@ -83,7 +83,7 @@ private:
     double m_alcoholByVolume;
     QString m_iconPath;
 
-    QpStrongRelation<LiveDrink> m_liveDrinks;
+    QpBelongsToMany<LiveDrink> m_liveDrinks;
 };
 
 

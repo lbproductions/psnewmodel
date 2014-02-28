@@ -73,8 +73,8 @@ private:
     int m_houseNumber;
     QString m_comment;
 
-    QpWeakRelation<Player> m_players;
-    QpWeakRelation<Game> m_games;
+    QpBelongsToMany<Player> m_players;
+    QpBelongsToMany<Game> m_games;
 };
 
 

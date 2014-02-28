@@ -64,8 +64,8 @@ class OLD_OfflineGameInformation: public QObject
         void setPoints(const int points);
 
     private:
-        QpWeakRelation<Game> m_game;
-        QpWeakRelation<Player> m_player;
+        QpBelongsToOne<Game> m_game;
+        QpBelongsToOne<Player> m_player;
 
         int m_hochzeiten;
         int m_soli;

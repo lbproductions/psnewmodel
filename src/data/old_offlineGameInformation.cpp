@@ -12,24 +12,22 @@ OLD_OfflineGameInformation::OLD_OfflineGameInformation(QObject *parent):
 
 QSharedPointer<Game> OLD_OfflineGameInformation::game() const
 {
-    return m_game.resolve();
+    return m_game;
 }
 
 void OLD_OfflineGameInformation::setGame(QSharedPointer<Game> game)
 {
-    m_game.clear();
-    m_game.relate(game);
+    m_game = game;
 }
 
 QSharedPointer<Player> OLD_OfflineGameInformation::player() const
 {
-    return m_player.resolve();
+    return m_player;
 }
 
 void OLD_OfflineGameInformation::setPlayer(QSharedPointer<Player> player)
 {
-    m_player.clear();
-    m_player.relate(player);
+    m_player = player;
 }
 
 int OLD_OfflineGameInformation::hochzeiten() const
