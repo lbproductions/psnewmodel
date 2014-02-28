@@ -1,14 +1,13 @@
 TEMPLATE = subdirs
 
+CONFIG += sqlite
+
 CONFIG += ordered
 SUBDIRS = \
     src \
-    examples \
-    tests
-
-src.subdir      = src
-examples.subdir     = examples
-examples.depends    = src
+    tests \
+    testDatabaseChanger \
+    ui_tests
 
 OTHER_FILES += \
     README.md \

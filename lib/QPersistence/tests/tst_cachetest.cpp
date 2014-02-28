@@ -6,14 +6,6 @@ CacheTest::CacheTest()
 {
 }
 
-void CacheTest::initTestCase()
-{
-}
-
-void CacheTest::cleanupTestCase()
-{
-}
-
 void CacheTest::testBasics()
 {
     QpCache cache;
@@ -93,7 +85,7 @@ void CacheTest::testMaximumCacheSize()
     QVERIFY(weakRef5.toStrongRef());
 }
 
-void CacheTest::setCacheOrder()
+void CacheTest::testCacheReOrderingUponAccess()
 {
     QpCache cache;
     int cacheSize = 10;

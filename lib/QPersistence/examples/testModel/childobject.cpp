@@ -6,15 +6,22 @@
 
 #include <QDebug>
 
+namespace TestNameSpace {
+
 ChildObject::ChildObject(QObject *parent) :
     QObject(parent),
-    m_someInt(0)
+    m_someInt(0),
+    m_parentObjectOneToOne(QpRelation(&ChildObject::parentObjectOneToOne)),
+    m_parentObjectOneToMany(QpRelation(&ChildObject::parentObjectOneToMany)),
+    m_parentObjectsManyToMany(QpRelation(&ChildObject::parentObjectsManyToMany)),
+    m_belongsToOne(QpRelation(&ChildObject::belongsToOne)),
+    m_belongsToOneMany(QpRelation(&ChildObject::belongsToOneMany)),
+    m_belongsToManyMany(QpRelation(&ChildObject::belongsToManyMany))
 {
 }
 
 ChildObject::~ChildObject()
 {
-    qDebug() << Q_FUNC_INFO;
 }
 
 int ChildObject::someInt() const
@@ -27,36 +34,84 @@ void ChildObject::setSomeInt(int arg)
     m_someInt = arg;
 }
 
-QSharedPointer<ParentObject> ChildObject::parentObject() const
+QSharedPointer<ParentObject> ChildObject::parentObjectOneToOne() const
 {
-    QSharedPointer<ParentObject> ref = m_parentObject.toStrongRef();
-
-    if (!ref) {
-        ref = Qp::Private::resolveToOneRelation<ParentObject>("parentObject", this);
-        m_parentObject = ref.toWeakRef();
-    }
-
-    return ref;
+    return m_parentObjectOneToOne;
 }
 
-void ChildObject::setParentObject(const QSharedPointer<ParentObject> &parentObject)
+void ChildObject::setParentObjectOneToOne(const QSharedPointer<ParentObject> &parentObject)
 {
-    m_parentObject = parentObject.toWeakRef();
+    m_parentObjectOneToOne = parentObject;
 }
 
-QSharedPointer<ParentObject> ChildObject::parentObject2() const
+QSharedPointer<ParentObject> ChildObject::parentObjectOneToMany() const
 {
-    QSharedPointer<ParentObject> ref = m_parentObject2.toStrongRef();
-
-    if (!ref) {
-        ref = Qp::Private::resolveToOneRelation<ParentObject>("parentObject2", this);
-        m_parentObject2 = ref.toWeakRef();
-    }
-
-    return ref;
+    return m_parentObjectOneToMany;
 }
 
-void ChildObject::setParentObject2(const QSharedPointer<ParentObject> &parentObject)
+QList<QSharedPointer<ParentObject> > ChildObject::parentObjectsManyToMany() const
 {
-    m_parentObject2 = parentObject.toWeakRef();
+    return m_parentObjectsManyToMany;
+}
+
+QSharedPointer<ParentObject> ChildObject::belongsToOne() const
+{
+    return m_belongsToOne;
+}
+
+QSharedPointer<ParentObject> ChildObject::belongsToOneMany() const
+{
+    return m_belongsToOneMany;
+}
+
+void ChildObject::setBelongsToOne(QSharedPointer<ParentObject> arg)
+{
+    m_belongsToOne = arg;
+}
+
+void ChildObject::setBelongsToOneMany(QSharedPointer<ParentObject> arg)
+{
+    m_belongsToOneMany = arg;
+}
+
+QList<QSharedPointer<ParentObject> > ChildObject::belongsToManyMany() const
+{
+    return m_belongsToManyMany;
+}
+
+void ChildObject::setBelongsToManyMany(QList<QSharedPointer<ParentObject> > arg)
+{
+    m_belongsToManyMany = arg;
+}
+
+void ChildObject::addBelongsToManyMany(QSharedPointer<ParentObject> arg)
+{
+    m_belongsToManyMany.add(arg);
+}
+
+void ChildObject::removeBelongsToManyMany(QSharedPointer<ParentObject> arg)
+{
+    m_belongsToManyMany.remove(arg);
+}
+
+void ChildObject::setParentObjectsManyToMany(QList<QSharedPointer<ParentObject> > arg)
+{
+    m_parentObjectsManyToMany = arg;
+}
+
+void ChildObject::addParentObjectsManyToMany(QSharedPointer<ParentObject> arg)
+{
+    m_parentObjectsManyToMany.add(arg);
+}
+
+void ChildObject::removeParentObjectsManyToMany(QSharedPointer<ParentObject> arg)
+{
+    m_parentObjectsManyToMany.remove(arg);
+}
+
+void ChildObject::setParentObjectOneToMany(const QSharedPointer<ParentObject> &parentObject)
+{
+    m_parentObjectOneToMany = parentObject;
+}
+
 }

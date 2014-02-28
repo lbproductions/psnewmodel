@@ -1,31 +1,69 @@
 #include "private.h"
 
 #include "databaseschema.h"
+#include "error.h"
 #include "metaproperty.h"
+#include "qpersistence.h"
+#include "sqldataaccessobjecthelper.h"
 
-#include <QDebug>
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
+#include <QDateTime>
 #include <QSharedPointer>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
 namespace Qp {
 
 namespace Private {
 
+QP_DEFINE_STATIC_LOCAL(QObject, GlobalGuard)
+
 int primaryKey(QObject *object)
 {
-    return object->property("_Qp_ID").toInt();
+    return object->property(QpDatabaseSchema::COLUMN_NAME_PRIMARY_KEY).toInt();
 }
 
 void setPrimaryKey(QObject *object, int key)
 {
-    object->setProperty("_Qp_ID",key);
+    object->setProperty(QpDatabaseSchema::COLUMN_NAME_PRIMARY_KEY,key);
 }
+
+#ifndef QP_NO_TIMESTAMPS
+double creationTimeInDatabase(QObject *object)
+{
+    QpSqlDataAccessObjectHelper *daoHelper = QpSqlDataAccessObjectHelper::forDatabase(Qp::database());
+    return daoHelper->readCreationTime(QpMetaObject::forObject(object), object);
+}
+
+double updateTimeInDatabase(QObject *object)
+{
+    QpSqlDataAccessObjectHelper *daoHelper = QpSqlDataAccessObjectHelper::forDatabase(Qp::database());
+    return daoHelper->readUpdateTime(QpMetaObject::forObject(object), object);
+}
+
+double updateTimeInObject(QObject *object)
+{
+    return object->property(QpDatabaseSchema::COLUMN_NAME_UPDATE_TIME).toDouble();
+}
+#endif
+
+typedef QHash<const QObject *, QWeakPointer<QObject>> WeakPointerHash;
+QP_DEFINE_STATIC_LOCAL(WeakPointerHash, WeakPointers)
 
 void enableSharedFromThis(QSharedPointer<QObject> object)
 {
-    QWeakPointer<QObject> weak = object.toWeakRef();
-    QVariant variant = QVariant::fromValue<QWeakPointer<QObject> >(weak);
-    object->setProperty(QPERSISTENCE_SHARED_POINTER_PROPERTY.toLatin1(),
-                        variant);
+    WeakPointers()->insert(object.data(), object.toWeakRef());
+}
+
+QSharedPointer<QObject> sharedFrom(const QObject *object)
+{
+    QWeakPointer<QObject> weak = WeakPointers()->value(object);
+    return weak.toStrongRef();
+}
+
+void setLastError(const QpError &error)
+{
+    qDebug() << error;
+    QpError::setLastError(error);
 }
 
 }

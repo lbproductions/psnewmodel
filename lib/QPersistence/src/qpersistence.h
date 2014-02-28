@@ -1,19 +1,59 @@
 #ifndef QPERSISTENCE_H
 #define QPERSISTENCE_H
 
+#include "defines.h"
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
+#include <QtCore/QDateTime>
 #include <QtSql/QSqlDatabase>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
 #include "dataaccessobject.h"
 
+template<class T>
+class QpDao;
+class QpDaoBase;
+class QpError;
+class QpLock;
 class QpMetaObject;
 
 namespace Qp {
 
+enum CommitResult {
+    RollbackSuccessful,
+    RollbackFailed,
+    CommitSuccessful,
+    CommitFailed
+};
+
+enum SynchronizeResult : short {
+    Error,
+    Unchanged,
+    Updated
+};
+
+enum UpdateResult : short {
+    UpdateSuccess,
+    UpdateConflict,
+    UpdateError
+};
+
 void setDatabase(const QSqlDatabase &database);
 QSqlDatabase database();
-void adjustDatabaseSchema();
-void createCleanSchema();
+bool adjustDatabaseSchema();
+bool createCleanSchema();
+QpError lastError();
+#ifndef QP_NO_LOCKS
+void enableLocks();
+void addAdditionalLockInformationField(const QString &field, QVariant::Type type = QVariant::UserType);
+#endif
+#ifndef QP_NO_TIMESTAMPS
+QDateTime databaseTime();
+#endif
 
+bool beginTransaction();
+CommitResult commitOrRollbackTransaction();
+
+void setSqlDebugEnabled(bool enable);
 void startBulkDatabaseQueries();
 void commitBulkDatabaseQueries();
 
@@ -24,8 +64,21 @@ template<class T> QSharedPointer<T> read(int id);
 template<class T> QList<QSharedPointer<T> > readAll();
 template<class T> int count();
 template<class T> QSharedPointer<T> create();
-template<class T> bool update(QSharedPointer<T> object);
+template<class T> UpdateResult update(QSharedPointer<T> object);
 template<class T> bool remove(QSharedPointer<T> object);
+template<class T> SynchronizeResult synchronize(QSharedPointer<T> object);
+#ifndef QP_NO_TIMESTAMPS
+template<class T> QList<QSharedPointer<T>> createdSince(const QDateTime &time);
+template<class T> QList<QSharedPointer<T>> updatedSince(const QDateTime &time);
+template<class T> QDateTime creationTimeInDatabase(QSharedPointer<T> object);
+template<class T> QDateTime updateTimeInDatabase(QSharedPointer<T> object);
+template<class T> QDateTime updateTimeInObject(QSharedPointer<T> object);
+#endif
+#ifndef QP_NO_LOCKS
+template<class T> QpLock tryLock(QSharedPointer<T> object, QHash<QString,QVariant> additionalInformation = QHash<QString,QVariant>());
+template<class T> QpLock unlock(QSharedPointer<T> object);
+template<class T> QpLock isLocked(QSharedPointer<T> object);
+#endif
 
 template<class K, class V> void registerMappableTypes();
 template<class T> void registerSetType();
