@@ -157,7 +157,6 @@ public:
     QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation() const;
     QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys() const;
 
-
 signals:
     void newRoundStarted();
     void schmeissereiAdded();

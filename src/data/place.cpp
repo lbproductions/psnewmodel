@@ -11,8 +11,8 @@ Place::Place(QObject *parent) :
     QObject(parent),
     m_postalCode(-1),
     m_houseNumber(-1),
-    m_players("players", this),
-    m_games("games", this)
+    m_players(QpRelation(&Place::players)),
+    m_games(QpRelation(&Place::games))
 {
 }
 

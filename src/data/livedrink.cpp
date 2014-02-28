@@ -9,9 +9,9 @@
 LiveDrink::LiveDrink(QObject *parent) :
     QObject(parent),
     m_time(QDateTime::currentDateTime()),
-    m_player("player",this),
-    m_round("round",this),
-    m_drink("drink",this)
+    m_player(QpRelation(&LiveDrink::player)),
+    m_round(QpRelation(&LiveDrink::round)),
+    m_drink(QpRelation(&LiveDrink::drink))
 {
 }
 

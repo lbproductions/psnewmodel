@@ -23,18 +23,18 @@ Round::Round(QObject *parent) :
     m_trumpfZurueck(false),
     m_reGamePoints(120),
     m_contraGamePoints(120),
-    m_game("game", this),
-    m_liveDrinks("liveDrinks",this),
-    m_schmeissereis("schmeissereis",this),
-    m_hochzeitPlayer("hochzeitPlayer",this),
-    m_trumpfabgabePlayer("trumpfabgabePlayer",this),
-    m_soloPlayer("soloPlayer",this),
-    m_schweinereiPlayer("schweinereiPlayer",this),
-    m_re1Player("re1Player",this),
-    m_re2Player("re2Player",this),
-    m_contra1Player("contra1Player",this),
-    m_contra2Player("contra2Player",this),
-    m_contra3Player("contra3Player",this)
+    m_game(QpRelation(&Round::game)),
+    m_liveDrinks(QpRelation(&Round::liveDrinks)),
+    m_schmeissereis(QpRelation(&Round::schmeissereis)),
+    m_hochzeitPlayer(QpRelation(&Round::hochzeitPlayer)),
+    m_trumpfabgabePlayer(QpRelation(&Round::trumpfabgabePlayer)),
+    m_soloPlayer(QpRelation(&Round::soloPlayer)),
+    m_schweinereiPlayer(QpRelation(&Round::schweinereiPlayer)),
+    m_re1Player(QpRelation(&Round::re1Player)),
+    m_re2Player(QpRelation(&Round::re2Player)),
+    m_contra1Player(QpRelation(&Round::contra1Player)),
+    m_contra2Player(QpRelation(&Round::contra2Player)),
+    m_contra3Player(QpRelation(&Round::contra3Player))
 {
 }
 

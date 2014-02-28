@@ -9,7 +9,7 @@ Drink::Drink(QObject *parent) :
     m_type(UnkownType),
     m_volume(0.0),
     m_alcoholByVolume(0.0),
-    m_liveDrinks("liveDrinks", this)
+    m_liveDrinks(QpRelation(&Drink::liveDrinks))
 {
     setPicture(QPixmap(iconPath()));
 }

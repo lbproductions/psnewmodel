@@ -5,8 +5,8 @@
 
 OLD_OfflineGameInformation::OLD_OfflineGameInformation(QObject *parent):
     QObject(parent),
-    m_game("game", this),
-    m_player("player", this)
+    m_game(QpRelation(&OLD_OfflineGameInformation::game)),
+    m_player(QpRelation(&OLD_OfflineGameInformation::player))
 {
 }
 

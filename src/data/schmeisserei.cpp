@@ -8,8 +8,8 @@
 Schmeisserei::Schmeisserei(QObject *parent) :
     QObject(parent),
     m_type(UnkownType),
-    m_round("round",this),
-    m_player("player",this)
+    m_round(QpRelation(&Schmeisserei::round)),
+    m_player(QpRelation(&Schmeisserei::player))
 {
 }
 

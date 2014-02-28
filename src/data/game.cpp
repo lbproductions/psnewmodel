@@ -18,11 +18,11 @@ Game::Game(QObject *parent) :
     m_creationTime(QDateTime::currentDateTime()),
     m_mitPflichtSolo(false),
     m_additionalMissingPlayer(MissingOppositeOfCardMixer),
-    m_site("site", this),
-    m_players("players", this),
-    m_rounds("rounds", this),
-    m_leagues("leagues",this),
-    m_offlineGameInformation("offlineGameInformation", this)
+    m_site(QpRelation(&Game::site)),
+    m_players(QpRelation(&Game::players)),
+    m_rounds(QpRelation(&Game::rounds)),
+    m_leagues(QpRelation(&Game::leagues)),
+    m_offlineGameInformation(QpRelation(&Game::offlineGameInformation))
 {
     m_lengthTimer.setInterval(1000);
     m_lengthTimer.setSingleShot(false);
