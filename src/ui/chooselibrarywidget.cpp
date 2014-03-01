@@ -298,5 +298,7 @@ void ChooseLibraryWidget::on_listWidgetRecent_activated(const QModelIndex &index
     QString path = index.data().toString();
     if(path.isEmpty())
         return;
+
+    path = path.remove("/database/"+Library::instance()->defaultFileName());
     openLibrary(path);
 }
