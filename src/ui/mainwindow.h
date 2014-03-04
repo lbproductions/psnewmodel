@@ -40,6 +40,8 @@ private slots:
 
     void on_actionNew_League_triggered();
 
+    void on_actionAdd_Photos_triggered();
+
 private:
     friend class StartWidget;
 

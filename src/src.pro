@@ -101,6 +101,11 @@ BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.sym \
                                        $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
 QMAKE_EXTRA_TARGETS += BREAKPAD_DUMP_SYMBOLS
 
+### QImageMetaData ###
+INCLUDEPATH += $$PWD/../lib/libQImageMetaData/src
+DEPENDPATH += $$PWD/../lib/libQImageMetaData/src
+LIBS += -L$$PWD/../lib/libQImageMetaData/lib/ -lQImageMetaData
+
 ### Files ###
 
 SOURCES += main.cpp \
@@ -186,7 +191,9 @@ SOURCES += main.cpp \
     ui/widgets/leaguesdelegate.cpp \
     ui/model/leaguelistmodel.cpp \
     ui/game/timestatswidget.cpp \
-    application.cpp
+    application.cpp \
+    ui/dialogs/addphotosdialog.cpp \
+    ui/widgets/objectcombobox.cpp
 
 
 HEADERS  += \
@@ -275,7 +282,9 @@ HEADERS  += \
     ui/widgets/leaguesdelegate.h \
     ui/model/leaguelistmodel.h \
     ui/game/timestatswidget.h \
-    application.h
+    application.h \
+    ui/dialogs/addphotosdialog.h \
+    ui/widgets/objectcombobox.h
 
 
 FORMS += \
@@ -301,7 +310,8 @@ FORMS += \
     ui/chooselibrarywidget.ui \
     ui/game/drinkstatswidget.ui \
     ui/game/gamecomparestatswidget.ui \
-    ui/widgets/startwidget.ui
+    ui/widgets/startwidget.ui \
+    ui/dialogs/addphotosdialog.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

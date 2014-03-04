@@ -659,3 +659,8 @@ void Round::setContraGamePoints(int arg)
 {
     m_contraGamePoints = arg;
 }
+
+QString Round::name() const
+{
+    return QString::number(number()) + " - " + startTime().toString("dd.MM.yyyy hh:mm");
+}

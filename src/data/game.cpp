@@ -261,6 +261,11 @@ void Game::setType(const Type &type)
 
 QString Game::name() const
 {
+    if(m_name.isEmpty()) {
+        if(m_type == Doppelkopf) {
+            return "Doppelkopf - " + m_creationTime.toString("dd.MM.yyyy hh:mm");
+        }
+    }
     return m_name;
 }
 
@@ -763,6 +768,11 @@ bool Game::mitPflichtSolo() const
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)
 {
     return g1->creationTime() < g2->creationTime();
+}
+
+bool sortGamesByDateLastFirst(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)
+{
+    return g1->creationTime() > g2->creationTime();
 }
 
 QList<QSharedPointer<League> > Game::leagues() const

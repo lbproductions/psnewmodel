@@ -243,6 +243,8 @@ public:
     int contraGamePoints() const;
     void setContraGamePoints(int arg);
 
+    QString name() const;
+
 signals:
     void schmeissereiAdded();
     void drinkAdded();

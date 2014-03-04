@@ -265,6 +265,7 @@ void ChooseLibraryWidget::openLibrary(const QString &packagePath)
         }
         else {
             library->setFileName(libraryPath);
+            library->setPackagePath(packagePath);
             if(!library->open()) {
                 QApplication::quit();
                 return;

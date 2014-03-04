@@ -6,6 +6,7 @@
 #include "game/gamewindow.h"
 #include "chooselibrarywidget.h"
 #include "ui/league/addleaguedialog.h"
+#include "ui/dialogs/addphotosdialog.h"
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -21,6 +22,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDir>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -289,5 +291,21 @@ void MainWindow::on_actionOpen_library_triggered()
 void MainWindow::on_actionNew_League_triggered()
 {
     AddLeagueDialog dlg(this);
+    dlg.exec();
+}
+
+void MainWindow::on_actionAdd_Photos_triggered()
+{
+    QStringList list = QFileDialog::getOpenFileNames(
+                    this,
+                    "Select one or more photos to add",
+                    QStandardPaths::writableLocation(QStandardPaths::HomeLocation),
+                    "Images (*.png *.xpm *.jpg)");
+
+    if(list.isEmpty())
+        return;
+
+    AddPhotosDialog dlg(this);
+    dlg.setFilesToAdd(list);
     dlg.exec();
 }

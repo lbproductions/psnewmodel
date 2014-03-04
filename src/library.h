@@ -17,6 +17,9 @@ public:
     QString fileName() const;
     void setFileName(const QString &fileNameFromSettings);
 
+    QString packagePath() const;
+    void setPackagePath(const QString &packagePath);
+
     static QString fileExtension();
     static QString defaultFileName();
 
@@ -43,6 +46,7 @@ private:
     QList<QSharedPointer<LiveDrink> > m_liveDrinks;
 
     QString m_fileName;
+    QString m_packagePath;
     bool m_isOpen;
 };
 

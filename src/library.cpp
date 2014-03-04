@@ -155,6 +155,16 @@ void Library::setFileName(const QString &fileName)
     settings.setValue("library/databasefilename", fileName);
 }
 
+QString Library::packagePath() const
+{
+    return m_packagePath;
+}
+
+void Library::setPackagePath(const QString &packagePath)
+{
+    m_packagePath = packagePath;
+}
+
 QString Library::fileNameFromArguments()
 {
     QStringList arguments = QApplication::arguments();
