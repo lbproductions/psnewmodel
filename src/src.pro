@@ -193,7 +193,9 @@ SOURCES += main.cpp \
     ui/game/timestatswidget.cpp \
     application.cpp \
     ui/dialogs/addphotosdialog.cpp \
-    ui/widgets/objectcombobox.cpp
+    ui/widgets/objectcombobox.cpp \
+    ui/widgets/photowidget.cpp \
+    ui/widgets/photogamewidget.cpp
 
 
 HEADERS  += \
@@ -284,7 +286,9 @@ HEADERS  += \
     ui/game/timestatswidget.h \
     application.h \
     ui/dialogs/addphotosdialog.h \
-    ui/widgets/objectcombobox.h
+    ui/widgets/objectcombobox.h \
+    ui/widgets/photowidget.h \
+    ui/widgets/photogamewidget.h
 
 
 FORMS += \
@@ -311,7 +315,9 @@ FORMS += \
     ui/game/drinkstatswidget.ui \
     ui/game/gamecomparestatswidget.ui \
     ui/widgets/startwidget.ui \
-    ui/dialogs/addphotosdialog.ui
+    ui/dialogs/addphotosdialog.ui \
+    ui/widgets/photowidget.ui \
+    ui/widgets/photogamewidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

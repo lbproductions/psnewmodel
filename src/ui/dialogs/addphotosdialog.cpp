@@ -125,7 +125,7 @@ void AddPhotosDialog::processFile()
     if(ui->comboBoxPlayer->currentObject()) {
         newFile = QString::number(Qp::primaryKey(ui->comboBoxPlayer->currentObject())) + "." + QFileInfo(m_currentFile).suffix();
         int count = 0;
-        while(QFile(newFile).exists()) {
+        while(QFile(path + "/" + newFile).exists()) {
             newFile = QString::number(Qp::primaryKey(ui->comboBoxPlayer->currentObject())) + "_" + QString::number(count) + "." + QFileInfo(m_currentFile).suffix();
             count++;
         }
@@ -133,7 +133,7 @@ void AddPhotosDialog::processFile()
     else{
         newFile = "Photo." + QFileInfo(m_currentFile).suffix();
         int count = 0;
-        while(QFile(newFile).exists()) {
+        while(QFile(path + "/" + newFile).exists()) {
             newFile = "Photo_" + QString::number(count) + "." + QFileInfo(m_currentFile).suffix();
             count++;
         }

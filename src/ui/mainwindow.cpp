@@ -14,6 +14,7 @@
 #include <ui/model/drinkslistmodel.h>
 #include <ui/model/placeslistmodel.h>
 #include <misc/tools.h>
+#include <data/game.h>
 
 #include <QApplication>
 #include <QSortFilterProxyModel>
@@ -38,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     actionGroup->addAction(ui->actionGames);
     actionGroup->addAction(ui->actionPlaces);
     actionGroup->addAction(ui->actionPlayers);
+    actionGroup->addAction(ui->actionPhotos);
     actionGroup->setExclusive(true);
     ui->actionStart->setChecked(true);
 
@@ -46,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolButtonGames->setDefaultAction(ui->actionGames);
     ui->toolButtonPlaces->setDefaultAction(ui->actionPlaces);
     ui->toolButtonPlayers->setDefaultAction(ui->actionPlayers);
+    ui->toolButtonPhotos->setDefaultAction(ui->actionPhotos);
 
     ui->treeViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -308,4 +311,10 @@ void MainWindow::on_actionAdd_Photos_triggered()
     AddPhotosDialog dlg(this);
     dlg.setFilesToAdd(list);
     dlg.exec();
+}
+
+void MainWindow::on_actionPhotos_triggered()
+{
+    ui->pagePhotos->setGames(Qp::readAll<Game>());
+    ui->stackedWidget->setCurrentWidget(ui->pagePhotos);
 }
