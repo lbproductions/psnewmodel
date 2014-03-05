@@ -11,9 +11,11 @@ public:
 
 signals:
     void pressed();
+    void doubleClicked();
 
 protected:
     void mousePressEvent(QMouseEvent *ev);
+    void mouseDoubleClickEvent(QMouseEvent * e);
 };
 
 #endif // CLICKABLELABEL_H

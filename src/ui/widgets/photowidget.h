@@ -4,6 +4,7 @@
 #include <QWidget>
 
 class Game;
+class ClickableImageLabel;
 
 namespace Ui {
 class PhotoWidget;
@@ -19,15 +20,22 @@ public:
 
     void setGames(QList<QSharedPointer<Game> > games);
 
+private slots:
+    void onPreviewImageClicked(ClickableImageLabel* label);
+    void onPreviewWidgetDoubleClicked();
+    void onBackButtonClicked();
+
 private:
-    void cleanWidget();
+    void cleanWidget(QWidget *widget);
 
     QList<QString> checkForPhotos(QSharedPointer<Game> game);
     QStringList photoSuffix();
 
     Ui::PhotoWidget *ui;
 
-    QList<QSharedPointer<Game> > m_games;
+    QHash<QSharedPointer<Game>, QStringList> m_games;
+
+    ClickableImageLabel* m_selectedLabel;
 };
 
 #endif // PHOTOWIDGET_H

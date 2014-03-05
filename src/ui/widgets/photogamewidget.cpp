@@ -56,7 +56,7 @@ void PhotoGameWidget::setGame(QSharedPointer<Game> game, QStringList files)
 
 }
 
-void PhotoGameWidget::on_toolButtonShowPhotos_clicked()
+void PhotoGameWidget::on_toolButtonBack_clicked()
 {
-    ui->framePhotos->setVisible(ui->framePhotos->isVisible());
+    emit backButtonClicked();
 }

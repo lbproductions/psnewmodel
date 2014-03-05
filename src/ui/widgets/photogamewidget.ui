@@ -73,13 +73,13 @@ QLabel {
        <number>0</number>
       </property>
       <item>
-       <widget class="QToolButton" name="toolButtonShowPhotos">
+       <widget class="QToolButton" name="toolButtonBack">
         <property name="text">
          <string>...</string>
         </property>
         <property name="icon">
-         <iconset resource="../../resource/gamewindow/gamewindow.qrc">
-          <normaloff>:/gamewindow/addnormalround.png</normaloff>:/gamewindow/addnormalround.png</iconset>
+         <iconset resource="../../resource/general/general.qrc">
+          <normaloff>:/general/state-running.png</normaloff>:/general/state-running.png</iconset>
         </property>
        </widget>
       </item>
@@ -139,7 +139,7 @@ QLabel {
   </layout>
  </widget>
  <resources>
-  <include location="../../resource/gamewindow/gamewindow.qrc"/>
+  <include location="../../resource/general/general.qrc"/>
  </resources>
  <connections/>
 </ui>

@@ -2,14 +2,18 @@
 #include "ui_photowidget.h"
 
 #include <QDir>
+#include <QLabel>
 
 #include <data/game.h>
 #include <library.h>
 #include "photogamewidget.h"
+#include "photopreviewwidget.h"
+#include "clickableimagelabel.h"
 
 PhotoWidget::PhotoWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::PhotoWidget)
+    ui(new Ui::PhotoWidget),
+    m_selectedLabel(0)
 {
     ui->setupUi(this);
 }
@@ -21,28 +25,82 @@ PhotoWidget::~PhotoWidget()
 
 void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
 {
-    cleanWidget();
+    cleanWidget(ui->scrollAreaWidgetContents);
 
     qSort(games.begin(), games.end(), sortGamesByDateLastFirst);
 
-    m_games = games;
+    QVBoxLayout* outerLayout = new QVBoxLayout(ui->scrollAreaWidgetContents);
 
-    QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
+    QHBoxLayout* innerLayout = new QHBoxLayout(ui->scrollAreaWidgetContents);
+
+    QGridLayout* layout = new QGridLayout(ui->scrollAreaWidgetContents);
     layout->setSpacing(0);
 
+    int count = 0;
     foreach(QSharedPointer<Game> game, games) {
         QStringList files = checkForPhotos(game);
         if(files.isEmpty()) {
             continue;
         }
 
-        PhotoGameWidget* gameWidget = new PhotoGameWidget(this);
-        gameWidget->setGame(game, files);
+        QImage image(files.first());
+        if(image.isNull())
+            continue;
 
-        layout->addWidget(gameWidget);
+        PhotoPreviewWidget* previewWidget = new PhotoPreviewWidget(this);
+        previewWidget->setPreviewFile(files.first());
+        previewWidget->setGame(game);
+        connect(previewWidget, SIGNAL(imageClicked(ClickableImageLabel*)), this, SLOT(onPreviewImageClicked(ClickableImageLabel*)));
+        connect(previewWidget, SIGNAL(doubleClicked()), this, SLOT(onPreviewWidgetDoubleClicked()));
+
+        layout->addWidget(previewWidget, count / 4 , count %4);
+
+        m_games.insert(game, files);
+
+        count++;
     }
 
-    ui->scrollAreaWidgetContents->setLayout(layout);
+    innerLayout->addLayout(layout);
+    innerLayout->addStretch();
+
+    outerLayout->addLayout(innerLayout);
+    outerLayout->addStretch();
+
+    ui->scrollAreaWidgetContents->setLayout(outerLayout);
+}
+
+void PhotoWidget::onPreviewImageClicked(ClickableImageLabel *label)
+{
+    if(m_selectedLabel && m_selectedLabel != label) {
+        m_selectedLabel->deactivate();
+    }
+
+    m_selectedLabel = label;
+}
+
+void PhotoWidget::onPreviewWidgetDoubleClicked()
+{
+    PhotoPreviewWidget* previewWidget = static_cast<PhotoPreviewWidget*>(sender());
+
+    cleanWidget(ui->page_2);
+
+    QVBoxLayout* layout = new QVBoxLayout(ui->page_2);
+    layout->setContentsMargins(0,0,0,0);
+
+    PhotoGameWidget* gameWidget = new PhotoGameWidget(this);
+    gameWidget->setGame(previewWidget->game(), m_games.value(previewWidget->game()));
+    connect(gameWidget, SIGNAL(backButtonClicked()), this, SLOT(onBackButtonClicked()));
+
+    layout->addWidget(gameWidget);
+
+    ui->page_2->setLayout(layout);
+
+    ui->stackedWidget->setCurrentIndex(1);
+}
+
+void PhotoWidget::onBackButtonClicked()
+{
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 QList<QString> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)
@@ -77,16 +135,16 @@ QStringList PhotoWidget::photoSuffix()
     return QStringList() << "jpg" << "png" << "JPG";
 }
 
-void PhotoWidget::cleanWidget()
+void PhotoWidget::cleanWidget(QWidget* widget)
 {
-    if (ui->scrollAreaWidgetContents->layout() != NULL )
+    if (widget->layout() != NULL )
     {
         QLayoutItem* item;
-        while ( ( item =  ui->scrollAreaWidgetContents->layout()->takeAt( 0 ) ) != NULL )
+        while ( ( item =  widget->layout()->takeAt( 0 ) ) != NULL )
         {
             delete item->widget();
             delete item;
         }
-        delete  ui->scrollAreaWidgetContents->layout();
+        delete  widget->layout();
     }
 }

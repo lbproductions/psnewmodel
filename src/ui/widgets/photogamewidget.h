@@ -19,8 +19,11 @@ public:
 
     void setGame(QSharedPointer<Game> game, QStringList files);
 
+signals:
+    void backButtonClicked();
+
 private slots:
-    void on_toolButtonShowPhotos_clicked();
+     void on_toolButtonBack_clicked();
 
 private:
     Ui::PhotoGameWidget *ui;
