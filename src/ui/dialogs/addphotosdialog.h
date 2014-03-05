@@ -28,6 +28,8 @@ private slots:
 
     void on_comboBoxRound_currentIndexChanged(int);
 
+    void on_pushButtonIdentify_clicked();
+
 signals:
     void processFinishedWithError(QString error);
     void processFinished();
@@ -35,6 +37,7 @@ signals:
 private:
     void loadFile(const QString &fileName);
     void processFile();
+    int distance(QDateTime one, QDateTime two);
 
     Ui::AddPhotosDialog *ui;
 

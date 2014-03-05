@@ -64,6 +64,8 @@ void AddPhotosDialog::on_pushButtonNext_clicked()
 
 void AddPhotosDialog::showEvent(QShowEvent *event)
 {
+    Q_UNUSED(event)
+
     if(m_filesToAdd.isEmpty()) {
         this->reject();
     }
@@ -148,6 +150,16 @@ void AddPhotosDialog::processFile()
     }
 }
 
+int AddPhotosDialog::distance(QDateTime one, QDateTime two)
+{
+    int distance = one.secsTo(two);
+    if(distance < 0) {
+        distance = -distance;
+    }
+
+    return distance;
+}
+
 void AddPhotosDialog::on_comboBoxGame_currentIndexChanged(int)
 {
     if(!ui->comboBoxGame->currentObject()) {
@@ -174,4 +186,39 @@ void AddPhotosDialog::on_comboBoxRound_currentIndexChanged(int)
 
     ui->comboBoxPlayer->setEnabled(true);
     ui->comboBoxPlayer->setObjects(ui->comboBoxRound->currentObject()->playingPlayers());
+}
+
+void AddPhotosDialog::on_pushButtonIdentify_clicked()
+{
+    QDateTime time = QDateTime::fromString(ui->labelDate->text(), "dd.MM.yyyy hh:mm");
+
+    QSharedPointer<Game> identifiedGame;
+    int mindistance = std::numeric_limits<int>::max();
+    foreach(QSharedPointer<Game> game, Qp::readAll<Game>()) {
+        int temp = distance(time, game->creationTime());
+        if(temp < mindistance) {
+            mindistance = temp;
+            identifiedGame = game;
+        }
+    }
+
+    if(!identifiedGame)
+        return;
+
+    ui->comboBoxGame->setCurrentObject(identifiedGame);
+
+    QSharedPointer<Round> identifiedRound;
+    mindistance = std::numeric_limits<int>::max();
+    foreach(QSharedPointer<Round> round, identifiedGame->rounds()) {
+        int temp = distance(time, round->startTime());
+        if(temp < mindistance) {
+            mindistance = temp;
+            identifiedRound = round;
+        }
+    }
+
+    if(!identifiedRound)
+        return;
+
+    ui->comboBoxRound->setCurrentObject(identifiedRound);
 }
