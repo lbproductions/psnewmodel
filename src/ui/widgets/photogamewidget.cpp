@@ -2,6 +2,8 @@
 #include "ui_photogamewidget.h"
 
 #include <data/game.h>
+#include <data/round.h>
+#include "photoroundwidget.h"
 
 
 PhotoGameWidget::PhotoGameWidget(QWidget *parent) :
@@ -9,8 +11,6 @@ PhotoGameWidget::PhotoGameWidget(QWidget *parent) :
     ui(new Ui::PhotoGameWidget)
 {
     ui->setupUi(this);
-
-    //ui->framePhotos->setVisible(false);
 }
 
 PhotoGameWidget::~PhotoGameWidget()
@@ -18,7 +18,7 @@ PhotoGameWidget::~PhotoGameWidget()
     delete ui;
 }
 
-void PhotoGameWidget::setGame(QSharedPointer<Game> game, QStringList files)
+void PhotoGameWidget::setGame(QSharedPointer<Game> game, QHash<int, QStringList> files)
 {
     if(!game) {
         return;
@@ -27,15 +27,33 @@ void PhotoGameWidget::setGame(QSharedPointer<Game> game, QStringList files)
     m_game = game;
 
     ui->labelGameName->setText(m_game->name());
-
     m_photoFiles = files;
 
-    if(m_photoFiles.size() == 1) {
-       ui->labelPhotoCount->setText(QString::number(m_photoFiles.size()) + tr(" Photo"));
+    int count = 0;
+    foreach(QStringList list, files.values()) {
+        count += list.size();
+    }
+
+    if(count == 1) {
+       ui->labelPhotoCount->setText(QString::number(count) + tr(" Photo"));
     }
     else {
-        ui->labelPhotoCount->setText(QString::number(m_photoFiles.size()) + tr(" Photos"));
+        ui->labelPhotoCount->setText(QString::number(count) + tr(" Photos"));
     }
+
+    QVBoxLayout* layout = new QVBoxLayout(ui->scrollAreaWidgetContents);
+
+    foreach(QSharedPointer<Round> round, m_game->rounds()) {
+        if(files.keys().contains(round->number())) {
+            PhotoRoundWidget* roundWidget = new PhotoRoundWidget(ui->scrollAreaWidgetContents);
+            roundWidget->setRound(round, files.value(round->number()));
+            layout->addWidget(roundWidget);
+        }
+    }
+
+    ui->scrollAreaWidgetContents->setLayout(layout);
+
+    /*
 
     QGridLayout* layout = new QGridLayout(ui->framePhotos);
     int count = 0;
@@ -53,7 +71,7 @@ void PhotoGameWidget::setGame(QSharedPointer<Game> game, QStringList files)
     }
 
     ui->framePhotos->setLayout(layout);
-
+    */
 }
 
 void PhotoGameWidget::on_toolButtonBack_clicked()

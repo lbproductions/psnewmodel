@@ -17,7 +17,7 @@ public:
     explicit PhotoGameWidget(QWidget *parent = 0);
     ~PhotoGameWidget();
 
-    void setGame(QSharedPointer<Game> game, QStringList files);
+    void setGame(QSharedPointer<Game> game, QHash<int, QStringList> files);
 
 signals:
     void backButtonClicked();
@@ -30,7 +30,7 @@ private:
 
     QSharedPointer<Game> m_game;
 
-    QList<QString> m_photoFiles;
+    QHash<int, QStringList> m_photoFiles;
 };
 
 #endif // PHOTOGAMEWIDGET_H

@@ -197,7 +197,9 @@ SOURCES += main.cpp \
     ui/widgets/photowidget.cpp \
     ui/widgets/photogamewidget.cpp \
     ui/widgets/photopreviewwidget.cpp \
-    ui/widgets/clickableimagelabel.cpp
+    ui/widgets/clickableimagelabel.cpp \
+    ui/widgets/photoroundwidget.cpp \
+    ui/widgets/photoplayercardswidget.cpp
 
 
 HEADERS  += \
@@ -292,7 +294,9 @@ HEADERS  += \
     ui/widgets/photowidget.h \
     ui/widgets/photogamewidget.h \
     ui/widgets/photopreviewwidget.h \
-    ui/widgets/clickableimagelabel.h
+    ui/widgets/clickableimagelabel.h \
+    ui/widgets/photoroundwidget.h \
+    ui/widgets/photoplayercardswidget.h
 
 
 FORMS += \
@@ -322,7 +326,9 @@ FORMS += \
     ui/dialogs/addphotosdialog.ui \
     ui/widgets/photowidget.ui \
     ui/widgets/photogamewidget.ui \
-    ui/widgets/photopreviewwidget.ui
+    ui/widgets/photopreviewwidget.ui \
+    ui/widgets/photoroundwidget.ui \
+    ui/widgets/photoplayercardswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \

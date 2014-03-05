@@ -38,17 +38,17 @@ void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
 
     int count = 0;
     foreach(QSharedPointer<Game> game, games) {
-        QStringList files = checkForPhotos(game);
+        QHash<int, QStringList> files = checkForPhotos(game);
         if(files.isEmpty()) {
             continue;
         }
 
-        QImage image(files.first());
+        QImage image(files.values().first().first());
         if(image.isNull())
             continue;
 
         PhotoPreviewWidget* previewWidget = new PhotoPreviewWidget(this);
-        previewWidget->setPreviewFile(files.first());
+        previewWidget->setPreviewFile(files.values().first().first());
         previewWidget->setGame(game);
         connect(previewWidget, SIGNAL(imageClicked(ClickableImageLabel*)), this, SLOT(onPreviewImageClicked(ClickableImageLabel*)));
         connect(previewWidget, SIGNAL(doubleClicked()), this, SLOT(onPreviewWidgetDoubleClicked()));
@@ -103,14 +103,14 @@ void PhotoWidget::onBackButtonClicked()
     ui->stackedWidget->setCurrentIndex(0);
 }
 
-QList<QString> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)
+QHash<int, QStringList> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)
 {
-    QList<QString> list;
+    QHash<int, QStringList> hash;
 
     QString package = Library::instance()->packagePath();
     QDir dir(package+"/photos/"+QString::number(Qp::primaryKey(game)));
     if(!dir.exists()){
-        return list;
+        return hash;
     }
 
     QStringList folders = dir.entryList(QDir::Dirs);
@@ -118,6 +118,9 @@ QList<QString> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)
         if(folder == "." || folder == "..") {
             continue;
         }
+
+        QStringList list;
+
         dir.cd(folder);
         foreach(QFileInfo fileInfo, dir.entryInfoList(QDir::Files)) {
             if(photoSuffix().contains(fileInfo.suffix())) {
@@ -125,9 +128,19 @@ QList<QString> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)
             }
         }
         dir.cdUp();
+
+        bool convertOk;
+        int roundNumber = folder.toInt(&convertOk);
+        if(!convertOk) {
+            roundNumber = -1;
+        }
+
+        if(!list.isEmpty()) {
+            hash.insert(roundNumber, list);
+        }
     }
 
-    return list;
+    return hash;
 }
 
 QStringList PhotoWidget::photoSuffix()

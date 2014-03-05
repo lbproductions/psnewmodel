@@ -28,12 +28,12 @@ private slots:
 private:
     void cleanWidget(QWidget *widget);
 
-    QList<QString> checkForPhotos(QSharedPointer<Game> game);
+    QHash<int, QStringList> checkForPhotos(QSharedPointer<Game> game);
     QStringList photoSuffix();
 
     Ui::PhotoWidget *ui;
 
-    QHash<QSharedPointer<Game>, QStringList> m_games;
+    QHash<QSharedPointer<Game>, QHash<int, QStringList> > m_games;
 
     ClickableImageLabel* m_selectedLabel;
 };
