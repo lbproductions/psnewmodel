@@ -60,4 +60,5 @@ void PhotoRoundWidget::setRound(QSharedPointer<Round> round, QStringList files)
     }
 
     ui->labelLength->setText(round->length().toString("mm:ss") + " mins");
+    ui->labelType->setText(round->typeString());
 }

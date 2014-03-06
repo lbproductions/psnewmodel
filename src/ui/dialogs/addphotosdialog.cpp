@@ -14,6 +14,7 @@
 #include <data/round.h>
 #include <data/player.h>
 #include <library.h>
+#include <misc/tools.h>
 
 AddPhotosDialog::AddPhotosDialog(QWidget *parent) :
     QDialog(parent),
@@ -184,12 +185,18 @@ void AddPhotosDialog::on_comboBoxRound_currentIndexChanged(int)
         return;
     }
 
+    ui->labelRePlayers->setText(Tools::playersString(ui->comboBoxRound->currentObject()->rePlayers()).toString());
+    ui->labelContraPlayers->setText(Tools::playersString(ui->comboBoxRound->currentObject()->contraPlayers()).toString());
+    ui->labelType->setText(ui->comboBoxRound->currentObject()->typeString());
+
     ui->comboBoxPlayer->setEnabled(true);
     ui->comboBoxPlayer->setObjects(ui->comboBoxRound->currentObject()->playingPlayers());
 }
 
 void AddPhotosDialog::on_pushButtonIdentify_clicked()
 {
+    int maxDistance = 600;
+
     QDateTime time = QDateTime::fromString(ui->labelDate->text(), "dd.MM.yyyy hh:mm");
 
     QSharedPointer<Game> identifiedGame;
@@ -219,6 +226,23 @@ void AddPhotosDialog::on_pushButtonIdentify_clicked()
 
     if(!identifiedRound)
         return;
+
+    qDebug() << "mindistance: " << mindistance;
+    if(mindistance > maxDistance) {
+        foreach(QSharedPointer<Game> game, Qp::readAll<Game>()) {
+            foreach(QSharedPointer<Round> round, game->rounds()) {
+                int temp = distance(time, round->startTime());
+                if(temp < mindistance) {
+                    mindistance = temp;
+                    identifiedRound = round;
+                }
+            }
+        }
+
+        if(!identifiedRound)
+            return;
+        ui->comboBoxGame->setCurrentObject(identifiedRound->game());
+    }
 
     ui->comboBoxRound->setCurrentObject(identifiedRound);
 }

@@ -156,6 +156,7 @@ public:
     void setComment(const QString &comment);
 
     Type type() const;
+    QString typeString() const;
 
     int points() const;
     int points(QSharedPointer<Player> player) const;

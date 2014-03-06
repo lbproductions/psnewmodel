@@ -112,6 +112,23 @@ Round::Type Round::type() const
     return NormalRound;
 }
 
+QString Round::typeString() const
+{
+    switch(type()) {
+    case Solo:
+        return soloTypeString();
+    case Hochzeit:
+        return "Hochzeit";
+    case Trumpfabgabe:
+        return "Trumpfabgabe";
+    case NormalRound:
+        return "Normal round";
+
+    }
+
+    return "";
+}
+
 int Round::points() const
 {
     QSharedPointer<Player> player = re1Player();

@@ -53,7 +53,7 @@ void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
         connect(previewWidget, SIGNAL(imageClicked(ClickableImageLabel*)), this, SLOT(onPreviewImageClicked(ClickableImageLabel*)));
         connect(previewWidget, SIGNAL(doubleClicked()), this, SLOT(onPreviewWidgetDoubleClicked()));
 
-        layout->addWidget(previewWidget, count / 4 , count %4);
+        layout->addWidget(previewWidget, count / 7 , count %7);
 
         m_games.insert(game, files);
 
