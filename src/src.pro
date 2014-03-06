@@ -10,7 +10,7 @@ include($$BREAKPAD_PATH/Breakpad.pri)
 ### General config ###
 
 TARGET          = psnewmodel
-VERSION         = 0.0.2
+VERSION         = 0.0.3
 TEMPLATE        = app
 ICON            = resource/general/icon2.icns
 QT              += sql widgets
