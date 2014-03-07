@@ -30,6 +30,12 @@ private slots:
 
     void on_pushButtonIdentify_clicked();
 
+    void on_pushButtonSkip_clicked();
+
+    QStringList processedFiles();
+
+    void on_comboBoxDefaultPlayer_currentIndexChanged(int index);
+
 signals:
     void processFinishedWithError(QString error);
     void processFinished();
@@ -42,6 +48,7 @@ private:
     Ui::AddPhotosDialog *ui;
 
     QStringList m_filesToAdd;
+    QStringList m_processedFiles;
     QString m_currentFile;
 };
 

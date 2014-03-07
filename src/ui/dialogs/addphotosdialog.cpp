@@ -27,6 +27,10 @@ AddPhotosDialog::AddPhotosDialog(QWidget *parent) :
     qSort(games.begin(), games.end(), sortGamesByDateLastFirst);
     ui->comboBoxGame->setObjects(games);
 
+    QList<QSharedPointer<Player>> players = Qp::readAll<Player>();
+    qSort(players.begin(), players.end(), sortPlayersByLastGame);
+    ui->comboBoxDefaultPlayer->setObjects(players);
+
     ui->comboBoxRound->setEnabled(false);
     ui->comboBoxPlayer->setEnabled(false);
 }
@@ -53,9 +57,14 @@ void AddPhotosDialog::on_pushButtonNext_clicked()
     }
 
     if(m_filesToAdd.size() == 1) {
-        ui->pushButtonNext->setText("Beenden");
+        ui->pushButtonSkip->setText("Überspringen && Fertig");
+        ui->pushButtonNext->setText("Fertig");
     }
     else if(m_filesToAdd.isEmpty()) {
+        if(m_processedFiles.isEmpty()) {
+            this->reject();
+            return;
+        }
         this->accept();
         return;
     }
@@ -149,6 +158,8 @@ void AddPhotosDialog::processFile()
     if(!QFile::copy(m_currentFile, newFilePath)) {
         qWarning() << "Copying file failed!";
     }
+
+    m_processedFiles.append(newFilePath);
 }
 
 int AddPhotosDialog::distance(QDateTime one, QDateTime two)
@@ -195,28 +206,12 @@ void AddPhotosDialog::on_comboBoxRound_currentIndexChanged(int)
 
 void AddPhotosDialog::on_pushButtonIdentify_clicked()
 {
-    int maxDistance = 600;
-
     QDateTime time = QDateTime::fromString(ui->labelDate->text(), "dd.MM.yyyy hh:mm");
 
-    QSharedPointer<Game> identifiedGame;
-    int mindistance = std::numeric_limits<int>::max();
-    foreach(QSharedPointer<Game> game, Qp::readAll<Game>()) {
-        int temp = distance(time, game->creationTime());
-        if(temp < mindistance) {
-            mindistance = temp;
-            identifiedGame = game;
-        }
-    }
-
-    if(!identifiedGame)
-        return;
-
-    ui->comboBoxGame->setCurrentObject(identifiedGame);
-
     QSharedPointer<Round> identifiedRound;
-    mindistance = std::numeric_limits<int>::max();
-    foreach(QSharedPointer<Round> round, identifiedGame->rounds()) {
+
+    int mindistance = std::numeric_limits<int>::max();
+    foreach(QSharedPointer<Round> round, Qp::readAll<Round>()) {
         int temp = distance(time, round->startTime());
         if(temp < mindistance) {
             mindistance = temp;
@@ -224,25 +219,52 @@ void AddPhotosDialog::on_pushButtonIdentify_clicked()
         }
     }
 
-    if(!identifiedRound)
+
+    if(!identifiedRound || !identifiedRound->game())
         return;
 
-    qDebug() << "mindistance: " << mindistance;
-    if(mindistance > maxDistance) {
-        foreach(QSharedPointer<Game> game, Qp::readAll<Game>()) {
-            foreach(QSharedPointer<Round> round, game->rounds()) {
-                int temp = distance(time, round->startTime());
-                if(temp < mindistance) {
-                    mindistance = temp;
-                    identifiedRound = round;
-                }
-            }
-        }
+    ui->comboBoxGame->setCurrentObject(identifiedRound->game());
+    ui->comboBoxRound->setCurrentObject(identifiedRound);
 
-        if(!identifiedRound)
+    if(!ui->comboBoxDefaultPlayer->currentObject())
+        return;
+
+    if(identifiedRound->playingPlayers().contains(ui->comboBoxDefaultPlayer->currentObject())) {
+        ui->comboBoxPlayer->setCurrentObject(ui->comboBoxDefaultPlayer->currentObject());
+    }
+    else{
+        ui->comboBoxPlayer->setCurrentIndex(0);
+    }
+}
+
+
+void AddPhotosDialog::on_pushButtonSkip_clicked()
+{
+    if(m_filesToAdd.size() == 1) {
+        ui->pushButtonSkip->setText("Überspringen && Fertig");
+        ui->pushButtonNext->setText("Fertig");
+    }
+    else if(m_filesToAdd.isEmpty()) {
+        if(m_processedFiles.isEmpty()) {
+            this->reject();
             return;
-        ui->comboBoxGame->setCurrentObject(identifiedRound->game());
+        }
+        this->accept();
+        return;
     }
 
-    ui->comboBoxRound->setCurrentObject(identifiedRound);
+    loadFile(m_filesToAdd.takeFirst());
+}
+
+QStringList AddPhotosDialog::processedFiles()
+{
+    return m_processedFiles;
+}
+
+void AddPhotosDialog::on_comboBoxDefaultPlayer_currentIndexChanged(int index)
+{
+    if(!ui->comboBoxDefaultPlayer->currentObject())
+        return;
+
+    ui->comboBoxPlayer->setCurrentObject(ui->comboBoxDefaultPlayer->currentObject());
 }

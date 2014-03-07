@@ -221,6 +221,8 @@ class Player : public QObject
         QpWeakRelation<OLD_OfflineGameInformation> m_offlineGameInformation;
 };
 
+bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2);
+
 
 
 #endif // PLAYER_H

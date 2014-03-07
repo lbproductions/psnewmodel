@@ -464,3 +464,16 @@ void Player::removeLiveDrink(QSharedPointer<LiveDrink> drink)
 {
     m_liveDrinks.unrelate(drink);
 }
+
+bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)
+{
+    QList<QSharedPointer<Game>> g1 = p1->games();
+    if(g1.isEmpty())
+        return false;
+
+    QList<QSharedPointer<Game>> g2 = p2->games();
+    if(g2.isEmpty())
+        return true;
+
+    return g1.last()->creationTime() > g2.last()->creationTime();
+}
