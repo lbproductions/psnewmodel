@@ -3,6 +3,7 @@
 
 #include <data/game.h>
 
+
 PhotoPreviewWidget::PhotoPreviewWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::PhotoPreviewWidget)
@@ -20,7 +21,7 @@ PhotoPreviewWidget::~PhotoPreviewWidget()
 
 void PhotoPreviewWidget::setPreviewFile(QString file)
 {
-    ui->imageLabel->setImage(QImage(file));
+    ui->imageLabel->setImageFile(file);
 }
 
 void PhotoPreviewWidget::setGame(QSharedPointer<Game> game)

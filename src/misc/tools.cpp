@@ -189,20 +189,16 @@ void Tools::clearLayout(QLayout *layout)
     QLayoutItem* child;
     while((child = layout->takeAt(0)) != 0)
     {
-        qDebug() << child;
         if(child->layout() != 0)
         {
-            qDebug() << child->layout();
             clearLayout(child->layout());
         }
         else if(child->widget() != 0)
         {
-            qDebug() << child->widget();
             child->widget()->hide();
             delete child->widget();
         }
 
-        qDebug() << "Delete child";
         delete child;
     }
 }

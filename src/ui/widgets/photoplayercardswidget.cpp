@@ -25,5 +25,5 @@ void PhotoPlayerCardsWidget::setPlayer(QSharedPointer<Player> player)
 void PhotoPlayerCardsWidget::setImageFile(QString file)
 {
     ui->imageLabel->setStyleSheet("");
-    ui->imageLabel->setImage(QImage(file));
+    ui->imageLabel->setImageFile(file);
 }

@@ -9,7 +9,7 @@ class ClickableImageLabel : public ClickableLabel
 public:
     ClickableImageLabel(QWidget* parent = 0);
 
-    void setImage(QImage image);
+    void setImageFile(QString imageFile);
 
 public slots:
     void onClicked();
@@ -17,9 +17,13 @@ public slots:
 
 private:
     void paintEvent(QPaintEvent *e);
+    void loadImage();
 
     QImage m_image;
+    QString m_imageFile;
     bool m_clicked;
+
+    bool m_loaded;
 };
 
 #endif // CLICKABLEIMAGELABEL_H

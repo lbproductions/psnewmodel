@@ -3,6 +3,7 @@
 
 #include <QDir>
 #include <QLabel>
+#include <QElapsedTimer>
 
 #include <data/game.h>
 #include <library.h>
@@ -49,10 +50,6 @@ void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
         if(files.isEmpty()) {
             continue;
         }
-
-        QImage image(files.values().first().first());
-        if(image.isNull())
-            continue;
 
         PhotoPreviewWidget* previewWidget = new PhotoPreviewWidget(this);
         previewWidget->setPreviewFile(files.values().first().first());
