@@ -299,14 +299,19 @@ void MainWindow::on_actionNew_League_triggered()
 
 void MainWindow::on_actionAdd_Photos_triggered()
 {
+    QSettings settings;
+    QString openFolder = settings.value("mainwindow/addphotodialog/defaultLocation", QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).toString();
+
     QStringList list = QFileDialog::getOpenFileNames(
                     this,
                     "Select one or more photos to add",
-                    QStandardPaths::writableLocation(QStandardPaths::HomeLocation),
+                    openFolder,
                     "Images (*.png *.xpm *.jpg)");
 
     if(list.isEmpty())
         return;
+
+    settings.setValue("mainwindow/addphotodialog/defaultLocation", QFileInfo(list.first()).absolutePath());
 
     AddPhotosDialog dlg(this);
     dlg.setFilesToAdd(list);
