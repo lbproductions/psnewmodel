@@ -44,6 +44,9 @@ private slots:
 
     void on_actionPhotos_triggered();
 
+signals:
+    void photosAdded();
+
 private:
     friend class StartWidget;
 

@@ -10,6 +10,7 @@
 #include "photogamewidget.h"
 #include "photopreviewwidget.h"
 #include "clickableimagelabel.h"
+#include <ui/mainwindow.h>
 
 
 PhotoWidget::PhotoWidget(QWidget *parent) :
@@ -29,6 +30,8 @@ PhotoWidget::~PhotoWidget()
 
 void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
 {
+    disconnect(m_mainWindow, SIGNAL(photosAdded()), this, SLOT(onPhotoAdded()));
+
     Tools::clearWidget(ui->scrollAreaWidgetContents);
 
     qSort(games.begin(), games.end(), sortGamesByDateLastFirst);
@@ -72,6 +75,16 @@ void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
     outerLayout->addStretch();
 
     ui->scrollAreaWidgetContents->setLayout(outerLayout);
+
+    connect(m_mainWindow, SIGNAL(photosAdded()), this, SLOT(onPhotoAdded()));
+}
+
+void PhotoWidget::setMainWindow(MainWindow *mainWindow)
+{
+    if(!mainWindow)
+        return;
+
+    m_mainWindow = mainWindow;
 }
 
 void PhotoWidget::onPreviewImageClicked(ClickableImageLabel *label)
@@ -106,6 +119,11 @@ void PhotoWidget::onPreviewWidgetDoubleClicked()
 void PhotoWidget::onBackButtonClicked()
 {
     ui->stackedWidget->setCurrentIndex(0);
+}
+
+void PhotoWidget::onPhotoAdded()
+{
+    setGames(Qp::readAll<Game>());
 }
 
 QHash<int, QStringList> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)

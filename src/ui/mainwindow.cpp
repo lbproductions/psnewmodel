@@ -310,11 +310,15 @@ void MainWindow::on_actionAdd_Photos_triggered()
 
     AddPhotosDialog dlg(this);
     dlg.setFilesToAdd(list);
-    dlg.exec();
+    int returnValue = dlg.exec();
+    if(returnValue == QDialog::Accepted) {
+        emit photosAdded();
+    }
 }
 
 void MainWindow::on_actionPhotos_triggered()
 {
+    ui->pagePhotos->setMainWindow(this);
     ui->pagePhotos->setGames(Qp::readAll<Game>());
     ui->stackedWidget->setCurrentWidget(ui->pagePhotos);
 }

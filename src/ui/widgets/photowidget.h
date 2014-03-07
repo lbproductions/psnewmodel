@@ -6,6 +6,7 @@
 class Game;
 class ClickableImageLabel;
 class PhotoPreviewWidget;
+class MainWindow;
 
 namespace Ui {
 class PhotoWidget;
@@ -21,10 +22,13 @@ public:
 
     void setGames(QList<QSharedPointer<Game> > games);
 
+    void setMainWindow(MainWindow* mainWindow);
+
 private slots:
     void onPreviewImageClicked(ClickableImageLabel* label);
     void onPreviewWidgetDoubleClicked();
     void onBackButtonClicked();
+    void onPhotoAdded();
 
 private:
     QHash<int, QStringList> checkForPhotos(QSharedPointer<Game> game);
@@ -37,6 +41,8 @@ private:
     ClickableImageLabel* m_selectedLabel;
 
     QList<PhotoPreviewWidget*> m_previewWidgets;
+
+    MainWindow* m_mainWindow;
 
     int depth;
 };
