@@ -6,9 +6,11 @@
 
 #include <data/game.h>
 #include <library.h>
+#include <misc/tools.h>
 #include "photogamewidget.h"
 #include "photopreviewwidget.h"
 #include "clickableimagelabel.h"
+
 
 PhotoWidget::PhotoWidget(QWidget *parent) :
     QWidget(parent),
@@ -16,6 +18,8 @@ PhotoWidget::PhotoWidget(QWidget *parent) :
     m_selectedLabel(0)
 {
     ui->setupUi(this);
+
+    depth = 0;
 }
 
 PhotoWidget::~PhotoWidget()
@@ -25,7 +29,7 @@ PhotoWidget::~PhotoWidget()
 
 void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
 {
-    cleanWidget(ui->scrollAreaWidgetContents);
+    Tools::clearWidget(ui->scrollAreaWidgetContents);
 
     qSort(games.begin(), games.end(), sortGamesByDateLastFirst);
 
@@ -52,6 +56,7 @@ void PhotoWidget::setGames(QList<QSharedPointer<Game> > games)
         previewWidget->setGame(game);
         connect(previewWidget, SIGNAL(imageClicked(ClickableImageLabel*)), this, SLOT(onPreviewImageClicked(ClickableImageLabel*)));
         connect(previewWidget, SIGNAL(doubleClicked()), this, SLOT(onPreviewWidgetDoubleClicked()));
+        m_previewWidgets.append(previewWidget);
 
         layout->addWidget(previewWidget, count / 7 , count %7);
 
@@ -82,7 +87,7 @@ void PhotoWidget::onPreviewWidgetDoubleClicked()
 {
     PhotoPreviewWidget* previewWidget = static_cast<PhotoPreviewWidget*>(sender());
 
-    cleanWidget(ui->page_2);
+    Tools::clearWidget(ui->page_2);
 
     QVBoxLayout* layout = new QVBoxLayout(ui->page_2);
     layout->setContentsMargins(0,0,0,0);
@@ -146,18 +151,4 @@ QHash<int, QStringList> PhotoWidget::checkForPhotos(QSharedPointer<Game> game)
 QStringList PhotoWidget::photoSuffix()
 {
     return QStringList() << "jpg" << "png" << "JPG";
-}
-
-void PhotoWidget::cleanWidget(QWidget* widget)
-{
-    if (widget->layout() != NULL )
-    {
-        QLayoutItem* item;
-        while ( ( item =  widget->layout()->takeAt( 0 ) ) != NULL )
-        {
-            delete item->widget();
-            delete item;
-        }
-        delete  widget->layout();
-    }
 }

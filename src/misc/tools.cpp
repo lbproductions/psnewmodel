@@ -4,6 +4,7 @@
 #include <QPainter>
 #include <QColor>
 #include <QDebug>
+#include <QLayout>
 
 #include <data/player.h>
 
@@ -34,11 +35,11 @@ QString Tools::progressBarStyleSheet(QColor color)
 QString Tools::darkHeaderViewStyleSheet()
 {
     return QString("QHeaderView::section {background-color: qlineargradient(x1:0, y1:0, x2:0, y2:1, ")
-                                      + "stop:0 #616161, stop: 0.5 #505050,"
-                                      + "stop: 0.6 #434343, stop:1 #656565);"
-                                      + "color: white;"
-                                      + "padding-left: 4px;"
-                                      + "border: 1px solid #6c6c6c;}";
+            + "stop:0 #616161, stop: 0.5 #505050,"
+            + "stop: 0.6 #434343, stop:1 #656565);"
+            + "color: white;"
+            + "padding-left: 4px;"
+            + "border: 1px solid #6c6c6c;}";
 }
 
 QVariant Tools::percentageString(double percentage, int precision)
@@ -171,12 +172,46 @@ QPixmap Tools::playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPoint
     painter.setBrush(playerTwo->color());
     QPolygonF polygon1;
     polygon1 << QPointF(w-1,h-1) <<
-               QPointF(0,h-1) <<
-               QPointF(w-1,0);
+                QPointF(0,h-1) <<
+                QPointF(w-1,0);
     painter.drawPolygon(polygon1);
     painter.setBrush(Qt::transparent);
     painter.setPen(QColor(108,108,108));
     painter.drawRect(QRect(0,0,w-1,h-1));
     return pixmap;
+}
+
+void Tools::clearLayout(QLayout *layout)
+{
+    if(!layout)
+        return;
+
+    QLayoutItem* child;
+    while((child = layout->takeAt(0)) != 0)
+    {
+        qDebug() << child;
+        if(child->layout() != 0)
+        {
+            qDebug() << child->layout();
+            clearLayout(child->layout());
+        }
+        else if(child->widget() != 0)
+        {
+            qDebug() << child->widget();
+            child->widget()->hide();
+            delete child->widget();
+        }
+
+        qDebug() << "Delete child";
+        delete child;
+    }
+}
+
+void Tools::clearWidget(QWidget *widget)
+{
+    clearLayout(widget->layout());
+    if(widget->layout()) {
+        delete widget->layout();
+    }
 }
 

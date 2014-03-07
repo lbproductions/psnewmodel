@@ -5,6 +5,7 @@
 
 class Game;
 class ClickableImageLabel;
+class PhotoPreviewWidget;
 
 namespace Ui {
 class PhotoWidget;
@@ -26,8 +27,6 @@ private slots:
     void onBackButtonClicked();
 
 private:
-    void cleanWidget(QWidget *widget);
-
     QHash<int, QStringList> checkForPhotos(QSharedPointer<Game> game);
     QStringList photoSuffix();
 
@@ -36,6 +35,10 @@ private:
     QHash<QSharedPointer<Game>, QHash<int, QStringList> > m_games;
 
     ClickableImageLabel* m_selectedLabel;
+
+    QList<PhotoPreviewWidget*> m_previewWidgets;
+
+    int depth;
 };
 
 #endif // PHOTOWIDGET_H
