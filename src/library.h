@@ -37,6 +37,9 @@ private:
     bool setupPersistence();
     bool fillCaches();
 
+    bool fixDatabase(QSqlDatabase db);
+    bool fixUniqueKeys(QSqlDatabase db, const QString &fk1, const QString &fk2);
+
     static bool lockDatabase(const QString &databaseFilePath);
 
     // Caches

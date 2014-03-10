@@ -21,8 +21,11 @@
 #include <QProcess>
 #include <QPushButton>
 
+#include <QSqlQuery>
+#include <QSqlError>
+
 namespace {
-static const QString DATABASE_CONNECTION_NAME("persistence");
+    static const QString DATABASE_CONNECTION_NAME("persistence");
 }
 
 Library::Library() :
@@ -109,6 +112,10 @@ bool Library::setupDatabase()
     if(!db.open()) {
         qDebug() << "Could not open database:";
         qDebug() << db.lastError();
+        return false;
+    }
+
+    if(!fixDatabase(db)) {
         return false;
     }
 
@@ -305,5 +312,122 @@ bool Library::fillCaches()
     m_games = Qp::readAll<Game>();
     m_rounds = Qp::readAll<Round>();
     m_liveDrinks = Qp::readAll<LiveDrink>();
+    return true;
+}
+
+bool Library::fixDatabase(QSqlDatabase db)
+{
+    if(!fixUniqueKeys(db, "game", "league"))
+        return false;
+
+    if(!fixUniqueKeys(db, "game", "player"))
+        return false;
+
+    if(!fixUniqueKeys(db, "league", "player"))
+        return false;
+
+    if(!fixUniqueKeys(db, "place", "player"))
+        return false;
+
+    return true;
+}
+
+bool Library::fixUniqueKeys(QSqlDatabase db, const QString &fk1, const QString &fk2)
+{
+    db.transaction();
+    QSqlQuery query(db);
+    QString table = QString("_Qp_REL_%1_%2s__%2_%1s")
+                    .arg(fk1)
+                    .arg(fk2);
+
+    qDebug() << QString("Fixing unique key in table '%1'").arg(table);
+
+    query.exec(QString("SELECT sql FROM sqlite_master WHERE name = '%1'")
+               .arg(table));
+
+    qDebug() << query.executedQuery();
+
+    query.first();
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    if(query.value(0).toString().contains("UNIQUE")) {
+        qDebug() << "Table already fixed. Doing nothing.";
+        return true;
+    }
+
+    query.clear();
+    query.exec(QString("CREATE TEMP TABLE BACKUP_%1 "
+                       "AS SELECT * FROM %1")
+               .arg(table));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+
+    query.clear();
+    query.exec(QString("DROP TABLE %1")
+               .arg(table));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    query.clear();
+    query.exec(QString("CREATE TABLE %1 ("
+                       "_Qp_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                       "_Qp_FK_%2 INTEGER,"
+                       "_Qp_FK_%3 INTEGER,"
+                       "FOREIGN KEY (_Qp_FK_%2) REFERENCES %2(_Qp_ID),"
+                       "FOREIGN KEY (_Qp_FK_%3) REFERENCES %3(_Qp_ID),"
+                       "UNIQUE (_Qp_FK_%2, _Qp_FK_%3)"
+                       ")")
+               .arg(table)
+               .arg(fk1)
+               .arg(fk2));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    query.clear();
+    query.exec(QString("INSERT INTO %1 (_Qp_ID, _Qp_FK_%2, _Qp_FK_%3) "
+                       "SELECT _Qp_ID, _Qp_FK_%2, _Qp_FK_%3 FROM BACKUP_%1")
+               .arg(table)
+               .arg(fk1)
+               .arg(fk2));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    query.clear();
+    query.exec(QString("DROP TABLE BACKUP_%1")
+               .arg(table));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    db.commit();
     return true;
 }
