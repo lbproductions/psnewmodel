@@ -3,7 +3,7 @@ cache()
 TEMPLATE = subdirs
 
 CONFIG += ordered
-SUBDIRS = QPersistence src
+SUBDIRS = QPersistence lib/libQImageMetaData src
 
 QPersistence.subdir = lib/QPersistence
 src.subdir = src

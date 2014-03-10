@@ -465,18 +465,6 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
 /**********************************************************
  * PRE-Game
  */
-bool sortPlayers(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2)
-{
-    QList<QSharedPointer<Game>> g1 = p1->games();
-    if(g1.isEmpty())
-        return false;
-
-    QList<QSharedPointer<Game>> g2 = p2->games();
-    if(g2.isEmpty())
-        return true;
-
-    return g1.last()->creationTime() > g2.last()->creationTime();
-}
 
 bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2)
 {
@@ -494,7 +482,7 @@ bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2
 void GameWindow::on_pushButtonAddPlayers_clicked()
 {
     QList<QSharedPointer<Player>> players = Qp::readAll<Player>();
-    qSort(players.begin(), players.end(), sortPlayers);
+    qSort(players.begin(), players.end(), sortPlayersByLastGame);
 
     PlayersListWidget *list = new PlayersListWidget(this);
     list->setPalette(palette());

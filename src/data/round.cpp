@@ -111,6 +111,23 @@ Round::Type Round::type() const
     return NormalRound;
 }
 
+QString Round::typeString() const
+{
+    switch(type()) {
+    case Solo:
+        return soloTypeString();
+    case Hochzeit:
+        return "Hochzeit";
+    case Trumpfabgabe:
+        return "Trumpfabgabe";
+    case NormalRound:
+        return "Normal round";
+
+    }
+
+    return "";
+}
+
 int Round::points() const
 {
     QSharedPointer<Player> player = re1Player();
@@ -641,4 +658,9 @@ int Round::contraGamePoints() const
 void Round::setContraGamePoints(int arg)
 {
     m_contraGamePoints = arg;
+}
+
+QString Round::name() const
+{
+    return QString::number(number()) + " - " + startTime().toString("dd.MM.yyyy hh:mm");
 }

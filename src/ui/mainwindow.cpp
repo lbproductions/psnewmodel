@@ -6,6 +6,7 @@
 #include "game/gamewindow.h"
 #include "chooselibrarywidget.h"
 #include "ui/league/addleaguedialog.h"
+#include "ui/dialogs/addphotosdialog.h"
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -13,6 +14,7 @@
 #include <ui/model/drinkslistmodel.h>
 #include <ui/model/placeslistmodel.h>
 #include <misc/tools.h>
+#include <data/game.h>
 
 #include <QApplication>
 #include <QSortFilterProxyModel>
@@ -21,6 +23,7 @@
 #include <QStandardPaths>
 #include <QMessageBox>
 #include <QDir>
+#include <QFileDialog>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent) :
     actionGroup->addAction(ui->actionGames);
     actionGroup->addAction(ui->actionPlaces);
     actionGroup->addAction(ui->actionPlayers);
+    actionGroup->addAction(ui->actionPhotos);
     actionGroup->setExclusive(true);
     ui->actionStart->setChecked(true);
 
@@ -44,6 +48,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolButtonGames->setDefaultAction(ui->actionGames);
     ui->toolButtonPlaces->setDefaultAction(ui->actionPlaces);
     ui->toolButtonPlayers->setDefaultAction(ui->actionPlayers);
+    ui->toolButtonPhotos->setDefaultAction(ui->actionPhotos);
 
     ui->treeViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -290,4 +295,35 @@ void MainWindow::on_actionNew_League_triggered()
 {
     AddLeagueDialog dlg(this);
     dlg.exec();
+}
+
+void MainWindow::on_actionAdd_Photos_triggered()
+{
+    QSettings settings;
+    QString openFolder = settings.value("mainwindow/addphotodialog/defaultLocation", QStandardPaths::writableLocation(QStandardPaths::HomeLocation)).toString();
+
+    QStringList list = QFileDialog::getOpenFileNames(
+                    this,
+                    "Select one or more photos to add",
+                    openFolder,
+                    "Images (*.png *.xpm *.jpg)");
+
+    if(list.isEmpty())
+        return;
+
+    settings.setValue("mainwindow/addphotodialog/defaultLocation", QFileInfo(list.first()).absolutePath());
+
+    AddPhotosDialog dlg(this);
+    dlg.setFilesToAdd(list);
+    int returnValue = dlg.exec();
+    if(returnValue == QDialog::Accepted) {
+        emit photosAdded();
+    }
+}
+
+void MainWindow::on_actionPhotos_triggered()
+{
+    ui->pagePhotos->setMainWindow(this);
+    ui->pagePhotos->setGames(Qp::readAll<Game>());
+    ui->stackedWidget->setCurrentWidget(ui->pagePhotos);
 }

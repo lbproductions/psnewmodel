@@ -1,6 +1,7 @@
 #include <QApplication>
 
 #include <library.h>
+#include <application.h>
 #include <misc/updater/updater.h>
 #include <ui/chooselibrarywidget.h>
 #include <misc/cocoainitializer.h>
@@ -14,7 +15,7 @@ void crash() {
 
 int main(int argc, char *argv[])
 {
-    QApplication a(argc, argv);
+    Application a(argc, argv);
     a.setAttribute(Qt::AA_DontShowIconsInMenus, true);
     a.setApplicationName("psnewmodel");
     a.setOrganizationName("LB Productions");
@@ -35,7 +36,12 @@ int main(int argc, char *argv[])
     }
 
     ChooseLibraryWidget *mainWindow = new ChooseLibraryWidget;
-    mainWindow->showOrOpenLibrary();
+    if(a.fileToOpen().isEmpty()) {
+        mainWindow->showOrOpenLibrary();
+    }
+    else {
+        mainWindow->openLibrary(a.fileToOpen()+"/database/database.sqlite");
+    }
 
     int ret = a.exec();
 

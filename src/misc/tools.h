@@ -39,6 +39,9 @@ public:
     static QPixmap colorPixmap(int w, int h, const QColor &color);
     static QPixmap colorEllipse(int w, int h, const QColor &color);
     static QPixmap playersColorPixmap(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo, int w = 16, int h = 16);
+
+    static void clearLayout(QLayout* layout);
+    static void clearWidget(QWidget* widget);
 };
 
 template<class T>

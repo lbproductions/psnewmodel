@@ -57,7 +57,21 @@
             <key>LSHandlerRank</key>
             <string>Owner</string>
             <key>CFBundleTypeRole</key>
-            <string>Editor</string>
+            <string>Editor</string>           
+        </dict>
+        <dict>
+            <key>CFBundleTypeExtensions</key>
+			<array>
+				<string>pspkg</string>
+			</array>
+			<key>CFBundleTypeName</key>
+			<string>ProjectStats Package</string>
+			<key>CFBundleTypeIconFile</key>
+			<string>icon2.icns</string>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>   
+			<key>LSTypeIsPackage</key>  
+			<string>1</string>      
         </dict>
     </array>
 

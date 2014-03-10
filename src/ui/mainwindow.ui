@@ -296,6 +296,25 @@ border-bottom: 1px solid rgb(77,77,77);
         </widget>
        </item>
        <item>
+        <widget class="QToolButton" name="toolButtonPhotos">
+         <property name="minimumSize">
+          <size>
+           <width>70</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>70</width>
+           <height>70</height>
+          </size>
+         </property>
+         <property name="text">
+          <string>Photos</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QFrame" name="separator">
          <property name="minimumSize">
           <size>
@@ -335,6 +354,9 @@ border-bottom: 1px solid rgb(77,77,77);
     </item>
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
+      <property name="currentIndex">
+       <number>0</number>
+      </property>
       <widget class="StartWidget" name="pageStart"/>
       <widget class="QWidget" name="pagePlayers">
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -473,6 +495,7 @@ border-bottom: 1px solid rgb(77,77,77);
         </item>
        </layout>
       </widget>
+      <widget class="PhotoWidget" name="pagePhotos"/>
      </widget>
     </item>
    </layout>
@@ -510,6 +533,7 @@ border-bottom: 1px solid rgb(77,77,77);
     </property>
     <addaction name="actionNew_Game"/>
     <addaction name="actionNew_League"/>
+    <addaction name="actionAdd_Photos"/>
     <addaction name="actionInformation"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_library"/>
@@ -649,6 +673,22 @@ border-bottom: 1px solid rgb(77,77,77);
     <string>Ctrl+L</string>
    </property>
   </action>
+  <action name="actionAdd_Photos">
+   <property name="text">
+    <string>Add Photos</string>
+   </property>
+  </action>
+  <action name="actionPhotos">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Photos</string>
+   </property>
+   <property name="toolTip">
+    <string>Photos</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
@@ -656,6 +696,12 @@ border-bottom: 1px solid rgb(77,77,77);
    <class>StartWidget</class>
    <extends>QWidget</extends>
    <header location="global">ui/widgets/startwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>PhotoWidget</class>
+   <extends>QWidget</extends>
+   <header location="global">ui/widgets/photowidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

@@ -156,6 +156,7 @@ public:
     void setComment(const QString &comment);
 
     Type type() const;
+    QString typeString() const;
 
     Round::HochzeitDecision hochzeitDecision() const;
     void setHochzeitDecision(Round::HochzeitDecision arg);
@@ -220,6 +221,8 @@ public:
     static QStringList soloTypeStrings();
     static QString soloTypeStringFromType(SoloType type);
     static SoloType soloTypeFromString(const QString &typeString);
+
+    QString name() const;
 
 signals:
     void schmeissereiAdded();

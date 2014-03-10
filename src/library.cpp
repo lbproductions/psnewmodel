@@ -155,6 +155,16 @@ void Library::setFileName(const QString &fileName)
     settings.setValue("library/databasefilename", fileName);
 }
 
+QString Library::packagePath() const
+{
+    return m_packagePath;
+}
+
+void Library::setPackagePath(const QString &packagePath)
+{
+    m_packagePath = packagePath;
+}
+
 QString Library::fileNameFromArguments()
 {
     QStringList arguments = QApplication::arguments();
@@ -215,6 +225,16 @@ QString Library::fileNameLocal()
         return QString();
     }
 
+    if(!dataDir.cd("projectstats.pspkg")) {
+        dataDir.mkdir("projectstats.pspkg");
+        dataDir.cd("projectstats.pspkg");
+    }
+
+    if(!dataDir.cd("database")) {
+        dataDir.mkdir("database");
+        dataDir.cd("database");
+    }
+
     QString databaseFilePath = dataDir.absoluteFilePath(defaultFileName());
 
     if(!createFileIfNotExists(databaseFilePath)) {
@@ -227,7 +247,7 @@ QString Library::fileNameLocal()
         return QString();
     }
 
-    return databaseFilePath;
+    return dataPath+"/projectstats.pspkg";
 }
 
 bool Library::createFileIfNotExists(const QString &fileName)

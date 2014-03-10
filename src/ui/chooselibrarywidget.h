@@ -17,6 +17,8 @@ public:
 
     void showOrOpenLibrary();
 
+    void openLibrary(const QString &packagePath);
+
 protected:
     void paintEvent(QPaintEvent *) Q_DECL_OVERRIDE;
     void mouseMoveEvent(QMouseEvent *event) Q_DECL_OVERRIDE;
@@ -33,8 +35,6 @@ private slots:
 
 private:
     Ui::ChooseLibraryWidget *ui;
-
-    void openLibrary(const QString &libraryPath);
 
     QStringList m_recentLibraries;
     bool m_moving;

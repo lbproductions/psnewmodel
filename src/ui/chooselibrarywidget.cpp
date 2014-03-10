@@ -46,6 +46,7 @@ public:
         painter->save();
 
         QString filePath = index.data().toString();
+        filePath = filePath.remove("/database/"+Library::instance()->defaultFileName());
         QFileInfo fileInfo(filePath);
         QString name = fileInfo.baseName();
         QString path = fileInfo.path();
@@ -207,22 +208,29 @@ void ChooseLibraryWidget::on_frameButton1_clicked()
 
 void ChooseLibraryWidget::on_frameButton1_2_clicked()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Create Library"), GameSettings::openFileLocation());
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Create Package"), GameSettings::openFileLocation());
+    qDebug() << "Try to create package: " << fileName;
 
     if(fileName.isEmpty())
         return;
 
-    QFile file(fileName);
-    if(file.exists() && !file.remove()) {
-        QMessageBox msg;
-        msg.setText(tr("Could not remove file '%1'!")
-                    .arg(fileName));
-        msg.setIcon(QMessageBox::Critical);
-        msg.exec();
-        QApplication::quit();
+    if(!fileName.endsWith(".pspkg")) {
+        fileName = fileName + ".pspkg";
     }
 
-    if(!Library::createFileIfNotExists(fileName))
+    QDir dir(fileName);
+    if(dir.exists()) {
+        dir.removeRecursively();
+    }
+    else {
+        QDir packageDir(QFileInfo(fileName).absolutePath());
+        packageDir.mkdir(QFileInfo(fileName).fileName());
+        packageDir.cd(QFileInfo(fileName).fileName());
+        packageDir.mkdir("database");
+        packageDir.cd("database");
+    }
+
+    if(!Library::createFileIfNotExists(fileName+"/database/"+Library::instance()->defaultFileName()))
         return;
 
     Library *library = Library::instance();
@@ -232,8 +240,17 @@ void ChooseLibraryWidget::on_frameButton1_2_clicked()
     openLibrary(fileName);
 }
 
-void ChooseLibraryWidget::openLibrary(const QString &libraryPath)
+void ChooseLibraryWidget::openLibrary(const QString &packagePath)
 {
+    qDebug() << "Try to open library in package: " << packagePath;
+
+    QString libraryPath = packagePath+"/database/database.psdb";
+    if(!QFile(libraryPath).exists()) {
+        qWarning() << "Database could not be found in " << libraryPath;
+        QApplication::quit();
+        return;
+    }
+
     QSettings settings;
 
     m_recentLibraries.removeAll(libraryPath);
@@ -248,6 +265,7 @@ void ChooseLibraryWidget::openLibrary(const QString &libraryPath)
         }
         else {
             library->setFileName(libraryPath);
+            library->setPackagePath(packagePath);
             if(!library->open()) {
                 QApplication::quit();
                 return;
@@ -266,7 +284,8 @@ void ChooseLibraryWidget::openLibrary(const QString &libraryPath)
 
 void ChooseLibraryWidget::on_toolButtonOpen_clicked()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Library"), GameSettings::openFileLocation());
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open Library"), GameSettings::openFileLocation(),
+                                                    tr("ProjectStats Package (*.pspkg)"));
 
     if(fileName.isEmpty())
         return;
@@ -280,5 +299,7 @@ void ChooseLibraryWidget::on_listWidgetRecent_activated(const QModelIndex &index
     QString path = index.data().toString();
     if(path.isEmpty())
         return;
+
+    path = path.remove("/database/"+Library::instance()->defaultFileName());
     openLibrary(path);
 }

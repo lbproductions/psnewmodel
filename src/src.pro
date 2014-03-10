@@ -10,11 +10,12 @@ include($$BREAKPAD_PATH/Breakpad.pri)
 ### General config ###
 
 TARGET          = psnewmodel
-VERSION         = 0.0.2
+VERSION         = 0.0.4
 TEMPLATE        = app
 ICON            = resource/general/icon2.icns
 QT              += sql widgets
 CONFIG          += c++11
+CONFIG          += CONSOLE
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
 DEFINES         += APP_VERSION=\\\"$$VERSION\\\"
 
@@ -100,6 +101,11 @@ BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.sym \
                                        $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
 QMAKE_EXTRA_TARGETS += BREAKPAD_DUMP_SYMBOLS
 
+### QImageMetaData ###
+INCLUDEPATH += $$PWD/../lib/libQImageMetaData/src
+DEPENDPATH += $$PWD/../lib/libQImageMetaData/src
+LIBS += -L$$PWD/../lib/libQImageMetaData/lib/ -lQImageMetaData
+
 ### Files ###
 
 SOURCES += main.cpp \
@@ -184,7 +190,16 @@ SOURCES += main.cpp \
     ui/model/placeslistmodel.cpp \
     ui/widgets/leaguesdelegate.cpp \
     ui/model/leaguelistmodel.cpp \
-    ui/game/timestatswidget.cpp
+    ui/game/timestatswidget.cpp \
+    application.cpp \
+    ui/dialogs/addphotosdialog.cpp \
+    ui/widgets/objectcombobox.cpp \
+    ui/widgets/photowidget.cpp \
+    ui/widgets/photogamewidget.cpp \
+    ui/widgets/photopreviewwidget.cpp \
+    ui/widgets/clickableimagelabel.cpp \
+    ui/widgets/photoroundwidget.cpp \
+    ui/widgets/photoplayercardswidget.cpp
 
 
 HEADERS  += \
@@ -272,7 +287,16 @@ HEADERS  += \
     ui/model/placeslistmodel.h \
     ui/widgets/leaguesdelegate.h \
     ui/model/leaguelistmodel.h \
-    ui/game/timestatswidget.h
+    ui/game/timestatswidget.h \
+    application.h \
+    ui/dialogs/addphotosdialog.h \
+    ui/widgets/objectcombobox.h \
+    ui/widgets/photowidget.h \
+    ui/widgets/photogamewidget.h \
+    ui/widgets/photopreviewwidget.h \
+    ui/widgets/clickableimagelabel.h \
+    ui/widgets/photoroundwidget.h \
+    ui/widgets/photoplayercardswidget.h
 
 
 FORMS += \
@@ -298,7 +322,13 @@ FORMS += \
     ui/chooselibrarywidget.ui \
     ui/game/drinkstatswidget.ui \
     ui/game/gamecomparestatswidget.ui \
-    ui/widgets/startwidget.ui
+    ui/widgets/startwidget.ui \
+    ui/dialogs/addphotosdialog.ui \
+    ui/widgets/photowidget.ui \
+    ui/widgets/photogamewidget.ui \
+    ui/widgets/photopreviewwidget.ui \
+    ui/widgets/photoroundwidget.ui \
+    ui/widgets/photoplayercardswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
