@@ -15,6 +15,7 @@
 #include <ui/model/placeslistmodel.h>
 #include <misc/tools.h>
 #include <data/game.h>
+#include <misc/updater/updater.h>
 
 #include <QApplication>
 #include <QSortFilterProxyModel>
@@ -68,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
     connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
             this, &MainWindow::on_actionDrinkInformation_triggered);
+
+    ui->actionCheck_for_updates->setMenuRole(QAction::ApplicationSpecificRole);
 
     ui->pageStart->init(this);
 
@@ -326,4 +329,9 @@ void MainWindow::on_actionPhotos_triggered()
     ui->pagePhotos->setMainWindow(this);
     ui->pagePhotos->setGames(Qp::readAll<Game>());
     ui->stackedWidget->setCurrentWidget(ui->pagePhotos);
+}
+
+void MainWindow::on_actionCheck_for_updates_triggered()
+{
+    Updater::instanceForPlatform()->checkForUpdatesInBackground();
 }
