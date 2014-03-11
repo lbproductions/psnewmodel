@@ -11,7 +11,7 @@ GameSettings::GameSettings(QObject *_parent):
     m_showExtraRows(true)
 {
     QSettings settings;
-    m_sort = static_cast<PlayerSort>(settings.value("gamewindow/settings/playerSort", 0).toInt());
+    m_sort = static_cast<PlayerSort>(settings.value("gamewindow/settings/playerSort", 1).toInt());
     m_pointsDisplay = static_cast<PointsDisplay>(settings.value("gamewindow/settings/pointsDisplay", 0).toInt());
     m_tableDisplay = static_cast<TableDisplay>(settings.value("gamewindow/settings/tableDisplay", 0).toInt());
     m_showExtraRows = settings.value("gamewindow/settings/showExtraRows", true).toBool();
