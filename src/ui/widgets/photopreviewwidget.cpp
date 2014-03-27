@@ -1,5 +1,5 @@
 #include "photopreviewwidget.h"
-#include "ui_photopreviewwidget.h"#
+#include "ui_photopreviewwidget.h"
 
 #include <data/game.h>
 

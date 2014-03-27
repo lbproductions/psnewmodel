@@ -22,10 +22,11 @@ DEFINES         += APP_VERSION=\\\"$$VERSION\\\"
 
 ### Info.plist ###
 
-TARGET_PLIST = $${OUT_PWD}/$${TARGET}.app/Contents/Info.plist
-QMAKE_INFO_PLIST    = $$PWD/misc/Info.plist
-PRE_TARGETDEPS      += $$TARGET_PLIST
-
+macx {
+    TARGET_PLIST = $${OUT_PWD}/$${TARGET}.app/Contents/Info.plist
+    QMAKE_INFO_PLIST    = $$PWD/misc/Info.plist
+    PRE_TARGETDEPS      += $$TARGET_PLIST
+}
 
 ### Deployment ###
 
@@ -71,35 +72,38 @@ POST_TARGETDEPS += $$QPERSISTENCE_POST_TARGETDEPS
 
 ### Sparkle ###
 
-INCLUDEPATH     += $$SPARKLE_INCLUDEPATH
-LIBS            += $$SPARKLE_LIBS
-QMAKE_LFLAGS    += $$SPARKLE_LFLAGS
-QMAKE_BUNDLE_DATA += SPARKLE_FRAMEWORK
+macx {
+    INCLUDEPATH     += $$SPARKLE_INCLUDEPATH
+    LIBS            += $$SPARKLE_LIBS
+    QMAKE_LFLAGS    += $$SPARKLE_LFLAGS
+    QMAKE_BUNDLE_DATA += SPARKLE_FRAMEWORK
 
-SPARKLE_SIGNATURE.files = $$PWD/misc/updater/dsa_pub.pem
-SPARKLE_SIGNATURE.path  = Contents/Resources
-QMAKE_BUNDLE_DATA       += SPARKLE_SIGNATURE
-
+    SPARKLE_SIGNATURE.files = $$PWD/misc/updater/dsa_pub.pem
+    SPARKLE_SIGNATURE.path  = Contents/Resources
+    QMAKE_BUNDLE_DATA       += SPARKLE_SIGNATURE
+}
 
 ### Breakpad ###
 
-INCLUDEPATH     += $$BREAKPAD_INCLUDEPATH
-LIBS            += $$BREAKPAD_LIBS
-QMAKE_LFLAGS    += $$BREAKPAD_LFLAGS
-QMAKE_BUNDLE_DATA += BREAKPAD_FRAMEWORK
+macx {
+    INCLUDEPATH     += $$BREAKPAD_INCLUDEPATH
+    LIBS            += $$BREAKPAD_LIBS
+    QMAKE_LFLAGS    += $$BREAKPAD_LFLAGS
+    QMAKE_BUNDLE_DATA += BREAKPAD_FRAMEWORK
 
-BREAKPAD_DUMP_SYMBOLS.target    = dump_syms
-BREAKPAD_DUMP_SYMBOLS.commands  += dsymutil $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}
-BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug
-BREAKPAD_DUMP_SYMBOLS.commands  += ;strip -S $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug -o $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}
-BREAKPAD_DUMP_SYMBOLS.commands  += ;rm $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug
-BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.dSYM $${OUT_PWD}
-BREAKPAD_DUMP_SYMBOLS.commands  += ;$$BREAKPAD_DUMP_SYM $${OUT_PWD}/$${TARGET}.dSYM > $${OUT_PWD}/$${TARGET}.sym
-BREAKPAD_DUMP_SYMBOLS.commands  += ;mkdir -p $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
-BREAKPAD_DUMP_SYMBOLS.commands  += ;touch $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`/$$VERSION
-BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.sym \
-                                       $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
-QMAKE_EXTRA_TARGETS += BREAKPAD_DUMP_SYMBOLS
+    BREAKPAD_DUMP_SYMBOLS.target    = dump_syms
+    BREAKPAD_DUMP_SYMBOLS.commands  += dsymutil $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET} $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;strip -S $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug -o $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;rm $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.debug
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.app/Contents/MacOS/$${TARGET}.dSYM $${OUT_PWD}
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;$$BREAKPAD_DUMP_SYM $${OUT_PWD}/$${TARGET}.dSYM > $${OUT_PWD}/$${TARGET}.sym
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;mkdir -p $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;touch $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`/$$VERSION
+    BREAKPAD_DUMP_SYMBOLS.commands  += ;mv $${OUT_PWD}/$${TARGET}.sym \
+                                           $$BREAKPAD_SYMBOLPATH/$${TARGET}/`head -n1 $${OUT_PWD}/$${TARGET}.sym | cut -d \" \" -f4`
+    QMAKE_EXTRA_TARGETS += BREAKPAD_DUMP_SYMBOLS
+}
 
 ### QImageMetaData ###
 INCLUDEPATH += $$PWD/../lib/libQImageMetaData/src
@@ -377,3 +381,4 @@ OBJECTIVE_SOURCES += \
     misc/cocoainitializer.mm \
     misc/updater/sparkleupdater.mm \
     misc/crashreporter.mm
+
