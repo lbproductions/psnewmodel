@@ -22,13 +22,16 @@ int main(int argc, char *argv[])
     a.setOrganizationDomain("lbproductions.github.com");
     a.setApplicationVersion(APP_VERSION);
 
+#ifdef Q_OS_MAC
     CocoaInitializer cocoaInitializer;
     Q_UNUSED(cocoaInitializer);
 
-    Updater *updater = Updater::instanceForPlatform();
-    updater->checkForUpdatesInBackground();
-
     CrashReporter::init();
+#endif
+
+    Updater *updater = Updater::instanceForPlatform();
+    if(updater)
+        updater->checkForUpdatesInBackground();
 
     if(a.arguments().contains("-C")) {
         QSettings s;

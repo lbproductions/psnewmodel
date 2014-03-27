@@ -244,7 +244,11 @@ void ChooseLibraryWidget::openLibrary(const QString &packagePath)
 {
     qDebug() << "Try to open library in package: " << packagePath;
 
-    QString libraryPath = packagePath+"/database/database.psdb";
+    QString libraryPath = packagePath;
+
+    if(QFileInfo(libraryPath).isDir())
+        libraryPath += "/database/database.psdb";
+
     if(!QFile(libraryPath).exists()) {
         qWarning() << "Database could not be found in " << libraryPath;
         QApplication::quit();
@@ -285,7 +289,7 @@ void ChooseLibraryWidget::openLibrary(const QString &packagePath)
 void ChooseLibraryWidget::on_toolButtonOpen_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open Library"), GameSettings::openFileLocation(),
-                                                    tr("ProjectStats Package (*.pspkg)"));
+                                                    tr("ProjectStats Package (*.pspkg) ;; All files (*.*)"));
 
     if(fileName.isEmpty())
         return;

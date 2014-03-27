@@ -222,7 +222,7 @@ bool GameWindow::eventFilter(QObject *obj, QEvent *event)
         // TODO: Change when Qt 5.3 is released...
 
         QMouseEvent *me = static_cast<QMouseEvent *>(event);
-        bool isDoubleClick = isDoubleClick = (me->timestamp() - mouseClickLastTime )
+        bool isDoubleClick = (me->timestamp() - mouseClickLastTime )
                 < static_cast<ulong>(QApplication::doubleClickInterval());
         mouseClickLastTime = me->timestamp();
 

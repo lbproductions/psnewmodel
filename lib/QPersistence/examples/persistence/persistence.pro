@@ -1,4 +1,4 @@
-QPERSISTENCE_PATH = ../../
+QPERSISTENCE_PATH = ../..
 include($$QPERSISTENCE_PATH/QPersistence.pri)
 
 include(../testModel/testModel.pri)
