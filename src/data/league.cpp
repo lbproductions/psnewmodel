@@ -11,7 +11,7 @@ int League::currentMatchDayNumber = 1;
 League::League(QObject *parent) :
     QObject(parent),
     m_playerRatio(0.75),
-    m_finishedGamesPercentage(0),
+    m_finishedGamesPercentage(80),
     m_players("players", this),
     m_games("games",this)
 {   
@@ -74,7 +74,7 @@ QList<QPair<QSharedPointer<Player>, double> > League::sortPlayersAfterAverage()
 void League::calculateMatchdays()
 {
     QList<QSharedPointer<Game> > source;
-    source.append(calculatedGames());
+    source.append(filteredGames());
 
     m_calculatedGames.clear();
     m_playerStatistics.clear();
@@ -168,7 +168,7 @@ QList<QSharedPointer<Game> > League::calculatePossibleGames() const
     QList<QSharedPointer<Game> > fittingGames;
     for(int i = 0; i < possibleGames.size(); ++i) {
         QSharedPointer<Game> game = possibleGames.at(i);
-        if(game->type() != Game::Doppelkopf || game->creationTime().date() < startDate() || game->creationTime().date() > endDate() || !hasEnoughPlayers(game) || game->completedPercentage() < m_finishedGamesPercentage) {
+        if(game->type() != Game::Doppelkopf || game->creationTime().date() < startDate() || game->creationTime().date() > endDate() || !hasEnoughPlayers(game)) {
             continue;
         }
         else{
@@ -179,12 +179,25 @@ QList<QSharedPointer<Game> > League::calculatePossibleGames() const
     return fittingGames;
 }
 
+QList<QSharedPointer<Game> > League::filteredGames()
+{
+    QList<QSharedPointer<Game> > filter;
+
+    foreach(QSharedPointer<Game> game, calculatedGames()) {
+        if(game->completedPercentage() >= m_finishedGamesPercentage) {
+            filter.append(game);
+        }
+    }
+
+    return filter;
+}
+
 QSharedPointer<PlayerStatistics> League::playerStats(QSharedPointer<Player> player)
 {
     if(m_playerStatistics.value(player) == 0) {
         QSharedPointer<PlayerStatistics> stats(new PlayerStatistics(this));
         stats->setPlayer(player.data());
-        QList<QSharedPointer<Game> > gameList = calculatedGames();
+        QList<QSharedPointer<Game> > gameList = filteredGames();
         foreach(QSharedPointer<Game> game, gameList) {
             if(!game->players().contains(player)) {
                 gameList.removeOne(game);

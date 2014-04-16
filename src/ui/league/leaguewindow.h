@@ -31,12 +31,6 @@ class LeagueWindow : public QMainWindow
     public slots:
 
     private slots:
-        void on_pushButtonCurrent_clicked();
-
-        void on_pushButtonPrev_clicked();
-
-        void on_pushButtonNext_clicked();
-
         void on_comboBoxAverage_currentIndexChanged(const QString &arg1);
 
         void on_doubleSpinBoxFinishedGames_valueChanged(double arg1);

@@ -165,27 +165,6 @@ QWidget#widgetCreateGame {
        <number>-1</number>
       </property>
       <item>
-       <widget class="QPushButton" name="pushButtonPrev">
-        <property name="text">
-         <string>Prev</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonCurrent">
-        <property name="text">
-         <string>Current</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="pushButtonNext">
-        <property name="text">
-         <string>Next</string>
-        </property>
-       </widget>
-      </item>
-      <item>
        <widget class="QDoubleSpinBox" name="doubleSpinBoxFinishedGames">
         <property name="specialValueText">
          <string/>
@@ -197,7 +176,7 @@ QWidget#widgetCreateGame {
          <double>1.000000000000000</double>
         </property>
         <property name="value">
-         <double>0.000000000000000</double>
+         <double>80.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -249,29 +228,6 @@ QWidget#widgetCreateGame {
         </property>
        </spacer>
       </item>
-      <item>
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Current matchday:</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QLabel" name="labelMatchday">
-        <property name="minimumSize">
-         <size>
-          <width>30</width>
-          <height>0</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>-</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
      </layout>
     </item>
     <item>
@@ -297,7 +253,7 @@ QWidget#widgetCreateGame {
          <x>0</x>
          <y>0</y>
          <width>864</width>
-         <height>255</height>
+         <height>258</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">

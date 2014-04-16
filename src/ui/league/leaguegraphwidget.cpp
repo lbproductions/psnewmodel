@@ -27,7 +27,7 @@ void LeagueGraphWidget::setLeague(QSharedPointer<League> league)
     QList<QSharedPointer<Matchday> > matchdays = m_league->matchdays();
     QList<QSharedPointer<Player> > players = m_league->players();
 
-    for(int i = 0; i<League::currentMatchDayNumber; i++) {
+    for(int i = 0; i<matchdays.size(); i++) {
         QSharedPointer<Matchday> m = matchdays.at(i);
         QList<int> matchday;
         QList<QColor> color;

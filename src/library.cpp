@@ -163,6 +163,8 @@ QString Library::packagePath() const
 void Library::setPackagePath(const QString &packagePath)
 {
     m_packagePath = packagePath;
+    QSettings settings;
+    settings.setValue("library/packagePath", packagePath);
 }
 
 QString Library::fileNameFromArguments()
@@ -198,7 +200,7 @@ QString Library::fileNameFromArguments()
 QString Library::fileNameFromSettings()
 {
     QSettings settings;
-    QString databaseFilePath = settings.value("library/databasefilename").toString();
+    QString databaseFilePath = settings.value("library/packagePath").toString();
 
     QFile dbFile(databaseFilePath);
     if(!dbFile.exists())

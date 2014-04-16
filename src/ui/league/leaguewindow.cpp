@@ -68,8 +68,6 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     LeagueHorizontalHeaderView* horizontalHeader1 = new LeagueHorizontalHeaderView(Qt::Horizontal, this);
     ui->tableViewPlacement->setHorizontalHeader(horizontalHeader1);
 
-    ui->pushButtonNext->setEnabled(false);
-
     connect(ui->scrollAreaGraph->horizontalScrollBar(), &QScrollBar::valueChanged,
             ui->tableViewPlacement->horizontalScrollBar(), &QScrollBar::setValue);
 
@@ -100,61 +98,12 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
     ui->tableViewPlacement->setFixedHeight(ui->tableViewPlacement->horizontalHeader()->height() +
                                   (m_gamePlacementModel->rowCount()) * ui->tableViewPlacement->rowHeight(0));
 
-    ui->labelMatchday->setText(QString::number(League::currentMatchDayNumber));
-
     ui->graphWidget->setLeague(league);
     ui->graphAxis->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
 
     ui->gamesWidget->setGames(m_league->calculatedGames());
 
     ui->gameStatsWidget->setLeague(m_league);
-}
-
-void LeagueWindow::on_pushButtonCurrent_clicked()
-{
-    League::currentMatchDayNumber = m_league->calculatedGames().size();
-    ui->labelMatchday->setText(QString::number(League::currentMatchDayNumber));
-
-    ui->pushButtonNext->setEnabled(false);
-    ui->pushButtonPrev->setEnabled(true);
-
-    m_classementModel->setChanged();
-    m_gamePlacementModel->setChanged();
-
-    ui->graphWidget->updateGraphs();
-}
-
-void LeagueWindow::on_pushButtonPrev_clicked()
-{
-    League::currentMatchDayNumber--;
-    ui->labelMatchday->setText(QString::number(League::currentMatchDayNumber));
-
-    ui->pushButtonNext->setEnabled(true);
-
-    if(League::currentMatchDayNumber == 1) {
-        ui->pushButtonPrev->setEnabled(false);
-    }
-
-    m_classementModel->setChanged();
-    m_gamePlacementModel->setChanged();
-
-    ui->graphWidget->updateGraphs();
-}
-
-void LeagueWindow::on_pushButtonNext_clicked()
-{
-    League::currentMatchDayNumber++;
-    ui->labelMatchday->setText(QString::number(League::currentMatchDayNumber));
-
-    ui->pushButtonPrev->setEnabled(true);
-    if(League::currentMatchDayNumber == m_league->calculatedGames().size()) {
-        ui->pushButtonNext->setEnabled(false);
-    }
-
-    m_classementModel->setChanged();
-    m_gamePlacementModel->setChanged();
-
-    ui->graphWidget->updateGraphs();
 }
 
 void LeagueWindow::wheelEvent(QWheelEvent *e)

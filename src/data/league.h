@@ -42,6 +42,8 @@ class League : public QObject
         QList<QSharedPointer<Game> > games() const;
         QList<QSharedPointer<Game> > calculatedGames();
         QList<QSharedPointer<Game> > calculatePossibleGames() const;
+        QList<QSharedPointer<Game> > filteredGames();
+
 
         QSharedPointer<PlayerStatistics> playerStats(QSharedPointer<Player> player);
 

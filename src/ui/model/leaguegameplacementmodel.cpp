@@ -38,7 +38,7 @@ int LeagueGamePlacementModel::columnCount(const QModelIndex &parent) const
     if(!m_league)
         return 0;
 
-    return qMax(52, League::currentMatchDayNumber + 1);
+    return qMax(52, m_league->filteredGames().size() + 1);
     //return League::currentMatchDayNumber + 1; // +1 for graph column with placements
 }
 
@@ -55,7 +55,7 @@ int LeagueGamePlacementModel::rowCount(const QModelIndex &parent) const
 
 QVariant LeagueGamePlacementModel::headerData(int section, Qt::Orientation orientation, int role) const
 {
-    if(section >= m_league->calculatedGames().size())
+    if(section >= m_league->filteredGames().size())
         return QVariant();
 
     if(orientation == Qt::Horizontal) {
@@ -78,7 +78,7 @@ QVariant LeagueGamePlacementModel::data(const QModelIndex &index, int role) cons
     if(!index.isValid())
         return QVariant();
 
-    if(index.column() >= m_league->calculatedGames().size())
+    if(index.column() >= m_league->filteredGames().size())
         return QVariant();
 
     QSharedPointer<Player> player = m_league->currentMatchday()->playersSortedByAverage().at(index.row());
