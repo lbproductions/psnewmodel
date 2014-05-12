@@ -52,10 +52,16 @@ void ServeStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShare
         }
         stats->setGames(playerGames);
 
+        double relative = 0;
+        if(stats->serveRounds().size() > 0) {
+            relative = (double)stats->lostServe() / (double)stats->serveRounds().size();
+        }
+
+
         this->addTopLevelItem(
                     createItem(player,
                                stats->lostServe(),
-                               (double)stats->lostServe() / (double)stats->serveRounds().size())
+                               relative)
                     );
 
         delete stats;
