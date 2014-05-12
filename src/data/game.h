@@ -33,7 +33,6 @@ class Game: public QObject
     Q_PROPERTY(QSharedPointer<Place> site READ site WRITE setSite)
     Q_PROPERTY(QList<QSharedPointer<Player> > players READ players WRITE setPlayers)
     Q_PROPERTY(QList<QSharedPointer<Round> > rounds READ rounds WRITE setRounds)
-    Q_PROPERTY(QList<QSharedPointer<League> > leagues READ leagues WRITE setLeagues)
 
     Q_PROPERTY(QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation READ offlineGameInformation WRITE setOfflineGameInformation)
     //        Q_PROPERTY(QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys READ dokoOfflineGameBuddys WRITE setDokoOfflineGameBuddys)
@@ -44,8 +43,6 @@ class Game: public QObject
                 "reverserelation=games")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:rounds",
                 "reverserelation=game")
-    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:leagues",
-                "reverserelation=games")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:offlineGameInformation",
                 "reverserelation=game")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:dokoOfflineGameBuddys",
@@ -113,8 +110,6 @@ public:
     QSharedPointer<Place> site() const;
     void setSite(QSharedPointer<Place> site);
 
-    QList<QSharedPointer<League> > leagues() const;
-
     QList<QSharedPointer<Player> > players() const;
     void addPlayer(QSharedPointer<Player> player);
     QSharedPointer<Player> currentCardMixer() const;
@@ -177,7 +172,6 @@ private:
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
     void addRound(QSharedPointer<Round> round);
     void removeRound(QSharedPointer<Round> round);
-    void setLeagues(const QList<QSharedPointer<League> > &arg);
     void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
     void setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games);
 
@@ -194,7 +188,6 @@ private:
     QpWeakRelation<Place> m_site;
     QpStrongRelation<Player> m_players;
     QpStrongRelation<Round> m_rounds;
-    QpWeakRelation<League> m_leagues;
     mutable QSharedPointer<Round> m_currentRoundCached;
 
     QpStrongRelation<OLD_OfflineGameInformation> m_offlineGameInformation;

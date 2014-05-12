@@ -24,8 +24,6 @@ class LeagueWindow : public QMainWindow
 
         void resizeEvent(QResizeEvent *);
 
-        static int tableWidth;
-
     signals:
         
     public slots:

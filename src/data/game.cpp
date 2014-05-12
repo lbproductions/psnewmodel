@@ -21,7 +21,6 @@ Game::Game(QObject *parent) :
     m_site("site", this),
     m_players("players", this),
     m_rounds("rounds", this),
-    m_leagues("leagues",this),
     m_offlineGameInformation("offlineGameInformation", this),
     m_dokoOfflineGameBuddys("dokoOfflineGameBuddys",this)
 {
@@ -773,16 +772,6 @@ bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> 
 bool sortGamesByDateLastFirst(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)
 {
     return g1->creationTime() > g2->creationTime();
-}
-
-QList<QSharedPointer<League> > Game::leagues() const
-{
-    return m_leagues.resolveList();
-}
-
-void Game::setLeagues(const QList<QSharedPointer<League> > &arg)
-{
-    m_leagues.relate(arg);
 }
 
 void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)

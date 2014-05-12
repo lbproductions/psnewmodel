@@ -6,8 +6,7 @@
 LeagueHorizontalHeaderView::LeagueHorizontalHeaderView(Qt::Orientation orientation, QWidget *parent) :
     QHeaderView(orientation, parent)
 {
-    setSectionResizeMode(QHeaderView::Fixed);
-    setDefaultSectionSize(LeagueWindow::tableWidth);
+    //setSectionResizeMode(QHeaderView::Fixed);
 }
 
 void LeagueHorizontalHeaderView::paintSection(QPainter *painter, const QRect &rect, int logicalIndex) const

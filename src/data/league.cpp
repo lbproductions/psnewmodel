@@ -5,15 +5,11 @@
 #include "playerstatistics.h"
 #include "matchday.h"
 
-
-int League::currentMatchDayNumber = 1;
-
 League::League(QObject *parent) :
     QObject(parent),
     m_playerRatio(0.75),
     m_finishedGamesPercentage(80),
-    m_players("players", this),
-    m_games("games",this)
+    m_players("players", this)
 {   
 }
 
@@ -76,15 +72,15 @@ void League::calculateMatchdays()
     QList<QSharedPointer<Game> > source;
     source.append(filteredGames());
 
-    m_calculatedGames.clear();
     m_playerStatistics.clear();
+    m_filterGames.clear();
 
     for(int i = 0; i<source.size(); i++) {
-        m_calculatedGames.append(source.at(i));
+        m_filterGames.append(source.at(i));
         QList<QPair<QSharedPointer<Player>,double> > players = sortPlayersAfterAverage();
 
         QSharedPointer<Matchday> matchday = QSharedPointer<Matchday>(new Matchday(this));
-        matchday->setGame(m_calculatedGames.last());
+        matchday->setGame(m_filterGames.last());
         matchday->setNumber(i+1);
 
         for(int i = 0; i<players.size(); i++) {
@@ -97,20 +93,12 @@ void League::calculateMatchdays()
         if(i<source.size()-1)
             m_playerStatistics.clear();
     }
-
-    League::currentMatchDayNumber = m_matchdays.size();
-}
-
-QList<QSharedPointer<Game> > League::games() const
-{
-    return m_games.resolveList();
 }
 
 QList<QSharedPointer<Game> > League::calculatedGames()
 {
     if(m_calculatedGames.isEmpty()) {
         m_calculatedGames.append(calculatePossibleGames());
-        currentMatchDayNumber = m_calculatedGames.size();
     }
 
     return m_calculatedGames;
@@ -119,11 +107,6 @@ QList<QSharedPointer<Game> > League::calculatedGames()
 void League::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
     m_players.relate(players);
-}
-
-void League::setGames(const QList<QSharedPointer<Game> > &games)
-{
-    m_games.relate(games);
 }
 
 bool League::hasEnoughPlayers(QSharedPointer<Game> game) const
@@ -181,15 +164,15 @@ QList<QSharedPointer<Game> > League::calculatePossibleGames() const
 
 QList<QSharedPointer<Game> > League::filteredGames()
 {
-    QList<QSharedPointer<Game> > filter;
+    m_filterGames.clear();
 
     foreach(QSharedPointer<Game> game, calculatedGames()) {
         if(game->completedPercentage() >= m_finishedGamesPercentage) {
-            filter.append(game);
+            m_filterGames.append(game);
         }
     }
 
-    return filter;
+    return m_filterGames;
 }
 
 QSharedPointer<PlayerStatistics> League::playerStats(QSharedPointer<Player> player)
@@ -197,7 +180,8 @@ QSharedPointer<PlayerStatistics> League::playerStats(QSharedPointer<Player> play
     if(m_playerStatistics.value(player) == 0) {
         QSharedPointer<PlayerStatistics> stats(new PlayerStatistics(this));
         stats->setPlayer(player.data());
-        QList<QSharedPointer<Game> > gameList = filteredGames();
+        QList<QSharedPointer<Game> > gameList;
+        gameList.append(m_filterGames);
         foreach(QSharedPointer<Game> game, gameList) {
             if(!game->players().contains(player)) {
                 gameList.removeOne(game);
@@ -252,7 +236,7 @@ QSharedPointer<Matchday> League::currentMatchday()
     if(m_matchdays.isEmpty())
         calculateMatchdays();
 
-    return m_matchdays.at(League::currentMatchDayNumber-1);
+    return m_matchdays.last();
 }
 
 QList<QSharedPointer<Matchday> > League::matchdays()

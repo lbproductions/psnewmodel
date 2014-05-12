@@ -88,8 +88,9 @@ QVariant LeagueClassementModel::data(const QModelIndex &index, int role) const
 
     if(index.column() == 0) {
         int placementMatchdayBefore = -1;
-        if(League::currentMatchDayNumber > 1)
-            placementMatchdayBefore = m_league->matchdays().at(League::currentMatchDayNumber-2)->placementOfPlayer(player);
+        if(m_league->matchdays().size() > 1) {
+            placementMatchdayBefore = m_league->matchdays().at(m_league->matchdays().size()-2)->placementOfPlayer(player);
+        }
         int placementMatchdayCurrent = m_league->currentMatchday()->placementOfPlayer(player);
 
         if(placementMatchdayBefore < placementMatchdayCurrent) {

@@ -79,8 +79,9 @@ void LeagueGraphWidget::setLeague(QSharedPointer<League> league)
 QSize LeagueGraphWidget::sizeHint() const
 {
     QSize size = QWidget::sizeHint();
-    if(m_league)
-        size.setWidth((League::currentMatchDayNumber + 1) * m_columnWidth + originX());
+    if(m_league) {
+        size.setWidth((m_league->matchdays().size() + 1) * m_columnWidth + originX());
+    }
     return size;
 }
 

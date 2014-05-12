@@ -18,7 +18,6 @@ class League : public QObject
         Q_PROPERTY(QDate startDate READ startDate WRITE setStartDate)
         Q_PROPERTY(QDate endDate READ endDate WRITE setEndDate)
         Q_PROPERTY(double playerRatio READ playerRatio WRITE setPlayerRatio)
-        Q_PROPERTY(QList<QSharedPointer<Game> > games READ games WRITE setGames)
         Q_PROPERTY(QList<QSharedPointer<Player> > players READ players WRITE setPlayers)
 
         Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:games",
@@ -39,7 +38,6 @@ class League : public QObject
         QList<QSharedPointer<Player> > players() const;
         void setPlayers(const  QList<QSharedPointer<Player> > &players);
 
-        QList<QSharedPointer<Game> > games() const;
         QList<QSharedPointer<Game> > calculatedGames();
         QList<QSharedPointer<Game> > calculatePossibleGames() const;
         QList<QSharedPointer<Game> > filteredGames();
@@ -58,13 +56,10 @@ class League : public QObject
         double finishedGamesBorder() const;
         void setFinishedGamesBorder(double border);
 
-        static int currentMatchDayNumber;
         QSharedPointer<Matchday> currentMatchday();
         QList<QSharedPointer<Matchday> > matchdays();
 
     private:
-        void setGames(const  QList<QSharedPointer<Game> > &games);
-
         QList<QPair<QSharedPointer<Player>, double> > sortPlayersAfterAverage();
 
         void calculateMatchdays();
@@ -78,9 +73,9 @@ class League : public QObject
         double m_finishedGamesPercentage;
 
         QpWeakRelation<Player> m_players;
-        QpWeakRelation<Game> m_games;
 
         QList<QSharedPointer<Game> > m_calculatedGames;
+        QList<QSharedPointer<Game> > m_filterGames;
         QList<QSharedPointer<Matchday> > m_matchdays;
 
         QHash<QSharedPointer<Player>, QSharedPointer<PlayerStatistics> > m_playerStatistics;

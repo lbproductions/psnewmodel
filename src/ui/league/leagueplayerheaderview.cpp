@@ -8,7 +8,7 @@ LeaguePlayerHeaderView::LeaguePlayerHeaderView(Qt::Orientation orientation, QWid
     QHeaderView(orientation, parent),
     m_model(0)
 {
-    setSectionResizeMode(QHeaderView::Fixed);
+    //setSectionResizeMode(QHeaderView::Fixed);
 }
 
 QSize LeaguePlayerHeaderView::sizeHint() const

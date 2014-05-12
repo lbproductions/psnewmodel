@@ -14,8 +14,6 @@
 #include "leagueplacementdelegate.h"
 #include "leagueplayerheaderview.h"
 
-int LeagueWindow::tableWidth = 35;
-
 LeagueWindow::LeagueWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::LeagueWindow),
@@ -75,7 +73,6 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->graphAxis->setPalette(darkPalette);
     ui->graphAxis->setGraph(ui->graphWidget);
     ui->graphWidget->stackUnder(ui->graphAxis);
-    ui->graphWidget->setColumnWidth(tableWidth);
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
 }
@@ -132,6 +129,8 @@ void LeagueWindow::resizeEvent(QResizeEvent *)
 
     ui->tableViewPlacement->horizontalHeader()->setDefaultSectionSize(w);
     ui->graphWidget->setColumnWidth(w);
+
+    this->repaint();
 }
 
 void LeagueWindow::on_comboBoxAverage_currentIndexChanged(const QString &arg1)

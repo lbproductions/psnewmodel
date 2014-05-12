@@ -106,7 +106,6 @@ QSize LeagueDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelI
         }
     }
     if(m_model == PlacementModel) {
-        size.setWidth(LeagueWindow::tableWidth);
     }
     return size;
 }
