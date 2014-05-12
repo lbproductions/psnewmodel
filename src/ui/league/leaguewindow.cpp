@@ -144,6 +144,9 @@ void LeagueWindow::on_comboBoxAverage_currentIndexChanged(const QString &arg1)
     else if(arg1 == "PointsGraph") {
         ui->graphWidget->setType(LeagueGraphWidget::PointsGraph);
     }
+    else if (arg1 == "TotalPointsGraph") {
+        ui->graphWidget->setType(LeagueGraphWidget::TotalPointsGraph);
+    }
 }
 
 void LeagueWindow::on_doubleSpinBoxFinishedGames_valueChanged(double arg1)

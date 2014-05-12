@@ -205,6 +205,11 @@ QWidget#widgetCreateGame {
         </item>
         <item>
          <property name="text">
+          <string>TotalPointsGraph</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
           <string>PointsGraph</string>
          </property>
         </item>

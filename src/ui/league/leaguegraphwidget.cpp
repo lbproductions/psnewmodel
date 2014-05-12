@@ -27,12 +27,14 @@ void LeagueGraphWidget::setLeague(QSharedPointer<League> league)
     QList<QSharedPointer<Matchday> > matchdays = m_league->matchdays();
     QList<QSharedPointer<Player> > players = m_league->players();
 
+    QHash<QSharedPointer<Player>, int> playerPoints;
+
     for(int i = 0; i<matchdays.size(); i++) {
         QSharedPointer<Matchday> m = matchdays.at(i);
         QList<int> matchday;
         QList<QColor> color;
         foreach(QSharedPointer<Player> p, players) {
-            int y;
+            int y = 0;
             if(m_type == PlacementGraph) {
                 y = players.size() + 1 - m->placementOfPlayer(p);
                 setMaxY(qMax(y, maxY()));
@@ -55,13 +57,20 @@ void LeagueGraphWidget::setLeague(QSharedPointer<League> league)
                 }
             }
             else if(m_type == TotalPointsGraph) {
-
+                if(m->game()->players().contains(p)) {
+                    playerPoints.insert(p,playerPoints.value(p) + m->game()->totalPoints(p));
+                }
+                y = playerPoints.value(p);
+                setMaxY(qMax(y, maxY()));
+                setMinY(qMin(y, minY()));
+                matchday.append(y);
             }
-
         }
+
         m_matchdays.append(matchday);
         m_colors.append(color);
     }
+
 
     if(m_type == PlacementGraph) {
         m_maxY += 1;
@@ -70,6 +79,10 @@ void LeagueGraphWidget::setLeague(QSharedPointer<League> league)
     else if(m_type == AverageGraph || m_type == PointsGraph) {
         m_maxY += 5;
         m_minY -= 5;
+    }
+    else if(m_type == TotalPointsGraph) {
+        m_maxY += 10;
+        m_minY -= 10;
     }
 
 
@@ -264,6 +277,11 @@ void LeagueGraphWidget::paintEvent(QPaintEvent *event)
                              QString::number(players.size()+1-points));
         }
         else if(m_type == AverageGraph) {
+            painter.drawText(QPoint(translateX(m_matchdays.size()) + 5,
+                                    yPos),
+                             QString::number(points));
+        }
+        else if(m_type == TotalPointsGraph) {
             painter.drawText(QPoint(translateX(m_matchdays.size()) + 5,
                                     yPos),
                              QString::number(points));
