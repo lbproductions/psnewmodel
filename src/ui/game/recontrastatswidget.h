@@ -9,6 +9,7 @@ class ReContraStatsWidget;
 }
 
 class PlayerStatistics;
+class League;
 
 class ReContraStatsWidget : public QWidget
 {
@@ -20,6 +21,8 @@ public:
 
     void setGame(QSharedPointer<Game> game);
     void setGames(QList<QSharedPointer<Game> > list);
+    void setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players);
+    void setLeague(QSharedPointer<League> league);
 
 private:
     void fillReBox();

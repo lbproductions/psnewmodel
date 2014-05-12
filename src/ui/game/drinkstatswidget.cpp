@@ -6,6 +6,7 @@
 #include <data/livedrink.h>
 #include <data/drink.h>
 #include <data/player.h>
+#include <data/league.h>
 
 DrinkStatsWidget::DrinkStatsWidget(QWidget *parent) :
     QWidget(parent),
@@ -29,6 +30,20 @@ DrinkStatsWidget::~DrinkStatsWidget()
 
 void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games)
 {
+    QList<QSharedPointer<Player> > players;
+    foreach(QSharedPointer<Game> game, games) {
+        foreach(QSharedPointer<Player> player, game->players()) {
+            if(!players.contains(player)) {
+                players.append(player);
+            }
+        }
+    }
+
+    setGames(games, players);
+}
+
+void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players)
+{
     QList<QSharedPointer<LiveDrink> > drinks;
     foreach(QSharedPointer<Game> game, games) {
         drinks.append(game->liveDrinks());
@@ -43,7 +58,7 @@ void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games)
         playerVolume.insert(drink->player(), playerVolume.value(drink->player()) + drink->drink()->volume());
 
         QList<QSharedPointer<LiveDrink> > list;
-        if(playerDrinks.contains(drink->player())) {
+        if(playerDrinks.contains(drink->player()) && players.contains(drink->player())) {
             list.append(playerDrinks.value(drink->player()));
         }
         list.append(drink);
@@ -53,7 +68,7 @@ void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games)
     ui->labelTotalDrinkCount->setText(QString::number(drinks.size()));
     ui->labelTotalDrinkVolume->setText(QString::number(totalVolume) + " l");
 
-    foreach(QSharedPointer<Player> player, playerDrinks.keys()) {
+    foreach(QSharedPointer<Player> player, players) {
         double alc = 0;
         foreach(QSharedPointer<LiveDrink> drink, playerDrinks.value(player)) {
             alc += drink->drink()->alcoholByVolume()/100.0 * (double)drink->drink()->volume();
@@ -77,5 +92,9 @@ void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games)
             }
         }
     }
+}
 
+void DrinkStatsWidget::setLeague(QSharedPointer<League> league)
+{
+    setGames(league->calculatedGames(), league->players());
 }

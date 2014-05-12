@@ -6,6 +6,7 @@
 class Game;
 class PlayerStatistics;
 class Player;
+class League;
 
 class PointsStatsWidget : public QTreeWidget
 {
@@ -15,6 +16,8 @@ public:
 
     void setGame(QSharedPointer<Game> game);
     void setGames(QList<QSharedPointer<Game> > games);
+    void setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players);
+    void setLeague(QSharedPointer<League> league);
 
 signals:
 

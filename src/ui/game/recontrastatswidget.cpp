@@ -5,6 +5,7 @@
 
 #include <data/player.h>
 #include <data/playerstatistics.h>
+#include <data/league.h>
 #include <misc/tools.h>
 
 ReContraStatsWidget::ReContraStatsWidget(QWidget *parent) :
@@ -35,6 +36,20 @@ void ReContraStatsWidget::setGame(QSharedPointer<Game> game)
 
 void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list)
 {
+    QList<QSharedPointer<Player> > players;
+    foreach(QSharedPointer<Game> game, list) {
+        foreach(QSharedPointer<Player> player, game->players()) {
+            if(!players.contains(player)) {
+                players.append(player);
+            }
+        }
+    }
+
+    setGames(list, players);
+}
+
+void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players)
+{
     m_games = list;
 
     int reWins = 0;
@@ -42,7 +57,7 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list)
 
     foreach(QSharedPointer<Game> game, m_games) {
 
-        foreach(QSharedPointer<Player> player, game->players()) {
+        foreach(QSharedPointer<Player> player, players) {
             if(!m_playerStats.contains(player)) {
                 PlayerStatistics* stats = new PlayerStatistics(this);
                 stats->setPlayer(player.data());
@@ -61,6 +76,11 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list)
     fillReBox();
     fillReWinsBox();
     fillContraWinsBox();
+}
+
+void ReContraStatsWidget::setLeague(QSharedPointer<League> league)
+{
+    setGames(league->calculatedGames(), league->players());
 }
 
 void ReContraStatsWidget::fillReBox()

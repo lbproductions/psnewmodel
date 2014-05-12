@@ -1,6 +1,7 @@
 #include "gamestogetherwidget.h"
 
 #include <data/game.h>
+#include <data/league.h>
 #include <data/player.h>
 #include <misc/tools.h>
 
@@ -25,15 +26,24 @@ GamesTogetherWidget::~GamesTogetherWidget()
 
 void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > games)
 {
-    m_games = games;
-
+    QList<QSharedPointer<Player> > players;
     foreach(QSharedPointer<Game> game, games) {
         foreach(QSharedPointer<Player> player, game->players()) {
-            if(!m_players.contains(player)) {
-                m_players.append(player);
+            if(!players.contains(player)) {
+                players.append(player);
             }
         }
+    }
 
+    setGames(games, players);
+}
+
+void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players)
+{
+    m_games = list;
+    m_players = players;
+
+    foreach(QSharedPointer<Game> game, list) {
         connect(game.data(), SIGNAL(newRoundStarted()), this, SLOT(update()));
     }
 
@@ -57,19 +67,11 @@ void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > games)
     resizeColumnToContents(0);
 
     setMaximumHeight(rowCount*this->visualItemRect(this->topLevelItem(0)).height()+1);
-    /*
-    ui->treeWidgetGamesTogether->resizeColumnToContents(0);
-    ui->treeWidgetGamesTogether->resizeColumnToContents(1);
-    //ui->treeWidgetGamesTogether->header()->resizeSection(1, 25);
-    ui->treeWidgetGamesTogether->resizeColumnToContents(2);
-    ui->treeWidgetGamesTogether->resizeColumnToContents(3);
-    //ui->treeWidgetGamesTogether->resizeColumnToContents(4);
-    //ui->treeWidgetGamesTogether->resizeColumnToContents(5);
-    //ui->treeWidgetGamesTogether->header()->resizeSection(0, 35);
+}
 
-    ui->treeWidgetGamesTogether->setMinimumWidth(250);
-    ui->treeWidgetGamesTogether->sortByColumn(3);
-    */
+void GamesTogetherWidget::setLeague(QSharedPointer<League> league)
+{
+    setGames(league->calculatedGames(), league->players());
 }
 
 void GamesTogetherWidget::update()

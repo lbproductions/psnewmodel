@@ -6,6 +6,7 @@
 
 class Game;
 class Player;
+class League;
 
 class GamesTogetherWidget : public QTreeWidget
 {
@@ -16,6 +17,8 @@ public:
     ~GamesTogetherWidget();
 
     void setGames(QList<QSharedPointer<Game> > games);
+    void setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players);
+    void setLeague(QSharedPointer<League> league);
 
 private slots:
     void update();

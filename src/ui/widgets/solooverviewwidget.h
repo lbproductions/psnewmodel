@@ -11,6 +11,7 @@ namespace Ui {
 
 class Game;
 class Player;
+class League;
 
 class SoloOverviewWidget : public QWidget
 {
@@ -21,6 +22,8 @@ class SoloOverviewWidget : public QWidget
         ~SoloOverviewWidget();
 
         void setGames(QList<QSharedPointer<Game> > games);
+        void setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
+        void setLeague(QSharedPointer<League> league);
         
     private:
         void createCountHash();

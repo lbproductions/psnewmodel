@@ -81,15 +81,15 @@ void GameStatsWidget::setLeague(QSharedPointer<League> league)
 {
     m_games = league->calculatedGames();
 
-    m_reContraWidget->setGames(m_games);
+    m_reContraWidget->setLeague(league);
 
-    m_pointsStatsWidget->setGames(m_games);
+    m_pointsStatsWidget->setLeague(league);
 
-    m_gamesTogetherWidget->setGames(m_games);
+    m_gamesTogetherWidget->setLeague(league);
 
-    m_soloWidget->setGames(m_games);
+    m_soloWidget->setLeague(league);
 
-    m_drinksWidget->setGames(m_games);
+    m_drinksWidget->setLeague(league);
 
     m_gameCompareStatsWidget->setLeague(league);
 

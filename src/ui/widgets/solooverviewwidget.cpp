@@ -5,6 +5,7 @@
 
 #include <data/game.h>
 #include <data/player.h>
+#include <data/league.h>
 
 #include <misc/tools.h>
 
@@ -28,7 +29,22 @@ SoloOverviewWidget::~SoloOverviewWidget()
 
 void SoloOverviewWidget::setGames(QList<QSharedPointer<Game> > games)
 {
+    QList<QSharedPointer<Player> > players;
+    foreach(QSharedPointer<Game> game, games) {
+        foreach(QSharedPointer<Player> player, game->players()) {
+            if(!players.contains(player)) {
+                players.append(player);
+            }
+        }
+    }
+
+    setGames(games, players);
+}
+
+void SoloOverviewWidget::setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players)
+{
     m_games = games;
+    m_players = players;
 
     createCountHash();
 
@@ -76,13 +92,18 @@ void SoloOverviewWidget::setGames(QList<QSharedPointer<Game> > games)
     }
 }
 
+void SoloOverviewWidget::setLeague(QSharedPointer<League> league)
+{
+    setGames(league->calculatedGames(), league->players());
+}
+
 void SoloOverviewWidget::createCountHash()
 {
     m_counts.clear();
 
     foreach(QSharedPointer<Game> game, m_games) {
         foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->isSolo()) {
+            if(round->isSolo() && m_players.contains(round->soloPlayer())) {
                 if(m_counts.value(round->soloType()).isEmpty()) {
                     QHash<QSharedPointer<Player>,int > hash;
                     hash.insert(round->soloPlayer(), 1);
@@ -92,9 +113,6 @@ void SoloOverviewWidget::createCountHash()
                     QHash<QSharedPointer<Player>,int > hash = m_counts.value(round->soloType());
                     hash.insert(round->soloPlayer(), hash.value(round->soloPlayer()) + 1);
                     m_counts.insert(round->soloType(), hash);
-                }
-                if(!m_players.contains(round->soloPlayer())) {
-                    m_players.append(round->soloPlayer());
                 }
             }
         }

@@ -4,6 +4,8 @@
 #include <QWidget>
 
 class Game;
+class League;
+class Player;
 
 namespace Ui {
 class DrinkStatsWidget;
@@ -18,6 +20,8 @@ public:
     ~DrinkStatsWidget();
 
     void setGames(QList<QSharedPointer<Game> > games);
+    void setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
+    void setLeague(QSharedPointer<League> league);
 
 private:
     Ui::DrinkStatsWidget *ui;

@@ -4,6 +4,7 @@
 
 #include <data/game.h>
 #include <data/player.h>
+#include <data/league.h>
 #include <data/playerstatistics.h>
 
 #include <misc/tools.h>
@@ -27,28 +28,37 @@ void PointsStatsWidget::setGame(QSharedPointer<Game> game)
 
 void PointsStatsWidget::setGames(QList<QSharedPointer<Game> > games)
 {
-    m_games = games;
-
-    foreach(QSharedPointer<Game> game, m_games) {
-
+    QList<QSharedPointer<Player> > players;
+    foreach(QSharedPointer<Game> game, games) {
         foreach(QSharedPointer<Player> player, game->players()) {
-            if(!m_playerStats.contains(player)) {
-                PlayerStatistics* stats = new PlayerStatistics(this);
-                stats->setPlayer(player.data());
-                stats->setGames(m_games);
-                m_playerStats.insert(player, stats);
-
-                QTreeWidgetItem* item = new QTreeWidgetItem(this);
-                item->setText(0, player->name());
-                item->setIcon(0, QIcon(player->colorPixmap()));
-                item->setData(1, Qt::DisplayRole, stats->winRounds().size());
-                item->setData(2, Qt::DisplayRole, stats->averagePointsPerRound());
-                item->setData(3, Qt::DisplayRole, stats->averageRePointsPerRound());
-                item->setData(4, Qt::DisplayRole, stats->averageContraPointsPerRound());
-                item->setData(5, Qt::DisplayRole, stats->gamePoints());
-                this->addTopLevelItem(item);
+            if(!players.contains(player)) {
+                players.append(player);
             }
         }
+    }
+
+    setGames(games, players);
+}
+
+void PointsStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players)
+{
+    m_games = list;
+
+    foreach(QSharedPointer<Player> player, players) {
+        PlayerStatistics* stats = new PlayerStatistics(this);
+        stats->setPlayer(player.data());
+        stats->setGames(m_games);
+        m_playerStats.insert(player, stats);
+
+        QTreeWidgetItem* item = new QTreeWidgetItem(this);
+        item->setText(0, player->name());
+        item->setIcon(0, QIcon(player->colorPixmap()));
+        item->setData(1, Qt::DisplayRole, stats->winRounds().size());
+        item->setData(2, Qt::DisplayRole, stats->averagePointsPerRound());
+        item->setData(3, Qt::DisplayRole, stats->averageRePointsPerRound());
+        item->setData(4, Qt::DisplayRole, stats->averageContraPointsPerRound());
+        item->setData(5, Qt::DisplayRole, stats->gamePoints());
+        this->addTopLevelItem(item);
     }
 
     sortByColumn(0);
@@ -61,4 +71,9 @@ void PointsStatsWidget::setGames(QList<QSharedPointer<Game> > games)
             }
         }
     }
+}
+
+void PointsStatsWidget::setLeague(QSharedPointer<League> league)
+{
+    setGames(league->calculatedGames(), league->players());
 }
