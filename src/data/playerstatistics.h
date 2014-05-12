@@ -63,6 +63,9 @@ public:
     QTime averageRoundTime();
     QTime averageSoloTime();
 
+    int lostServe();
+    QList<QSharedPointer<Round> > serveRounds() const;
+
 private:
     Player *m_player;
     QList<QSharedPointer<Game> > m_games;

@@ -203,7 +203,8 @@ SOURCES += main.cpp \
     ui/widgets/photopreviewwidget.cpp \
     ui/widgets/clickableimagelabel.cpp \
     ui/widgets/photoroundwidget.cpp \
-    ui/widgets/photoplayercardswidget.cpp
+    ui/widgets/photoplayercardswidget.cpp \
+    ui/game/servestatswidget.cpp
 
 
 HEADERS  += \
@@ -300,7 +301,8 @@ HEADERS  += \
     ui/widgets/photopreviewwidget.h \
     ui/widgets/clickableimagelabel.h \
     ui/widgets/photoroundwidget.h \
-    ui/widgets/photoplayercardswidget.h
+    ui/widgets/photoplayercardswidget.h \
+    ui/game/servestatswidget.h
 
 
 FORMS += \

@@ -261,8 +261,12 @@ QList<QSharedPointer<Player> > Round::playingPlayers() const
     if(result.size() == 4)
         return result;
 
-    result.clear();
+    return playersByPosition();
+}
 
+QList<QSharedPointer<Player> > Round::playersByPosition() const
+{
+    QList<QSharedPointer<Player> > result;
     QList<QSharedPointer<Player> > ps = game()->players();
     if(ps.isEmpty())
         return QList<QSharedPointer<Player> >();

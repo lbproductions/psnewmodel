@@ -215,8 +215,8 @@ QList<QSharedPointer<Round> > PlayerStatistics::contraRounds() const
     foreach(QSharedPointer<Game> game, games()) {
         foreach(QSharedPointer<Round> round, game->rounds()) {
             if(round->contra1Player() == sharedPlayer
-               || round->contra2Player() == sharedPlayer
-               || (round->isSolo() && round->contra3Player() == sharedPlayer)) {
+                    || round->contra2Player() == sharedPlayer
+                    || (round->isSolo() && round->contra3Player() == sharedPlayer)) {
                 result.append(round);
             }
         }
@@ -473,6 +473,32 @@ QTime PlayerStatistics::averageSoloTime()
     }
 
     return QTime(0,0,0).addSecs((double)time/(double)count);
+}
+
+int PlayerStatistics::lostServe()
+{
+    int count = 0;
+
+    foreach(QSharedPointer<Round> round, serveRounds()) {
+        if(round->isPflicht() && round->soloPlayer() != player()) {
+            count++;
+        }
+    }
+
+    return count;
+}
+
+QList<QSharedPointer<Round> > PlayerStatistics::serveRounds() const
+{
+    QList<QSharedPointer<Round> > result;
+
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->playersByPosition().at(0) == player()) {
+            result.append(round);
+        }
+    }
+
+    return result;
 }
 
 double PlayerStatistics::percentage(int value1, int value2)

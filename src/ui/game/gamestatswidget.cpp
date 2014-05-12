@@ -12,6 +12,7 @@
 #include <ui/widgets/solooverviewwidget.h>
 #include "gamecomparestatswidget.h"
 #include "timestatswidget.h"
+#include "servestatswidget.h"
 #include <QSettings>
 #include <misc/tools.h>
 
@@ -47,6 +48,9 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     m_timeStatsWidget = new TimeStatsWidget(this);
     addWidget(tr("TimeStats"), m_timeStatsWidget);
 
+    m_serveStatsWidget = new ServeStatsWidget(this);
+    addWidget(tr("ServeStats"), m_serveStatsWidget);
+
     ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeWidget->setPalette(Tools::darkPalette(this));
 
@@ -75,6 +79,8 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
     m_drinksWidget->setGames(games);
 
     m_timeStatsWidget->setGames(games);
+
+    m_serveStatsWidget->setGames(games);
 }
 
 void GameStatsWidget::setLeague(QSharedPointer<League> league)
@@ -94,6 +100,8 @@ void GameStatsWidget::setLeague(QSharedPointer<League> league)
     m_gameCompareStatsWidget->setLeague(league);
 
     m_timeStatsWidget->setLeague(league);
+
+    m_serveStatsWidget->setLeague(league);
 }
 
 void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)

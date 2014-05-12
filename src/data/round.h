@@ -172,6 +172,7 @@ public:
 
     QSharedPointer<Player> cardMixer() const;
     QList<QSharedPointer<Player> > playingPlayers() const;
+    QList<QSharedPointer<Player> > playersByPosition() const;
 
     SoloType soloType() const;
     void setSoloType(const SoloType &soloType);
