@@ -117,12 +117,6 @@ GameWindow::GameWindow(QWidget *parent) :
     actionGroup->addAction(ui->actionSet_comment);
     actionGroup->addAction(ui->actionStats);
     actionGroup->setExclusive(true);
-    m_informationModel->setHeaderAction(GameOverviewModel::NormalRoundRow, ui->actionAdd_round);
-    m_informationModel->setHeaderAction(GameOverviewModel::SchmeissereienRow, ui->actionAdd_schmeisserei);
-    m_informationModel->setHeaderAction(GameOverviewModel::DrinksRow, ui->actionAdd_drinks);
-    m_informationModel->setHeaderAction(GameOverviewModel::HochzeitenRow, ui->actionAdd_Hochzeit);
-    m_informationModel->setHeaderAction(GameOverviewModel::TrumpfabgabenRow, ui->actionAdd_Trumpfabgabe);
-    m_informationModel->setHeaderAction(GameOverviewModel::SoliRow, ui->actionAdd_Solo);
 
     m_dialogController = new DialogController(this);
 
@@ -298,6 +292,13 @@ void GameWindow::enableActionsBasedOnState()
     ui->actionAdd_Solo->setEnabled(false);
     ui->actionAdd_Trumpfabgabe->setEnabled(false);
 
+    m_informationModel->removeHeaderAction(GameOverviewModel::NormalRoundRow, ui->actionAdd_round);
+    m_informationModel->removeHeaderAction(GameOverviewModel::SchmeissereienRow, ui->actionAdd_schmeisserei);
+    m_informationModel->removeHeaderAction(GameOverviewModel::DrinksRow, ui->actionAdd_drinks);
+    m_informationModel->removeHeaderAction(GameOverviewModel::HochzeitenRow, ui->actionAdd_Hochzeit);
+    m_informationModel->removeHeaderAction(GameOverviewModel::TrumpfabgabenRow, ui->actionAdd_Trumpfabgabe);
+    m_informationModel->removeHeaderAction(GameOverviewModel::SoliRow, ui->actionAdd_Solo);
+
     if(!m_game)
         return;
 
@@ -316,6 +317,13 @@ void GameWindow::enableActionsBasedOnState()
             ui->actionStop_Game->setEnabled(true);
 
         m_resumeWidget->setVisible(false);
+
+        m_informationModel->setHeaderAction(GameOverviewModel::NormalRoundRow, ui->actionAdd_round);
+        m_informationModel->setHeaderAction(GameOverviewModel::SchmeissereienRow, ui->actionAdd_schmeisserei);
+        m_informationModel->setHeaderAction(GameOverviewModel::DrinksRow, ui->actionAdd_drinks);
+        m_informationModel->setHeaderAction(GameOverviewModel::HochzeitenRow, ui->actionAdd_Hochzeit);
+        m_informationModel->setHeaderAction(GameOverviewModel::TrumpfabgabenRow, ui->actionAdd_Trumpfabgabe);
+        m_informationModel->setHeaderAction(GameOverviewModel::SoliRow, ui->actionAdd_Solo);
     }
     else if(state == Game::Paused) {
         ui->actionPlayPause->setEnabled(true);
@@ -328,6 +336,8 @@ void GameWindow::enableActionsBasedOnState()
     else {
         ui->actionPlayPause->setText(tr("Pause"));
     }
+
+
 }
 
 /**********************************************************
@@ -357,7 +367,7 @@ void GameWindow::onNewRoundStarted()
         if(oldPercentage < 50 && m_game->completedPercentage() >= 50) {
             QMessageBox box(this);
             box.setPalette(Tools::darkPalette(&box));
-            box.setText(tr("This game is to 50% complete!"));
+            box.setText(tr("This game is 50% completed!"));
             box.exec();
         }
     }

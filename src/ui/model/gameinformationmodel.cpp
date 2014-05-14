@@ -216,6 +216,12 @@ void GameInformationModel::setHeaderAction(int section, QAction *action)
         emit headerDataChanged(Qt::Horizontal, section, section);
     });
 }
+
+void GameInformationModel::removeHeaderAction(int section, QAction *action)
+{
+    m_actions.remove(section);
+}
+
 int GameInformationModel::fontSize() const
 {
     return m_fontSize;

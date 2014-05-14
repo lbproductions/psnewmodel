@@ -30,6 +30,7 @@ public:
 
     void triggerAction(int section);
     void setHeaderAction(int section, QAction *action);
+    void removeHeaderAction(int section, QAction *action);
 
     int fontSize() const;
     void setFontSize(int fontSize);
