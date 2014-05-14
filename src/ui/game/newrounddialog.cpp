@@ -314,17 +314,17 @@ void NewRoundDialog::checkSoloRoundContents()
         // Allow to check the box, when it was the pflichtsolo, or when there is no pflichtsolo yet.
         // This allows the user to have only one pflichtsolo per game checked at the same time,
         // but also to correct an errornous entry
-        bool checked = isPflicht;
-        bool enabled = isPflicht || !hasPflicht;
+        bool checked = isPflicht && ui->comboBoxSoloType->currentText() != "Falsch gespielt";
+        bool enabled = (isPflicht || !hasPflicht) && ui->comboBoxSoloType->currentText() != "Falsch gespielt";
         ui->checkBoxSoloPflicht->setChecked(checked);
         ui->checkBoxSoloPflicht->setEnabled(enabled);
     }
     else {
         // If the player already has played his pflichtsolo, do not allow to add another pflichtsolo.
         // If the player has not played his pflichtsolo, make the solo pflicht by default.
-        bool checked = !hasPflicht && (ui->checkBoxSoloPflicht->isChecked()
+        bool checked = !hasPflicht && ui->comboBoxSoloType->currentText() != "Falsch gespielt" && (ui->checkBoxSoloPflicht->isChecked()
                                        || !ui->checkBoxSoloPflicht->isEnabled());
-        bool enabled = !hasPflicht;
+        bool enabled = !hasPflicht && ui->comboBoxSoloType->currentText() != "Falsch gespielt";
         ui->checkBoxSoloPflicht->setChecked(checked);
         ui->checkBoxSoloPflicht->setEnabled(enabled);
     }
