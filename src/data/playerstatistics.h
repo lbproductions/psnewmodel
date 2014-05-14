@@ -10,6 +10,9 @@ class Game;
 class Round;
 class Schmeisserei;
 
+typedef QPair<QSharedPointer<Player>, double> PlayerDoublePair;
+typedef QList<QSharedPointer<Round> > RoundSeries;
+
 class PlayerStatistics : public QObject
 {
     Q_OBJECT
@@ -66,11 +69,22 @@ public:
     int lostServe();
     QList<QSharedPointer<Round> > serveRounds() const;
 
+    QList<PlayerDoublePair> serverAveragePoints();
+
+    QList<RoundSeries> series();
+    QList<RoundSeries> winSeries();
+    QList<RoundSeries> loseSeries();
+
 private:
     Player *m_player;
     QList<QSharedPointer<Game> > m_games;
 
     static double percentage(int value1, int value2);
 };
+
+bool sortPlayerDoublePair(PlayerDoublePair one, PlayerDoublePair two);
+bool sortRoundsByDate(QSharedPointer<Round> one, QSharedPointer<Round> two);
+bool sortRoundSeriesBySize(RoundSeries one, RoundSeries two);
+bool sortRoundSeriesByDate(RoundSeries one, RoundSeries two);
 
 #endif // PLAYERSTATISTICS_H

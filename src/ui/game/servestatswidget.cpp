@@ -11,8 +11,8 @@
 ServeStatsWidget::ServeStatsWidget(QWidget *parent) :
     QTreeWidget(parent)
 {
-    setColumnCount(3);
-    setHeaderLabels(QStringList() << tr("Player") << tr("AbsLostServe") << tr("RelLostServe"));
+    setColumnCount(5);
+    setHeaderLabels(QStringList() << tr("Player") << tr("AbsLostServe") << tr("RelLostServe") << tr("Best Server") << tr("Worst Server"));
     setSortingEnabled(true);
 
     this->setPalette(Tools::darkPalette(this));
@@ -57,11 +57,28 @@ void ServeStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShare
             relative = (double)stats->lostServe() / (double)stats->serveRounds().size();
         }
 
+        QString best;
+        QString worst;
+        QList<PlayerDoublePair> servers = stats->serverAveragePoints();
+        for(int i = 0; i<servers.size(); i++) {
+            if(players.contains(servers.at(i).first)) {
+                best = servers.at(i).first->name() + " (" + QString::number(servers.at(i).second) + ")";
+                break;
+            }
+        }
+        for(int i = servers.size()-1; i>=0; i--) {
+            if(players.contains(servers.at(i).first)) {
+                worst = servers.at(i).first->name() + " (" + QString::number(servers.at(i).second) + ")";
+                break;
+            }
+        }
 
         this->addTopLevelItem(
                     createItem(player,
                                stats->lostServe(),
-                               relative)
+                               relative,
+                               best,
+                               worst)
                     );
 
         delete stats;
@@ -69,12 +86,14 @@ void ServeStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShare
     }
 }
 
-QTreeWidgetItem *ServeStatsWidget::createItem(QSharedPointer<Player> player, int absLostServe, double relLostServe)
+QTreeWidgetItem *ServeStatsWidget::createItem(QSharedPointer<Player> player, int absLostServe, double relLostServe, QString bestServer, QString worstServer)
 {
     QTreeWidgetItem* item = new QTreeWidgetItem(this);
     item->setText(0, player->name());
     item->setIcon(0, QIcon(player->colorPixmap()));
     item->setData(1, Qt::DisplayRole, absLostServe);
     item->setData(2, Qt::DisplayRole, relLostServe);
+    item->setText(3, bestServer);
+    item->setText(4, worstServer);
     return item;
 }

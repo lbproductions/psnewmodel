@@ -204,7 +204,8 @@ SOURCES += main.cpp \
     ui/widgets/clickableimagelabel.cpp \
     ui/widgets/photoroundwidget.cpp \
     ui/widgets/photoplayercardswidget.cpp \
-    ui/game/servestatswidget.cpp
+    ui/game/servestatswidget.cpp \
+    ui/game/seriesstatswidget.cpp
 
 
 HEADERS  += \
@@ -302,7 +303,8 @@ HEADERS  += \
     ui/widgets/clickableimagelabel.h \
     ui/widgets/photoroundwidget.h \
     ui/widgets/photoplayercardswidget.h \
-    ui/game/servestatswidget.h
+    ui/game/servestatswidget.h \
+    ui/game/seriesstatswidget.h
 
 
 FORMS += \

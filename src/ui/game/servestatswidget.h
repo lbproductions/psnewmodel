@@ -18,7 +18,7 @@ public:
     void setGames(QList<QSharedPointer<Game> > games);
     void setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
 
-    QTreeWidgetItem* createItem(QSharedPointer<Player> player, int absLostServe, double relLostServe);
+    QTreeWidgetItem* createItem(QSharedPointer<Player> player, int absLostServe, double relLostServe, QString bestServer, QString worstServer);
 signals:
 
 public slots:

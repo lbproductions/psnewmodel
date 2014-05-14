@@ -501,6 +501,104 @@ QList<QSharedPointer<Round> > PlayerStatistics::serveRounds() const
     return result;
 }
 
+QList<PlayerDoublePair> PlayerStatistics::serverAveragePoints()
+{
+    QList<PlayerDoublePair> result;
+
+    QHash<QSharedPointer<Player>, int> count;
+    QHash<QSharedPointer<Player>, int> points;
+
+    foreach(QSharedPointer<Round> round, rounds()) {
+        count.insert(round->playersByPosition().at(0), count.value(round->playersByPosition().at(0))+1);
+        points.insert(round->playersByPosition().at(0), points.value(round->playersByPosition().at(0))+round->points(player()));
+    }
+
+    foreach(QSharedPointer<Player> player, count.keys()) {
+        PlayerDoublePair pair;
+        pair.first = player;
+        pair.second = (double)points.value(player) / (double)count.value(player);
+        result.append(pair);
+    }
+
+    qSort(result.begin(), result.end(), sortPlayerDoublePair);
+
+    return result;
+}
+
+QList<RoundSeries> PlayerStatistics::series()
+{
+    QList<RoundSeries> result = winSeries();
+    result.append(loseSeries());
+
+    qSort(result.begin(), result.end(), sortRoundSeriesByDate);
+
+    return result;
+}
+
+QList<RoundSeries> PlayerStatistics::winSeries()
+{
+    qDebug() << player()->name();
+
+    QList<QSharedPointer<Round> > allRounds = rounds();
+    qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
+
+    QList<RoundSeries> result;
+
+    RoundSeries current;
+    for(int i = 0; i<allRounds.size(); i++) {
+        QSharedPointer<Round> round = allRounds.at(i);
+        if(round->points(player()) > 0) {
+            current.append(round);
+        }
+        else {
+            if(!current.isEmpty()) {
+                result.append(current);
+                current.clear();
+            }
+        }
+    }
+
+    if(!current.isEmpty()) {
+        result.append(current);
+        current.clear();
+    }
+
+    qSort(result.begin(), result.end(), sortRoundSeriesBySize);
+
+    return result;
+}
+
+QList<RoundSeries> PlayerStatistics::loseSeries()
+{
+    QList<QSharedPointer<Round> > allRounds = rounds();
+    qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
+
+    QList<RoundSeries> result;
+
+    RoundSeries current;
+    for(int i = 0; i<allRounds.size(); i++) {
+        QSharedPointer<Round> round = allRounds.at(i);
+        if(round->points(player()) < 0) {
+            current.append(round);
+        }
+        else {
+            if(!current.isEmpty()) {
+                result.append(current);
+                current.clear();
+            }
+        }
+    }
+
+    if(!current.isEmpty()) {
+        result.append(current);
+        current.clear();
+    }
+
+    qSort(result.begin(), result.end(), sortRoundSeriesBySize);
+
+    return result;
+}
+
 double PlayerStatistics::percentage(int value1, int value2)
 {
     if(value2 == 0)
@@ -509,4 +607,28 @@ double PlayerStatistics::percentage(int value1, int value2)
     double number = (double) value1 / (double) value2;
 
     return number;
+}
+
+
+bool sortPlayerDoublePair(PlayerDoublePair one, PlayerDoublePair two)
+{
+    return one.second > two.second;
+}
+
+
+bool sortRoundsByDate(QSharedPointer<Round> one, QSharedPointer<Round> two)
+{
+    return one->startTime() < two->startTime();
+}
+
+
+bool sortRoundSeriesBySize(RoundSeries one, RoundSeries two)
+{
+    return one.size() > two.size();
+}
+
+
+bool sortRoundSeriesByDate(RoundSeries one, RoundSeries two)
+{
+    return one.first()->startTime() < two.first()->startTime();
 }
