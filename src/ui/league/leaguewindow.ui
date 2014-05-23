@@ -315,9 +315,6 @@ QWidget#widgetCreateGame {
       <item>
        <widget class="GameStatsWidget" name="gameStatsWidget" native="true"/>
       </item>
-      <item>
-       <widget class="GamesWidget" name="gamesWidget" native="true"/>
-      </item>
      </layout>
     </item>
    </layout>
@@ -325,27 +322,21 @@ QWidget#widgetCreateGame {
  </widget>
  <customwidgets>
   <customwidget>
-   <class>ScrollArea</class>
-   <extends>QScrollArea</extends>
-   <header location="global">ui/widgets/scrollarea.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>GraphAxis</class>
    <extends>QWidget</extends>
    <header location="global">ui/game/graphaxis.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>ScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header location="global">ui/widgets/scrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>LeagueGraphWidget</class>
    <extends>QWidget</extends>
    <header>ui/league/leaguegraphwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>GamesWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/widgets/gameswidget.h</header>
-   <container>1</container>
   </customwidget>
   <customwidget>
    <class>GameStatsWidget</class>

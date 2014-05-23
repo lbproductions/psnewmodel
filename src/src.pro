@@ -164,10 +164,10 @@ SOURCES += main.cpp \
     ui/widgets/graphwidget.cpp \
     ui/game/gamegraphwidget.cpp \
     ui/league/leaguegraphwidget.cpp \
-    ui/widgets/solooverviewwidget.cpp \
+    ui/stats/solooverviewwidget.cpp \
     ui/widgets/recontrapiewidget.cpp \
     ui/widgets/totalpointswidget.cpp \
-    ui/widgets/gamestogetherwidget.cpp \
+    ui/stats/gamestogetherwidget.cpp \
     ui/widgets/gameswidget.cpp \
     ui/game/commentwidget.cpp \
     ui/game/stopgamewidget.cpp \
@@ -177,9 +177,9 @@ SOURCES += main.cpp \
     misc/settings.cpp \
     ui/widgets/clickablelabel.cpp \
     ui/game/gamelengthwidget.cpp \
-    ui/game/recontrastatswidget.cpp \
+    ui/stats/recontrastatswidget.cpp \
     ui/game/resumewidget.cpp \
-    ui/game/pointsstatswidget.cpp \
+    ui/stats/pointsstatswidget.cpp \
     ui/game/drinkswidget.cpp \
     ui/game/dialogcontroller.cpp \
     library.cpp \
@@ -187,14 +187,14 @@ SOURCES += main.cpp \
     ui/chooselibrarywidget.cpp \
     ui/widgets/frame.cpp \
     data/gamecomparestatistics.cpp \
-    ui/game/drinkstatswidget.cpp \
-    ui/game/gamecomparestatswidget.cpp \
+    ui/stats/drinkstatswidget.cpp \
+    ui/stats/gamecomparestatswidget.cpp \
     ui/widgets/startwidget.cpp \
     ui/widgets/noisygradientitemdelegate.cpp \
     ui/model/placeslistmodel.cpp \
     ui/widgets/leaguesdelegate.cpp \
     ui/model/leaguelistmodel.cpp \
-    ui/game/timestatswidget.cpp \
+    ui/stats/timestatswidget.cpp \
     application.cpp \
     ui/dialogs/addphotosdialog.cpp \
     ui/widgets/objectcombobox.cpp \
@@ -204,8 +204,9 @@ SOURCES += main.cpp \
     ui/widgets/clickableimagelabel.cpp \
     ui/widgets/photoroundwidget.cpp \
     ui/widgets/photoplayercardswidget.cpp \
-    ui/game/servestatswidget.cpp \
-    ui/game/seriesstatswidget.cpp
+    ui/stats/servestatswidget.cpp \
+    ui/stats/seriesstatswidget.cpp \
+    ui/stats/statstreewidget.cpp
 
 
 HEADERS  += \
@@ -260,10 +261,10 @@ HEADERS  += \
     ui/widgets/graphwidget.h \
     ui/game/gamegraphwidget.h \
     ui/league/leaguegraphwidget.h \
-    ui/widgets/solooverviewwidget.h \
+    ui/stats/solooverviewwidget.h \
     ui/widgets/recontrapiewidget.h \
     ui/widgets/totalpointswidget.h \
-    ui/widgets/gamestogetherwidget.h \
+    ui/stats/gamestogetherwidget.h \
     ui/widgets/gameswidget.h \
     ui/game/commentwidget.h \
     ui/game/stopgamewidget.h \
@@ -273,9 +274,9 @@ HEADERS  += \
     misc/settings.h \
     ui/widgets/clickablelabel.h \
     ui/game/gamelengthwidget.h \
-    ui/game/recontrastatswidget.h \
+    ui/stats/recontrastatswidget.h \
     ui/game/resumewidget.h \
-    ui/game/pointsstatswidget.h \
+    ui/stats/pointsstatswidget.h \
     ui/game/drinkswidget.h \
     ui/game/dialogcontroller.h \
     library.h \
@@ -286,14 +287,14 @@ HEADERS  += \
     ui/widgets/frame.h \
     misc/crashreporter.h \
     data/gamecomparestatistics.h \
-    ui/game/drinkstatswidget.h \
-    ui/game/gamecomparestatswidget.h \
+    ui/stats/drinkstatswidget.h \
+    ui/stats/gamecomparestatswidget.h \
     ui/widgets/startwidget.h \
     ui/widgets/noisygradientitemdelegate.h \
     ui/model/placeslistmodel.h \
     ui/widgets/leaguesdelegate.h \
     ui/model/leaguelistmodel.h \
-    ui/game/timestatswidget.h \
+    ui/stats/timestatswidget.h \
     application.h \
     ui/dialogs/addphotosdialog.h \
     ui/widgets/objectcombobox.h \
@@ -303,8 +304,9 @@ HEADERS  += \
     ui/widgets/clickableimagelabel.h \
     ui/widgets/photoroundwidget.h \
     ui/widgets/photoplayercardswidget.h \
-    ui/game/servestatswidget.h \
-    ui/game/seriesstatswidget.h
+    ui/stats/servestatswidget.h \
+    ui/stats/seriesstatswidget.h \
+    ui/stats/statstreewidget.h
 
 
 FORMS += \
@@ -317,19 +319,19 @@ FORMS += \
     ui/dialogs/drinkinformationdialog.ui \
     ui/league/addleaguedialog.ui \
     ui/league/leaguewindow.ui \
-    ui/widgets/solooverviewwidget.ui \
+    ui/stats/solooverviewwidget.ui \
     ui/widgets/totalpointswidget.ui \
     ui/game/commentwidget.ui \
     ui/game/stopgamewidget.ui \
     ui/game/gamestatswidget.ui \
     ui/widgets/biggestdistancewidget.ui \
     ui/game/settingswidget.ui \
-    ui/game/recontrastatswidget.ui \
+    ui/stats/recontrastatswidget.ui \
     ui/game/resumewidget.ui \
     ui/game/drinkswidget.ui \
     ui/chooselibrarywidget.ui \
-    ui/game/drinkstatswidget.ui \
-    ui/game/gamecomparestatswidget.ui \
+    ui/stats/drinkstatswidget.ui \
+    ui/stats/gamecomparestatswidget.ui \
     ui/widgets/startwidget.ui \
     ui/dialogs/addphotosdialog.ui \
     ui/widgets/photowidget.ui \

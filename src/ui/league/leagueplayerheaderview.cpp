@@ -14,7 +14,7 @@ LeaguePlayerHeaderView::LeaguePlayerHeaderView(Qt::Orientation orientation, QWid
 QSize LeaguePlayerHeaderView::sizeHint() const
 {
     QSize size = QHeaderView::sizeHint();
-    size += QSize(45,0);
+    size += QSize(25,0);
     size.setHeight(30);
     return size;
 }
@@ -22,7 +22,7 @@ QSize LeaguePlayerHeaderView::sizeHint() const
 QSize LeaguePlayerHeaderView::sectionSizeFromContents(int logicalIndex) const
 {
     QSize size = QHeaderView::sectionSizeFromContents(logicalIndex);
-    size += QSize(45,0);
+    size += QSize(25,0);
     size.setHeight(30);
     return size;
 }

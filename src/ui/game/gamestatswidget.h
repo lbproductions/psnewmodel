@@ -21,6 +21,8 @@ class TimeStatsWidget;
 class ServeStatsWidget;
 class SeriesStatsWidget;
 
+class GamesWidget;
+
 class GameStatsWidget : public QWidget
 {
         Q_OBJECT
@@ -37,6 +39,7 @@ class GameStatsWidget : public QWidget
         
     private:
         void addWidget(QString name, QWidget* widget);
+        void insertWidget(int index, QString name, QWidget* widget);
 
         Ui::GameStatsWidget *ui;
 
@@ -53,6 +56,8 @@ class GameStatsWidget : public QWidget
         TimeStatsWidget* m_timeStatsWidget;
         ServeStatsWidget* m_serveStatsWidget;
         SeriesStatsWidget* m_seriesStatsWidget;
+
+        GamesWidget* m_gamesWidget;
 
         int m_widgetCounter;
 };

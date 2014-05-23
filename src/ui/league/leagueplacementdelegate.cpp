@@ -98,12 +98,13 @@ QSize LeagueDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelI
 {
     QSize size = QStyledItemDelegate::sizeHint(option,index);
     if(m_model == ClassementModel) {
-        if(index.column() < 4) {
-            size.setWidth(30);
+        if(index.column() < 3) {
+            size.setWidth(40);
         }
         else{
             size.setWidth(50);
         }
+        size.setHeight(30);
     }
     if(m_model == PlacementModel) {
     }

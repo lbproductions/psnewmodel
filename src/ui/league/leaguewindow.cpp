@@ -54,6 +54,7 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
 
     LeagueHorizontalHeaderView* horizontalHeader = new LeagueHorizontalHeaderView(Qt::Horizontal, this);
     horizontalHeader->setSectionResizeMode(QHeaderView::ResizeToContents);
+    //horizontalHeader->setFixedHeight(30);
     ui->tableViewPlayer->setHorizontalHeader(horizontalHeader);
 
     LeagueDelegate* placementDelegate = new LeagueDelegate(this);
@@ -98,7 +99,7 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
     ui->graphWidget->setLeague(league);
     ui->graphAxis->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
 
-    ui->gamesWidget->setGames(m_league->calculatedGames());
+    //ui->gamesWidget->setGames(m_league->calculatedGames());
 
     ui->gameStatsWidget->setLeague(m_league);
 }

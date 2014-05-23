@@ -5,15 +5,16 @@
 #include <data/game.h>
 #include <data/league.h>
 
-#include "recontrastatswidget.h"
-#include "pointsstatswidget.h"
-#include "drinkstatswidget.h"
-#include <ui/widgets/gamestogetherwidget.h>
-#include <ui/widgets/solooverviewwidget.h>
-#include "gamecomparestatswidget.h"
-#include "timestatswidget.h"
-#include "servestatswidget.h"
-#include "seriesstatswidget.h"
+#include <ui/stats/recontrastatswidget.h>
+#include <ui/stats/pointsstatswidget.h>
+#include <ui/stats/drinkstatswidget.h>
+#include <ui/stats/gamestogetherwidget.h>
+#include <ui/stats/solooverviewwidget.h>
+#include <ui/widgets/gameswidget.h>
+#include <ui/stats/gamecomparestatswidget.h>
+#include <ui/stats/timestatswidget.h>
+#include <ui/stats/servestatswidget.h>
+#include <ui/stats/seriesstatswidget.h>
 #include <QSettings>
 #include <misc/tools.h>
 
@@ -74,9 +75,9 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
 
     m_reContraWidget->setGames(games);
 
-    m_pointsStatsWidget->setGames(games);
+    m_pointsStatsWidget->StatsTreeWidget::setGames(games);
 
-    m_gamesTogetherWidget->setGames(games);
+    m_gamesTogetherWidget->StatsTreeWidget::setGames(games);
 
     m_soloWidget->setGames(games);
 
@@ -91,6 +92,9 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
 
 void GameStatsWidget::setLeague(QSharedPointer<League> league)
 {
+    if(!league)
+        return;
+
     m_games = league->calculatedGames();
 
     m_reContraWidget->setLeague(league);

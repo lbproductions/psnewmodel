@@ -537,8 +537,6 @@ QList<RoundSeries> PlayerStatistics::series()
 
 QList<RoundSeries> PlayerStatistics::winSeries()
 {
-    qDebug() << player()->name();
-
     QList<QSharedPointer<Round> > allRounds = rounds();
     qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
 

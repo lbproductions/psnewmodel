@@ -8,34 +8,14 @@
 #include  <QHeaderView>
 
 GamesTogetherWidget::GamesTogetherWidget(QWidget *parent) :
-    QTreeWidget(parent)
+    StatsTreeWidget(parent)
 {
-    this->header()->setStyleSheet(Tools::darkHeaderViewStyleSheet());
-
-    this->setPalette(Tools::darkPalette(this));
     this->setColumnCount(4);
     this->setHeaderLabels(QStringList() << tr("Players") << tr("Wins") << tr("Rounds") << tr("WinPercentage"));
-    this->setSortingEnabled(true);
-
-    setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
 GamesTogetherWidget::~GamesTogetherWidget()
 {
-}
-
-void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > games)
-{
-    QList<QSharedPointer<Player> > players;
-    foreach(QSharedPointer<Game> game, games) {
-        foreach(QSharedPointer<Player> player, game->players()) {
-            if(!players.contains(player)) {
-                players.append(player);
-            }
-        }
-    }
-
-    setGames(games, players);
 }
 
 void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSharedPointer<Player> > players)
@@ -65,13 +45,6 @@ void GamesTogetherWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     update();
 
     resizeColumnToContents(0);
-
-    setMaximumHeight(rowCount*this->visualItemRect(this->topLevelItem(0)).height()+1);
-}
-
-void GamesTogetherWidget::setLeague(QSharedPointer<League> league)
-{
-    setGames(league->calculatedGames(), league->players());
 }
 
 void GamesTogetherWidget::update()
@@ -96,8 +69,8 @@ void GamesTogetherWidget::update()
     }
 
 
-    resizeColumnToContents(1);
-    resizeColumnToContents(2);
-    resizeColumnToContents(3);
+    setColumnsWidthToContent();
+    highlightMax(Qt::DescendingOrder, QColor(0,123,0));
+
     sortByColumn(3);
 }
