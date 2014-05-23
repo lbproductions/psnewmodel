@@ -1,10 +1,13 @@
 #ifndef QPERSISTENCE_METAOBJECT_H
 #define QPERSISTENCE_METAOBJECT_H
 
+#include "defines.h"
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 #include <QtCore/QMetaObject>
 #include <QtCore/QObject>
 #include <QtCore/QSharedDataPointer>
 #include <QtCore/QVariant>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
 template<class K, class V>
 class QHash;
@@ -16,6 +19,8 @@ class QpMetaObjectPrivate;
 class QpMetaObject
 {
 public:
+    static QpMetaObject forObject(const QObject *object);
+    static QpMetaObject forObject(QSharedPointer<QObject> object);
     static QpMetaObject forClassName(const QString &className);
     static QList<QpMetaObject> registeredMetaObjects();
 
@@ -27,6 +32,7 @@ public:
     QMetaObject metaObject() const;
 
     QString className() const;
+    QString classNameWithoutNamespace() const;
 
     bool isValid() const;
 
@@ -43,10 +49,17 @@ public:
 
     QString sqlFilter() const;
 
+    QMetaMethod removeObjectMethod(const QpMetaProperty &property);
+    QMetaMethod addObjectMethod(const QpMetaProperty &property);
+
+    static QString removeNamespaces(const QString &classNameWithNamespaces);
+
 private:
     friend class QpDaoBase;
     static QpMetaObject registerMetaObject(const QMetaObject &metaObject);
     explicit QpMetaObject(const QMetaObject &metaObject);
+
+    QMetaMethod method(QString signature, const QpMetaProperty &property) const;
 
     void initProperties() const;
     QExplicitlySharedDataPointer<QpMetaObjectPrivate> data;

@@ -9,7 +9,7 @@ Drink::Drink(QObject *parent) :
     m_type(UnkownType),
     m_volume(0.0),
     m_alcoholByVolume(0.0),
-    m_liveDrinks("liveDrinks", this)
+    m_liveDrinks(QpRelation(&Drink::liveDrinks))
 {
     setPicture(QPixmap(iconPath()));
 }
@@ -30,23 +30,22 @@ void Drink::setAlcoholByVolume(double alcoholByVolume)
 
 QList<QSharedPointer<LiveDrink> > Drink::liveDrinks() const
 {
-    return m_liveDrinks.resolveList();
+    return m_liveDrinks;
 }
 
 void Drink::setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &drinks)
 {
-    m_liveDrinks.clear();
-    m_liveDrinks.relate(drinks);
+    m_liveDrinks = drinks;
 }
 
 void Drink::addLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_liveDrinks.relate(drink);
+    m_liveDrinks.add(drink);
 }
 
 void Drink::removeLiveDrink(QSharedPointer<LiveDrink> drink)
 {
-    m_liveDrinks.unrelate(drink);
+    m_liveDrinks.remove(drink);
 }
 
 void Drink::setIconPath(QString path)

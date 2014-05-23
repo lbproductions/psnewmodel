@@ -201,8 +201,8 @@ void Slot::addRound(QSharedPointer<Round> round)
     else {
         addValue(round, Schweinerei, 0);
     }
-    if(round->schmeissereien().size() > 0) {
-        addValue(round, Schmeisserei, round->schmeissereien().size());
+    if(round->schmeissereis().size() > 0) {
+        addValue(round, Schmeisserei, round->schmeissereis().size());
     }
     else {
         addValue(round, Schmeisserei, 0);

@@ -66,6 +66,8 @@ private:
 
     Round::HochzeitDecision hochzeitDecisionFromText(const QString &text);
     QString textFromHochzeitDecision(Round::HochzeitDecision d);
+
+    void resetRoundPlayers();
 };
 
 #endif // NEWROUNDDIALOG_H

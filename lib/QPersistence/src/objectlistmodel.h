@@ -1,7 +1,10 @@
 #ifndef QPERSISTENCE_OBJECTLISTMODEL_H
 #define QPERSISTENCE_OBJECTLISTMODEL_H
 
+#include "defines.h"
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 #include <QtCore/QAbstractListModel>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
 #include "dataaccessobject.h"
 #include "private.h"
@@ -25,8 +28,8 @@ protected slots:
     virtual void objectRemoved(QSharedPointer<QObject>) = 0;
 
 protected:
-    bool m_objectsFromDao;
     int m_fetchCount;
+    bool m_objectsFromDao;
 };
 
 template<class T>
@@ -122,10 +125,10 @@ QSharedPointer<QObject> QpObjectListModel<T>::objectByIndexBase(const QModelInde
 template<class T>
 QSharedPointer<T> QpObjectListModel<T>::objectByIndex(const QModelIndex &index) const
 {
-    if (index.row() >= objects().size())
+    if (index.row() >= m_objects.size())
         return QSharedPointer<T>();
 
-    return objects().at(index.row());
+    return m_objects.at(index.row());
 }
 
 template<class T>
@@ -150,14 +153,14 @@ int QpObjectListModel<T>::rowCount(const QModelIndex &parent) const
     if (parent.isValid())
         return 0;
 
-    return objects().size();
+    return m_objects.size();
 }
 
 template<class T>
 int QpObjectListModel<T>::rowOf(QSharedPointer<T> object) const
 {
     if (!m_rows.contains(object))
-        m_rows.insert(qSharedPointerCast<T>(object), objects().indexOf(object));
+        m_rows.insert(qSharedPointerCast<T>(object), m_objects.indexOf(object));
 
     return m_rows.value(qSharedPointerCast<T>(object));
 }
@@ -232,7 +235,7 @@ template<class T>
 void QpObjectListModel<T>::adjustExistingRows()
 {
     int i = 0;
-    foreach (QSharedPointer<T> object, objects()) {
+    foreach (QSharedPointer<T> object, m_objects) {
         if (m_rows.contains(object))
             m_rows.insert(object, i);
         ++i;

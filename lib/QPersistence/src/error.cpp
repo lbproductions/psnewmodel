@@ -1,32 +1,57 @@
 #include "error.h"
 
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 #include <QDebug>
+#include <QSqlError>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
-class QpErrorPrivate : public QSharedData
+class QpErrorData : public QSharedData
 {
     public:
-        QpErrorPrivate() :
+        QpErrorData() :
             QSharedData(),
             text(QString()),
-            isValid(false),
-            type(QpError::NoError)
+            type(QpError::NoError),
+            isValid(false)
         {}
 
+        static QpError *lastError;
+
+        QSqlError sqlError;
         QString text;
-        bool isValid;
         QVariantMap additionalInformation;
         QpError::ErrorType type;
+        bool isValid;
 };
+
+QpError *QpErrorData::lastError(nullptr);
+
+QpError QpError::lastError()
+{
+    if(!QpErrorData::lastError)
+        QpErrorData::lastError = new QpError;
+
+    return *QpErrorData::lastError;
+}
 
 QpError::QpError(const QString &text,
              ErrorType type,
              QVariantMap additionalInformation) :
-    data(new QpErrorPrivate)
+    data(new QpErrorData)
 {
     data->text = text;
     data->type = type;
     data->additionalInformation = additionalInformation;
     data->isValid = (type != NoError && ! text.isEmpty());
+}
+
+QpError::QpError(const QSqlError &error) :
+    data(new QpErrorData)
+{
+    data->sqlError = error;
+    data->text = error.text();
+    data->type = SqlError;
+    data->isValid = error.isValid();
 }
 
 QpError::~QpError()
@@ -71,7 +96,11 @@ void QpError::addAdditionalInformation(const QString &key, const QVariant &value
     data->additionalInformation.insert(key, value);
 }
 
-
+void QpError::setLastError(const QpError error)
+{
+    lastError();
+    (*QpErrorData::lastError) = error;
+}
 
 QDebug operator<<(QDebug dbg, const QpError &error)
 {

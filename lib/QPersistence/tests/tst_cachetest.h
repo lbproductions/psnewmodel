@@ -1,8 +1,7 @@
 #ifndef TST_CACHETEST_H
 #define TST_CACHETEST_H
 
-#include <QString>
-#include <QtTest>
+#include "tests_common.h"
 
 class CacheTest : public QObject
 {
@@ -11,15 +10,11 @@ class CacheTest : public QObject
 public:
     CacheTest();
 
-private Q_SLOTS:
-    void initTestCase();
-    void cleanupTestCase();
+private slots:
     void testBasics();
     void testRemove();
     void testMaximumCacheSize();
-    void setCacheOrder();
+    void testCacheReOrderingUponAccess();
 };
-
-
 
 #endif // TST_CACHETEST_H

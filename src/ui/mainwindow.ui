@@ -537,6 +537,7 @@ border-bottom: 1px solid rgb(77,77,77);
     <addaction name="actionInformation"/>
     <addaction name="separator"/>
     <addaction name="actionOpen_library"/>
+    <addaction name="actionCheck_for_updates"/>
     <addaction name="actionClose"/>
    </widget>
    <addaction name="menuFile"/>
@@ -687,6 +688,11 @@ border-bottom: 1px solid rgb(77,77,77);
    </property>
    <property name="toolTip">
     <string>Photos</string>
+   </property>
+  </action>
+  <action name="actionCheck_for_updates">
+   <property name="text">
+    <string>Check for updates...</string>
    </property>
   </action>
  </widget>

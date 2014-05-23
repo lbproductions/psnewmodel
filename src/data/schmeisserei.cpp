@@ -8,29 +8,29 @@
 Schmeisserei::Schmeisserei(QObject *parent) :
     QObject(parent),
     m_type(UnkownType),
-    m_round("round",this),
-    m_player("player",this)
+    m_round(QpRelation(&Schmeisserei::round)),
+    m_player(QpRelation(&Schmeisserei::player))
 {
 }
 
 QSharedPointer<Player> Schmeisserei::player() const
 {
-    return m_player.resolve();
+    return m_player;
 }
 
 void Schmeisserei::setPlayer(const QSharedPointer<Player> &player)
 {
-    m_player.relate(player);
+    m_player = player;
 }
 
 QSharedPointer<Round> Schmeisserei::round() const
 {
-    return m_round.resolve();
+    return m_round;
 }
 
 void Schmeisserei::setRound(const QSharedPointer<Round> &round)
 {
-    m_round.relate(round);
+    m_round = round;
 }
 
 Schmeisserei::Type Schmeisserei::type() const

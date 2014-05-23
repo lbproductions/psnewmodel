@@ -51,21 +51,20 @@ public:
     void setComment(const QString &comment);
 
     QList<QSharedPointer<Player> > players() const;
-
     QList<QSharedPointer<Game> > games() const;
 
     QString displayString() const;
 
-private:
-    friend class Player;
-    void addPlayer(QSharedPointer<Player> player);
-
-    friend class Game;
-    void addGame(QSharedPointer<Game> game);
-
+private slots:
     void setPlayers(const QList<QSharedPointer<Player> > &players);
-    void setGames(const QList<QSharedPointer<Game> > &games);
+    void addPlayer(QSharedPointer<Player> player);
+    void removePlayer(QSharedPointer<Player> player);
 
+    void setGames(const QList<QSharedPointer<Game> > &games);
+    void addGame(QSharedPointer<Game> game);
+    void removeGame(QSharedPointer<Game> game);
+
+private:
     int m_postalCode;
     QString m_city;
     QPixmap m_cityEmblem;
@@ -73,8 +72,8 @@ private:
     int m_houseNumber;
     QString m_comment;
 
-    QpWeakRelation<Player> m_players;
-    QpWeakRelation<Game> m_games;
+    QpBelongsToMany<Player> m_players;
+    QpBelongsToMany<Game> m_games;
 };
 
 

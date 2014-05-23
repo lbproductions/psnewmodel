@@ -43,7 +43,7 @@ class Round : public QObject
 
     Q_PROPERTY(QSharedPointer<Game> game READ game WRITE setGame)
     Q_PROPERTY(QList<QSharedPointer<LiveDrink> > liveDrinks READ liveDrinks WRITE setLiveDrinks)
-    Q_PROPERTY(QList<QSharedPointer<Schmeisserei> > schmeissereien READ schmeissereien WRITE setSchmeissereien)
+    Q_PROPERTY(QList<QSharedPointer<Schmeisserei> > schmeissereis READ schmeissereis WRITE setSchmeissereis)
 
     Q_PROPERTY(QSharedPointer<Player> hochzeitPlayer READ hochzeitPlayer WRITE setHochzeitPlayer)
     Q_PROPERTY(QSharedPointer<Player> trumpfabgabePlayer READ trumpfabgabePlayer WRITE setTrumpfabgabePlayer)
@@ -62,7 +62,7 @@ class Round : public QObject
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:liveDrinks",
                 "reverserelation=round")
 
-    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:schmeissereien",
+    Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:schmeissereis",
                 "reverserelation=round")
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:hochzeitPlayer",
@@ -158,78 +158,6 @@ public:
     Type type() const;
     QString typeString() const;
 
-    int points() const;
-    int points(QSharedPointer<Player> player) const;
-    void setPoints(QSharedPointer<Player> player, int points);
-    int totalPoints(QSharedPointer<Player> player) const;
-    QList<QSharedPointer<Player> > playersSortedByPlacement() const;
-    int placement(QSharedPointer<Player> player) const;
-    int pointsToLeader(QSharedPointer<Player> player);
-
-    QSharedPointer<Game> game() const;
-
-    QList<QSharedPointer<LiveDrink> > liveDrinks() const;
-
-    QSharedPointer<Player> cardMixer() const;
-    QList<QSharedPointer<Player> > playingPlayers() const;
-    QList<QSharedPointer<Player> > playersByPosition() const;
-
-    SoloType soloType() const;
-    void setSoloType(const SoloType &soloType);
-    QString soloTypeString() const;
-
-    bool isSolo() const;
-
-    bool isPflicht() const;
-    void setIsPflicht(bool isPflicht);
-
-    WinnerParty winnerParty() const;
-    void setWinnerParty(const WinnerParty &winnerParty);
-
-    TrumpfColor trumpfColor() const;
-    void setTrumpfColor(const TrumpfColor &trumpfColor);
-
-    QSharedPointer<Player> hochzeitPlayer() const;
-    void setHochzeitPlayer(const QSharedPointer<Player> &hochzeitPlayer);
-
-    QSharedPointer<Player> trumpfabgabePlayer() const;
-    void setTrumpfabgabePlayer(const QSharedPointer<Player> &trumpfabgabePlayer);
-
-    QSharedPointer<Player> soloPlayer() const;
-    void setSoloPlayer(const QSharedPointer<Player> &soloPlayer);
-
-    QSharedPointer<Player> schweinereiPlayer() const;
-    void setSchweinereiPlayer(const QSharedPointer<Player> &schweinereiPlayer);
-
-    QSharedPointer<Player> re1Player() const;
-    void setRe1Player(const QSharedPointer<Player> &re1Player);
-
-    QSharedPointer<Player> re2Player() const;
-    void setRe2Player(const QSharedPointer<Player> &re2Player);
-
-    bool isRe(QSharedPointer<Player> player) const;
-
-    QList<QSharedPointer<Player> > rePlayers() const;
-    QList<QSharedPointer<Player> > contraPlayers() const;
-    QList<QSharedPointer<Player> > winners() const;
-    QList<QSharedPointer<Player> > losers() const;
-
-    QList<QSharedPointer<Schmeisserei> > schmeissereien() const;
-    void addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei);
-
-    QSharedPointer<Player> contra1Player() const;
-    void setContra1Player(QSharedPointer<Player> arg);
-
-    QSharedPointer<Player> contra2Player() const;
-    void setContra2Player(QSharedPointer<Player> arg);
-
-    QSharedPointer<Player> contra3Player() const;
-    void setContra3Player(QSharedPointer<Player> arg);
-
-    static QStringList soloTypeStrings();
-    static QString soloTypeStringFromType(SoloType type);
-    static SoloType soloTypeFromString(const QString &typeString);
-
     Round::HochzeitDecision hochzeitDecision() const;
     void setHochzeitDecision(Round::HochzeitDecision arg);
 
@@ -239,11 +167,62 @@ public:
     int trumpfZurueck() const;
     void setTrumpfZurueck(int arg);
 
+    QList<QSharedPointer<Player> > playingPlayers() const;
+    QList<QSharedPointer<Player> > playersByPosition() const;
+
     int reGamePoints() const;
     void setReGamePoints(int arg);
 
     int contraGamePoints() const;
     void setContraGamePoints(int arg);
+
+    SoloType soloType() const;
+    void setSoloType(const SoloType &soloType);
+    QString soloTypeString() const;
+    bool isSolo() const;
+    bool isPflicht() const;
+    void setIsPflicht(bool isPflicht);
+
+    WinnerParty winnerParty() const;
+    void setWinnerParty(const WinnerParty &winnerParty);
+
+    TrumpfColor trumpfColor() const;
+    void setTrumpfColor(const TrumpfColor &trumpfColor);
+
+    int points() const;
+    int points(QSharedPointer<Player> player) const;
+    void setPoints(QSharedPointer<Player> player, int points);
+    int totalPoints(QSharedPointer<Player> player) const;
+    QList<QSharedPointer<Player> > playersSortedByPlacement() const;
+    int placement(QSharedPointer<Player> player) const;
+    int pointsToLeader(QSharedPointer<Player> player);
+
+    QSharedPointer<Game> game() const;
+    QList<QSharedPointer<LiveDrink> > liveDrinks() const;
+    QSharedPointer<Player> cardMixer() const;
+
+    bool isRe(QSharedPointer<Player> player) const;
+
+    QSharedPointer<Player> re1Player() const;
+    QSharedPointer<Player> re2Player() const;
+    QSharedPointer<Player> contra1Player() const;
+    QSharedPointer<Player> contra2Player() const;
+    QSharedPointer<Player> contra3Player() const;
+    QSharedPointer<Player> hochzeitPlayer() const;
+    QSharedPointer<Player> trumpfabgabePlayer() const;
+    QSharedPointer<Player> soloPlayer() const;
+    QSharedPointer<Player> schweinereiPlayer() const;
+
+    QList<QSharedPointer<Player> > rePlayers() const;
+    QList<QSharedPointer<Player> > contraPlayers() const;
+    QList<QSharedPointer<Player> > winners() const;
+    QList<QSharedPointer<Player> > losers() const;
+
+    QList<QSharedPointer<Schmeisserei> > schmeissereis() const;
+
+    static QStringList soloTypeStrings();
+    static QString soloTypeStringFromType(SoloType type);
+    static SoloType soloTypeFromString(const QString &typeString);
 
     QString name() const;
 
@@ -252,16 +231,30 @@ signals:
     void drinkAdded();
     void drinkRemoved();
 
-private:
-    friend class Game;
-    friend class LiveDrink;
+public slots:
+    void addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei);
 
+    void setRe1Player(const QSharedPointer<Player> &re1Player);
+    void setRe2Player(const QSharedPointer<Player> &re2Player);
+    void setContra1Player(QSharedPointer<Player> arg);
+    void setContra2Player(QSharedPointer<Player> arg);
+    void setContra3Player(QSharedPointer<Player> arg);
+    void setSoloPlayer(const QSharedPointer<Player> &soloPlayer);
+    void setTrumpfabgabePlayer(const QSharedPointer<Player> &trumpfabgabePlayer);
+    void setSchweinereiPlayer(const QSharedPointer<Player> &schweinereiPlayer);
+    void setHochzeitPlayer(const QSharedPointer<Player> &hochzeitPlayer);
+
+private slots:
+    void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &liveDrinks);
     void addLiveDrink(QSharedPointer<LiveDrink> drink);
     void removeLiveDrink(QSharedPointer<LiveDrink> drink);
-    void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &liveDrinks);
-    void setGame(const QSharedPointer<Game> &game);
-    void setSchmeissereien(const QList<QSharedPointer<Schmeisserei> > &schmeissereien);
 
+    void setSchmeissereis(const QList<QSharedPointer<Schmeisserei> > &schmeissereis);
+    void removeSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei);
+
+    void setGame(const QSharedPointer<Game> &game);
+
+private:
     QMap<int, int> _points() const;
     void _setPoints(const QMap<int, int> &_points);
 
@@ -275,28 +268,30 @@ private:
     SoloType m_soloType;
     bool m_soloIsPflicht;
     WinnerParty m_winnerParty;
-    QMap<int, int> m_points;
-    mutable QMap<QSharedPointer<Player>, int> m_pointsCached; // a cache, because Qp:primaryKey is slow
-    mutable QMap<QSharedPointer<Player>, int> m_totalPointsCached; // a cache, because Qp:primaryKey is slow
-
-    QpWeakRelation<Game> m_game;
-    QpStrongRelation<LiveDrink> m_liveDrinks;
-    QpStrongRelation<Schmeisserei> m_schmeissereien;
-    QpWeakRelation<Player> m_hochzeitPlayer;
-    QpWeakRelation<Player> m_trumpfabgabePlayer;
-    QpWeakRelation<Player> m_soloPlayer;
-    QpWeakRelation<Player> m_schweinereiPlayer;
-    QpWeakRelation<Player> m_re1Player;
-    QpWeakRelation<Player> m_re2Player;
-    QpWeakRelation<Player> m_contra1Player;
-    QpWeakRelation<Player> m_contra2Player;
-    QpWeakRelation<Player> m_contra3Player;
     TrumpfColor m_trumpfColor;
     HochzeitDecision m_hochzeitDecision;
     int m_trumpfCount;
     int m_trumpfZurueck;
     int m_reGamePoints;
     int m_contraGamePoints;
+
+    QMap<int, int> m_points;
+
+    mutable QMap<QSharedPointer<Player>, int> m_pointsCached; // a cache, because Qp:primaryKey is slow
+    mutable QMap<QSharedPointer<Player>, int> m_totalPointsCached; // a cache, because Qp:primaryKey is slow
+
+    QpBelongsToOne<Game> m_game;
+    QpHasMany<LiveDrink> m_liveDrinks;
+    QpHasMany<Schmeisserei> m_schmeissereis;
+    QpHasOne<Player> m_hochzeitPlayer;
+    QpHasOne<Player> m_trumpfabgabePlayer;
+    QpHasOne<Player> m_soloPlayer;
+    QpHasOne<Player> m_schweinereiPlayer;
+    QpHasOne<Player> m_re1Player;
+    QpHasOne<Player> m_re2Player;
+    QpHasOne<Player> m_contra1Player;
+    QpHasOne<Player> m_contra2Player;
+    QpHasOne<Player> m_contra3Player;
 };
 
 #undef COMMA

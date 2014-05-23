@@ -424,6 +424,8 @@ void NewRoundDialog::save()
 
 void NewRoundDialog::saveNormalRound()
 {
+    resetRoundPlayers();
+
     m_doppelkopfRound->setRe1Player(ui->comboBoxNormalRe1->currentPlayer());
     m_doppelkopfRound->setRe2Player(ui->comboBoxNormalRe2->currentPlayer());
     m_doppelkopfRound->setComment(ui->textEditNormalComment->toPlainText());
@@ -465,6 +467,8 @@ void NewRoundDialog::saveNormalRound()
 
 void NewRoundDialog::saveHochzeitRound()
 {
+    resetRoundPlayers();
+
     m_doppelkopfRound->setHochzeitPlayer(ui->comboBoxHochzeitHochzeit->currentPlayer());
     m_doppelkopfRound->setRe1Player(ui->comboBoxHochzeitHochzeit->currentPlayer());
     m_doppelkopfRound->setRe2Player(ui->comboBoxHochzeitFellow->currentPlayer());
@@ -509,6 +513,8 @@ void NewRoundDialog::saveHochzeitRound()
 
 void NewRoundDialog::saveSoloRound()
 {
+    resetRoundPlayers();
+
     m_doppelkopfRound->setSoloPlayer(ui->comboBoxSoloPlayer->currentPlayer());
     m_doppelkopfRound->setRe1Player(ui->comboBoxSoloPlayer->currentPlayer());
     m_doppelkopfRound->setComment(ui->textEditSoloComment->toPlainText());
@@ -561,6 +567,8 @@ void NewRoundDialog::saveTrumpfabgabeRound()
     Q_ASSERT_X(ui->spinBoxTrumpfCount->value() > 0,
                Q_FUNC_INFO,
                "Trumpfabgabecount may not be zero??");
+
+    resetRoundPlayers();
 
     m_doppelkopfRound->setTrumpfabgabePlayer(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
     m_doppelkopfRound->setRe1Player(ui->comboBoxTrumpfabgabePlayer->currentPlayer());
@@ -634,6 +642,19 @@ QString NewRoundDialog::textFromHochzeitDecision(Round::HochzeitDecision d)
     }
 
     return "---";
+}
+
+void NewRoundDialog::resetRoundPlayers()
+{
+    m_doppelkopfRound->setRe1Player(QSharedPointer<Player>());
+    m_doppelkopfRound->setRe2Player(QSharedPointer<Player>());
+    m_doppelkopfRound->setContra1Player(QSharedPointer<Player>());
+    m_doppelkopfRound->setContra2Player(QSharedPointer<Player>());
+    m_doppelkopfRound->setContra3Player(QSharedPointer<Player>());
+    m_doppelkopfRound->setSoloPlayer(QSharedPointer<Player>());
+    m_doppelkopfRound->setTrumpfabgabePlayer(QSharedPointer<Player>());
+    m_doppelkopfRound->setSchweinereiPlayer(QSharedPointer<Player>());
+    m_doppelkopfRound->setHochzeitPlayer(QSharedPointer<Player>());
 }
 
 QSharedPointer<Round> NewRoundDialog::doppelkopfRound() const

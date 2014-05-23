@@ -1,9 +1,12 @@
 #ifndef QPERSISTENCE_SQLQUERY_H
 #define QPERSISTENCE_SQLQUERY_H
 
+#include "defines.h"
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 #include <QtCore/QExplicitlySharedDataPointer>
 #include <QtCore/QVariant>
 #include <QtSql/QSqlQuery>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
 class QpSqlCondition;
 
@@ -29,12 +32,21 @@ public:
 
     void clear();
     void setTable(const QString &table);
+    void addPrimaryKey(const QString &name);
+    void addKey(const QString &keyType, const QStringList &fields);
+    void setOrIgnore(bool ignore);
+    void addRawField(const QString &name, const QString &value);
     void addField(const QString &name, const QVariant &value = QVariant());
-    void addForeignKey(const QString &columnName, const QString &keyName, const QString &foreignTableName);
+    void addForeignKey(const QString &columnName,
+                       const QString &keyName,
+                       const QString &foreignTableName,
+                       const QString &onDelete = QString(),
+                       const QString &onUpdate = QString());
     void setCount(int limit);
     void setSkip(int skip);
     void setWhereCondition(const QpSqlCondition &condition);
     void addOrder(const QString &field, Order order = Ascending);
+    void setForUpdate(bool forUpdate);
 
     void prepareCreateTable();
     void prepareDropTable();
@@ -44,6 +56,8 @@ public:
     bool prepareUpdate();
     void prepareInsert();
     void prepareDelete();
+
+    QMetaProperty propertyForIndex(const QSqlRecord &record, const QMetaObject *metaObject, int index) const;
 
     void addBindValue(const QVariant &val);
 

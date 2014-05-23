@@ -21,11 +21,10 @@ class Schmeisserei : public QObject
     Q_PROPERTY(int trumpfCount READ trumpfCount WRITE setTrumpfCount)
     Q_PROPERTY(int points READ points WRITE setPoints)
 
-
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:player",
-                "reverserelation=schmeissereien")
+                "reverserelation=schmeissereis")
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:round",
-                "reverserelation=schmeissereien")
+                "reverserelation=schmeissereis")
 
 public:
     enum Type {
@@ -64,11 +63,12 @@ public:
 
 private:
     Type m_type;
-    QpWeakRelation<Round> m_round;
-    QpWeakRelation<Player> m_player;
     int m_kingsCount;
     int m_trumpfabgabeCount;
     int m_points;
+
+    QpBelongsToOne<Round> m_round;
+    QpHasOne<Player> m_player;
 };
 
 

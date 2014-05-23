@@ -21,8 +21,12 @@
 #include <QProcess>
 #include <QPushButton>
 
+#include <QSqlRecord>
+#include <QSqlQuery>
+#include <QSqlError>
+
 namespace {
-static const QString DATABASE_CONNECTION_NAME("persistence");
+    static const QString DATABASE_CONNECTION_NAME("persistence");
 }
 
 Library::Library() :
@@ -109,6 +113,10 @@ bool Library::setupDatabase()
     if(!db.open()) {
         qDebug() << "Could not open database:";
         qDebug() << db.lastError();
+        return false;
+    }
+
+    if(!fixDatabase(db)) {
         return false;
     }
 
@@ -295,8 +303,10 @@ bool Library::setupPersistence()
     //    Qp::registerClass<OLD_DokoOfflineGameBuddys>();
     Qp::adjustDatabaseSchema();
 
-    // TODO: React to Qp::lastError, once it has been merged from geenen's branch
-    // close the db if an error has occured!
+    if(Qp::lastError().isValid()) {
+        qDebug() << Qp::lastError();
+        return false;
+    }
 
     return true;
 }
@@ -307,5 +317,383 @@ bool Library::fillCaches()
     m_games = Qp::readAll<Game>();
     m_rounds = Qp::readAll<Round>();
     m_liveDrinks = Qp::readAll<LiveDrink>();
+    return true;
+}
+
+bool Library::fixDatabase(QSqlDatabase db)
+{
+    QSqlQuery query(db);
+    query.exec(QString("SELECT sql FROM sqlite_master WHERE name = '_Qp_REL_game_players__player_games'"));
+    query.first();
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    if(query.value(0).toString().contains("UNIQUE")) {
+        qDebug() << "Database already fixed.";
+        return true;
+    }
+    query.finish();
+
+    if(!fixGamePositions(db))
+        return false;
+
+    if(!fixUniqueKeys(db, "game", "league"))
+        return false;
+
+    if(!fixUniqueKeys(db, "game", "player"))
+        return false;
+
+    if(!fixUniqueKeys(db, "league", "player"))
+        return false;
+
+    if(!fixUniqueKeys(db, "place", "player"))
+        return false;
+
+    return true;
+}
+
+bool Library::fixGamePositions(QSqlDatabase db)
+{
+    fixGamePositionsFromOldDb(db);
+    fixGamePositionsFromOldDb(db, "projectstatsNewDB.db", 358, 381);
+
+    QSqlQuery query(db);
+    query.exec("DELETE FROM _qp_rel_game_players__player_games WHERE NOT EXISTS "
+               "(SELECT 1 FROM game WHERE game._qp_id = _qp_rel_game_players__player_games._qp_fk_game)");
+    qDebug() << query.executedQuery();
+
+    query.clear();
+    query.exec("SELECT * FROM _Qp_REL_game_players__player_games ORDER BY _Qp_ID ASC");
+
+
+    QSqlQuery querySelectPlayerCount(db);
+    querySelectPlayerCount.prepare("SELECT COUNT(*) FROM _Qp_REL_game_players__player_games WHERE _qp_fk_game = ?");
+
+    int playerCount = 0;
+    int expectedPlayerCount = -1;
+    int currentGame = -1;
+    QVariant position;
+    while(query.next()) {
+        int game = query.value("_qp_fk_game").toInt();
+
+        if(game != currentGame && currentGame > 0) {
+            if(game < currentGame) {
+                continue;
+            }
+
+            if(expectedPlayerCount != playerCount) {
+                if(position.isNull())
+                    fixGamePositionsById(currentGame, expectedPlayerCount, db);
+                else
+                    fixGamePositionsByPosition(currentGame, expectedPlayerCount, db);
+            }
+
+            playerCount = 0;
+            expectedPlayerCount = -1;
+        }
+
+        currentGame = game;
+
+        if(expectedPlayerCount < 0) {
+            querySelectPlayerCount.addBindValue(game);
+            querySelectPlayerCount.exec();
+            querySelectPlayerCount.first();
+            expectedPlayerCount = querySelectPlayerCount.value(0).toInt();
+        }
+
+        position = query.value("position");
+
+        ++playerCount;
+    }
+
+    return true;
+}
+
+bool Library::fixGamePositionsFromOldDb(QSqlDatabase db)
+{
+    QSqlDatabase olddb = QSqlDatabase::addDatabase("QSQLITE", "olddbconnection");
+    olddb.setDatabaseName("/Users/niklaswulf/Downloads/projectstats.db");
+
+    if(!olddb.open()) {
+        qDebug() << "Could not open database:";
+        qDebug() << olddb.lastError();
+        return false;
+    }
+
+    QSqlQuery query(olddb);
+    query.exec(QString("SELECT * FROM positions ORDER BY gameId ASC, position ASC"));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    QSqlQuery deleteQuery(db);
+    deleteQuery.exec(QString("DELETE FROM _Qp_REL_game_players__player_games WHERE _qp_fk_game <= 357"));
+    qDebug() << deleteQuery.executedQuery();
+
+    if(deleteQuery.lastError().isValid()) {
+        qDebug() << deleteQuery.lastError();
+        return false;
+    }
+
+    QSqlQuery insert(db);
+    insert.prepare("INSERT INTO _Qp_REL_game_players__player_games (_qp_id, _qp_fk_game, _qp_fk_player) VALUES (?,?,?)");
+
+
+    int id = 0;
+    while(query.next()) {
+        insert.addBindValue(++id);
+        insert.addBindValue(query.value("gameId").toInt());
+        insert.addBindValue(query.value("playerId").toInt());
+        insert.exec();
+
+        if(insert.lastError().isValid()) {
+            qDebug() << insert.lastError();
+            return false;
+        }
+
+        qDebug() << insert.executedQuery();
+        qDebug() << insert.boundValues();
+    }
+
+    olddb.close();
+
+    return true;
+}
+
+bool Library::fixGamePositionsFromOldDb(QSqlDatabase db, const QString &oldDb, int begin, int end)
+{
+    QSqlDatabase::removeDatabase("olddbconnection");
+    QSqlDatabase olddb = QSqlDatabase::addDatabase("QSQLITE", "asd");
+    olddb.setDatabaseName("/Users/niklaswulf/Dropbox/psnewmodel/Shared/Dortmund/Backups/"+oldDb);
+
+    if(!olddb.open()) {
+        qDebug() << "Could not open database:";
+        qDebug() << olddb.lastError();
+        return false;
+    }
+
+    QSqlQuery deleteQuery(db);
+    deleteQuery.exec(QString("DELETE FROM _Qp_REL_game_players__player_games WHERE _qp_fk_game <= %1 AND _qp_fk_game >= %2")
+                     .arg(end)
+                     .arg(begin));
+    qDebug() << deleteQuery.executedQuery();
+    if(deleteQuery.lastError().isValid()) {
+        qDebug() << deleteQuery.lastError();
+        return false;
+    }
+
+    qDebug() << olddb.tables();
+
+    QSqlQuery query(olddb);
+    query.exec(QString("SELECT * FROM _Qp_REL_game_players__player_games WHERE _qp_fk_game <= %1 AND _qp_fk_game >= %2 ORDER BY _qp_id ASC")
+               .arg(end)
+               .arg(begin));
+    qDebug() << query.executedQuery();
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        return false;
+    }
+
+    QSqlQuery insert(db);
+    insert.prepare("INSERT INTO _Qp_REL_game_players__player_games (_qp_fk_game, _qp_fk_player) VALUES (?,?)");
+
+    while(query.next()) {
+        insert.addBindValue(query.value("_qp_fk_game").toInt());
+        insert.addBindValue(query.value("_qp_fk_player").toInt());
+        insert.exec();
+        if(insert.lastError().isValid()) {
+            qDebug() << insert.lastError();
+            return false;
+        }
+        qDebug() << insert.executedQuery();
+        qDebug() << insert.boundValues();
+    }
+
+    return true;
+}
+
+bool Library::fixGamePositionsByPosition(int game, int expectedPlayerCount, QSqlDatabase db)
+{
+    qDebug() << "FIXING" << game << "by position";
+
+    QSqlQuery query(db);
+    query.prepare("SELECT * FROM _Qp_REL_game_players__player_games WHERE _qp_fk_game = ? ORDER BY position ASC");
+    query.addBindValue(game);
+    query.exec();
+
+    int previousPosition = -1;
+
+    QList<int> missingPlayers;
+    QList<int> missingPositions;
+
+    while(query.next()) {
+        QVariant position = query.value("position");
+        if(position.toString() == "")
+            continue;
+
+        int pos = position.toInt();
+
+        while(previousPosition + 1 < pos) {
+            missingPositions << previousPosition + 1;
+            ++previousPosition;
+        }
+
+        previousPosition = pos;
+    }
+
+    qDebug() << "Expecting " << expectedPlayerCount << "players";
+
+    while(previousPosition + 1 < expectedPlayerCount) {
+        missingPositions << previousPosition + 1;
+        ++previousPosition;
+    }
+
+    qDebug() << "missing players" << missingPlayers;
+    qDebug() << "missing positions" << missingPositions;
+
+    return true;
+}
+
+bool Library::fixGamePositionsById(int game, int expectedPlayerCount, QSqlDatabase newDb)
+{
+    qDebug() << "FIX " << game;
+
+    QSqlQuery query(newDb);
+    query.prepare("SELECT * FROM _Qp_REL_game_players__player_games WHERE _qp_fk_game = ? ORDER BY _qp_id ASC");
+    query.addBindValue(game);
+    query.exec();
+
+    int previousPosition = -1;
+    int okayCount = 0;
+
+    while(query.next()) {
+        QVariant position = query.value("_qp_id");
+        int pos = position.toInt();
+
+        if(previousPosition < 0) {
+            previousPosition = pos;
+            ++okayCount;
+            continue;
+        }
+
+        if(previousPosition + 8 < pos)
+            break;
+
+        ++okayCount;
+        while(previousPosition + 1 < pos && previousPosition + 10 > pos) {
+            ++previousPosition;
+        }
+
+        previousPosition = pos;
+    }
+
+    qDebug() << "Expecting " << expectedPlayerCount << "players, found " << okayCount;
+
+    return true;
+}
+
+bool Library::fixUniqueKeys(QSqlDatabase db, const QString &fk1, const QString &fk2)
+{
+    db.transaction();
+    QSqlQuery query(db);
+    QString table = QString("_Qp_REL_%1_%2s__%2_%1s")
+                    .arg(fk1)
+                    .arg(fk2);
+
+    qDebug() << QString("Fixing unique key in table '%1'").arg(table);
+
+    query.exec(QString("SELECT sql FROM sqlite_master WHERE name = '%1'")
+               .arg(table));
+
+    qDebug() << query.executedQuery();
+
+    query.first();
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    if(query.value(0).toString().contains("UNIQUE")) {
+        qDebug() << "Table already fixed. Doing nothing.";
+        return true;
+    }
+
+    query.clear();
+    query.exec(QString("CREATE TEMP TABLE BACKUP_%1 "
+                       "AS SELECT * FROM %1")
+               .arg(table));
+    query.finish();
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+
+    query.clear();
+    query.exec(QString("DROP TABLE %1")
+               .arg(table));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    query.clear();
+    query.exec(QString("CREATE TABLE %1 ("
+                       "_Qp_ID INTEGER PRIMARY KEY AUTOINCREMENT,"
+                       "_Qp_FK_%2 INTEGER,"
+                       "_Qp_FK_%3 INTEGER,"
+                       "FOREIGN KEY (_Qp_FK_%2) REFERENCES %2(_Qp_ID),"
+                       "FOREIGN KEY (_Qp_FK_%3) REFERENCES %3(_Qp_ID),"
+                       "UNIQUE (_Qp_FK_%2, _Qp_FK_%3)"
+                       ")")
+               .arg(table)
+               .arg(fk1)
+               .arg(fk2));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    query.clear();
+    query.exec(QString("INSERT INTO %1 (_Qp_ID, _Qp_FK_%2, _Qp_FK_%3) "
+                       "SELECT _Qp_ID, _Qp_FK_%2, _Qp_FK_%3 FROM BACKUP_%1")
+               .arg(table)
+               .arg(fk1)
+               .arg(fk2));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    query.clear();
+    query.exec(QString("DROP TABLE BACKUP_%1")
+               .arg(table));
+    qDebug() << query.executedQuery();
+
+    if(query.lastError().isValid()) {
+        qDebug() << query.lastError();
+        db.rollback();
+        return false;
+    }
+
+    db.commit();
     return true;
 }

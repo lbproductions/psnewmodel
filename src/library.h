@@ -37,6 +37,14 @@ private:
     bool setupPersistence();
     bool fillCaches();
 
+    bool fixDatabase(QSqlDatabase db);
+    bool fixGamePositions(QSqlDatabase db);
+    bool fixGamePositionsFromOldDb(QSqlDatabase db, const QString &oldDb, int begin, int end);
+    bool fixGamePositionsFromOldDb(QSqlDatabase db);
+    bool fixGamePositionsByPosition(int game, int expectedPlayerCount, QSqlDatabase db);
+    bool fixGamePositionsById(int game, int expectedPlayerCount, QSqlDatabase db);
+    bool fixUniqueKeys(QSqlDatabase db, const QString &fk1, const QString &fk2);
+
     static bool lockDatabase(const QString &databaseFilePath);
 
     // Caches

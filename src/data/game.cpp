@@ -18,11 +18,10 @@ Game::Game(QObject *parent) :
     m_creationTime(QDateTime::currentDateTime()),
     m_mitPflichtSolo(false),
     m_additionalMissingPlayer(MissingOppositeOfCardMixer),
-    m_site("site", this),
-    m_players("players", this),
-    m_rounds("rounds", this),
-    m_offlineGameInformation("offlineGameInformation", this),
-    m_dokoOfflineGameBuddys("dokoOfflineGameBuddys",this)
+    m_site(QpRelation(&Game::site)),
+    m_players(QpRelation(&Game::players)),
+    m_rounds(QpRelation(&Game::rounds)),
+    m_offlineGameInformation(QpRelation(&Game::offlineGameInformation))
 {
     m_lengthTimer.setInterval(1000);
     m_lengthTimer.setSingleShot(false);
@@ -275,23 +274,27 @@ void Game::setName(const QString &name)
 
 QSharedPointer<Place> Game::site() const
 {
-    return m_site.resolve();
+    return m_site;
 }
 
 void Game::setSite(QSharedPointer<Place> site)
 {
-    site->addGame(Qp::sharedFrom(this));
-    m_site.relate(site);
+    m_site = site;
 }
 
 QList<QSharedPointer<Player> > Game::players() const
 {
-    return m_players.resolveList();
+    return m_players;
 }
 
 void Game::addPlayer(QSharedPointer<Player> player)
 {
-    m_players.relate(player);
+    m_players.add(player);
+}
+
+void Game::removePlayer(QSharedPointer<Player> player)
+{
+    m_players.remove(player);
 }
 
 QSharedPointer<Player> Game::currentCardMixer() const
@@ -320,13 +323,12 @@ QList<QSharedPointer<Player> > Game::currentPlayingPlayers() const
 
 void Game::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
-    m_players.clear();
-    m_players.relate(players);
+    m_players = players;
 }
 
 QList<QSharedPointer<Round> > Game::rounds() const
 {
-    return m_rounds.resolveList();
+    return m_rounds;
 }
 
 QSharedPointer<Round> Game::currentRound() const
@@ -440,7 +442,7 @@ QMap<QSharedPointer<Drink>, int> Game::drinkCounts(QSharedPointer<Player> player
     return result;
 }
 
-int Game::totalDrinkCount(QSharedPointer<Player> player) const
+int Game::drinkCount(QSharedPointer<Player> player) const
 {
     int count = 0;
 
@@ -485,7 +487,6 @@ void Game::startNextRound()
     }
 
     round = Qp::create<Round>();
-    round->setGame(Qp::sharedFrom(this));
     round->setStartTime(QDateTime::currentDateTime());
     round->setNumber(nextNumber);
     round->setState(Round::Running);
@@ -645,7 +646,7 @@ int Game::schmeissereiCount(int roundCount)
             break;
 
         --roundCount;
-        result += round->schmeissereien().size();
+        result += round->schmeissereis().size();
     }
     return result;
 }
@@ -676,12 +677,7 @@ int Game::contraWinCount()
 
 QList<QSharedPointer<OLD_OfflineGameInformation> > Game::offlineGameInformation() const
 {
-    return m_offlineGameInformation.resolveList();
-}
-
-QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > Game::dokoOfflineGameBuddys() const
-{
-    return m_dokoOfflineGameBuddys.resolveList();
+    return m_offlineGameInformation;
 }
 
 int Game::placement(QSharedPointer<Player> player, int roundNumber) const
@@ -727,20 +723,19 @@ int Game::leadingRoundCount(QSharedPointer<Player> player) const
 
 void Game::setRounds(const QList<QSharedPointer<Round> > &rounds)
 {
-    m_rounds.clear();
-    m_rounds.relate(rounds);
+    m_rounds = rounds;
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
 void Game::addRound(QSharedPointer<Round> round)
 {
-    m_rounds.relate(round);
+    m_rounds.add(round);
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
 void Game::removeRound(QSharedPointer<Round> round)
 {
-    m_rounds.unrelate(round);
+    m_rounds.remove(round);
     m_currentRoundCached = QSharedPointer<Round>();
 }
 
@@ -776,12 +771,7 @@ bool sortGamesByDateLastFirst(const QSharedPointer<Game> &g1, const QSharedPoint
 
 void Game::setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games)
 {
-    m_offlineGameInformation.relate(games);
-}
-
-void Game::setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games)
-{
-    m_dokoOfflineGameBuddys.relate(games);
+    m_offlineGameInformation = games;
 }
 
 void Game::connectRoundSignals(QSharedPointer<Round> round)

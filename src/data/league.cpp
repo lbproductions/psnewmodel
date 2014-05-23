@@ -7,9 +7,9 @@
 
 League::League(QObject *parent) :
     QObject(parent),
+    m_players(QpRelation(&League::players)),
     m_playerRatio(0.75),
-    m_finishedGamesPercentage(80),
-    m_players("players", this)
+    m_finishedGamesPercentage(80)
 {   
 }
 
@@ -35,10 +35,10 @@ void League::setEndDate(const QDate &endDate)
 
 QList<QSharedPointer<Player> > League::players() const
 {
-    return m_players.resolveList();
+    return m_players;
 }
 
-QList<QPair<QSharedPointer<Player>, double> > League::sortPlayersAfterAverage()
+QList<QPair<QSharedPointer<Player>, double> > League::sortPlayersByAverage()
 {
     // too lazy to implement access of league-stats in sort-funtion out of this class
     QList<QPair<QSharedPointer<Player>,double> > result;
@@ -77,7 +77,7 @@ void League::calculateMatchdays()
 
     for(int i = 0; i<source.size(); i++) {
         m_filterGames.append(source.at(i));
-        QList<QPair<QSharedPointer<Player>,double> > players = sortPlayersAfterAverage();
+        QList<QPair<QSharedPointer<Player>,double> > players = sortPlayersByAverage();
 
         QSharedPointer<Matchday> matchday = QSharedPointer<Matchday>(new Matchday(this));
         matchday->setGame(m_filterGames.last());
@@ -93,6 +93,8 @@ void League::calculateMatchdays()
         if(i<source.size()-1)
             m_playerStatistics.clear();
     }
+
+    //League::currentMatchDayNumber = m_matchdays.size();
 }
 
 QList<QSharedPointer<Game> > League::calculatedGames()
@@ -106,7 +108,17 @@ QList<QSharedPointer<Game> > League::calculatedGames()
 
 void League::setPlayers(const QList<QSharedPointer<Player> > &players)
 {
-    m_players.relate(players);
+    m_players = players;
+}
+
+void League::addPlayer(QSharedPointer<Player> player)
+{
+    m_players.add(player);
+}
+
+void League::removePlayer(QSharedPointer<Player> player)
+{
+    m_players.remove(player);
 }
 
 bool League::hasEnoughPlayers(QSharedPointer<Game> game) const

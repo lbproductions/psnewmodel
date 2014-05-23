@@ -44,7 +44,9 @@ private slots:
 
     void on_actionPhotos_triggered();
 
-signals:
+    void on_actionCheck_for_updates_triggered();
+
+    signals:
     void photosAdded();
 
 private:

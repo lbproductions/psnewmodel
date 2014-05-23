@@ -1,8 +1,11 @@
 #ifndef QPERSISTENCE_METAPROPERTY_H
 #define QPERSISTENCE_METAPROPERTY_H
 
+#include "defines.h"
+BEGIN_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 #include <QtCore/QMetaProperty>
 #include <QtCore/QSharedDataPointer>
+END_CLANG_DIAGNOSTIC_IGNORE_WARNINGS
 
 struct QMetaObject;
 class QpMetaObject;
@@ -13,9 +16,6 @@ class QpMetaProperty
 public:
     enum Cardinality {
         UnknownCardinality,
-        NoCardinality,
-        ToOneCardinality,
-        ToManyCardinality,
         OneToOneCardinality,
         OneToManyCardinality,
         ManyToOneCardinality,
@@ -39,6 +39,8 @@ public:
     bool isStored() const;
     bool isValid() const;
     QVariant::Type type() const;
+
+    QHash<QString, QString> attributes() const;
 
     // Relations
     bool isRelationProperty() const;
@@ -68,6 +70,9 @@ private:
     explicit QpMetaProperty(const QMetaProperty &property, const QpMetaObject &metaObject);
 
     QString generateColumnName() const;
+
+    QString shortName(const QString &name) const;
+    void parseAttributes() const;
 
     QExplicitlySharedDataPointer<QpMetaPropertyPrivate> data;
 };
