@@ -219,6 +219,8 @@ void GameInformationModel::setHeaderAction(int section, QAction *action)
 
 void GameInformationModel::removeHeaderAction(int section, QAction *action)
 {
+    Q_UNUSED(action)
+
     m_actions.remove(section);
 }
 

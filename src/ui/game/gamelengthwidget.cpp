@@ -28,6 +28,8 @@ void GameLengthWidget::update()
 
 void GameLengthWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+    Q_UNUSED(event)
+
     if(m_context == Duration) {
         m_context = TotalTime;
     }
