@@ -446,28 +446,61 @@ void GameWindow::on_actionSettings_triggered()
 void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
 {
     int roundIndex = index.column();
+    int rowIndex = index.row();
 
     if(roundIndex < 0 || roundIndex >= m_game->rounds().size())
         return;
 
     QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
     NewRoundDialog* dlg = new NewRoundDialog(this);
-    dlg->setRound(round, NewRoundDialog::EditRound);
-    m_dialogController->showDialog(dlg);
+    if(roundIndex == m_game->rounds().size()-1) {
+         dlg->setRound(round, NewRoundDialog::NewRound);
 
-    switch(round->type()) {
-    case Round::NormalRound:
-        ui->actionAdd_round->setChecked(true);
-        break;
-    case Round::Hochzeit:
-        ui->actionAdd_Hochzeit->setChecked(true);
-        break;
-    case Round::Solo:
-        ui->actionAdd_Solo->setChecked(true);
-        break;
-    case Round::Trumpfabgabe:
-        ui->actionAdd_Trumpfabgabe->setChecked(true);
-        break;
+         if(rowIndex == m_game->players().size()) {
+             dlg->setCurrentPage(Round::NormalRound);
+             ui->actionAdd_round->setChecked(true);
+         }
+         else if(rowIndex == m_game->players().size() + 1) {
+             dlg->setCurrentPage(Round::Hochzeit);
+             ui->actionAdd_Hochzeit->setChecked(true);
+         }
+         else if(rowIndex == m_game->players().size() + 2) {
+             dlg->setCurrentPage(Round::Solo);
+             ui->actionAdd_Solo->setChecked(true);
+         }
+         else if(rowIndex == m_game->players().size() + 3) {
+             dlg->setCurrentPage(Round::Trumpfabgabe);
+             ui->actionAdd_Trumpfabgabe->setChecked(true);
+         }
+         else if(rowIndex == m_game->players().size() + 6) {
+             on_actionAdd_drinks_triggered();
+             return;
+         }
+         else if(rowIndex == m_game->players().size() + 5) {
+             on_actionAdd_schmeisserei_triggered();
+             return;
+         }
+
+         m_dialogController->showDialog(dlg);
+    }
+    else {
+        dlg->setRound(round, NewRoundDialog::EditRound);
+        m_dialogController->showDialog(dlg);
+
+        switch(round->type()) {
+        case Round::NormalRound:
+            ui->actionAdd_round->setChecked(true);
+            break;
+        case Round::Hochzeit:
+            ui->actionAdd_Hochzeit->setChecked(true);
+            break;
+        case Round::Solo:
+            ui->actionAdd_Solo->setChecked(true);
+            break;
+        case Round::Trumpfabgabe:
+            ui->actionAdd_Trumpfabgabe->setChecked(true);
+            break;
+        }
     }
 }
 
