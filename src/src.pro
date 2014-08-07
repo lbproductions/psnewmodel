@@ -10,7 +10,7 @@ include($$BREAKPAD_PATH/Breakpad.pri)
 ### General config ###
 
 TARGET          = psnewmodel
-VERSION         = 0.0.7
+VERSION         = 0.0.8
 TEMPLATE        = app
 ICON            = resource/general/icon2.icns
 QT              += sql widgets
@@ -206,7 +206,8 @@ SOURCES += main.cpp \
     ui/widgets/photoplayercardswidget.cpp \
     ui/stats/servestatswidget.cpp \
     ui/stats/seriesstatswidget.cpp \
-    ui/stats/statstreewidget.cpp
+    ui/stats/statstreewidget.cpp \
+    ui/dialogs/placeinformationdialog.cpp
 
 
 HEADERS  += \
@@ -306,7 +307,8 @@ HEADERS  += \
     ui/widgets/photoplayercardswidget.h \
     ui/stats/servestatswidget.h \
     ui/stats/seriesstatswidget.h \
-    ui/stats/statstreewidget.h
+    ui/stats/statstreewidget.h \
+    ui/dialogs/placeinformationdialog.h
 
 
 FORMS += \
@@ -338,7 +340,8 @@ FORMS += \
     ui/widgets/photogamewidget.ui \
     ui/widgets/photopreviewwidget.ui \
     ui/widgets/photoroundwidget.ui \
-    ui/widgets/photoplayercardswidget.ui
+    ui/widgets/photoplayercardswidget.ui \
+    ui/dialogs/placeinformationdialog.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
