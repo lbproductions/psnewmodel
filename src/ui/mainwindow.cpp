@@ -3,6 +3,7 @@
 
 #include "dialogs/playerinformationdialog.h"
 #include "dialogs/drinkinformationdialog.h"
+#include "dialogs/placeinformationdialog.h"
 #include "game/gamewindow.h"
 #include "chooselibrarywidget.h"
 #include "ui/league/addleaguedialog.h"
@@ -334,4 +335,26 @@ void MainWindow::on_actionPhotos_triggered()
 void MainWindow::on_actionCheck_for_updates_triggered()
 {
     Updater::instanceForPlatform()->checkForUpdatesInBackground();
+}
+
+void MainWindow::on_actionNew_Player_triggered()
+{
+    QSharedPointer<Player> newPlayer = Qp::create<Player>();
+    newPlayer->setName("NewPlayer");
+
+    PlayerInformationDialog dialog;
+    dialog.setPlayer(newPlayer);
+    dialog.exec();
+}
+
+void MainWindow::on_actionNew_Place_triggered()
+{
+    PlaceInformationDialog dialog;
+    dialog.exec();
+}
+
+void MainWindow::on_actionNew_Drink_triggered()
+{
+    DrinkInformationDialog dialog;
+    dialog.exec();
 }

@@ -46,7 +46,13 @@ private slots:
 
     void on_actionCheck_for_updates_triggered();
 
-    signals:
+    void on_actionNew_Player_triggered();
+
+    void on_actionNew_Place_triggered();
+
+    void on_actionNew_Drink_triggered();
+
+signals:
     void photosAdded();
 
 private:

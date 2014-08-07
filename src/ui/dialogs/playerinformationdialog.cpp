@@ -122,5 +122,13 @@ void PlayerInformationDialog::saveCurrentPlayer()
 
 void PlayerInformationDialog::on_actionClose_triggered()
 {
+    if(!m_model) { // new player was created
+        Qp::remove(m_player);
+    }
     close();
+}
+
+void PlayerInformationDialog::on_buttonBox_rejected()
+{
+    on_actionClose_triggered();
 }

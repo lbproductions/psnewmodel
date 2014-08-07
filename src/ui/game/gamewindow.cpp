@@ -18,6 +18,7 @@
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
 #include <ui/widgets/popupwidget.h>
+#include <ui/dialogs/drinkinformationdialog.h>
 #include <data/game.h>
 #include <data/place.h>
 #include <ui/model/gameoverviewmodel.h>
@@ -588,4 +589,10 @@ void GameWindow::on_actionZoom_out_triggered()
     m_gameOverViewModel->setFontSize(m_gameOverViewModel->fontSize() - 1);
     m_informationModel->setFontSize(m_informationModel->fontSize() - 1);
     updateSizes();
+}
+
+void GameWindow::on_actionNew_Drink_triggered()
+{
+    DrinkInformationDialog dlg;
+    dlg.exec();
 }

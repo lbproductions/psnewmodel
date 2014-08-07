@@ -454,6 +454,7 @@ QWidget#widgetCreateGame {
     <property name="title">
      <string>File</string>
     </property>
+    <addaction name="actionNew_Drink"/>
     <addaction name="actionStats"/>
     <addaction name="actionSettings"/>
     <addaction name="actionCheck_for_updates"/>
@@ -633,6 +634,11 @@ QWidget#widgetCreateGame {
    </property>
    <property name="shortcut">
     <string>Ctrl+-</string>
+   </property>
+  </action>
+  <action name="actionNew_Drink">
+   <property name="text">
+    <string>New Drink</string>
    </property>
   </action>
  </widget>

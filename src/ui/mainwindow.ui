@@ -533,6 +533,9 @@ border-bottom: 1px solid rgb(77,77,77);
     </property>
     <addaction name="actionNew_Game"/>
     <addaction name="actionNew_League"/>
+    <addaction name="actionNew_Player"/>
+    <addaction name="actionNew_Place"/>
+    <addaction name="actionNew_Drink"/>
     <addaction name="actionAdd_Photos"/>
     <addaction name="actionInformation"/>
     <addaction name="separator"/>
@@ -693,6 +696,21 @@ border-bottom: 1px solid rgb(77,77,77);
   <action name="actionCheck_for_updates">
    <property name="text">
     <string>Check for updates...</string>
+   </property>
+  </action>
+  <action name="actionNew_Player">
+   <property name="text">
+    <string>New Player</string>
+   </property>
+  </action>
+  <action name="actionNew_Place">
+   <property name="text">
+    <string>New Place</string>
+   </property>
+  </action>
+  <action name="actionNew_Drink">
+   <property name="text">
+    <string>New Drink</string>
    </property>
   </action>
  </widget>

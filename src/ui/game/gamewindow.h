@@ -69,6 +69,8 @@ private slots:
 
     void on_actionZoom_out_triggered();
 
+    void on_actionNew_Drink_triggered();
+
 private:
     Ui::GameWindow *ui;
 

@@ -21,6 +21,7 @@ public:
     
     QSharedPointer<Player> player() const;
     void setPlayerFromModel(QpSortFilterProxyObjectModel<Player> *model, int index);
+    void setPlayer(const QSharedPointer<Player> &player);
 
 public slots:
     void accept();
@@ -33,9 +34,9 @@ public slots:
 private slots:
     void on_actionClose_triggered();
 
-private:
-    void setPlayer(const QSharedPointer<Player> &player);
+    void on_buttonBox_rejected();
 
+private:
     Ui::PlayerInformationDialog *ui;
 
     int m_currentIndex;
