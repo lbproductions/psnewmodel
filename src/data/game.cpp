@@ -118,6 +118,12 @@ QTime Game::predictedGameLength(double weight) const
     return finishedRoundsLength().addSecs(QTime(0,0,0).secsTo(predictedTimeToPlay(weight)));
 }
 
+QDateTime Game::endDate() const
+{
+    return rounds().last()->startTime();
+    //TODO: Noch nicht wirklich korrekt...
+}
+
 Game::State Game::state() const
 {
     QSharedPointer<Round> r = currentRound();
@@ -761,7 +767,7 @@ bool Game::mitPflichtSolo() const
 
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)
 {
-    return g1->creationTime() < g2->creationTime();
+    return g1->endDate() < g2->endDate();
 }
 
 bool sortGamesByDateLastFirst(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2)

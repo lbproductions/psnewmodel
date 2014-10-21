@@ -102,6 +102,7 @@ public:
     QTime predictedTimeToPlay(double weight = 0.7) const;
     QTime predictedEndTime(double weight = 0.7) const;
     QTime predictedGameLength(double weight = 0.7) const;
+    QDateTime endDate() const;
 
     QSharedPointer<Place> site() const;
 
