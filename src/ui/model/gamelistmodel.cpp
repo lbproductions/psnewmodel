@@ -159,8 +159,12 @@ GameSortFilterModel::GameSortFilterModel(GameListModel *sourceModel, QObject *pa
 
 bool GameSortFilterModel::filterAcceptsObject(QSharedPointer<Game> game) const
 {
-    if(filterRole() == UnfinishedStateFilter)
+    if(filterRole() == UnfinishedStateFilter) {
         return game->state() != Game::Finished && game->state() != Game::UnkownState;
+    }
+    else if(filterRole() == FinishedGamesStateFilter) {
+        return game->state() == Game::Finished;
+    }
 
     return true;
 }

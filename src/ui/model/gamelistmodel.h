@@ -44,7 +44,9 @@ class GameSortFilterModel : public QpSortFilterProxyObjectModel<Game>
     Q_OBJECT
 public:
     enum Filter {
-        UnfinishedStateFilter = Qt::UserRole + 1
+        UnfinishedStateFilter = Qt::UserRole + 1,
+        AllGamesStateFilter,
+        FinishedGamesStateFilter
     };
 
     enum SortRole {

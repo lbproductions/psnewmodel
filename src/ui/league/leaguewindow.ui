@@ -258,7 +258,7 @@ QWidget#widgetCreateGame {
          <x>0</x>
          <y>0</y>
          <width>864</width>
-         <height>258</height>
+         <height>243</height>
         </rect>
        </property>
        <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0">
@@ -304,16 +304,19 @@ QWidget#widgetCreateGame {
      </widget>
     </item>
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="Line" name="line">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+       <widget class="QPushButton" name="pushButtonStats">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Stats</string>
         </property>
        </widget>
-      </item>
-      <item>
-       <widget class="GameStatsWidget" name="gameStatsWidget" native="true"/>
       </item>
      </layout>
     </item>
@@ -337,12 +340,6 @@ QWidget#widgetCreateGame {
    <class>LeagueGraphWidget</class>
    <extends>QWidget</extends>
    <header>ui/league/leaguegraphwidget.h</header>
-  </customwidget>
-  <customwidget>
-   <class>GameStatsWidget</class>
-   <extends>QWidget</extends>
-   <header>ui/game/gamestatswidget.h</header>
-   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

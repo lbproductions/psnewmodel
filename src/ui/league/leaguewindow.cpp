@@ -10,6 +10,9 @@
 #include <ui/model/leagueclassementmodel.h>
 #include <ui/model/leaguegameplacementmodel.h>
 
+#include <misc/tools.h>
+#include <ui/game/gamestatswidget.h>
+
 #include "leaguehorizontalheaderview.h"
 #include "leagueplacementdelegate.h"
 #include "leagueplayerheaderview.h"
@@ -101,7 +104,8 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
 
     //ui->gamesWidget->setGames(m_league->calculatedGames());
 
-    ui->gameStatsWidget->setLeague(m_league);
+    //ui->gameStatsWidget->setLeague(m_league);
+    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonStats);
 }
 
 void LeagueWindow::wheelEvent(QWheelEvent *e)
@@ -159,4 +163,14 @@ void LeagueWindow::on_doubleSpinBoxFinishedGames_valueChanged(double arg1)
     m_gamePlacementModel->setChanged();
 
     ui->graphWidget->updateGraphs();
+}
+
+void LeagueWindow::on_pushButtonStats_clicked()
+{
+    if(!m_gameStatsWidget) {
+        m_gameStatsWidget = new GameStatsWidget(this);
+    }
+
+    m_gameStatsWidget->setLeague(m_league);
+    m_gameStatsWidget->show();
 }

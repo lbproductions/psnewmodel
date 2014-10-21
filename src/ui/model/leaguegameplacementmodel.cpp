@@ -60,7 +60,7 @@ QVariant LeagueGamePlacementModel::headerData(int section, Qt::Orientation orien
 
     if(orientation == Qt::Horizontal) {
         if(role == Qt::DisplayRole) {
-            return m_league->filteredGames().at(section)->creationTime().date().toString("dd.MM");
+            return m_league->filteredGames().at(section)->endDate().date().toString("dd.MM");
         }
     }
 

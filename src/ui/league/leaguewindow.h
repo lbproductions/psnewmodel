@@ -7,6 +7,8 @@ class League;
 class LeagueClassementModel;
 class LeagueGamePlacementModel;
 
+class GameStatsWidget;
+
 namespace Ui {
     class LeagueWindow;
 }
@@ -33,6 +35,8 @@ class LeagueWindow : public QMainWindow
 
         void on_doubleSpinBoxFinishedGames_valueChanged(double arg1);
 
+        void on_pushButtonStats_clicked();
+
 private:
         Ui::LeagueWindow *ui;
 
@@ -40,6 +44,8 @@ private:
 
         LeagueClassementModel* m_classementModel;
         LeagueGamePlacementModel* m_gamePlacementModel;
+
+        GameStatsWidget* m_gameStatsWidget;
 
         int m_minimumColumnWidth;
         int m_maximumColumnWidth;

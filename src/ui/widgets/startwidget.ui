@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>914</width>
-    <height>698</height>
+    <width>1064</width>
+    <height>713</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -317,7 +317,7 @@ QTreeView {
                    </size>
                   </property>
                   <property name="text">
-                   <string>Unfinished games</string>
+                   <string>Games</string>
                   </property>
                  </widget>
                 </item>

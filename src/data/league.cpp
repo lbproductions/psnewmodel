@@ -231,6 +231,8 @@ void League::recalculate()
     m_matchdays.clear();
     m_playerStatistics.clear();
     m_calculatedGames.clear();
+
+    emit recalculatedData();
 }
 
 double League::finishedGamesBorder() const

@@ -56,6 +56,9 @@ public:
     QSharedPointer<Matchday> currentMatchday();
     QList<QSharedPointer<Matchday> > matchdays();
 
+signals:
+    void recalculatedData();
+
 private:
     //QList<QPair<QSharedPointer<Player>, double> > sortPlayersAfterAverage();
 

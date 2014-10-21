@@ -15,11 +15,12 @@
 #include <ui/stats/timestatswidget.h>
 #include <ui/stats/servestatswidget.h>
 #include <ui/stats/seriesstatswidget.h>
+#include <ui/stats/placestatswidget.h>
 #include <QSettings>
 #include <misc/tools.h>
 
 GameStatsWidget::GameStatsWidget(QWidget *parent) :
-    QWidget(parent),
+    QWidget(parent, Qt::Window),
     ui(new Ui::GameStatsWidget),
     m_widgetCounter(0)
 {
@@ -44,8 +45,8 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     m_drinksWidget = new DrinkStatsWidget(this);
     addWidget(tr("Drinks"), m_drinksWidget);
 
-    m_gameCompareStatsWidget = new GameCompareStatsWidget(this);
-    addWidget(tr("GameCompare"), m_gameCompareStatsWidget);
+    //m_gameCompareStatsWidget = new GameCompareStatsWidget(this);
+    //addWidget(tr("GameCompare"), m_gameCompareStatsWidget);
 
     m_timeStatsWidget = new TimeStatsWidget(this);
     addWidget(tr("TimeStats"), m_timeStatsWidget);
@@ -107,13 +108,17 @@ void GameStatsWidget::setLeague(QSharedPointer<League> league)
 
     m_drinksWidget->setLeague(league);
 
-    m_gameCompareStatsWidget->setLeague(league);
+    //m_gameCompareStatsWidget->setLeague(league);
 
     m_timeStatsWidget->setLeague(league);
 
     m_serveStatsWidget->setLeague(league);
 
     m_seriesStatsWidget->setLeague(league);
+
+    m_placeStatsWidget = new PlaceStatsWidget(this);
+    addWidget(tr("Places"), m_placeStatsWidget);
+    m_placeStatsWidget->setLeague(league);
 }
 
 void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)

@@ -20,6 +20,7 @@ class GameCompareStatsWidget;
 class TimeStatsWidget;
 class ServeStatsWidget;
 class SeriesStatsWidget;
+class PlaceStatsWidget;
 
 class GamesWidget;
 
@@ -56,6 +57,7 @@ class GameStatsWidget : public QWidget
         TimeStatsWidget* m_timeStatsWidget;
         ServeStatsWidget* m_serveStatsWidget;
         SeriesStatsWidget* m_seriesStatsWidget;
+        PlaceStatsWidget* m_placeStatsWidget;
 
         GamesWidget* m_gamesWidget;
 

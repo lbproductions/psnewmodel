@@ -207,7 +207,8 @@ SOURCES += main.cpp \
     ui/stats/servestatswidget.cpp \
     ui/stats/seriesstatswidget.cpp \
     ui/stats/statstreewidget.cpp \
-    ui/dialogs/placeinformationdialog.cpp
+    ui/dialogs/placeinformationdialog.cpp \
+    ui/stats/placestatswidget.cpp
 
 
 HEADERS  += \
@@ -308,7 +309,8 @@ HEADERS  += \
     ui/stats/servestatswidget.h \
     ui/stats/seriesstatswidget.h \
     ui/stats/statstreewidget.h \
-    ui/dialogs/placeinformationdialog.h
+    ui/dialogs/placeinformationdialog.h \
+    ui/stats/placestatswidget.h
 
 
 FORMS += \
@@ -341,7 +343,8 @@ FORMS += \
     ui/widgets/photopreviewwidget.ui \
     ui/widgets/photoroundwidget.ui \
     ui/widgets/photoplayercardswidget.ui \
-    ui/dialogs/placeinformationdialog.ui
+    ui/dialogs/placeinformationdialog.ui \
+    ui/stats/placestatswidget.ui
 
 RESOURCES += \
     resource/sidebar/sidebar.qrc \
