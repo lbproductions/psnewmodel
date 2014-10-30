@@ -167,10 +167,10 @@ void LeagueWindow::on_doubleSpinBoxFinishedGames_valueChanged(double arg1)
 
 void LeagueWindow::on_pushButtonStats_clicked()
 {
-    if(!m_gameStatsWidget) {
+    //if(!m_gameStatsWidget) {
         m_gameStatsWidget = new GameStatsWidget(this);
-    }
-
+    //}
+    m_gameStatsWidget->setMinimumWidth(800);
     m_gameStatsWidget->setLeague(m_league);
     m_gameStatsWidget->show();
 }

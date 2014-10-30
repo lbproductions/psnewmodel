@@ -8,6 +8,10 @@
 #include <data/league.h>
 #include <misc/tools.h>
 
+#include "recontraplayerstatswidget.h"
+#include "recontrastatslegendwidget.h"
+#include "recontrageneralstatswidget.h"
+
 ReContraStatsWidget::ReContraStatsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ReContraStatsWidget)
@@ -16,9 +20,9 @@ ReContraStatsWidget::ReContraStatsWidget(QWidget *parent) :
 
     ui->scrollAreaWidgetContents->setStyleSheet("QWidget {color:white; background-color: rgb(55,55,55);}");
 
-    ui->groupBoxRe->setPalette(Tools::darkPalette(ui->groupBoxRe));
-    ui->groupBoxReWins->setPalette(Tools::darkPalette(ui->groupBoxReWins));
-    ui->groupBoxContraWins->setPalette(Tools::darkPalette(ui->groupBoxContraWins));
+    //ui->groupBoxRe->setPalette(Tools::darkPalette(ui->groupBoxRe));
+    //ui->groupBoxReWins->setPalette(Tools::darkPalette(ui->groupBoxReWins));
+    //ui->groupBoxContraWins->setPalette(Tools::darkPalette(ui->groupBoxContraWins));
 }
 
 ReContraStatsWidget::~ReContraStatsWidget()
@@ -55,6 +59,10 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     int reWins = 0;
     int contraWins = 0;
 
+    int reGamePoints = 0;
+    int contraGamePoints = 0;
+    int rounds = 0;
+
     foreach(QSharedPointer<Game> game, m_games) {
 
         foreach(QSharedPointer<Player> player, players) {
@@ -68,20 +76,44 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
 
         reWins += game->reWinsCount();
         contraWins += game->contraWinCount();
+
+        if(game->creationTime().date() < QDate(2014,1,21)) {
+            continue;
+        }
+        reGamePoints += game->reGamePoints();
+        contraGamePoints += game->contraGamePoints();
+        rounds += game->finishedRoundCount();
     }
 
-    ui->labelReWins->setText(QString::number(reWins));
-    ui->labelContraWins->setText(QString::number(contraWins));
+    ReContraGeneralStatsWidget* generalWidget = new ReContraGeneralStatsWidget(this);
+    generalWidget->setReRoundWins(reWins);
+    generalWidget->setContraRoundWins(contraWins);
+    generalWidget->setReGamePointAverage(reGamePoints / rounds);
+    generalWidget->setContraGamePointAverage(contraGamePoints / rounds);
+    ui->verticalLayoutPlayers->addWidget(generalWidget);
 
-    fillReBox();
-    fillReWinsBox();
-    fillContraWinsBox();
+    ReContraStatsLegendWidget* legend = new ReContraStatsLegendWidget(this);
+    ui->verticalLayoutPlayers->addWidget(legend);
+    foreach(QSharedPointer<Player> player, m_playerStats.keys()) {
+        ReContraPlayerStatsWidget* widget = new ReContraPlayerStatsWidget(this);
+        widget->setPlayer(player);
+        widget->setRePercentage(m_playerStats.value(player)->rePercentage());
+        widget->setReWinPercentage(m_playerStats.value(player)->reWinsPercentage());
+        widget->setContraWinPercentage(m_playerStats.value(player)->contraWinsPercentage());
+        ui->verticalLayoutPlayers->addWidget(widget);
+    }
+
+    //fillReBox();
+    //fillReWinsBox();
+    //fillContraWinsBox();
 }
 
 void ReContraStatsWidget::setLeague(QSharedPointer<League> league)
 {
     setGames(league->calculatedGames(), league->players());
 }
+
+/*
 
 void ReContraStatsWidget::fillReBox()
 {
@@ -136,19 +168,4 @@ void ReContraStatsWidget::fillContraWinsBox()
 
     ui->groupBoxContraWins->setLayout(layout);
 }
-
-QColor ReContraStatsWidget::percentageColor(double percentage)
-{
-    if(percentage < 25) {
-        return QColor("red");
-    }
-    else if(percentage < 50) {
-        return QColor(123,0,0);
-    }
-    else if(percentage < 75) {
-        return QColor(0, 123, 0);
-    }
-    else {
-        return QColor(0,200,0);
-    }
-}
+*/

@@ -184,11 +184,7 @@ QList<QSharedPointer<Round> > PlayerStatistics::reRounds() const
     QList<QSharedPointer<Round> > result;
     QSharedPointer<Player> sharedPlayer = player();
     foreach(QSharedPointer<Game> game, games()) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->re1Player() == sharedPlayer || (!round->isSolo() && round->re2Player() == sharedPlayer)) {
-                result.append(round);
-            }
-        }
+        result.append(game->reRounds(sharedPlayer));
     }
 
     return result;
@@ -213,13 +209,7 @@ QList<QSharedPointer<Round> > PlayerStatistics::contraRounds() const
     QList<QSharedPointer<Round> > result;
     QSharedPointer<Player> sharedPlayer = player();
     foreach(QSharedPointer<Game> game, games()) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->contra1Player() == sharedPlayer
-                    || round->contra2Player() == sharedPlayer
-                    || (round->isSolo() && round->contra3Player() == sharedPlayer)) {
-                result.append(round);
-            }
-        }
+        result.append(game->contraRounds(sharedPlayer));
     }
 
     return result;

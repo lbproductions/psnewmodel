@@ -25,12 +25,6 @@ public:
     void setLeague(QSharedPointer<League> league);
 
 private:
-    void fillReBox();
-    void fillReWinsBox();
-    void fillContraWinsBox();
-
-    QColor percentageColor(double percentage);
-
     Ui::ReContraStatsWidget *ui;
     QList<QSharedPointer<Game> > m_games;
 

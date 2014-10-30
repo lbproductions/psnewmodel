@@ -21,7 +21,8 @@ Game::Game(QObject *parent) :
     m_site(QpRelation(&Game::site)),
     m_players(QpRelation(&Game::players)),
     m_rounds(QpRelation(&Game::rounds)),
-    m_offlineGameInformation(QpRelation(&Game::offlineGameInformation))
+    m_offlineGameInformation(QpRelation(&Game::offlineGameInformation)),
+    m_initialCalcedStats(false)
 {
     m_lengthTimer.setInterval(1000);
     m_lengthTimer.setSingleShot(false);
@@ -36,6 +37,8 @@ Game::Game(QObject *parent) :
             emit lengthChanged();
         }
     });
+
+    connect(this, SIGNAL(newRoundStarted()), this, SLOT(updateStats()));
 }
 
 Game::~Game()
@@ -377,42 +380,20 @@ int Game::totalPoints(QSharedPointer<Player> player) const
     return round->totalPoints(player);
 }
 
-int Game::roundsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo)
+int Game::roundsTogether(QSharedPointer<Player> player1, QSharedPointer<Player> player2)
 {
-    int count = 0;
+    calcInitialStats();
 
-    foreach(QSharedPointer<Round> round, rounds()) {
-        if(round->state() == Round::Finished) {
-            if(round->playingPlayers().contains(playerOne) && round->playingPlayers().contains(playerTwo)) {
-                if((round->rePlayers().contains(playerOne) && round->rePlayers().contains(playerTwo)) ||
-                        (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
-                    count++;
-                }
-            }
-        }
-    }
-
-    return count;
+    QString key = QString::number(Qp::primaryKey(player1)) + "-" + QString::number(Qp::primaryKey(player2));
+    return m_playerRoundsTogether.value(key).size();
 }
 
-int Game::winsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo)
+int Game::winsTogether(QSharedPointer<Player> player1, QSharedPointer<Player> player2)
 {
-    int count = 0;
+    calcInitialStats();
 
-    foreach(QSharedPointer<Round> round, rounds()) {
-        if(round->state() == Round::Finished) {
-            if(round->playingPlayers().contains(playerOne) && round->playingPlayers().contains(playerTwo)) {
-                if((round->rePlayers().contains(playerOne) && round->rePlayers().contains(playerTwo)) ||
-                        (!round->rePlayers().contains(playerOne) && !round->rePlayers().contains(playerTwo))) {
-                    if(round->points(playerOne) > 0) {
-                        count++;
-                    }
-                }
-            }
-        }
-    }
-
-    return count;
+    QString key = QString::number(Qp::primaryKey(player1)) + "-" + QString::number(Qp::primaryKey(player2));
+    return m_playerRoundWinsTogether.value(key).size();
 }
 
 int Game::pointsToLeader(QSharedPointer<Player> player)
@@ -659,26 +640,55 @@ int Game::schmeissereiCount(int roundCount)
 
 int Game::reWinsCount()
 {
-    int reCount = 0;
-    foreach(QSharedPointer<Round> round, rounds()) {
-        if(round->winnerParty() == Round::Re) {
-            reCount++;
-        }
-    }
+    calcInitialStats();
 
-    return reCount;
+    return m_reWinCount;
 }
 
 int Game::contraWinCount()
 {
-    int contra = 0;
-    foreach(QSharedPointer<Round> round, rounds()) {
-        if(round->winnerParty() == Round::Contra) {
-            contra++;
-        }
-    }
+    calcInitialStats();
 
-    return contra;
+    return m_contraWinCount;
+}
+
+int Game::reGamePoints()
+{
+    calcInitialStats();
+
+    return m_reGamePoints;
+}
+
+int Game::contraGamePoints()
+{
+    calcInitialStats();
+
+    return m_contraGamePoints;
+}
+
+QList<QSharedPointer<Round> > Game::rounds(QSharedPointer<Player> player)
+{
+    calcInitialStats();
+
+    QList<QSharedPointer<Round> > rounds;
+    rounds.append(reRounds(player));
+    rounds.append(contraRounds(player));
+
+    return rounds;
+}
+
+QList<QSharedPointer<Round> > Game::reRounds(QSharedPointer<Player> player)
+{
+    calcInitialStats();
+
+    return m_playerReRounds.value(player);
+}
+
+QList<QSharedPointer<Round> > Game::contraRounds(QSharedPointer<Player> player)
+{
+    calcInitialStats();
+
+    return m_playerContraRounds.value(player);
 }
 
 QList<QSharedPointer<OLD_OfflineGameInformation> > Game::offlineGameInformation() const
@@ -792,4 +802,178 @@ void Game::connectAllRoundSignals()
     foreach(QSharedPointer<Round> round, rounds()) {
         connectRoundSignals(round);
     }
+}
+
+void Game::calcInitialStats()
+{
+    if(m_initialCalcedStats) {
+        return;
+    }
+
+    m_reWinCount = 0;
+    m_contraWinCount = 0;
+    m_reGamePoints = 0;
+    m_contraGamePoints = 0;
+
+    m_playerReRounds.clear();
+    m_playerContraRounds.clear();
+
+    m_playerRoundsTogether.clear();
+    m_playerRoundWinsTogether.clear();
+
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->state() == Round::Finished) {
+            if(round->winnerParty() == Round::Re) {
+                m_reWinCount++;
+            }
+            else if(round->winnerParty() == Round::Contra) {
+                m_contraWinCount++;
+            }
+
+            if(this->creationTime().date() > QDate(2014,1,21)) {
+                m_reGamePoints += round->reGamePoints();
+                m_contraGamePoints += round->contraGamePoints();
+            }
+
+            QSharedPointer<Player> re1Player = round->re2Player();
+            addToRePlayersStats(round, re1Player);
+
+            QSharedPointer<Player> re2Player = round->re2Player();
+            addToRePlayersStats(round, re2Player);
+
+            QSharedPointer<Player> contra1Player = round->contra1Player();
+            addToContraPlayersStats(round, contra1Player);
+
+            QSharedPointer<Player> contra2Player = round->contra2Player();
+            addToContraPlayersStats(round, contra2Player);
+
+            QSharedPointer<Player> contra3Player = round->contra3Player();
+            addToContraPlayersStats(round, contra3Player);
+
+            if(round->isSolo()) {
+                addToGamesTogetherStats(round, contra1Player, contra2Player);
+                addToGamesTogetherStats(round, contra3Player, contra2Player);
+            }
+            else {
+                addToGamesTogetherStats(round, re1Player, re2Player);
+                addToGamesTogetherStats(round, contra1Player, contra2Player);
+            }
+        }
+    }
+
+    m_initialCalcedStats = true;
+}
+
+void Game::updateStats()
+{
+    if(!m_initialCalcedStats) {
+        calcInitialStats();
+    }
+
+    QList<QSharedPointer<Round> > rs = rounds();
+    if(rs.size() < 2) { // es gibt nur die eine Runde, die gerade läuft
+        return;
+    }
+
+    QSharedPointer<Round> finishedRound = rs.at(rs.size()-1);
+    if(finishedRound->state() != Round::Finished) {
+        return;
+    }
+
+    if(finishedRound->winnerParty() == Round::Re) {
+        m_reWinCount++;
+    }
+    else if(finishedRound->winnerParty() == Round::Contra) {
+        m_contraWinCount++;
+    }
+
+    if(this->creationTime().date() > QDate(2014,1,21)) {
+        m_reGamePoints += finishedRound->reGamePoints();
+        m_contraGamePoints += finishedRound->contraGamePoints();
+    }
+
+    QSharedPointer<Player> re1Player = finishedRound->re2Player();
+    addToRePlayersStats(finishedRound, re1Player);
+
+    QSharedPointer<Player> re2Player = finishedRound->re2Player();
+    addToRePlayersStats(finishedRound, re2Player);
+
+    QSharedPointer<Player> contra1Player = finishedRound->contra1Player();
+    addToContraPlayersStats(finishedRound, contra1Player);
+
+    QSharedPointer<Player> contra2Player = finishedRound->contra2Player();
+    addToContraPlayersStats(finishedRound, contra2Player);
+
+    QSharedPointer<Player> contra3Player = finishedRound->contra3Player();
+    addToContraPlayersStats(finishedRound, contra3Player);
+
+    if(finishedRound->isSolo()) {
+        addToGamesTogetherStats(finishedRound, contra1Player, contra2Player);
+        addToGamesTogetherStats(finishedRound, contra3Player, contra2Player);
+    }
+    else {
+        addToGamesTogetherStats(finishedRound, re1Player, re2Player);
+        addToGamesTogetherStats(finishedRound, contra1Player, contra2Player);
+    }
+}
+
+void Game::addToRePlayersStats(QSharedPointer<Round> round, QSharedPointer<Player> player)
+{
+    if(player) {
+        QList<QSharedPointer<Round> > reRounds;
+        if(m_playerReRounds.contains(player)) {
+            reRounds.append(m_playerReRounds.value(player));
+        }
+        reRounds.append(round);
+        m_playerReRounds.insert(player, reRounds);
+    }
+}
+
+void Game::addToContraPlayersStats(QSharedPointer<Round> round, QSharedPointer<Player> player)
+{
+    if(player) {
+        QList<QSharedPointer<Round> > reRounds;
+        if(m_playerContraRounds.contains(player)) {
+            reRounds.append(m_playerContraRounds.value(player));
+        }
+        reRounds.append(round);
+        m_playerContraRounds.insert(player, reRounds);
+    }
+}
+
+void Game::addToGamesTogetherStats(QSharedPointer<Round> round, QSharedPointer<Player> player1, QSharedPointer<Player> player2)
+{
+    if(!round || !player1 || !player2)
+        return;
+
+    QString key = QString::number(Qp::primaryKey(player1)) + "-" + QString::number(Qp::primaryKey(player2));
+    QString key1 = QString::number(Qp::primaryKey(player2)) + "-" + QString::number(Qp::primaryKey(player1));
+
+    QList<QSharedPointer<Round> > rounds;
+    if(m_playerRoundsTogether.contains(key)) {
+        rounds.append(m_playerRoundsTogether.value(key));
+    }
+    else if(m_playerRoundsTogether.contains(key1)) {
+        rounds.append(m_playerRoundsTogether.value(key1));
+    }
+
+    rounds.append(round);
+
+    m_playerRoundsTogether.insert(key, rounds);
+    m_playerRoundsTogether.insert(key1, rounds);
+
+    if(round->points(player1) > 0) {
+        QList<QSharedPointer<Round> > wins;
+        if(m_playerRoundWinsTogether.contains(key)) {
+            wins.append(m_playerRoundWinsTogether.value(key));
+        }
+        else if(m_playerRoundWinsTogether.contains(key1)) {
+            wins.append(m_playerRoundWinsTogether.value(key1));
+        }
+        wins.append(round);
+
+        m_playerRoundWinsTogether.insert(key, wins);
+        m_playerRoundWinsTogether.insert(key1, wins);
+    }
+
 }

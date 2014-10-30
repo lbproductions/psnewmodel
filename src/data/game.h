@@ -119,8 +119,8 @@ public:
     int leadingRoundCount(QSharedPointer<Player> player) const;
     int totalPoints() const;
     int totalPoints(QSharedPointer<Player> player) const;
-    int roundsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo);
-    int winsTogether(QSharedPointer<Player> playerOne, QSharedPointer<Player> playerTwo);
+    int roundsTogether(QSharedPointer<Player> player1, QSharedPointer<Player> player2);
+    int winsTogether(QSharedPointer<Player> player1, QSharedPointer<Player> player2);
     int pointsToLeader(QSharedPointer<Player> player);
 
     int drinkCount(QSharedPointer<Drink> drink) const;
@@ -152,6 +152,13 @@ public:
     int reWinsCount();
     int contraWinCount();
 
+    int reGamePoints();
+    int contraGamePoints();
+
+    QList<QSharedPointer<Round> > rounds(QSharedPointer<Player> player);
+    QList<QSharedPointer<Round> > reRounds(QSharedPointer<Player> player);
+    QList<QSharedPointer<Round> > contraRounds(QSharedPointer<Player> player);
+
     QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation() const;
     QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys() const;
 
@@ -174,6 +181,13 @@ private slots:
     void setPlayers(const QList<QSharedPointer<Player> > &players);
     void removePlayer(QSharedPointer<Player> player);
 
+    // Stats-Sachen
+    void calcInitialStats();
+    void updateStats();
+
+    void addToRePlayersStats(QSharedPointer<Round> round, QSharedPointer<Player> player);
+    void addToContraPlayersStats(QSharedPointer<Round> round, QSharedPointer<Player> player);
+    void addToGamesTogetherStats(QSharedPointer<Round> round, QSharedPointer<Player> player1, QSharedPointer<Player> player2);
 private:
     void setCreationTime(const QDateTime &creationTime);
     void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
@@ -197,6 +211,22 @@ private:
     QpHasMany<OLD_OfflineGameInformation> m_offlineGameInformation;
 
     QTimer m_lengthTimer;
+
+
+    // Stats-Sachen
+    bool m_initialCalcedStats;
+
+    int m_reWinCount;
+    int m_contraWinCount;
+
+    int m_reGamePoints;
+    int m_contraGamePoints;
+
+    QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_playerReRounds;
+    QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_playerContraRounds;
+
+    QHash<QString, QList<QSharedPointer<Round> > > m_playerRoundsTogether;
+    QHash<QString, QList<QSharedPointer<Round> > > m_playerRoundWinsTogether;
 };
 
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);

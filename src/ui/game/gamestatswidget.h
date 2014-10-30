@@ -33,7 +33,7 @@ class GameStatsWidget : public QWidget
         ~GameStatsWidget();
 
         void setGames(QList<QSharedPointer<Game> > games);
-        void setLeague(QSharedPointer<League> league);
+        void setLeague(QSharedPointer<League> _league);
 
    private slots:
         void onItemClicked(QTreeWidgetItem* item);

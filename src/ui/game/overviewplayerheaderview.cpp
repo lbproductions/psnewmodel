@@ -188,6 +188,9 @@ void OverviewPlayerHeaderView::paintSidebar(const QPixmap &icon,
     if(position >= 0) {
         painter->setFont(model()->headerData(0, orientation(), Qt::FontRole).value<QFont>());
         painter->setPen(palette().color(QPalette::Text).darker(100));
+        painter->setPen(Qt::black);
+        painter->drawText(sidebarRect.translated(1,1), Qt::AlignCenter, QString::number(position+1));
+        painter->setPen(palette().color(QPalette::Text));
         painter->drawText(sidebarRect, Qt::AlignCenter, QString::number(position+1));
     }
 
@@ -248,7 +251,7 @@ void OverviewPlayerHeaderView::paintCardMixerAndPflichtsolo(bool hasPflichtSolo,
 
     if(isCurrentCardMixer) {
         QRect cRect = rect.adjusted(0,0,-5,0);
-        static QPixmap pixmap = QPixmap(":/sidebar/games.png").scaledToHeight(cRect.height()-10);
+        static QPixmap pixmap = QPixmap(":/sidebar/games.png").scaledToHeight(cRect.height()-10, Qt::SmoothTransformation);
         int offset = rect.height() - pixmap.height();
         painter->drawPixmap(rect.topLeft().x() + 5, cRect.topLeft().y()+offset/2, pixmap);
     }

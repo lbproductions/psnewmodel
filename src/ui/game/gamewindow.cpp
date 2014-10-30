@@ -435,6 +435,7 @@ void GameWindow::on_actionStats_triggered()
 {
     GameStatsWidget* widget = new GameStatsWidget(this);
     widget->setGames(QList<QSharedPointer<Game> >() << m_game);
+    widget->setMinimumWidth(800);
     m_dialogController->showDialog(widget);
 }
 

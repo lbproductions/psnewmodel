@@ -208,7 +208,10 @@ SOURCES += main.cpp \
     ui/stats/seriesstatswidget.cpp \
     ui/stats/statstreewidget.cpp \
     ui/dialogs/placeinformationdialog.cpp \
-    ui/stats/placestatswidget.cpp
+    ui/stats/placestatswidget.cpp \
+    ui/stats/recontraplayerstatswidget.cpp \
+    ui/stats/recontrastatslegendwidget.cpp \
+    ui/stats/recontrageneralstatswidget.cpp
 
 
 HEADERS  += \
@@ -310,7 +313,10 @@ HEADERS  += \
     ui/stats/seriesstatswidget.h \
     ui/stats/statstreewidget.h \
     ui/dialogs/placeinformationdialog.h \
-    ui/stats/placestatswidget.h
+    ui/stats/placestatswidget.h \
+    ui/stats/recontraplayerstatswidget.h \
+    ui/stats/recontrastatslegendwidget.h \
+    ui/stats/recontrageneralstatswidget.h
 
 
 FORMS += \

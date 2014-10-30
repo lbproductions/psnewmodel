@@ -91,12 +91,15 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
     m_seriesStatsWidget->setGames(games);
 }
 
-void GameStatsWidget::setLeague(QSharedPointer<League> league)
+void GameStatsWidget::setLeague(QSharedPointer<League> _league)
 {
-    if(!league)
+    QSharedPointer<League> league = _league;
+    if(league == 0 || league.isNull()) {
         return;
+    }
 
-    m_games = league->calculatedGames();
+    m_games.clear();
+    m_games.append(league->calculatedGames());
 
     m_reContraWidget->setLeague(league);
 

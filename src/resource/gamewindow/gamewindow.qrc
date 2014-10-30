@@ -15,5 +15,9 @@
         <file>trumpfabgabe.png</file>
         <file>magnifyingglass.png</file>
         <file>open-arrow.png</file>
+        <file>female.png</file>
+        <file>male.png</file>
+        <file>fleischlos1.png</file>
+        <file>muskeln.png</file>
     </qresource>
 </RCC>

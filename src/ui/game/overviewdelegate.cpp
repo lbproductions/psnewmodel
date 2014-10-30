@@ -103,12 +103,18 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     color = index.data(Qt::DecorationRole).value<QColor>();
     if(color.isValid()) {
         painter->setBrush(color);
-        if(index.data(GameOverviewModel::PflichtSoloRole).toBool()) {
-            QPen pen = painter->pen();
-            pen.setBrush(Qt::white);
-            painter->setPen(pen);
-        }
         painter->drawRect(playerColorRect(option.rect, true));
+        if(index.data(GameOverviewModel::PflichtSoloRole).toBool()) {
+            painter->save();
+            QFont font = painter->font();
+            font.setPixelSize(15);
+            painter->setFont(font);
+            painter->setPen(Qt::black);
+            painter->drawText(playerColorRect(option.rect, true).translated(1,1),Qt::AlignCenter,"P");
+            painter->setPen(Qt::white);
+            painter->drawText(playerColorRect(option.rect, true), Qt::AlignCenter, "P");
+            painter->restore();
+        }
     }
 
     // Draw schmeissereien
@@ -140,23 +146,24 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
         painter->setPen(palette.color(QPalette::Text));
         QRect pixmapRect = QRect(option.rect.bottomRight() - QPoint(25,25), option.rect.bottomRight());
         if(type == Round::BubenSolo) {
-            static QPixmap pixmap = QPixmap(":/gamewindow/bubenSolo.png").scaledToHeight(pixmapRect.height());
+            static QPixmap pixmap = QPixmap(":/gamewindow/male.png").scaledToHeight(pixmapRect.height(), Qt::SmoothTransformation);
             painter->drawPixmap(pixmapRect, pixmap);
         }
         else if(type == Round::DamenSolo) {
-            static QPixmap pixmap = QPixmap(":/gamewindow/damenSolo.png").scaledToHeight(pixmapRect.height());
+            static QPixmap pixmap = QPixmap(":/gamewindow/female.png").scaledToHeight(pixmapRect.height(), Qt::SmoothTransformation);
             painter->drawPixmap(pixmapRect, pixmap);
         }
         else if(type == Round::StilleHochzeit) {
-            static QPixmap pixmap = QPixmap(":/gamewindow/stilleHochzeit.png").scaledToHeight(pixmapRect.height());
+            static QPixmap pixmap = QPixmap(":/gamewindow/stilleHochzeit.png").scaledToHeight(pixmapRect.height(), Qt::SmoothTransformation);
             painter->drawPixmap(pixmapRect, pixmap);
         }
         else if(type == Round::Fleischlos) {
-            static QPixmap pixmap = QPixmap(":/gamewindow/fleischlos.png").scaledToHeight(pixmapRect.height());
+            static QPixmap pixmap = QPixmap(":/gamewindow/fleischlos1.png").scaledToHeight(pixmapRect.height(), Qt::SmoothTransformation);
             painter->drawPixmap(pixmapRect, pixmap);
         }
         else if(type == Round::TrumpfSolo) {
-            painter->drawText(QRect(option.rect.bottomRight() - QPoint(15,15), option.rect.bottomRight()), "T");
+            static QPixmap pixmap = QPixmap(":/gamewindow/muskeln.png").scaledToHeight(pixmapRect.height(), Qt::SmoothTransformation);
+            painter->drawPixmap(pixmapRect, pixmap);
         }
         else if(type == Round::FarbSolo) {
             painter->drawText(QRect(option.rect.bottomRight() - QPoint(15,15), option.rect.bottomRight()), "F");
@@ -165,12 +172,13 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
             painter->drawText(QRect(option.rect.bottomRight() - QPoint(15,15), option.rect.bottomRight()), "S");
         }
         else if(type == Round::SitzenGelasseneHochzeit) {
-            static QPixmap pixmap = QPixmap(":/gamewindow/sitzengelasseneHochzeit.png").scaledToHeight(pixmapRect.height());
+            static QPixmap pixmap = QPixmap(":/gamewindow/sitzengelasseneHochzeit.png").scaledToHeight(pixmapRect.height(), Qt::SmoothTransformation);
             painter->drawPixmap(pixmapRect, pixmap);
         }
 
     }
 
+    /*
     // Draw re-triangle
     if(index.data(GameOverviewModel::IsReRole).toBool()) {
         int triangleSize = 7;
@@ -183,7 +191,7 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
                    QPointF(r.topRight().x(), r.topRight().y()+triangleSize);
         painter->drawPolygon(polygon);
     }
-
+    */
     painter->restore();
 }
 
