@@ -115,13 +115,13 @@ StartWidget::StartWidget(MainWindow *parent) :
     ui->setupUi(this);
 
 
-    GameSortFilterModel *model = new GameSortFilterModel(new GameListModel(this), this);
-    model->setFilterRole(GameSortFilterModel::UnfinishedStateFilter);
-    model->setSortRole(GameSortFilterModel::Date);
-    model->sort(0, Qt::DescendingOrder);
+    m_sortModel = new GameSortFilterModel(new GameListModel(this), this);
+    m_sortModel->setFilterRole(GameSortFilterModel::AllGamesStateFilter);
+    m_sortModel->setSortRole(GameSortFilterModel::Date);
+    m_sortModel->sort(0, Qt::DescendingOrder);
 
     ui->listViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->listViewGames->setModel(model);
+    ui->listViewGames->setModel(m_sortModel);
     ui->listViewGames->setItemDelegate(new UnfinishedGamesDelegate(ui->listViewGames, this));
 
     LeagueSortFilterModel *leagueModel = new LeagueSortFilterModel(new LeagueListModel(this), this);
@@ -131,6 +131,9 @@ StartWidget::StartWidget(MainWindow *parent) :
     ui->listViewLeague->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listViewLeague->setModel(leagueModel);
     ui->listViewLeague->setItemDelegate(new LeaguesDelegate(ui->listViewLeague, this));
+
+    ui->checkBox->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->lineEditSearch->setAttribute(Qt::WA_MacShowFocusRect, false);
 }
 
 StartWidget::~StartWidget()
@@ -166,4 +169,28 @@ void StartWidget::on_listViewLeague_doubleClicked(const QModelIndex &index)
     LeagueWindow *window = new LeagueWindow;
     window->setLeague(league);
     window->show();
+}
+
+void StartWidget::on_lineEditSearch_textChanged(const QString &arg1)
+{
+    if(arg1 == "") {
+        m_sortModel->setPlayers({});
+        return;
+    }
+
+    QString text = ui->lineEditSearch->text();
+    text.remove(" ");
+    QStringList items = text.split(",");
+
+    m_sortModel->setPlayers(items);
+}
+
+void StartWidget::on_checkBox_clicked()
+{
+    if(ui->checkBox->isChecked()) {
+        m_sortModel->setFilterRole(GameSortFilterModel::UnfinishedStateFilter);
+    }
+    else {
+       m_sortModel->setFilterRole(GameSortFilterModel::AllGamesStateFilter);
+    }
 }

@@ -93,28 +93,30 @@ public:
     bool mitPflichtSolo() const;
     void setMitPflichtSolo(bool arg);
 
+    QString playerString();
+
     AdditionalMissingPlayer aditionalMissingPlayer() const;
     void setAdditionalMissingPlayer(AdditionalMissingPlayer arg);
 
     QTime length() const;
     QTime finishedRoundsLength() const;
     QTime averageRoundLength(double weight = 0.7) const;
-    QTime predictedTimeToPlay(double weight = 0.7) const;
-    QTime predictedEndTime(double weight = 0.7) const;
-    QTime predictedGameLength(double weight = 0.7) const;
+    QTime predictedTimeToPlay(double weight = 0.7);
+    QTime predictedEndTime(double weight = 0.7);
+    QTime predictedGameLength(double weight = 0.7);
     QDateTime endDate() const;
 
     QSharedPointer<Place> site() const;
 
     QList<QSharedPointer<Player> > players() const;
-    QSharedPointer<Player> currentCardMixer() const;
-    QList<QSharedPointer<Player> > currentPlayingPlayers() const;
+    QSharedPointer<Player> currentCardMixer();
+    QList<QSharedPointer<Player> > currentPlayingPlayers();
 
     QList<QSharedPointer<Round> > rounds() const;
     QSharedPointer<Round> currentRound() const;
 
     QList<QSharedPointer<Player> > playersSortedByPlacement() const;
-    int placement(QSharedPointer<Player> player, int roundNumber = std::numeric_limits<int>::max()) const;
+    int placement(QSharedPointer<Player> player);
     double averagePlacement(QSharedPointer<Player> player) const;
     int leadingRoundCount(QSharedPointer<Player> player) const;
     int totalPoints() const;
@@ -133,11 +135,11 @@ public:
     void startNextRound();
     void save();
 
-    int totalRoundCount() const;
-    int finishedRoundCount() const;
-    int roundsToPlay() const;
-    double completedPercentage() const;
-    bool isComplete() const;
+    int totalRoundCount();
+    int finishedRoundCount();
+    int roundsToPlay();
+    double completedPercentage();
+    bool isComplete();
 
     bool hasPflichtSolo(QSharedPointer<Player> player) const;
 
@@ -216,11 +218,16 @@ private:
     // Stats-Sachen
     bool m_initialCalcedStats;
 
+    int m_finishedRoundCount;
+    int m_totalRoundCount;
+
     int m_reWinCount;
     int m_contraWinCount;
 
     int m_reGamePoints;
     int m_contraGamePoints;
+
+    QHash<QSharedPointer<Player>,int> m_placements;
 
     QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_playerReRounds;
     QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_playerContraRounds;

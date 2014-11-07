@@ -7,6 +7,7 @@
 class Game;
 class Player;
 class League;
+class PlayerStatistics;
 
 class SeriesStatsWidget : public QTreeWidget
 {
@@ -18,6 +19,8 @@ public:
 
     void setGames(QList<QSharedPointer<Game> > games);
     void setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players);
+
+    void createItemFromPlayerStats(QSharedPointer<PlayerStatistics> stats);
 
     QTreeWidgetItem* createItem(QSharedPointer<Player> player, QString wins, QString losses, QString current);
 

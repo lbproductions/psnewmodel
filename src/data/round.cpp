@@ -209,7 +209,7 @@ int Round::placement(QSharedPointer<Player> player) const
         return -1;
 
     int place = 1;
-    QList<QSharedPointer<Player> > ps = playersSortedByPlacement();
+    QList<QSharedPointer<Player> > ps = game()->players();
     int points = totalPoints(player);
     foreach(QSharedPointer<Player> p, ps) {
         if(game()->type() == Game::Doppelkopf || game()->type() == Game::Prognose) { // games with most point winning

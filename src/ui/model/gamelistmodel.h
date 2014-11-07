@@ -46,7 +46,8 @@ public:
     enum Filter {
         UnfinishedStateFilter = Qt::UserRole + 1,
         AllGamesStateFilter,
-        FinishedGamesStateFilter
+        FinishedGamesStateFilter,
+        PlayersGamesFilter
     };
 
     enum SortRole {
@@ -55,9 +56,14 @@ public:
 
     explicit GameSortFilterModel(GameListModel *sourceModel, QObject *parent = 0);
 
+    QList<QString> players() const;
+    void setPlayers(const QList<QString> &players);
+
 protected:
     bool filterAcceptsObject(QSharedPointer<Game> game) const Q_DECL_OVERRIDE;
     bool lessThan(QSharedPointer<Game> left, QSharedPointer<Game> right) const Q_DECL_OVERRIDE;
+
+    QList<QString> m_players;
 };
 
 #endif // GAMELISTMODEL_H

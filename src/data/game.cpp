@@ -104,19 +104,19 @@ QTime Game::averageRoundLength(double weight) const
     return QTime(0,0,0).addSecs(weightedAverageSecs);
 }
 
-QTime Game::predictedTimeToPlay(double weight) const
+QTime Game::predictedTimeToPlay(double weight)
 {
     int averageLength = QTime(0,0,0).secsTo(averageRoundLength(weight));
     return QTime(0,0,0).addSecs(averageLength*roundsToPlay());
 }
 
-QTime Game::predictedEndTime(double weight) const
+QTime Game::predictedEndTime(double weight)
 {
     int averageLength = QTime(0,0,0).secsTo(averageRoundLength(weight));
     return QTime::currentTime().addSecs(averageLength*roundsToPlay());
 }
 
-QTime Game::predictedGameLength(double weight) const
+QTime Game::predictedGameLength(double weight)
 {
     return finishedRoundsLength().addSecs(QTime(0,0,0).secsTo(predictedTimeToPlay(weight)));
 }
@@ -306,7 +306,7 @@ void Game::removePlayer(QSharedPointer<Player> player)
     m_players.remove(player);
 }
 
-QSharedPointer<Player> Game::currentCardMixer() const
+QSharedPointer<Player> Game::currentCardMixer()
 {
     if(isComplete())
         return QSharedPointer<Player>();
@@ -318,7 +318,7 @@ QSharedPointer<Player> Game::currentCardMixer() const
     return round->cardMixer();
 }
 
-QList<QSharedPointer<Player> > Game::currentPlayingPlayers() const
+QList<QSharedPointer<Player> > Game::currentPlayingPlayers()
 {
     if(isComplete())
         return QList<QSharedPointer<Player> >();
@@ -484,23 +484,21 @@ void Game::startNextRound()
     emit newRoundStarted();
 }
 
-int Game::totalRoundCount() const
+int Game::totalRoundCount()
 {
-    return players().size() * 6;
+    calcInitialStats();
+
+    return m_totalRoundCount;
 }
 
-int Game::finishedRoundCount() const
+int Game::finishedRoundCount()
 {
-    int finishedRoundCount = rounds().size();
+    calcInitialStats();
 
-    // If the game is not finished, the last round is not finished.
-    if(state() != Finished)
-        --finishedRoundCount;
-
-    return finishedRoundCount;
+    return m_finishedRoundCount;
 }
 
-double Game::completedPercentage() const
+double Game::completedPercentage()
 {
     int total = totalRoundCount();
     if(total == 0)
@@ -509,12 +507,12 @@ double Game::completedPercentage() const
     return (double) finishedRoundCount() * 100 / (double) total;
 }
 
-bool Game::isComplete() const
+bool Game::isComplete()
 {
     return totalRoundCount() == finishedRoundCount();
 }
 
-int Game::roundsToPlay() const
+int Game::roundsToPlay()
 {
     return totalRoundCount() - finishedRoundCount();
 }
@@ -696,14 +694,10 @@ QList<QSharedPointer<OLD_OfflineGameInformation> > Game::offlineGameInformation(
     return m_offlineGameInformation;
 }
 
-int Game::placement(QSharedPointer<Player> player, int roundNumber) const
+int Game::placement(QSharedPointer<Player> player)
 {
-    QList<QSharedPointer<Round> > rs = rounds();
-
-    if(roundNumber >= rs.size())
-        roundNumber = rs.size() - 1;
-
-    return rs.at(roundNumber)->placement(player);
+    calcInitialStats();
+    return m_placements.value(player);
 }
 
 double Game::averagePlacement(QSharedPointer<Player> player) const
@@ -760,6 +754,17 @@ void Game::setMitPflichtSolo(bool arg)
     m_mitPflichtSolo = arg;
 }
 
+QString Game::playerString()
+{
+    QString value = "";
+    foreach(QSharedPointer<Player> player, players()) {
+        value += player->name() + ",";
+    }
+    value = value.remove(value.size()-1, 1);
+
+    return value;
+}
+
 Game::AdditionalMissingPlayer Game::aditionalMissingPlayer() const
 {
     return m_additionalMissingPlayer;
@@ -810,6 +815,10 @@ void Game::calcInitialStats()
         return;
     }
 
+    m_initialCalcedStats = true;
+
+    m_finishedRoundCount = 0;
+
     m_reWinCount = 0;
     m_contraWinCount = 0;
     m_reGamePoints = 0;
@@ -821,8 +830,16 @@ void Game::calcInitialStats()
     m_playerRoundsTogether.clear();
     m_playerRoundWinsTogether.clear();
 
-    foreach(QSharedPointer<Round> round, rounds()) {
+    m_totalRoundCount = players().size() * 6;
+
+    QList<QSharedPointer<Round>> _rounds = rounds();
+    QSharedPointer<Round> lastFinishedRound;
+    foreach(QSharedPointer<Round> round, _rounds) {
         if(round->state() == Round::Finished) {
+
+            m_finishedRoundCount++;
+            lastFinishedRound = round;
+
             if(round->winnerParty() == Round::Re) {
                 m_reWinCount++;
             }
@@ -835,7 +852,7 @@ void Game::calcInitialStats()
                 m_contraGamePoints += round->contraGamePoints();
             }
 
-            QSharedPointer<Player> re1Player = round->re2Player();
+            QSharedPointer<Player> re1Player = round->re1Player();
             addToRePlayersStats(round, re1Player);
 
             QSharedPointer<Player> re2Player = round->re2Player();
@@ -853,6 +870,7 @@ void Game::calcInitialStats()
             if(round->isSolo()) {
                 addToGamesTogetherStats(round, contra1Player, contra2Player);
                 addToGamesTogetherStats(round, contra3Player, contra2Player);
+                addToGamesTogetherStats(round, contra3Player, contra1Player);
             }
             else {
                 addToGamesTogetherStats(round, re1Player, re2Player);
@@ -861,7 +879,13 @@ void Game::calcInitialStats()
         }
     }
 
-    m_initialCalcedStats = true;
+    if(!lastFinishedRound) {
+        return;
+    }
+
+    foreach(QSharedPointer<Player> player, players()) {
+        m_placements.insert(player, lastFinishedRound->placement(player));
+    }
 }
 
 void Game::updateStats()
@@ -875,10 +899,11 @@ void Game::updateStats()
         return;
     }
 
-    QSharedPointer<Round> finishedRound = rs.at(rs.size()-1);
+    QSharedPointer<Round> finishedRound = rs.at(rs.size()-2);
     if(finishedRound->state() != Round::Finished) {
         return;
     }
+    m_finishedRoundCount++;
 
     if(finishedRound->winnerParty() == Round::Re) {
         m_reWinCount++;
@@ -892,7 +917,7 @@ void Game::updateStats()
         m_contraGamePoints += finishedRound->contraGamePoints();
     }
 
-    QSharedPointer<Player> re1Player = finishedRound->re2Player();
+    QSharedPointer<Player> re1Player = finishedRound->re1Player();
     addToRePlayersStats(finishedRound, re1Player);
 
     QSharedPointer<Player> re2Player = finishedRound->re2Player();
@@ -910,10 +935,15 @@ void Game::updateStats()
     if(finishedRound->isSolo()) {
         addToGamesTogetherStats(finishedRound, contra1Player, contra2Player);
         addToGamesTogetherStats(finishedRound, contra3Player, contra2Player);
+        addToGamesTogetherStats(finishedRound, contra3Player, contra1Player);
     }
     else {
         addToGamesTogetherStats(finishedRound, re1Player, re2Player);
         addToGamesTogetherStats(finishedRound, contra1Player, contra2Player);
+    }
+
+    foreach(QSharedPointer<Player> player, players()) {
+        m_placements.insert(player, finishedRound->placement(player));
     }
 }
 

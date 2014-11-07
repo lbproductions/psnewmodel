@@ -159,6 +159,23 @@ GameSortFilterModel::GameSortFilterModel(GameListModel *sourceModel, QObject *pa
 
 bool GameSortFilterModel::filterAcceptsObject(QSharedPointer<Game> game) const
 {
+    if(!game || game == 0 || game.isNull()) {
+        return false;
+    }
+
+    if(game->state() == Game::UnkownState) {
+        return false;
+    }
+
+    if(!m_players.isEmpty()) {
+        QString playerString = game->playerString();
+        foreach(QString name, m_players) {
+            if(!playerString.contains(name)) {
+                return false;
+            }
+        }
+    }
+
     if(filterRole() == UnfinishedStateFilter) {
         return game->state() != Game::Finished && game->state() != Game::UnkownState;
     }
@@ -176,3 +193,16 @@ bool GameSortFilterModel::lessThan(QSharedPointer<Game> left, QSharedPointer<Gam
 
     return QpSortFilterProxyObjectModel<Game>::lessThan(left, right);
 }
+
+QList<QString> GameSortFilterModel::players() const
+{
+    return m_players;
+}
+
+void GameSortFilterModel::setPlayers(const QList<QString> &players)
+{
+    m_players = players;
+
+    this->invalidate();
+}
+

@@ -88,8 +88,14 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     ReContraGeneralStatsWidget* generalWidget = new ReContraGeneralStatsWidget(this);
     generalWidget->setReRoundWins(reWins);
     generalWidget->setContraRoundWins(contraWins);
-    generalWidget->setReGamePointAverage(reGamePoints / rounds);
-    generalWidget->setContraGamePointAverage(contraGamePoints / rounds);
+    float reAvg = 0;
+    float contraAvg = 0;
+    if(rounds > 0) {
+        reAvg = reGamePoints / rounds;
+        contraAvg = contraGamePoints / rounds;
+    }
+    generalWidget->setReGamePointAverage(reAvg);
+    generalWidget->setContraGamePointAverage(contraAvg);
     ui->verticalLayoutPlayers->addWidget(generalWidget);
 
     ReContraStatsLegendWidget* legend = new ReContraStatsLegendWidget(this);

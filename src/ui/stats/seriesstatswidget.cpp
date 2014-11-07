@@ -22,7 +22,9 @@ SeriesStatsWidget::SeriesStatsWidget(QWidget *parent) :
 
 void SeriesStatsWidget::setLeague(QSharedPointer<League> league)
 {
-    setGames(league->calculatedGames(), league->players());
+    foreach(QSharedPointer<Player> player, league->players()) {
+        createItemFromPlayerStats(league->playerStats(player));
+    }
 }
 
 void SeriesStatsWidget::setGames(QList<QSharedPointer<Game> > games)
@@ -59,47 +61,52 @@ void SeriesStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShar
         }
         stats->setGames(playerGames);
 
-        QString best = "-";
-        QList<RoundSeries> bests = stats->winSeries();
-        if(!bests.isEmpty()) {
-            RoundSeries bestSeries = bests.first();
-            best = "W" + QString::number(bestSeries.size()) + " (" + QString::number(seriesPoints(bestSeries, player)) + ")";
-        }
-
-        QString worst = "-";
-        QList<RoundSeries> worsts = stats->loseSeries();
-        if(!worsts.isEmpty()) {
-            RoundSeries worstSeries = worsts.first();
-            worst = "L" + QString::number(worstSeries.size()) + " (" + QString::number(seriesPoints(worstSeries, player)) + ")";
-        }
-
-        QString current = "-";
-        QList<RoundSeries> allSeries = stats->series();
-        if(!allSeries.isEmpty()) {
-            RoundSeries currentSeries = stats->series().last();
-
-            if(currentSeries.first()->points(player) > 0) {
-                current = "W";
-            }
-            else if(currentSeries.first()->points(player) < 0) {
-                current = "L";
-            }
-            else {
-                current = "U";
-            }
-            current += QString::number(currentSeries.size()) + " (" + QString::number(seriesPoints(currentSeries, player)) + ")";
-        }
-
-        this->addTopLevelItem(
-                    createItem(player,
-                               best,
-                               worst,
-                               current)
-                    );
+        createItemFromPlayerStats(QSharedPointer<PlayerStatistics>(stats));
 
         delete stats;
         stats = 0;
     }
+}
+
+void SeriesStatsWidget::createItemFromPlayerStats(QSharedPointer<PlayerStatistics> stats)
+{
+    QSharedPointer<Player> player = stats->player();
+
+    QString best = "-";
+    QList<RoundSeries> bests = stats->winSeries();
+    if(!bests.isEmpty()) {
+        RoundSeries bestSeries = bests.first();
+        best = "W" + QString::number(bestSeries.size()) + " (" + QString::number(seriesPoints(bestSeries, player)) + ")";
+    }
+
+    QString worst = "-";
+    QList<RoundSeries> worsts = stats->loseSeries();
+    if(!worsts.isEmpty()) {
+        RoundSeries worstSeries = worsts.first();
+        worst = "L" + QString::number(worstSeries.size()) + " (" + QString::number(seriesPoints(worstSeries, player)) + ")";
+    }
+
+    QString current = "-";
+    RoundSeries currentSeries = stats->lastSeries();
+    if(!currentSeries.isEmpty()) {
+        if(currentSeries.first()->points(player) > 0) {
+            current = "W";
+        }
+        else if(currentSeries.first()->points(player) < 0) {
+            current = "L";
+        }
+        else {
+            current = "U";
+        }
+        current += QString::number(currentSeries.size()) + " (" + QString::number(seriesPoints(currentSeries, player)) + ")";
+    }
+
+    this->addTopLevelItem(
+                createItem(player,
+                           best,
+                           worst,
+                           current)
+                );
 }
 
 QTreeWidgetItem *SeriesStatsWidget::createItem(QSharedPointer<Player> player, QString wins, QString losses, QString current)

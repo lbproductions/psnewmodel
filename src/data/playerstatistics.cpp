@@ -10,7 +10,8 @@
 #include <limits>
 
 PlayerStatistics::PlayerStatistics(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    m_statsInitialized(false)
 {
 }
 
@@ -527,64 +528,84 @@ QList<RoundSeries> PlayerStatistics::series()
 
 QList<RoundSeries> PlayerStatistics::winSeries()
 {
-    QList<QSharedPointer<Round> > allRounds = rounds();
-    qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
+    initStats();
 
-    QList<RoundSeries> result;
-
-    RoundSeries current;
-    for(int i = 0; i<allRounds.size(); i++) {
-        QSharedPointer<Round> round = allRounds.at(i);
-        if(round->points(player()) > 0) {
-            current.append(round);
-        }
-        else {
-            if(!current.isEmpty()) {
-                result.append(current);
-                current.clear();
-            }
-        }
-    }
-
-    if(!current.isEmpty()) {
-        result.append(current);
-        current.clear();
-    }
-
-    qSort(result.begin(), result.end(), sortRoundSeriesBySize);
-
-    return result;
+    return m_winSeries;
 }
 
 QList<RoundSeries> PlayerStatistics::loseSeries()
 {
+    initStats();
+
+    return m_loseSeries;
+}
+
+RoundSeries PlayerStatistics::lastSeries()
+{
+    initStats();
+
+    return m_lastSeries;
+}
+
+void PlayerStatistics::initStats()
+{
+    if(m_statsInitialized) {
+        return;
+    }
+
     QList<QSharedPointer<Round> > allRounds = rounds();
     qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
 
-    QList<RoundSeries> result;
+    m_winSeries.clear();
+    m_loseSeries.clear();
+    m_lastSeries.clear();
 
     RoundSeries current;
+    bool winSeries = false;
     for(int i = 0; i<allRounds.size(); i++) {
         QSharedPointer<Round> round = allRounds.at(i);
-        if(round->points(player()) < 0) {
-            current.append(round);
-        }
-        else {
-            if(!current.isEmpty()) {
-                result.append(current);
+        if(round->points(player()) > 0) {
+            if(!winSeries && !current.isEmpty()) {
+                m_loseSeries.append(current);
+                m_lastSeries = current;
                 current.clear();
             }
+            current.append(round);
+            winSeries = true;
+        }
+        else if(round->points(player()) < 0) {
+            if(winSeries && !current.isEmpty()) {
+                m_winSeries.append(current);
+                m_lastSeries = current;
+                current.clear();
+            }
+            current.append(round);
+            winSeries = false;
+        }
+        else {
+            current.append(round);
         }
     }
 
     if(!current.isEmpty()) {
-        result.append(current);
-        current.clear();
+        if(winSeries) {
+            m_winSeries.append(current);
+        }
+        else {
+            m_loseSeries.append(current);
+        }
+        m_lastSeries = current;
     }
 
-    qSort(result.begin(), result.end(), sortRoundSeriesBySize);
+    qSort(m_winSeries.begin(), m_winSeries.end(), sortRoundSeriesBySize);
+    qSort(m_loseSeries.begin(), m_loseSeries.end(), sortRoundSeriesBySize);
 
-    return result;
+    m_statsInitialized = true;
+}
+
+void PlayerStatistics::updateStats()
+{
+
 }
 
 double PlayerStatistics::percentage(int value1, int value2)

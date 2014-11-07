@@ -74,8 +74,18 @@ public:
     QList<RoundSeries> series();
     QList<RoundSeries> winSeries();
     QList<RoundSeries> loseSeries();
+    RoundSeries lastSeries();
 
-private:
+ private:
+    void initStats();
+    void updateStats();
+
+    bool m_statsInitialized;
+
+    RoundSeries m_lastSeries;
+    QList<RoundSeries> m_winSeries;
+    QList<RoundSeries> m_loseSeries;
+
     Player *m_player;
     QList<QSharedPointer<Game> > m_games;
 
