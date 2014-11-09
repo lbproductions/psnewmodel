@@ -9,13 +9,14 @@
 #define COMMA ,
 
 #include "game.h"
+#include "parseobject.h"
 
 class LiveDrink;
 class Player;
 class Point;
 class Schmeisserei;
 
-class Round : public QObject
+class Round : public ParseObject
 {
     Q_OBJECT
     Q_ENUMS(WinnerParty)

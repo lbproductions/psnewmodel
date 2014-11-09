@@ -13,7 +13,7 @@
 #include <QPainter>
 
 Player::Player(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_gender(UnkownGender),
     m_weight(-1),
     m_height(-1),
@@ -571,6 +571,16 @@ void Player::removeContra3Round(QSharedPointer<Round> round)
 QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
 {
     return m_allGamesStatistics;
+}
+
+QString Player::parseID() const
+{
+    return m_parseID;
+}
+
+void Player::setParseID(QString arg)
+{
+    m_parseID = arg;
 }
 
 void Player::addLiveDrink(QSharedPointer<LiveDrink> drink)

@@ -1,7 +1,7 @@
 #ifndef GAME_H
 #define GAME_H
 
-#include <QObject>
+#include "parseobject.h"
 
 #include <QPersistence.h>
 #include <QTime>
@@ -18,7 +18,7 @@ class Drink;
 class OLD_OfflineGameInformation;
 class OLD_DokoOfflineGameBuddys;
 
-class Game: public QObject
+class Game: public ParseObject
 {
     Q_OBJECT
     Q_ENUMS(Type)

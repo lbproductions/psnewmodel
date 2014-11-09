@@ -13,7 +13,7 @@ TARGET          = psnewmodel
 VERSION         = 0.0.8
 TEMPLATE        = app
 ICON            = resource/general/icon2.icns
-QT              += sql widgets
+QT              += sql widgets network
 CONFIG          += c++11
 CONFIG          += CONSOLE
 QMAKE_CXXFLAGS  += $$QPERSISTENCE_COMMON_QMAKE_CXXFLAGS
@@ -211,7 +211,9 @@ SOURCES += main.cpp \
     ui/stats/placestatswidget.cpp \
     ui/stats/recontraplayerstatswidget.cpp \
     ui/stats/recontrastatslegendwidget.cpp \
-    ui/stats/recontrageneralstatswidget.cpp
+    ui/stats/recontrageneralstatswidget.cpp \
+    data/parsecontroller.cpp \
+    data/parseobject.cpp
 
 
 HEADERS  += \
@@ -316,7 +318,9 @@ HEADERS  += \
     ui/stats/placestatswidget.h \
     ui/stats/recontraplayerstatswidget.h \
     ui/stats/recontrastatslegendwidget.h \
-    ui/stats/recontrageneralstatswidget.h
+    ui/stats/recontrageneralstatswidget.h \
+    data/parsecontroller.h \
+    data/parseobject.h
 
 
 FORMS += \

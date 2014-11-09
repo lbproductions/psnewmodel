@@ -10,7 +10,7 @@
 
 
 Round::Round(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_number(-1),
     m_state(Round::UnkownState),
     m_length(QTime(0,0,0)),

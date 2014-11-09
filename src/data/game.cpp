@@ -13,7 +13,7 @@
 
 
 Game::Game(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_type(UnkownType),
     m_creationTime(QDateTime::currentDateTime()),
     m_mitPflichtSolo(false),

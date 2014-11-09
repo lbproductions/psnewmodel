@@ -7,7 +7,7 @@
 #include <QPixmap>
 #include <QPersistence.h>
 
-
+#include "parseobject.h"
 
 class Schmeisserei;
 class Round;
@@ -20,7 +20,7 @@ class League;
 class Drink;
 class OLD_OfflineGameInformation;
 
-class Player : public QObject
+class Player : public ParseObject
 {
     Q_OBJECT
     Q_ENUMS(Gender)

@@ -5,6 +5,7 @@
 
 #include <library.h>
 #include <misc/settings.h>
+#include <data/parsecontroller.h>
 
 #include <QApplication>
 #include <QPainter>
@@ -284,6 +285,8 @@ void ChooseLibraryWidget::openLibrary(const QString &packagePath)
     window->show();
     window->raise();
     window->activateWindow();
+
+    ParseController::instance()->uploadGames();
 }
 
 void ChooseLibraryWidget::on_toolButtonOpen_clicked()

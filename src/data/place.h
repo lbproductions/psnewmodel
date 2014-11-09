@@ -6,12 +6,12 @@
 #include <QPixmap>
 #include <QPersistence.h>
 
-
+#include "parseobject.h"
 
 class Player;
 class Game;
 
-class Place : public QObject
+class Place : public ParseObject
 {
     Q_OBJECT
     Q_PROPERTY(int postalCode READ postalCode WRITE setPostalCode)

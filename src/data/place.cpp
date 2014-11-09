@@ -8,7 +8,7 @@
 
 
 Place::Place(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_postalCode(-1),
     m_houseNumber(-1),
     m_players(QpRelation(&Place::players)),
