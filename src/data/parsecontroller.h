@@ -42,6 +42,8 @@ private:
 
     bool checkGameDependendUploads(QSharedPointer<Game> _game);
 
+    QString JSONString(QSharedPointer<ParseObject> _object);
+
     QNetworkAccessManager* m_gameNetworkManager;
     QNetworkAccessManager* m_roundNetworkManager;
     QNetworkAccessManager* m_playerNetworkManager;

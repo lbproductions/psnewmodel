@@ -573,16 +573,6 @@ QSharedPointer<PlayerStatistics> Player::allGamesStatistics() const
     return m_allGamesStatistics;
 }
 
-QString Player::parseID() const
-{
-    return m_parseID;
-}
-
-void Player::setParseID(QString arg)
-{
-    m_parseID = arg;
-}
-
 void Player::addLiveDrink(QSharedPointer<LiveDrink> drink)
 {
     m_liveDrinks.add(drink);

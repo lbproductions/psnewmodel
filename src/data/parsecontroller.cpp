@@ -86,20 +86,40 @@ void ParseController::uploadGame(QSharedPointer<Game> _game)
     }
     postData.append("\"state\":"+QString::number(_game->state())+",");
     postData.append("\"type\":"+QString::number(_game->type())+",");
-    postData.append("\"finishedRoundsCount\":"+QString::number(_game->finishedRoundCount()));
+    postData.append("\"finishedRoundsCount\":"+QString::number(_game->finishedRoundCount()) + ",");
+
+    postData.append(QString("\"site\"") + ":" + JSONString(_game->site()));
+    postData.append(",");
+
     QString playersString = "\"players\":{\"__op\":\"Add\",\"objects\":[";
     foreach(QSharedPointer<Player> player, _game->players()) {
-        playersString += QString("{")
-                + "\"__type\":\"Pointer\","
-                + "\"className\":\"Player\","
-                + "\"objectId\":\""
-                + player->parseID()
-                + "\"";
-                + "}";
+        playersString += JSONString(player) + ",";
     }
-
+    playersString.remove(playersString.size()-1, 1);
     postData.append(playersString);
+    postData.append("]}");
+    postData.append(",");
+
+    QString roundsString = "\"rounds\":{\"__op\":\"Add\",\"objects\":[";
+    foreach(QSharedPointer<Round> round, _game->rounds()) {
+        roundsString += JSONString(round) + ",";
+    }
+    roundsString.remove(roundsString.size()-1, 1);
+    postData.append(roundsString);
+    postData.append("]}");
+    postData.append(",");
+
+    QString positionsString = "";
+    positionsString += QString("\"playerPositions\"") + ":" + "{";
+    foreach(QSharedPointer<Player> player, _game->players()) {
+        positionsString += "\"" + player->parseID() + "\":" + QString::number(_game->players().indexOf(player)) + ",";
+    }
+    positionsString.remove(positionsString.size()-1,1);
+    postData.append(positionsString);
     postData.append("}");
+
+    postData.append("}");
+    qDebug() << postData;
 
     m_gameNetworkManager->post(request, postData);
 }
@@ -165,6 +185,17 @@ bool ParseController::checkGameDependendUploads(QSharedPointer<Game> _game)
     return check;
 }
 
+QString ParseController::JSONString(QSharedPointer<ParseObject> _object)
+{
+    return QString("{")
+            + "\"__type\":\"Pointer\","
+            + "\"className\":\""+ _object->metaObject()->className() + "\","
+            + "\"objectId\":\""
+            + _object->parseID()
+            + "\""
+            + "}";
+}
+
 void ParseController::tryToUploadRound(QSharedPointer<Round> _round)
 {
     if(!m_roundsToUpload.contains(_round)) {
@@ -194,6 +225,8 @@ void ParseController::uploadRound(QSharedPointer<Round> _round)
     postData.append(",");
     postData.append(QString("\"number\"") + ":" + QString::number(_round->number()));
     postData.append(",");
+    postData.append(QString("\"startTime\"") + ":" + "{\"__type\": \"Date\",\"iso\": \"" + _round->startTime().toString(Qt::ISODate) + "\"}");
+    postData.append(",");
     postData.append(QString("\"reGamePoints\"") + ":" + QString::number(_round->reGamePoints()));
     postData.append(",");
     postData.append(QString("\"contraGamePoints\"") + ":" + QString::number(_round->contraGamePoints()));
@@ -214,7 +247,47 @@ void ParseController::uploadRound(QSharedPointer<Round> _round)
     postData.append(QString("\"trumpfCount\"") + ":" + QString::number(_round->trumpfCount()));
     postData.append(",");
     postData.append(QString("\"trumpfZurueck\"") + ":" + QString::number(_round->trumpfZurueck()));
+    postData.append(",");
+    postData.append(QString("\"re1Player\"") + ":" + JSONString(_round->re1Player()));
+    postData.append(",");
+    if(_round->isSolo()) {
+        postData.append(QString("\"contra3Player\"") + ":" + JSONString(_round->contra3Player()));
+        postData.append(",");
+        postData.append(QString("\"soloPlayer\"") + ":" + JSONString(_round->soloPlayer()));
+    }
+    else {
+        postData.append(QString("\"re2Player\"") + ":" + JSONString(_round->re2Player()));
+    }
+    postData.append(",");
+    postData.append(QString("\"contra1Player\"") + ":" + JSONString(_round->contra1Player()));
+    postData.append(",");
+    postData.append(QString("\"contra2Player\"") + ":" + JSONString(_round->contra2Player()));
+    if(_round->schweinereiPlayer()) {
+        postData.append(",");
+        postData.append(QString("\"schweinereiPlayer\"") + ":" + JSONString(_round->schweinereiPlayer()));
+    }
+    if(_round->hochzeitPlayer()) {
+        postData.append(",");
+        postData.append(QString("\"hochzeitPlayer\"") + ":" + JSONString(_round->hochzeitPlayer()));
+    }
+    if(_round->trumpfabgabePlayer()) {
+        postData.append(",");
+        postData.append(QString("\"trumpfabgabePlayer\"") + ":" + JSONString(_round->trumpfabgabePlayer()));
+    }
+    postData.append(",");
+
+    QString pointsString = "";
+    pointsString += QString("\"points\"") + ":" + "{";
+    foreach(QSharedPointer<Player> player, _round->playingPlayers()) {
+        pointsString += "\"" + player->parseID() + "\":" + QString::number(_round->points(player)) + ",";
+    }
+    pointsString.remove(pointsString.size()-1,1);
+    postData.append(pointsString);
     postData.append("}");
+
+    postData.append("}");
+
+    qDebug() << postData;
 
     m_roundNetworkManager->post(request, postData);
 }
@@ -222,11 +295,17 @@ void ParseController::uploadRound(QSharedPointer<Round> _round)
 void ParseController::onRoundUploadFinished(QNetworkReply *reply)
 {
     if (reply != 0 && reply->error() == QNetworkReply::NoError) {
+        QByteArray replyArray = reply->readAll();
+        if(replyArray.isEmpty()) {
+            return;
+        }
+        else {
+            qDebug() << "Reply: " << replyArray;
+        }
+
         QSharedPointer<Round> uploadedRound = m_roundsToUpload.takeFirst();
         qDebug() << "Uploaded round " << uploadedRound->number() << " of game: " << uploadedRound->game()->creationTime().toString();
 
-        QByteArray replyArray = reply->readAll();
-        qDebug() << replyArray;
         QJsonDocument document = QJsonDocument::fromJson(replyArray);
         QJsonObject object = document.object();
         qDebug() << object.keys();
@@ -362,11 +441,12 @@ void ParseController::uploadPlayer(QSharedPointer<Player> _player)
 void ParseController::onPlayerUploadFinished(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) {
+        QByteArray replyArray = reply->readAll();
+        qDebug() << replyArray;
+
         QSharedPointer<Player> uploadedPlayer = m_playersToUpload.takeFirst();
         qDebug() << "Uploaded player: " << uploadedPlayer->name();
 
-        QByteArray replyArray = reply->readAll();
-        qDebug() << replyArray;
         QJsonDocument document = QJsonDocument::fromJson(replyArray);
         QJsonObject object = document.object();
         qDebug() << object.keys();
@@ -390,6 +470,9 @@ void ParseController::onPlayerUploadFinished(QNetworkReply *reply)
         qDebug() << "Failure" <<reply->errorString();
         m_uploadingPlayer = false;
     }
+
+    delete reply;
+    reply = 0;
 }
 
 
