@@ -7,7 +7,7 @@
 
 #include <limits>
 
-
+#include "parsecontroller.h"
 
 Round::Round(QObject *parent) :
     ParseObject(parent),
@@ -667,4 +667,78 @@ void Round::setContraGamePoints(int arg)
 QString Round::name() const
 {
     return QString::number(number()) + " - " + startTime().toString("dd.MM.yyyy hh:mm");
+}
+
+
+QByteArray Round::JSONData()
+{
+    QByteArray postData;
+    postData.append("{");
+    postData.append(QString("\"gameID\"") + ":" + "\"" + this->game()->parseID() + "\"");
+    postData.append(",");
+    postData.append(QString("\"number\"") + ":" + QString::number(this->number()));
+    postData.append(",");
+    postData.append(QString("\"startTime\"") + ":" + "{\"__type\": \"Date\",\"iso\": \"" + this->startTime().toString(Qt::ISODate) + "\"}");
+    postData.append(",");
+    postData.append(QString("\"reGamePoints\"") + ":" + QString::number(this->reGamePoints()));
+    postData.append(",");
+    postData.append(QString("\"contraGamePoints\"") + ":" + QString::number(this->contraGamePoints()));
+    postData.append(",");
+    postData.append(QString("\"state\"") + ":" + QString::number(this->state()));
+    postData.append(",");
+    postData.append(QString("\"winnerParty\"") + ":" + QString::number(this->winnerParty()));
+    postData.append(",");
+    postData.append(QString("\"hochzeitDecision\"") + ":" + QString::number(this->hochzeitDecision()));
+    postData.append(",");
+    if(this->isPflicht()) {
+        postData.append(QString("\"isPflicht\"") + ":" + "true");
+    }
+    else {
+        postData.append(QString("\"isPflicht\"") + ":" + "false");
+    }
+    postData.append(",");
+    postData.append(QString("\"trumpfCount\"") + ":" + QString::number(this->trumpfCount()));
+    postData.append(",");
+    postData.append(QString("\"trumpfZurueck\"") + ":" + QString::number(this->trumpfZurueck()));
+    postData.append(",");
+    postData.append(QString("\"re1Player\"") + ":" + JSONString(this->re1Player()));
+    postData.append(",");
+    if(this->isSolo()) {
+        postData.append(QString("\"contra3Player\"") + ":" + JSONString(this->contra3Player()));
+        postData.append(",");
+        postData.append(QString("\"soloPlayer\"") + ":" + JSONString(this->soloPlayer()));
+    }
+    else {
+        postData.append(QString("\"re2Player\"") + ":" + JSONString(this->re2Player()));
+    }
+    postData.append(",");
+    postData.append(QString("\"contra1Player\"") + ":" + JSONString(this->contra1Player()));
+    postData.append(",");
+    postData.append(QString("\"contra2Player\"") + ":" + JSONString(this->contra2Player()));
+    if(this->schweinereiPlayer()) {
+        postData.append(",");
+        postData.append(QString("\"schweinereiPlayer\"") + ":" + JSONString(this->schweinereiPlayer()));
+    }
+    if(this->hochzeitPlayer()) {
+        postData.append(",");
+        postData.append(QString("\"hochzeitPlayer\"") + ":" + JSONString(this->hochzeitPlayer()));
+    }
+    if(this->trumpfabgabePlayer()) {
+        postData.append(",");
+        postData.append(QString("\"trumpfabgabePlayer\"") + ":" + JSONString(this->trumpfabgabePlayer()));
+    }
+    postData.append(",");
+
+    QString pointsString = "";
+    pointsString += QString("\"points\"") + ":" + "{";
+    foreach(QSharedPointer<Player> player, this->playingPlayers()) {
+        pointsString += "\"" + player->parseID() + "\":" + QString::number(this->points(player)) + ",";
+    }
+    pointsString.remove(pointsString.size()-1,1);
+    postData.append(pointsString);
+    postData.append("}");
+
+    postData.append("}");
+
+    return postData;
 }

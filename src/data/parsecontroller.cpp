@@ -15,24 +15,86 @@
 #include "round.h"
 #include "player.h"
 #include "place.h"
+#include "schmeisserei.h"
+#include "livedrink.h"
+#include "drink.h"
 
 static QString applicationKey = "rmamC3zOAKDUorbjF6Lb75W4hJFcG97M4myz2u6v";
 static QString restKey = "KnX9CpfpKk58yQfPp2z0vew1XzayL4E8Swt1ga2z";
 
 ParseController::ParseController(QObject *parent) :
     QObject(parent),
-    m_uploadingGame(false)
+    m_uploadingGame(false),
+    m_uploadingRound(false),
+    m_uploadingPlayer(false),
+    m_uploadingPlace(false),
+    m_uploadingSchmeisserei(false),
+    m_uploadingDrink(false),
+    m_uploadingLiveDrink(false)
 {
     m_gameNetworkManager = new QNetworkAccessManager(this);
     m_roundNetworkManager = new QNetworkAccessManager(this);
     m_placeNetworkManager = new QNetworkAccessManager(this);
     m_playerNetworkManager = new QNetworkAccessManager(this);
+    m_schmeissereiNetworkManager = new QNetworkAccessManager(this);
+    m_liveDrinkNetworkManager = new QNetworkAccessManager(this);
+    m_drinkNetworkManager = new QNetworkAccessManager(this);
 }
 
 ParseController *ParseController::instance()
 {
     static ParseController controller;
     return &controller;
+}
+
+void ParseController::uploadParseObject(QSharedPointer<ParseObject> _object, QNetworkAccessManager* _networkManager)
+{
+    bool update = false;
+    QString urlString = "https://api.parse.com/1/classes/" + QString(_object->metaObject()->className());
+    if(_object->parseID() != "") {
+        urlString += "/" + _object->parseID();
+        update = true;
+    }
+    qDebug() << "Executing URL: " << urlString;
+    QUrl url(urlString);
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+    request.setRawHeader("X-Parse-Application-Id", applicationKey.toUtf8());
+    request.setRawHeader("X-Parse-REST-API-Key", restKey.toUtf8());
+
+    QByteArray postData = _object->JSONData();
+
+    if(update) {
+        _networkManager->put(request, postData);
+    }
+    else {
+        _networkManager->post(request, postData);
+    }
+}
+
+void ParseController::onParseObjectUploadFinished(QByteArray replyArray, QSharedPointer<ParseObject> _object)
+{
+    if(replyArray.isEmpty()) {
+        return;
+    }
+
+    QJsonDocument document = QJsonDocument::fromJson(replyArray);
+    QJsonObject object = document.object();
+
+    if(object.keys().contains("updatedAt")) {
+        Q_ASSERT(_object->parseID() != "");
+        qDebug() << "Updated " << QString(_object->metaObject()->className()) << " with ID " << _object->parseID();
+        _object->setParseUpdated(true);
+        Qp::update(_object);
+    }
+    else if(object.keys().contains("createdAt")) {
+        QJsonValue value = object.value("objectId");
+        _object->setParseID(value.toString());
+        _object->setParseUpdated(true);
+        Qp::update(_object);
+        qDebug() << "Uploaded " << QString(_object->metaObject()->className()) << " with ID " << _object->parseID();
+    }
 }
 
 void ParseController::uploadGames()
@@ -69,90 +131,44 @@ void ParseController::uploadGame(QSharedPointer<Game> _game)
 
     connect(m_gameNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onGameUploadFinished(QNetworkReply*)));
 
-    QString urlString = "https://api.parse.com/1/classes/Game";
-    QUrl url(urlString);
-
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
-    request.setRawHeader("X-Parse-Application-Id", applicationKey.toUtf8());
-    request.setRawHeader("X-Parse-REST-API-Key", restKey.toUtf8());
-
-    QByteArray postData;
-    if(_game->mitPflichtSolo()) {
-        postData.append("{\"pflichtsolo\":true,");
-    }
-    else {
-        postData.append("{\"pflichtsolo\":false,");
-    }
-    postData.append("\"state\":"+QString::number(_game->state())+",");
-    postData.append("\"type\":"+QString::number(_game->type())+",");
-    postData.append("\"finishedRoundsCount\":"+QString::number(_game->finishedRoundCount()) + ",");
-
-    postData.append(QString("\"site\"") + ":" + JSONString(_game->site()));
-    postData.append(",");
-
-    QString playersString = "\"players\":{\"__op\":\"Add\",\"objects\":[";
-    foreach(QSharedPointer<Player> player, _game->players()) {
-        playersString += JSONString(player) + ",";
-    }
-    playersString.remove(playersString.size()-1, 1);
-    postData.append(playersString);
-    postData.append("]}");
-    postData.append(",");
-
-    QString roundsString = "\"rounds\":{\"__op\":\"Add\",\"objects\":[";
-    foreach(QSharedPointer<Round> round, _game->rounds()) {
-        roundsString += JSONString(round) + ",";
-    }
-    roundsString.remove(roundsString.size()-1, 1);
-    postData.append(roundsString);
-    postData.append("]}");
-    postData.append(",");
-
-    QString positionsString = "";
-    positionsString += QString("\"playerPositions\"") + ":" + "{";
-    foreach(QSharedPointer<Player> player, _game->players()) {
-        positionsString += "\"" + player->parseID() + "\":" + QString::number(_game->players().indexOf(player)) + ",";
-    }
-    positionsString.remove(positionsString.size()-1,1);
-    postData.append(positionsString);
-    postData.append("}");
-
-    postData.append("}");
-    qDebug() << postData;
-
-    m_gameNetworkManager->post(request, postData);
+    uploadParseObject(_game, m_gameNetworkManager);
 }
 
 void ParseController::onGameUploadFinished(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) {
+        if(m_gamesToUpload.isEmpty()) {
+            return;
+        }
+
+        QByteArray array = reply->readAll();
+        if(array.isEmpty()) {
+            return;
+        }
+
         QSharedPointer<Game> uploadedGame = m_gamesToUpload.takeFirst();
+        onParseObjectUploadFinished(array, uploadedGame);
 
-        QByteArray replyArray = reply->readAll();
-        qDebug() << replyArray;
-        QJsonDocument document = QJsonDocument::fromJson(replyArray);
-        QJsonObject object = document.object();
-        qDebug() << object.keys();
-        QJsonValue value = object.value("objectId");
-
-        uploadedGame->setParseID(value.toString());
-        Qp::update(uploadedGame);
-
-        delete reply;
-
-        if(!m_gamesToUpload.isEmpty()) {
-            uploadGame(m_gamesToUpload.first());
+        if(checkGameUpdateDependencies(uploadedGame))  {
+            if(!m_gamesToUpload.isEmpty()) {
+                uploadGame(m_gamesToUpload.first());
+            }
+            else {
+                m_uploadingGame = false;
+            }
         }
         else {
-            m_uploadingGame = false;
+            m_gamesToUpload.insert(0, uploadedGame);
+            uploadedGame->setParseUpdated(false);
+            Qp::update(uploadedGame);
         }
     }
     else {
-        qDebug() << "Failure" <<reply->errorString();
+        qDebug() << "Failure uploading game: " << reply->errorString();
         m_uploadingGame = false;
-        delete reply;
     }
+
+    reply->deleteLater();
 }
 
 bool ParseController::checkGameDependendUploads(QSharedPointer<Game> _game)
@@ -160,24 +176,27 @@ bool ParseController::checkGameDependendUploads(QSharedPointer<Game> _game)
     bool check = true;
 
     foreach(QSharedPointer<Player> player, _game->players()) {
-        if(player->parseID() == "") {
+        if(player->parseID() == "" /*|| !player->parseUpdated()*/) {
             tryToUploadPlayer(player);
             check = false;
         }
     }
 
-    if(!check) { // Rounds needs uploaded players
-        return check;
-    }
+    return check;
+}
+
+bool ParseController::checkGameUpdateDependencies(QSharedPointer<Game> _game)
+{
+    bool check = true;
 
     foreach(QSharedPointer<Round> round, _game->rounds()) {
-        if(round->parseID() == "") {
+        if(round->parseID() == "" || !round->parseUpdated()) {
             tryToUploadRound(round);
             check = false;
         }
     }
 
-    if(_game->site()->parseID() == "") {
+    if(_game->site()->parseID() == "" || !_game->site()->parseUpdated()) {
         tryToUploadPlace(_game->site());
         check = false;
     }
@@ -185,15 +204,50 @@ bool ParseController::checkGameDependendUploads(QSharedPointer<Game> _game)
     return check;
 }
 
-QString ParseController::JSONString(QSharedPointer<ParseObject> _object)
+bool ParseController::checkRoundUploadDependencies(QSharedPointer<Round> _round)
 {
-    return QString("{")
-            + "\"__type\":\"Pointer\","
-            + "\"className\":\""+ _object->metaObject()->className() + "\","
-            + "\"objectId\":\""
-            + _object->parseID()
-            + "\""
-            + "}";
+    if(_round->game()->parseID() == "") {
+        tryToUploadGame(_round->game());
+        return false;
+    }
+
+    return true;
+}
+
+bool ParseController::checkRoundUpdateDependencies(QSharedPointer<Round> _round)
+{
+    bool check = true;
+
+    foreach(QSharedPointer<Schmeisserei> schmeisserei, _round->schmeissereis()) {
+        if(schmeisserei->parseID() == "" || !schmeisserei->parseUpdated()) {
+            tryToUploadSchmeisserei(schmeisserei);
+            check = false;
+        }
+    }
+
+    foreach(QSharedPointer<LiveDrink> drink, _round->liveDrinks()) {
+        if(drink->parseID() == "" || !drink->parseUpdated()) {
+            tryToUploadLiveDrink(drink);
+            check = false;
+        }
+    }
+
+    return check;
+}
+
+bool ParseController::checkLiveDrinkUploadDependencies(QSharedPointer<LiveDrink> _drink)
+{
+    bool check = true;
+
+    Q_ASSERT(_drink->player()->parseID() != "");
+    Q_ASSERT(_drink->round()->parseID() != "");
+
+    if(_drink->drink()->parseID() == "") {
+        tryToUploadDrink(_drink->drink());
+        check = false;
+    }
+
+    return check;
 }
 
 void ParseController::tryToUploadRound(QSharedPointer<Round> _round)
@@ -210,86 +264,13 @@ void ParseController::tryToUploadRound(QSharedPointer<Round> _round)
 
 void ParseController::uploadRound(QSharedPointer<Round> _round)
 {
+    if(!checkRoundUploadDependencies(_round)) {
+        return;
+    }
+
     connect(m_roundNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onRoundUploadFinished(QNetworkReply*)));
 
-    QUrl url("https://api.parse.com/1/classes/Round");
-
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
-    request.setRawHeader("X-Parse-Application-Id", applicationKey.toUtf8());
-    request.setRawHeader("X-Parse-REST-API-Key", restKey.toUtf8());
-
-    QByteArray postData;
-    postData.append("{");
-    postData.append(QString("\"gameID\"") + ":" + "\"" + _round->game()->parseID() + "\"");
-    postData.append(",");
-    postData.append(QString("\"number\"") + ":" + QString::number(_round->number()));
-    postData.append(",");
-    postData.append(QString("\"startTime\"") + ":" + "{\"__type\": \"Date\",\"iso\": \"" + _round->startTime().toString(Qt::ISODate) + "\"}");
-    postData.append(",");
-    postData.append(QString("\"reGamePoints\"") + ":" + QString::number(_round->reGamePoints()));
-    postData.append(",");
-    postData.append(QString("\"contraGamePoints\"") + ":" + QString::number(_round->contraGamePoints()));
-    postData.append(",");
-    postData.append(QString("\"state\"") + ":" + QString::number(_round->state()));
-    postData.append(",");
-    postData.append(QString("\"winnerParty\"") + ":" + QString::number(_round->winnerParty()));
-    postData.append(",");
-    postData.append(QString("\"hochzeitDecision\"") + ":" + QString::number(_round->hochzeitDecision()));
-    postData.append(",");
-    if(_round->isPflicht()) {
-        postData.append(QString("\"isPflicht\"") + ":" + "true");
-    }
-    else {
-        postData.append(QString("\"isPflicht\"") + ":" + "false");
-    }
-    postData.append(",");
-    postData.append(QString("\"trumpfCount\"") + ":" + QString::number(_round->trumpfCount()));
-    postData.append(",");
-    postData.append(QString("\"trumpfZurueck\"") + ":" + QString::number(_round->trumpfZurueck()));
-    postData.append(",");
-    postData.append(QString("\"re1Player\"") + ":" + JSONString(_round->re1Player()));
-    postData.append(",");
-    if(_round->isSolo()) {
-        postData.append(QString("\"contra3Player\"") + ":" + JSONString(_round->contra3Player()));
-        postData.append(",");
-        postData.append(QString("\"soloPlayer\"") + ":" + JSONString(_round->soloPlayer()));
-    }
-    else {
-        postData.append(QString("\"re2Player\"") + ":" + JSONString(_round->re2Player()));
-    }
-    postData.append(",");
-    postData.append(QString("\"contra1Player\"") + ":" + JSONString(_round->contra1Player()));
-    postData.append(",");
-    postData.append(QString("\"contra2Player\"") + ":" + JSONString(_round->contra2Player()));
-    if(_round->schweinereiPlayer()) {
-        postData.append(",");
-        postData.append(QString("\"schweinereiPlayer\"") + ":" + JSONString(_round->schweinereiPlayer()));
-    }
-    if(_round->hochzeitPlayer()) {
-        postData.append(",");
-        postData.append(QString("\"hochzeitPlayer\"") + ":" + JSONString(_round->hochzeitPlayer()));
-    }
-    if(_round->trumpfabgabePlayer()) {
-        postData.append(",");
-        postData.append(QString("\"trumpfabgabePlayer\"") + ":" + JSONString(_round->trumpfabgabePlayer()));
-    }
-    postData.append(",");
-
-    QString pointsString = "";
-    pointsString += QString("\"points\"") + ":" + "{";
-    foreach(QSharedPointer<Player> player, _round->playingPlayers()) {
-        pointsString += "\"" + player->parseID() + "\":" + QString::number(_round->points(player)) + ",";
-    }
-    pointsString.remove(pointsString.size()-1,1);
-    postData.append(pointsString);
-    postData.append("}");
-
-    postData.append("}");
-
-    qDebug() << postData;
-
-    m_roundNetworkManager->post(request, postData);
+    uploadParseObject(_round, m_roundNetworkManager);
 }
 
 void ParseController::onRoundUploadFinished(QNetworkReply *reply)
@@ -299,34 +280,34 @@ void ParseController::onRoundUploadFinished(QNetworkReply *reply)
         if(replyArray.isEmpty()) {
             return;
         }
-        else {
-            qDebug() << "Reply: " << replyArray;
+        if(m_roundsToUpload.isEmpty()) {
+            return;
         }
 
         QSharedPointer<Round> uploadedRound = m_roundsToUpload.takeFirst();
-        qDebug() << "Uploaded round " << uploadedRound->number() << " of game: " << uploadedRound->game()->creationTime().toString();
+        onParseObjectUploadFinished(replyArray, uploadedRound);
 
-        QJsonDocument document = QJsonDocument::fromJson(replyArray);
-        QJsonObject object = document.object();
-        qDebug() << object.keys();
-        QJsonValue value = object.value("objectId");
-
-        uploadedRound->setParseID(value.toString());
-        Qp::update(uploadedRound);
-
-        if(!m_roundsToUpload.isEmpty()) {
-            uploadRound(m_roundsToUpload.first());
+        if(checkRoundUpdateDependencies(uploadedRound)) {
+            if(m_uploadingGame && checkGameUpdateDependencies(m_gamesToUpload.first())) {
+                uploadGame(m_gamesToUpload.first());
+            }
+            else {
+                if(!m_roundsToUpload.isEmpty()) {
+                    uploadRound(m_roundsToUpload.first());
+                }
+                else {
+                    m_uploadingRound = false;
+                }
+            }
         }
         else {
-            m_uploadingRound = false;
-
-            if(m_gamesToUpload.first() == uploadedRound->game()) {
-                uploadGame(uploadedRound->game());
-            }
+            uploadedRound->setParseUpdated(false);
+            Qp::update(uploadedRound);
+            m_roundsToUpload.insert(0, uploadedRound);
         }
     }
     else {
-        qDebug() << "Failure" <<reply->errorString();
+        qDebug() << "ParseController::onRoundUploadFinished: Failure" <<reply->errorString();
         m_uploadingRound = false;
     }
 }
@@ -334,20 +315,16 @@ void ParseController::onRoundUploadFinished(QNetworkReply *reply)
 void ParseController::onPlaceUploadFinished(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) {
-        QSharedPointer<Place> uploadedPlace = m_placesToUpload.takeFirst();
-        qDebug() << "Uploaded place: " << uploadedPlace->street();
-
         QByteArray replyArray = reply->readAll();
-        qDebug() << replyArray;
-        QJsonDocument document = QJsonDocument::fromJson(replyArray);
-        QJsonObject object = document.object();
-        qDebug() << object.keys();
-        QJsonValue value = object.value("objectId");
+        if(replyArray.isEmpty()) {
+            return;
+        }
+        if(m_placesToUpload.isEmpty()) {
+            return;
+        }
 
-        uploadedPlace->setParseID(value.toString());
-        Qp::update(uploadedPlace);
-
-        delete reply;
+        QSharedPointer<Place> uploadedPlace = m_placesToUpload.takeFirst();
+        onParseObjectUploadFinished(replyArray, uploadedPlace);
 
         if(!m_placesToUpload.isEmpty()) {
             uploadPlace(m_placesToUpload.first());
@@ -357,14 +334,17 @@ void ParseController::onPlaceUploadFinished(QNetworkReply *reply)
         }
 
         if(m_uploadingGame) {
-            uploadGame(m_gamesToUpload.first());
+            if(checkGameUpdateDependencies(m_gamesToUpload.first())) {
+                uploadGame(m_gamesToUpload.first());
+            }
         }
     }
     else {
-        qDebug() << "Failure" <<reply->errorString();
+        qDebug() << "Failure uploading place: " << reply->errorString();
         m_uploadingPlace = false;
-        delete reply;
     }
+
+    reply->deleteLater();
 }
 
 void ParseController::tryToUploadPlace(QSharedPointer<Place> _place)
@@ -383,26 +363,7 @@ void ParseController::uploadPlace(QSharedPointer<Place> _place)
 {
     connect(m_placeNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onPlaceUploadFinished(QNetworkReply*)));
 
-    QString urlString = "https://api.parse.com/1/classes/Place";
-    QUrl url(urlString);
-
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
-    request.setRawHeader("X-Parse-Application-Id", applicationKey.toUtf8());
-    request.setRawHeader("X-Parse-REST-API-Key", restKey.toUtf8());
-
-    QByteArray postData;
-    postData.append("{");
-    postData.append(QString("\"city\"") + ":" + "\"" + _place->city() + "\"");
-    postData.append(",");
-    postData.append(QString("\"houseNumber\"") + ":" + "\"" + QString::number(_place->houseNumber()) + "\"");
-    postData.append(",");
-    postData.append(QString("\"postalCode\"") + ":" + "\"" + QString::number(_place->postalCode()) + "\"");
-    postData.append(",");
-    postData.append(QString("\"street\"") + ":" + "\"" + _place->street() + "\"");
-    postData.append("}");
-
-    m_placeNetworkManager->post(request, postData);
+    uploadParseObject(_place, m_placeNetworkManager);
 }
 
 void ParseController::tryToUploadPlayer(QSharedPointer<Player> _player)
@@ -421,39 +382,22 @@ void ParseController::uploadPlayer(QSharedPointer<Player> _player)
 {
     connect(m_playerNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onPlayerUploadFinished(QNetworkReply*)));
 
-    qDebug() << "Uploading player: " << _player->name();
-
-    QString urlString = "https://api.parse.com/1/classes/Player";
-    QUrl url(urlString);
-
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
-    request.setRawHeader("X-Parse-Application-Id", applicationKey.toUtf8());
-    request.setRawHeader("X-Parse-REST-API-Key", restKey.toUtf8());
-    QByteArray postData;
-    postData.append("{");
-    postData.append(QString("\"displayName\"") + ":" + "\"" + _player->name() + "\"");
-    postData.append("}");
-
-    m_playerNetworkManager->post(request, postData);
+    uploadParseObject(_player, m_playerNetworkManager);
 }
 
 void ParseController::onPlayerUploadFinished(QNetworkReply *reply)
 {
     if (reply->error() == QNetworkReply::NoError) {
         QByteArray replyArray = reply->readAll();
-        qDebug() << replyArray;
+        if(replyArray.isEmpty()) {
+            return;
+        }
+        if(m_playersToUpload.isEmpty()) {
+            return;
+        }
 
         QSharedPointer<Player> uploadedPlayer = m_playersToUpload.takeFirst();
-        qDebug() << "Uploaded player: " << uploadedPlayer->name();
-
-        QJsonDocument document = QJsonDocument::fromJson(replyArray);
-        QJsonObject object = document.object();
-        qDebug() << object.keys();
-        QJsonValue value = object.value("objectId");
-
-        uploadedPlayer->setParseID(value.toString());
-        Qp::update(uploadedPlayer);
+        onParseObjectUploadFinished(replyArray, uploadedPlayer);
 
         if(!m_playersToUpload.isEmpty()) {
             uploadPlayer(m_playersToUpload.first());
@@ -467,12 +411,171 @@ void ParseController::onPlayerUploadFinished(QNetworkReply *reply)
         }
     }
     else {
-        qDebug() << "Failure" <<reply->errorString();
+        qDebug() << "Failure uploading player: " <<reply->errorString();
         m_uploadingPlayer = false;
     }
 
-    delete reply;
-    reply = 0;
+    reply->deleteLater();
+}
+
+void ParseController::tryToUploadSchmeisserei(QSharedPointer<Schmeisserei> _schmeisserei)
+{
+    if(!m_schmeissereisToUpload.contains(_schmeisserei)) {
+        m_schmeissereisToUpload.append(_schmeisserei);
+    }
+
+    if(!m_uploadingSchmeisserei) {
+        m_uploadingSchmeisserei = true;
+        uploadSchmeisserei(_schmeisserei);
+    }
+}
+
+void ParseController::uploadSchmeisserei(QSharedPointer<Schmeisserei> _schmeisserei)
+{
+    connect(m_schmeissereiNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onSchmeissereiUploadFinished(QNetworkReply*)));
+
+    uploadParseObject(_schmeisserei, m_schmeissereiNetworkManager);
+}
+
+void ParseController::onSchmeissereiUploadFinished(QNetworkReply *reply)
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray replyArray = reply->readAll();
+        if(replyArray.isEmpty()) {
+            return;
+        }
+        if(m_schmeissereisToUpload.isEmpty()) {
+            return;
+        }
+
+        QSharedPointer<Schmeisserei> uploaded = m_schmeissereisToUpload.takeFirst();
+        onParseObjectUploadFinished(replyArray, uploaded);
+
+        if(!m_schmeissereisToUpload.isEmpty()) {
+            uploadSchmeisserei(m_schmeissereisToUpload.first());
+        }
+        else {
+            m_uploadingSchmeisserei = false;
+        }
+
+        if(m_uploadingRound && checkRoundUpdateDependencies(uploaded->round())) {
+            uploadRound(uploaded->round());
+        }
+    }
+    else {
+        qDebug() << "Failure uploading schmeisserei: " << reply->errorString();
+        m_uploadingSchmeisserei = false;
+    }
+
+    reply->deleteLater();
+}
+
+void ParseController::tryToUploadDrink(QSharedPointer<Drink> _drink)
+{
+    if(!m_drinksToUpload.contains(_drink)) {
+        m_drinksToUpload.append(_drink);
+    }
+
+    if(!m_uploadingDrink) {
+        m_uploadingDrink = true;
+        uploadDrink(_drink);
+    }
+}
+
+void ParseController::uploadDrink(QSharedPointer<Drink> _drink)
+{
+    connect(m_drinkNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onDrinkUploadFinished(QNetworkReply*)));
+
+    uploadParseObject(_drink, m_drinkNetworkManager);
+}
+
+void ParseController::onDrinkUploadFinished(QNetworkReply *reply)
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray replyArray = reply->readAll();
+        if(replyArray.isEmpty()) {
+            return;
+        }
+        if(m_drinksToUpload.isEmpty()) {
+            return;
+        }
+
+        QSharedPointer<Drink> uploaded = m_drinksToUpload.takeFirst();
+        onParseObjectUploadFinished(replyArray, uploaded);
+
+        if(!m_drinksToUpload.isEmpty()) {
+            uploadDrink(m_drinksToUpload.first());
+        }
+        else {
+            m_uploadingDrink = false;
+        }
+
+        if(m_uploadingLiveDrink) {
+            uploadLiveDrink(m_liveDrinksToUpload.first());
+        }
+    }
+    else {
+        qDebug() << "Failure uploading drink: " << reply->errorString();
+        m_uploadingDrink = false;
+    }
+
+    reply->deleteLater();
+}
+
+void ParseController::tryToUploadLiveDrink(QSharedPointer<LiveDrink> _drink)
+{
+    if(!m_liveDrinksToUpload.contains(_drink)) {
+        m_liveDrinksToUpload.append(_drink);
+    }
+
+    if(!m_uploadingLiveDrink) {
+        m_uploadingLiveDrink = true;
+        uploadLiveDrink(_drink);
+    }
+}
+
+void ParseController::uploadLiveDrink(QSharedPointer<LiveDrink> _drink)
+{
+    if(!checkLiveDrinkUploadDependencies(_drink)) {
+        return;
+    }
+
+    connect(m_liveDrinkNetworkManager, SIGNAL(finished(QNetworkReply*)), this, SLOT(onLiveDrinkUploadFinished(QNetworkReply*)));
+
+    uploadParseObject(_drink, m_liveDrinkNetworkManager);
+}
+
+void ParseController::onLiveDrinkUploadFinished(QNetworkReply *reply)
+{
+    if (reply->error() == QNetworkReply::NoError) {
+        QByteArray replyArray = reply->readAll();
+        if(replyArray.isEmpty()) {
+            return;
+        }
+        if(m_liveDrinksToUpload.isEmpty()) {
+            return;
+        }
+
+        QSharedPointer<LiveDrink> uploaded = m_liveDrinksToUpload.takeFirst();
+        onParseObjectUploadFinished(replyArray, uploaded);
+
+        if(!m_liveDrinksToUpload.isEmpty()) {
+            uploadLiveDrink(m_liveDrinksToUpload.first());
+        }
+        else {
+            m_uploadingLiveDrink = false;
+        }
+
+        if(m_uploadingRound && checkRoundUpdateDependencies(uploaded->round())) {
+            uploadRound(uploaded->round());
+        }
+    }
+    else {
+        qDebug() << "Failure uploading drink: " << reply->errorString();
+        m_uploadingLiveDrink = false;
+    }
+
+    reply->deleteLater();
 }
 
 

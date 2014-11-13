@@ -248,6 +248,10 @@ private:
     QpBelongsToMany<Round> m_contra3Rounds;
 
     QpBelongsToMany<OLD_OfflineGameInformation> m_offlineGameInformation;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2);

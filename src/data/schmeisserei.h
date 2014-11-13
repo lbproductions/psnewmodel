@@ -1,16 +1,13 @@
 #ifndef SCHMEISSEREI_H
 #define SCHMEISSEREI_H
 
-#include <QObject>
-
+#include "parseobject.h"
 #include <QPersistence.h>
-
-
 
 class Round;
 class Player;
 
-class Schmeisserei : public QObject
+class Schmeisserei : public ParseObject
 {
     Q_OBJECT
     Q_ENUMS(Type)
@@ -69,6 +66,10 @@ private:
 
     QpBelongsToOne<Round> m_round;
     QpHasOne<Player> m_player;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 

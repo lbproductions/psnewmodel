@@ -1,8 +1,7 @@
 #ifndef DRINK_H
 #define DRINK_H
 
-#include <QObject>
-
+#include "parseobject.h"
 #include <QPersistence.h>
 #include <QPixmap>
 
@@ -11,7 +10,7 @@
 class LiveDrink;
 class Player;
 
-class Drink : public QObject
+class Drink : public ParseObject
 {
     Q_OBJECT
     Q_ENUMS(Type)
@@ -83,6 +82,10 @@ private:
     QString m_iconPath;
 
     QpBelongsToMany<LiveDrink> m_liveDrinks;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 

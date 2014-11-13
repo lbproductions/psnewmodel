@@ -1,8 +1,7 @@
 #ifndef LIVEDRINK_H
 #define LIVEDRINK_H
 
-#include <QObject>
-
+#include "parseobject.h"
 #include <QPersistence.h>
 #include <QDateTime>
 
@@ -12,7 +11,7 @@ class Player;
 class Round;
 class Drink;
 
-class LiveDrink : public QObject
+class LiveDrink : public ParseObject
 {
     Q_OBJECT
     Q_PROPERTY(QDateTime time READ time WRITE setTime)
@@ -52,6 +51,10 @@ private:
     QpHasOne<Player> m_player;
     QpBelongsToOne<Round> m_round;
     QpHasOne<Drink> m_drink;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 

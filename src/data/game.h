@@ -78,6 +78,7 @@ public:
     void setType(const Type &type);
 
     QDateTime creationTime() const;
+    void setCreationTime(const QDateTime &creationTime);
 
     QString comment() const;
     void setComment(const QString &comment);
@@ -175,9 +176,10 @@ public slots:
     void setSite(QSharedPointer<Place> site);
     void addPlayer(QSharedPointer<Player> player);
 
+    void addRound(QSharedPointer<Round> round);
+
 private slots:
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
-    void addRound(QSharedPointer<Round> round);
     void removeRound(QSharedPointer<Round> round);
 
     void setPlayers(const QList<QSharedPointer<Player> > &players);
@@ -191,7 +193,6 @@ private slots:
     void addToContraPlayersStats(QSharedPointer<Round> round, QSharedPointer<Player> player);
     void addToGamesTogetherStats(QSharedPointer<Round> round, QSharedPointer<Player> player1, QSharedPointer<Player> player2);
 private:
-    void setCreationTime(const QDateTime &creationTime);
     void setOfflineGameInformation(const QList<QSharedPointer<OLD_OfflineGameInformation> > &games);
     void setDokoOfflineGameBuddys(const QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > &games);
 
@@ -234,6 +235,10 @@ private:
 
     QHash<QString, QList<QSharedPointer<Round> > > m_playerRoundsTogether;
     QHash<QString, QList<QSharedPointer<Round> > > m_playerRoundWinsTogether;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);

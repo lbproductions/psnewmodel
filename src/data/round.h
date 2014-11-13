@@ -293,6 +293,10 @@ private:
     QpHasOne<Player> m_contra1Player;
     QpHasOne<Player> m_contra2Player;
     QpHasOne<Player> m_contra3Player;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 #undef COMMA

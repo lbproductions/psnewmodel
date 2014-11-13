@@ -129,4 +129,18 @@ void Place::setPlayers(const QList<QSharedPointer<Player> > &players)
     m_players = players;
 }
 
+QByteArray Place::JSONData()
+{
+    QByteArray postData;
+    postData.append("{");
+    postData.append(QString("\"city\"") + ":" + "\"" + city() + "\"");
+    postData.append(",");
+    postData.append(QString("\"houseNumber\"") + ":" + "\"" + QString::number(houseNumber()) + "\"");
+    postData.append(",");
+    postData.append(QString("\"postalCode\"") + ":" + "\"" + QString::number(postalCode()) + "\"");
+    postData.append(",");
+    postData.append(QString("\"street\"") + ":" + "\"" + street() + "\"");
+    postData.append("}");
 
+    return postData;
+}

@@ -1007,3 +1007,52 @@ void Game::addToGamesTogetherStats(QSharedPointer<Round> round, QSharedPointer<P
     }
 
 }
+
+
+QByteArray Game::JSONData()
+{
+    QByteArray postData;
+    if(mitPflichtSolo()) {
+        postData.append("{\"pflichtsolo\":true,");
+    }
+    else {
+        postData.append("{\"pflichtsolo\":false,");
+    }
+    postData.append("\"state\":"+QString::number(state())+",");
+    postData.append("\"type\":"+QString::number(type())+",");
+    postData.append("\"finishedRoundsCount\":"+QString::number(finishedRoundCount()) + ",");
+
+    postData.append(QString("\"startDate\"") + ":" + "{\"__type\": \"Date\",\"iso\": \"" + this->creationTime().toString(Qt::ISODate) + "\"}");
+    postData.append(",");
+
+    postData.append(QString("\"site\"") + ":" + JSONString(site()));
+    postData.append(",");
+
+    QList<QSharedPointer<ParseObject>> list;
+    foreach(QSharedPointer<Player> player, players()) {
+        list << player;
+    }
+    postData.append(QString("\"players\":") + JSONString(list));
+    postData.append(",");
+
+
+    list.clear();
+    foreach(QSharedPointer<Round> round, rounds()) {
+        list << round;
+    }
+    postData.append(QString("\"rounds\":") + JSONString(list));
+    postData.append(",");
+
+    QString positionsString = "";
+    positionsString += QString("\"playerPositions\"") + ":" + "{";
+    foreach(QSharedPointer<Player> player, players()) {
+        positionsString += "\"" + player->parseID() + "\":" + QString::number(players().indexOf(player)) + ",";
+    }
+    positionsString.remove(positionsString.size()-1,1);
+    postData.append(positionsString);
+    postData.append("}");
+
+    postData.append("}");
+
+    return postData;
+}

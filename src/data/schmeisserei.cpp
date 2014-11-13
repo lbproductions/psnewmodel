@@ -6,7 +6,7 @@
 
 
 Schmeisserei::Schmeisserei(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_type(UnkownType),
     m_round(QpRelation(&Schmeisserei::round)),
     m_player(QpRelation(&Schmeisserei::player))
@@ -107,4 +107,23 @@ void Schmeisserei::setTrumpfCount(int arg)
 void Schmeisserei::setPoints(int arg)
 {
     m_points = arg;
+}
+
+
+QByteArray Schmeisserei::JSONData()
+{
+    QByteArray postData;
+    postData.append("{");
+    postData.append(QString("\"kingsCount\"") + ":" +  QString::number(kingsCount()));
+    postData.append(",");
+    postData.append(QString("\"playerID\"") + ":" + "\"" + player()->parseID() + "\"");
+    postData.append(",");
+    postData.append(QString("\"points\"") + ":" + QString::number(points()));
+    postData.append(",");
+    postData.append(QString("\"roundID\"") + ":" + "\"" + round()->parseID() + "\"");
+    postData.append(",");
+    postData.append(QString("\"type\"") + ":" + QString::number(type()));
+    postData.append("}");
+
+    return postData;
 }

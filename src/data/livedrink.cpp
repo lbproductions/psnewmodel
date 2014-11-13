@@ -7,7 +7,7 @@
 
 
 LiveDrink::LiveDrink(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_time(QDateTime::currentDateTime()),
     m_player(QpRelation(&LiveDrink::player)),
     m_round(QpRelation(&LiveDrink::round)),
@@ -66,4 +66,18 @@ void LiveDrink::setTime(const QDateTime &time)
     m_time = time;
 }
 
+QByteArray LiveDrink::JSONData()
+{
+    QByteArray postData;
+    postData.append("{");
+    postData.append(QString("\"drinkID\"") + ":" + "\"" + drink()->parseID() + "\"");
+    postData.append(",");
+    postData.append(QString("\"playerID\"") + ":" + "\"" + player()->parseID() + "\"");
+    postData.append(",");
+    postData.append(QString("\"roundID\"") + ":" + "\"" + round()->parseID() + "\"");
+    postData.append(",");
+    postData.append(QString("\"time\"") + ":" + "{\"__type\": \"Date\",\"iso\": \"" + time().toString(Qt::ISODate) + "\"}");
+    postData.append("}");
 
+    return postData;
+}

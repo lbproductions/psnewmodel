@@ -5,7 +5,7 @@
 
 
 Drink::Drink(QObject *parent) :
-    QObject(parent),
+    ParseObject(parent),
     m_type(UnkownType),
     m_volume(0.0),
     m_alcoholByVolume(0.0),
@@ -165,4 +165,21 @@ Drink::Type Drink::typeFromString(const QString &typeString)
 
     typeIndex += 1; // UnkownType
     return static_cast<Drink::Type>(typeIndex);
+}
+
+
+QByteArray Drink::JSONData()
+{
+    QByteArray postData;
+    postData.append("{");
+    postData.append(QString("\"alcoholByVolume\"") + ":" + "\"" + QString::number(alcoholByVolume()) + "\"");
+    postData.append(",");
+    postData.append(QString("\"drinkType\"") + ":" + "\"" + typeString() + "\"");
+    postData.append(",");
+    postData.append(QString("\"name\"") + ":" + "\"" + name() + "\"");
+    postData.append(",");
+    postData.append(QString("\"volume\"") + ":" + "\"" + QString::number(volume()) + "\"");
+    postData.append("}");
+
+    return postData;
 }

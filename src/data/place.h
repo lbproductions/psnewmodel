@@ -74,6 +74,10 @@ private:
 
     QpBelongsToMany<Player> m_players;
     QpBelongsToMany<Game> m_games;
+
+    // ParseObject interface
+public:
+    QByteArray JSONData();
 };
 
 

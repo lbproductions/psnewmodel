@@ -595,3 +595,13 @@ bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointe
 
     return g1.last()->creationTime() > g2.last()->creationTime();
 }
+
+QByteArray Player::JSONData()
+{
+    QByteArray postData;
+    postData.append("{");
+    postData.append(QString("\"displayName\"") + ":" + "\"" + name() + "\"");
+    postData.append("}");
+
+    return postData;
+}
