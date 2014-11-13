@@ -54,11 +54,11 @@ int GameOverviewModel::columnCount(const QModelIndex &parent) const
         return 0;
 
     // TODO: Find a way to paint the area outside the table with correct color
-    if(m_game->totalRoundCount() > 44) {
+    if(m_game->totalRoundCount() > 50) {
         return m_game->totalRoundCount();
     }
     else{
-        return 44;
+        return 50;
     }
 }
 
@@ -292,6 +292,10 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
         if(role == Qt::DisplayRole) {
             if(roundIndex >= total)
                 return QVariant();
+
+            if(m_game->state() == Game::Finished) {
+                return QVariant();
+            }
 
             if(roundIndex < count && playerSize > 0 && roundIndex % playerSize == 0) {
                 return roundIndex + 1;
