@@ -168,7 +168,7 @@ Drink::Type Drink::typeFromString(const QString &typeString)
 }
 
 
-QByteArray Drink::JSONData()
+QByteArray Drink::parseJSONData()
 {
     QByteArray postData;
     postData.append("{");
@@ -183,3 +183,28 @@ QByteArray Drink::JSONData()
 
     return postData;
 }
+
+void Drink::parseUpdateFromJSON(QJsonObject object, bool created)
+{
+    Q_UNUSED(created)
+
+    setAlcoholByVolume(object.value("alcoholByVolume").toString().toDouble());
+    setType(typeFromString(object.value("drinkType").toString()));
+    setName(object.value("name").toString());
+    setVolume(object.value("volume").toString().toDouble());
+
+    Qp::update(Qp::sharedFrom(this));
+}
+
+bool Drink::parseCheckAfterUploadConditions()
+{
+    QHash<QString, QSharedPointer<ParseObject>> hash = ParseObject::currentUploadingObjects;
+    if(ParseObject::currentUploadingObjects.value("LiveDrink")) {
+        QSharedPointer<ParseObject> liveDrink = ParseObject::currentUploadingObjects.value("LiveDrink");
+        ParseObject::currentUploadingObjects.remove("LiveDrink");
+        liveDrink->parseUpload();
+    }
+
+    return true;
+}
+

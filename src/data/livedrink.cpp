@@ -66,7 +66,7 @@ void LiveDrink::setTime(const QDateTime &time)
     m_time = time;
 }
 
-QByteArray LiveDrink::JSONData()
+QByteArray LiveDrink::parseJSONData()
 {
     QByteArray postData;
     postData.append("{");
@@ -80,4 +80,58 @@ QByteArray LiveDrink::JSONData()
     postData.append("}");
 
     return postData;
+}
+
+void LiveDrink::parseUpdateFromJSON(QJsonObject object, bool created)
+{
+    QString dateString = object.value("time").toObject().value("iso").toString();
+    setTime(QDateTime::fromString(dateString, Qt::ISODate));
+
+    QSharedPointer<Player> player = ParseController::instance()->objectFromCache<Player>(object.value("playerID").toString());
+    Q_ASSERT(player);
+    setPlayer(player);
+
+    QSharedPointer<Drink> drink = ParseController::instance()->objectFromCache<Drink>(object.value("drinkID").toString());
+    Q_ASSERT(drink);
+    setDrink(drink);
+
+    QSharedPointer<Round> round = ParseController::instance()->objectFromCache<Round>(object.value("roundID").toString());
+    Q_ASSERT(round);
+    setRound(round);
+
+    if(created) {
+        round->addLiveDrink(Qp::sharedFrom(this));
+    }
+
+    Qp::update(Qp::sharedFrom(this));
+    Qp::update(round);
+
+    round->game()->emitParseUpdated();
+}
+
+
+bool LiveDrink::parseCheckPreUploadConditions()
+{
+    Q_ASSERT(player()->parseID() != "");
+    Q_ASSERT(round()->parseID() != "");
+
+    if(drink()->parseID() == "") {
+        drink()->parseUpload();
+        return false;
+    }
+
+    return true;
+}
+
+
+bool LiveDrink::parseCheckAfterUploadConditions()
+{
+    m_isUploading = false;
+    ParseObject::currentUploadingObjects.remove("LiveDrink");
+
+    if(round()->isParseUploading() && round()->parseCheckAfterUploadConditions()) {
+        round()->parseUpload();
+    }
+
+    return true;
 }

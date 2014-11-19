@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QSharedPointer>
+#include <QDateTime>
 
 class Game;
 class Round;
@@ -24,66 +25,54 @@ public:
 
     static ParseController *instance();
 
-    void uploadGames();
+    void syncData();
 
-    void tryToUploadGame(QSharedPointer<Game> _game);
-    void tryToUploadRound(QSharedPointer<Round> _round);
-    void tryToUploadPlace(QSharedPointer<Place> _place);
-    void tryToUploadPlayer(QSharedPointer<Player> _player);
-    void tryToUploadSchmeisserei(QSharedPointer<Schmeisserei> _schmeisserei);
-    void tryToUploadDrink(QSharedPointer<Drink> _drink);
-    void tryToUploadLiveDrink(QSharedPointer<LiveDrink> _drink);
+    template<class T>
+    QSharedPointer<T> objectFromCache(QString _objectID);
+    void addToCache(QSharedPointer<ParseObject> object);
 
 public slots:
-    void onGameUploadFinished(QNetworkReply* reply);
-    void onRoundUploadFinished(QNetworkReply* reply);
-    void onPlayerUploadFinished(QNetworkReply* reply);
-    void onPlaceUploadFinished(QNetworkReply* reply);
-    void onSchmeissereiUploadFinished(QNetworkReply* reply);
-    void onDrinkUploadFinished(QNetworkReply* reply);
-    void onLiveDrinkUploadFinished(QNetworkReply* reply);
+    void update();
+    void uploadGames();
+    void uploadGame(QSharedPointer<Game> game);
 
-    void onParseObjectUploadFinished(QByteArray replyArray, QSharedPointer<ParseObject> _object);
+private slots:
+    void uploadNextGame();
+
+signals:
+    void updateFinished();
+    void gamesUploadFinished();
 
 private:
-    void uploadGame(QSharedPointer<Game> _game);
-    void uploadRound(QSharedPointer<Round> _round);
-    void uploadPlayer(QSharedPointer<Player> _player);
-    void uploadPlace(QSharedPointer<Place> _place);
-    void uploadSchmeisserei(QSharedPointer<Schmeisserei> _schmeisserei);
-    void uploadDrink(QSharedPointer<Drink> _drink);
-    void uploadLiveDrink(QSharedPointer<LiveDrink> _drink);
-    void uploadParseObject(QSharedPointer<ParseObject> _object, QNetworkAccessManager *_networkManager);
+    void createCaches();
+    void _update();
 
-    bool checkGameDependendUploads(QSharedPointer<Game> _game);
-    bool checkGameUpdateDependencies(QSharedPointer<Game> _game);
-    bool checkRoundUploadDependencies(QSharedPointer<Round> _round);
-    bool checkRoundUpdateDependencies(QSharedPointer<Round> _round);
-    bool checkLiveDrinkUploadDependencies(QSharedPointer<LiveDrink> _drink);
+    template<class T>
+    void updateClass();
 
-    QNetworkAccessManager* m_gameNetworkManager;
-    QNetworkAccessManager* m_roundNetworkManager;
-    QNetworkAccessManager* m_playerNetworkManager;
-    QNetworkAccessManager* m_placeNetworkManager;
-    QNetworkAccessManager* m_schmeissereiNetworkManager;
-    QNetworkAccessManager* m_drinkNetworkManager;
-    QNetworkAccessManager* m_liveDrinkNetworkManager;
+    template<class T>
+    void registerCacheClass();
 
-    bool m_uploadingGame;
-    bool m_uploadingRound;
-    bool m_uploadingPlayer;
-    bool m_uploadingPlace;
-    bool m_uploadingSchmeisserei;
-    bool m_uploadingDrink;
-    bool m_uploadingLiveDrink;
+    QHash<QString, QHash<QString, QSharedPointer<ParseObject>>> m_cache;
+    QList<QString> m_updatedClass;
 
-    QList<QSharedPointer<Game>> m_gamesToUpload;
-    QList<QSharedPointer<Round>> m_roundsToUpload;
-    QList<QSharedPointer<Player>> m_playersToUpload;
-    QList<QSharedPointer<Place>> m_placesToUpload;
-    QList<QSharedPointer<Schmeisserei>> m_schmeissereisToUpload;
-    QList<QSharedPointer<Drink>> m_drinksToUpload;
-    QList<QSharedPointer<LiveDrink>> m_liveDrinksToUpload;
+    QList<QSharedPointer<Game>> m_uploadingGames;
+
+    bool m_isUpdating;
+    bool m_isUploading;
+
+    QDateTime m_updateStartTime;
 };
+
+template<class T>
+QSharedPointer<T> ParseController::objectFromCache(QString _objectID)
+{
+    QSharedPointer<ParseObject> parseObject = m_cache.value(T::staticMetaObject.className()).value(_objectID);
+    if(parseObject) {
+        return qSharedPointerCast<T>(parseObject);
+    }
+
+    return QSharedPointer<T>();
+}
 
 #endif // PARSECONTROLLER_H

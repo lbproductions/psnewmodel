@@ -4,6 +4,7 @@
 #include <data/round.h>
 #include <data/player.h>
 #include <data/schmeisserei.h>
+#include <data/parsecontroller.h>
 
 #include <QPushButton>
 #include <functional>
@@ -90,6 +91,9 @@ void SchmeissereiDialog::save()
     m_round->addSchmeisserei(schmeisserei);
     Qp::update(schmeisserei);
     Qp::update(m_round);
+
+    ParseController::instance()->uploadGame(m_round->game());
+
     close();
 }
 

@@ -39,6 +39,8 @@
 #include <QMessageBox>
 #include <QSettings>
 
+#include <data/parsecontroller.h>
+
 bool sortPlaces(const QSharedPointer<Place> &p1, const QSharedPointer<Place> &p2);
 
 QMultiHash<QSharedPointer<Game>, GameWindow *> GameWindow::s_gameWindows;
@@ -127,6 +129,11 @@ GameWindow::GameWindow(QWidget *parent) :
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
 
+    QTimer *updateTimer = new QTimer(this);
+    connect(updateTimer, &QTimer::timeout, [=] {
+        ParseController::instance()->update();
+    });
+    updateTimer->start(1000);
     //    QTimer *lengthTimer = new QTimer(this);
     //    connect(lengthTimer, &QTimer::timeout,
     //            this, &GameWindow::updateTimes);
@@ -201,6 +208,7 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
                 this, &GameWindow::on_actionPlayPause_triggered);
 
         connect(m_game.data(), &Game::newRoundStarted, this, &GameWindow::onNewRoundStarted);
+        connect(ParseController::instance(), &ParseController::updateFinished, this, &GameWindow::onNewRoundStarted);
         connect(m_game.data(), &Game::stateChanged, this, &GameWindow::enableActionsBasedOnState);
     }
 
@@ -361,7 +369,10 @@ void GameWindow::on_actionStop_Game_triggered()
 void GameWindow::onNewRoundStarted()
 {
     enableActionsBasedOnState();
+
     ui->graphWidget->updateGraphs();
+    m_gameOverViewModel->updateViews();
+    m_informationModel->updateViews();
 
     if(GameSettings::instance().gamePercentageWarning()) {
         int oldPercentage = (m_game->rounds().size()-2) * 100 / m_game->totalRoundCount();

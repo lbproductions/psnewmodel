@@ -6,7 +6,7 @@
 #include <QNetworkRequest>
 #include <QNetworkReply>
 #include <QEventLoop>
-
+#include <QSettings>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
@@ -19,26 +19,12 @@
 #include "livedrink.h"
 #include "drink.h"
 
-static QString applicationKey = "rmamC3zOAKDUorbjF6Lb75W4hJFcG97M4myz2u6v";
-static QString restKey = "KnX9CpfpKk58yQfPp2z0vew1XzayL4E8Swt1ga2z";
-
 ParseController::ParseController(QObject *parent) :
     QObject(parent),
-    m_uploadingGame(false),
-    m_uploadingRound(false),
-    m_uploadingPlayer(false),
-    m_uploadingPlace(false),
-    m_uploadingSchmeisserei(false),
-    m_uploadingDrink(false),
-    m_uploadingLiveDrink(false)
+    m_isUpdating(false),
+    m_isUploading(false)
 {
-    m_gameNetworkManager = new QNetworkAccessManager(this);
-    m_roundNetworkManager = new QNetworkAccessManager(this);
-    m_placeNetworkManager = new QNetworkAccessManager(this);
-    m_playerNetworkManager = new QNetworkAccessManager(this);
-    m_schmeissereiNetworkManager = new QNetworkAccessManager(this);
-    m_liveDrinkNetworkManager = new QNetworkAccessManager(this);
-    m_drinkNetworkManager = new QNetworkAccessManager(this);
+    createCaches();
 }
 
 ParseController *ParseController::instance()
@@ -47,70 +33,226 @@ ParseController *ParseController::instance()
     return &controller;
 }
 
-void ParseController::uploadParseObject(QSharedPointer<ParseObject> _object, QNetworkAccessManager* _networkManager)
+void ParseController::syncData()
 {
-    bool update = false;
-    QString urlString = "https://api.parse.com/1/classes/" + QString(_object->metaObject()->className());
-    if(_object->parseID() != "") {
-        urlString += "/" + _object->parseID();
-        update = true;
-    }
-    qDebug() << "Executing URL: " << urlString;
-    QUrl url(urlString);
-
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
-    request.setRawHeader("X-Parse-Application-Id", applicationKey.toUtf8());
-    request.setRawHeader("X-Parse-REST-API-Key", restKey.toUtf8());
-
-    QByteArray postData = _object->JSONData();
-
-    if(update) {
-        _networkManager->put(request, postData);
-    }
-    else {
-        _networkManager->post(request, postData);
-    }
+    auto conn = std::make_shared<QMetaObject::Connection>();
+    *conn = connect(this, &ParseController::updateFinished, [=] {
+        QObject::disconnect(*conn);
+        uploadGames();
+    });
+    update();
 }
 
-void ParseController::onParseObjectUploadFinished(QByteArray replyArray, QSharedPointer<ParseObject> _object)
+void ParseController::createCaches()
 {
-    if(replyArray.isEmpty()) {
-        return;
-    }
+    registerCacheClass<Game>();
+    registerCacheClass<Round>();
+    registerCacheClass<Player>();
+    registerCacheClass<Place>();
+    registerCacheClass<Drink>();
+    registerCacheClass<LiveDrink>();
+    registerCacheClass<Schmeisserei>();
+}
 
-    QJsonDocument document = QJsonDocument::fromJson(replyArray);
-    QJsonObject object = document.object();
-
-    if(object.keys().contains("updatedAt")) {
-        Q_ASSERT(_object->parseID() != "");
-        qDebug() << "Updated " << QString(_object->metaObject()->className()) << " with ID " << _object->parseID();
-        _object->setParseUpdated(true);
-        Qp::update(_object);
-    }
-    else if(object.keys().contains("createdAt")) {
-        QJsonValue value = object.value("objectId");
-        _object->setParseID(value.toString());
-        _object->setParseUpdated(true);
-        Qp::update(_object);
-        qDebug() << "Uploaded " << QString(_object->metaObject()->className()) << " with ID " << _object->parseID();
-    }
+void ParseController::addToCache(QSharedPointer<ParseObject> object)
+{
+    QHash<QString, QSharedPointer<ParseObject>> hash = m_cache.value(object->metaObject()->className());
+    hash.insert(object->parseID(), object);
+    m_cache.insert(object->metaObject()->className(), hash);
 }
 
 void ParseController::uploadGames()
 {
+    int count = 0;
+
     QList<QSharedPointer<Game>> games = Qp::readAll<Game>();
-    /*
     foreach(QSharedPointer<Game> game, games) {
-        if(!m_gamesToUpload.contains(game)) {
-            m_gamesToUpload.append(game);
+        if((game->parseID() == "" || !game->parseUpdated()) && game->type() == Game::Doppelkopf && Qp::primaryKey(game) != 271) {
+            if(game->rounds().size() > 0 && count < 1) {
+                //uploadGame(game);
+                count++;
+            }
         }
     }
-    */
-
-    tryToUploadGame(games.last());
 }
 
+void ParseController::uploadGame(QSharedPointer<Game> game)
+{
+    if(!m_uploadingGames.contains(game)) {
+        m_uploadingGames.append(game);
+    }
+    else{
+        return;
+    }
+
+    if(m_isUpdating) {
+        connect(this, &ParseController::updateFinished, this, &ParseController::uploadNextGame);
+        return;
+    }
+
+    if(!m_isUploading) {
+        m_isUploading = true;
+        uploadNextGame();
+    }
+}
+
+void ParseController::update()
+{
+    if(m_isUpdating) {
+        return;
+    }
+
+    if(m_isUploading) {
+        return;
+    }
+
+    m_isUpdating = true;
+    m_updateStartTime = QDateTime::currentDateTime();
+
+    _update();
+}
+
+void ParseController::uploadNextGame()
+{
+    if(m_uploadingGames.isEmpty()) {
+        m_isUploading = false;
+        emit gamesUploadFinished();
+        return;
+    }
+
+    QSharedPointer<Game> gameToUpload = m_uploadingGames.takeFirst();
+    connect(gameToUpload.data(), &Game::parseUploaded, this, &ParseController::uploadNextGame);
+    connect(gameToUpload.data(), &Game::parseUploadFailed, this, &ParseController::uploadNextGame);
+    gameToUpload->parseUpload();
+}
+
+void ParseController::_update()
+{
+    if(!m_updatedClass.contains("Player")) {
+        //updateClass<Player>();
+        //return;
+    }
+    if(!m_updatedClass.contains("Drink")) {
+        //updateClass<Drink>();
+        //return;
+    }
+    if(!m_updatedClass.contains("Place")) {
+        updateClass<Place>();
+        return;
+    }
+    if(!m_updatedClass.contains("Game")) {
+        updateClass<Game>();
+        return;
+    }
+    if(!m_updatedClass.contains("Round")) {
+        updateClass<Round>();
+        return;
+    }
+    if(!m_updatedClass.contains("LiveDrink")) {
+        updateClass<LiveDrink>();
+        return;
+    }
+    if(!m_updatedClass.contains("Schmeisserei")) {
+        updateClass<Schmeisserei>();
+        return;
+    }
+
+    m_updatedClass.clear();
+    m_isUpdating = false;
+
+    emit updateFinished();
+}
+
+template<class T>
+void ParseController::updateClass()
+{
+    QString className = T::staticMetaObject.className();
+
+    QDateTime lastUpdate = QDateTime(QDate(2000,1,1));
+    if(QSettings().value("lastParseUpdate/"+className).isValid()) {
+        //lastUpdate = QSettings().value("lastParseUpdate/"+className).toDateTime();
+    }
+
+    QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
+    QObject::connect(mgr, &QNetworkAccessManager::finished, [=] (QNetworkReply* reply){
+        if (reply->error() == QNetworkReply::NoError) {
+            QByteArray replyArray = reply->readAll();
+            //qDebug() << replyArray;
+
+            QJsonDocument document = QJsonDocument::fromJson(replyArray);
+            QJsonArray jsonObjects = document.object().value("results").toArray();
+            for(int i = 0; i<jsonObjects.size(); i++) {
+                QJsonObject jsonObject = jsonObjects.at(i).toObject();
+                QJsonValue value = jsonObject.value("objectId");
+                QString id = value.toString();
+                //qDebug() << "Keys: " << jsonObject.keys();
+
+                QSharedPointer<ParseObject> parseObject = m_cache.value(className).value(id);
+                if(!parseObject) {
+                    parseObject = Qp::create<T>();
+                    parseObject->setParseID(id);
+                    parseObject->setParseUpdated(true);
+                    parseObject->setParseLastUpdate(QDateTime::currentDateTime());
+                    parseObject->parseUpdateFromJSON(jsonObject, true);
+                }
+                else {
+                    QDateTime updateTime = QDateTime::fromString(jsonObject.value("updatedAt").toString(), Qt::ISODate);
+                    QDateTime parseLastUpdate = parseObject->parseLastUpdate();
+                    if(updateTime > parseLastUpdate) {
+                        //qDebug() << replyArray;
+                        parseObject->parseUpdateFromJSON(jsonObject);
+                    }
+                }
+                addToCache(parseObject);
+                parseObject->emitParseUpdated();
+            }
+
+            QSettings().setValue("lastParseUpdate/"+className, QDateTime::currentDateTime());
+            m_updatedClass.append(className);
+            _update();
+        }
+        else {
+            qDebug() << "Failure updating class " << className << ": " <<reply->errorString();
+            m_isUpdating = false;
+            m_updatedClass.clear();
+        }
+
+        reply->deleteLater();
+        mgr->deleteLater();
+    });
+
+    QUrl url("https://api.parse.com/1/classes/"+className);
+    url.setQuery("where={\"updatedAt\":{\"$gte\": {\"__type\":\"Date\", \"iso\":\""+ lastUpdate.toString(Qt::ISODate)
+                 +"\"}, \"$lte\": {\"__type\":\"Date\", \"iso\":\""+ m_updateStartTime.toString(Qt::ISODate) +"\"}}}");
+    qDebug() << url;
+
+    QNetworkRequest request(url);
+    request.setRawHeader("X-Parse-Application-Id", "rmamC3zOAKDUorbjF6Lb75W4hJFcG97M4myz2u6v");
+    request.setRawHeader("X-Parse-REST-API-Key", "KnX9CpfpKk58yQfPp2z0vew1XzayL4E8Swt1ga2z");
+
+    mgr->get(request);
+}
+
+template<class T>
+void ParseController::registerCacheClass()
+{
+    QHash<QString, QSharedPointer<ParseObject>> hash;
+
+    QList<QSharedPointer<T>> list = Qp::readAll<T>();
+    if(list.isEmpty()) {
+        return;
+    }
+
+    foreach(QSharedPointer<T> object, list) {
+        if(object->parseID() != "") {
+            hash.insert(object->parseID(), object);
+        }
+    }
+
+    m_cache.insert(list.first()->metaObject()->className(), hash);
+}
+
+/*
 void ParseController::tryToUploadGame(QSharedPointer<Game> _game)
 {
     if(!m_gamesToUpload.contains(_game)) {
@@ -176,7 +318,7 @@ bool ParseController::checkGameDependendUploads(QSharedPointer<Game> _game)
     bool check = true;
 
     foreach(QSharedPointer<Player> player, _game->players()) {
-        if(player->parseID() == "" /*|| !player->parseUpdated()*/) {
+        if(player->parseID() == "" || !player->parseUpdated()) {
             tryToUploadPlayer(player);
             check = false;
         }
@@ -579,3 +721,4 @@ void ParseController::onLiveDrinkUploadFinished(QNetworkReply *reply)
 }
 
 
+*/

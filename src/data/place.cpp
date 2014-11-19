@@ -129,7 +129,7 @@ void Place::setPlayers(const QList<QSharedPointer<Player> > &players)
     m_players = players;
 }
 
-QByteArray Place::JSONData()
+QByteArray Place::parseJSONData()
 {
     QByteArray postData;
     postData.append("{");
@@ -143,4 +143,32 @@ QByteArray Place::JSONData()
     postData.append("}");
 
     return postData;
+}
+
+
+bool Place::parseCheckAfterUploadConditions()
+{
+    m_isUploading = false;
+    ParseObject::currentUploadingObjects.remove("Place");
+
+    if(ParseObject::currentUploadingObjects.value("Game") && ParseObject::currentUploadingObjects.value("Game")->parseCheckAfterUploadConditions()) {
+        QSharedPointer<ParseObject> game = ParseObject::currentUploadingObjects.value("Game");
+        ParseObject::currentUploadingObjects.remove("Game");
+        game->parseUpload();
+    }
+
+    return true;
+}
+
+
+void Place::parseUpdateFromJSON(QJsonObject object, bool created)
+{
+    Q_UNUSED(created)
+
+    setCity(object.value("city").toString());
+    setHouseNumber(object.value("houseNumber").toString().toInt());
+    setStreet(object.value("street").toString());
+    setPostalCode(object.value("postalCode").toString().toInt());
+
+    Qp::update(Qp::sharedFrom(this));
 }

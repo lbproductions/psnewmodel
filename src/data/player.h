@@ -251,7 +251,11 @@ private:
 
     // ParseObject interface
 public:
-    QByteArray JSONData();
+    QByteArray parseJSONData();
+
+    bool parseCheckAfterUploadConditions();
+
+    void parseUpdateFromJSON(QJsonObject object, bool created = false);
 };
 
 bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2);

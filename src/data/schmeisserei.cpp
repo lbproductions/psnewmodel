@@ -3,6 +3,7 @@
 #include "player.h"
 #include "round.h"
 
+#include "parsecontroller.h"
 
 
 Schmeisserei::Schmeisserei(QObject *parent) :
@@ -110,7 +111,7 @@ void Schmeisserei::setPoints(int arg)
 }
 
 
-QByteArray Schmeisserei::JSONData()
+QByteArray Schmeisserei::parseJSONData()
 {
     QByteArray postData;
     postData.append("{");
@@ -126,4 +127,39 @@ QByteArray Schmeisserei::JSONData()
     postData.append("}");
 
     return postData;
+}
+
+void Schmeisserei::parseUpdateFromJSON(QJsonObject object, bool created)
+{
+    setKingsCount(object.value("kingsCount").toInt());
+    setPoints(object.value("points").toInt());
+    setType(static_cast<Type>(object.value("type").toInt()));
+
+    QSharedPointer<Player> player = ParseController::instance()->objectFromCache<Player>(object.value("playerID").toString());
+    Q_ASSERT(player);
+    setPlayer(player);
+
+    QSharedPointer<Round> round = ParseController::instance()->objectFromCache<Round>(object.value("roundID").toString());
+    Q_ASSERT(round);
+    setRound(round);
+
+    if(created) {
+        round->addSchmeisserei(Qp::sharedFrom(this));
+    }
+    Qp::update(Qp::sharedFrom(this));
+    Qp::update(round);
+
+    round->game()->emitParseUpdated();
+}
+
+bool Schmeisserei::parseCheckAfterUploadConditions()
+{
+    m_isUploading = false;
+    ParseObject::currentUploadingObjects.remove("Schmeisserei");
+
+    if(round()->isParseUploading() && round()->parseCheckAfterUploadConditions()) {
+        round()->parseUpload();
+    }
+
+    return true;
 }

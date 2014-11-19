@@ -286,7 +286,7 @@ void ChooseLibraryWidget::openLibrary(const QString &packagePath)
     window->raise();
     window->activateWindow();
 
-    ParseController::instance()->uploadGames();
+    ParseController::instance()->syncData();
 }
 
 void ChooseLibraryWidget::on_toolButtonOpen_clicked()

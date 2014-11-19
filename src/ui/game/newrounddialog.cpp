@@ -412,11 +412,15 @@ void NewRoundDialog::save()
     }
 
     Qp::update(m_doppelkopfRound);
+    m_doppelkopfRound->setParseUpdated(false);
     QSharedPointer<Game> game = m_doppelkopfRound->game();
     game->save();
 
     if(m_context == NewRound) {
         game->startNextRound();
+    }
+    else {
+        game->parseUpload();
     }
 
     close();

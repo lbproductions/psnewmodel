@@ -234,6 +234,7 @@ signals:
 
 public slots:
     void addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei);
+    void addLiveDrink(QSharedPointer<LiveDrink> drink);
 
     void setRe1Player(const QSharedPointer<Player> &re1Player);
     void setRe2Player(const QSharedPointer<Player> &re2Player);
@@ -247,7 +248,6 @@ public slots:
 
 private slots:
     void setLiveDrinks(const QList<QSharedPointer<LiveDrink> > &liveDrinks);
-    void addLiveDrink(QSharedPointer<LiveDrink> drink);
     void removeLiveDrink(QSharedPointer<LiveDrink> drink);
 
     void setSchmeissereis(const QList<QSharedPointer<Schmeisserei> > &schmeissereis);
@@ -296,7 +296,12 @@ private:
 
     // ParseObject interface
 public:
-    QByteArray JSONData();
+    QByteArray parseJSONData();
+
+    bool parseCheckPreUploadConditions();
+    bool parseCheckAfterUploadConditions();
+
+    void parseUpdateFromJSON(QJsonObject object, bool created = false);
 };
 
 #undef COMMA

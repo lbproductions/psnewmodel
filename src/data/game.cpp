@@ -11,6 +11,8 @@
 
 #include <QTimer>
 
+#include <QJsonArray>
+
 
 Game::Game(QObject *parent) :
     ParseObject(parent),
@@ -470,6 +472,7 @@ void Game::startNextRound()
     if(round) {
         nextNumber = round->number() + 1;
         round->setState(Round::Finished);
+        round->setParseUpdated(false);
         Qp::update(round);
     }
 
@@ -480,6 +483,8 @@ void Game::startNextRound()
     connectRoundSignals(round);
     addRound(round);
     save();
+
+    ParseController::instance()->uploadGame(round->game());
 
     emit newRoundStarted();
 }
@@ -1009,7 +1014,7 @@ void Game::addToGamesTogetherStats(QSharedPointer<Round> round, QSharedPointer<P
 }
 
 
-QByteArray Game::JSONData()
+QByteArray Game::parseJSONData()
 {
     QByteArray postData;
     if(mitPflichtSolo()) {
@@ -1021,18 +1026,22 @@ QByteArray Game::JSONData()
     postData.append("\"state\":"+QString::number(state())+",");
     postData.append("\"type\":"+QString::number(type())+",");
     postData.append("\"finishedRoundsCount\":"+QString::number(finishedRoundCount()) + ",");
+    QString commentString = this->comment().toUtf8();
+    commentString.replace("\n", "\\n");
+    postData.append(QString("\"comment\"") + ":" + "\"" + commentString + "\"");
+    postData.append(",");
 
     postData.append(QString("\"startDate\"") + ":" + "{\"__type\": \"Date\",\"iso\": \"" + this->creationTime().toString(Qt::ISODate) + "\"}");
     postData.append(",");
 
-    postData.append(QString("\"site\"") + ":" + JSONString(site()));
+    postData.append(QString("\"site\"") + ":" + parseJSONString(site()));
     postData.append(",");
 
     QList<QSharedPointer<ParseObject>> list;
     foreach(QSharedPointer<Player> player, players()) {
         list << player;
     }
-    postData.append(QString("\"players\":") + JSONString(list));
+    postData.append(QString("\"players\":") + parseJSONString(list));
     postData.append(",");
 
 
@@ -1040,7 +1049,7 @@ QByteArray Game::JSONData()
     foreach(QSharedPointer<Round> round, rounds()) {
         list << round;
     }
-    postData.append(QString("\"rounds\":") + JSONString(list));
+    postData.append(QString("\"rounds\":") + parseJSONString(list));
     postData.append(",");
 
     QString positionsString = "";
@@ -1054,5 +1063,64 @@ QByteArray Game::JSONData()
 
     postData.append("}");
 
+    qDebug() << postData;
+
     return postData;
+}
+
+void Game::parseUpdateFromJSON(QJsonObject object, bool created)
+{
+    Q_UNUSED(created)
+
+    setMitPflichtSolo(object.value("pflichtsolo").toBool());
+    setState(static_cast<State>(object.value("state").toInt()));
+    setType(static_cast<Type>(object.value("type").toInt()));
+    QString dateString = object.value("startDate").toObject().value("iso").toString();
+    setCreationTime(QDateTime::fromString(dateString, Qt::ISODate));
+
+    QSharedPointer<Place> place = objectFromJSONPointer<Place>(object.value("site").toObject());
+    Q_ASSERT(place);
+    setSite(place);
+
+    QJsonArray playerJsonArray = object.value("players").toArray();
+    QList<QSharedPointer<Player>> newPlayers;
+    foreach(QJsonValue value, playerJsonArray) {
+        QSharedPointer<Player> player = objectFromJSONPointer<Player>(value.toObject());
+        Q_ASSERT(player);
+        newPlayers.append(player);
+    }
+    setPlayers(newPlayers);
+
+    Qp::update(Qp::sharedFrom(this));
+}
+
+bool Game::parseCheckPreUploadConditions()
+{
+    foreach(QSharedPointer<Player> player, players()) {
+        if(player->parseID() == "" /*|| !player->parseUpdated()*/) {
+            player->parseUpload();
+            return false;
+        }
+    }
+
+    return true;
+}
+
+bool Game::parseCheckAfterUploadConditions()
+{
+    m_isUploading = false;
+
+    foreach(QSharedPointer<Round> round, rounds()) {
+        if(round->parseID() == "" || !round->parseUpdated()) {
+            round->parseUpload();
+            return false;
+        }
+    }
+
+    if(site()->parseID() == "" || !site()->parseUpdated()) {
+        site()->parseUpload();
+        return false;
+    }
+
+    return true;
 }

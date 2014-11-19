@@ -54,7 +54,12 @@ private:
 
     // ParseObject interface
 public:
-    QByteArray JSONData();
+    QByteArray parseJSONData();
+
+    bool parseCheckPreUploadConditions();
+    bool parseCheckAfterUploadConditions();
+
+    void parseUpdateFromJSON(QJsonObject object, bool created = false);
 };
 
 

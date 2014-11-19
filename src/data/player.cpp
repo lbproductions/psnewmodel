@@ -596,12 +596,39 @@ bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointe
     return g1.last()->creationTime() > g2.last()->creationTime();
 }
 
-QByteArray Player::JSONData()
+QByteArray Player::parseJSONData()
 {
     QByteArray postData;
     postData.append("{");
-    postData.append(QString("\"displayName\"") + ":" + "\"" + name() + "\"");
+    postData.append(QString("\"displayName\"") + ":" + "\"" + name() + "\",");
+    postData.append(QString("\"colorString\"") + ":" + "\"" + colorToParseString(color()) + "\"");
     postData.append("}");
 
     return postData;
+}
+
+
+bool Player::parseCheckAfterUploadConditions()
+{
+    m_isUploading = false;
+    ParseObject::currentUploadingObjects.remove("Player");
+
+    if(ParseObject::currentUploadingObjects.value("Game")) {
+        QSharedPointer<ParseObject> game = ParseObject::currentUploadingObjects.value("Game");
+        ParseObject::currentUploadingObjects.remove("Game");
+        game->parseUpload();
+    }
+
+    return true;
+}
+
+
+void Player::parseUpdateFromJSON(QJsonObject object, bool created)
+{
+    Q_UNUSED(created)
+
+    setName(object.value("displayName").toString());
+    setColor(colorFromParseString(object.value("colorString").toString()));
+
+    Qp::update(Qp::sharedFrom(this));
 }

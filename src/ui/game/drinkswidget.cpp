@@ -9,6 +9,7 @@
 #include "data/game.h"
 #include "data/livedrink.h"
 #include "data/round.h"
+#include "data/parsecontroller.h"
 
 #include <QPersistence.h>
 
@@ -547,6 +548,8 @@ void DrinksWidget::addLiveDrinkForSelection()
         Qp::update(liveDrink);
         m_drinkRoundModel->addLiveDrink(liveDrink);
     }
+
+    ParseController::instance()->uploadGame(m_round->game());
 
     ui->treeViewDrinkRound->expandAll();
     showExistingDrinks();
