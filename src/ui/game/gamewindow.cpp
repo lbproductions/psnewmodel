@@ -48,7 +48,8 @@ QMultiHash<QSharedPointer<Game>, GameWindow *> GameWindow::s_gameWindows;
 GameWindow::GameWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::GameWindow),
-    m_minimumColumnWidth(20)
+    m_minimumColumnWidth(20),
+    m_updateInterval(2000)
 {   
     QPalette darkPalette = palette();
     darkPalette.setColor(QPalette::Window, QColor(71,71,71));
@@ -129,11 +130,11 @@ GameWindow::GameWindow(QWidget *parent) :
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
 
-    QTimer *updateTimer = new QTimer(this);
-    connect(updateTimer, &QTimer::timeout, [=] {
+    m_updateTimer = new QTimer(this);
+    connect(m_updateTimer, &QTimer::timeout, [=] {
         ParseController::instance()->update();
     });
-    updateTimer->start(1000);
+    m_updateTimer->start(m_updateInterval);
     //    QTimer *lengthTimer = new QTimer(this);
     //    connect(lengthTimer, &QTimer::timeout,
     //            this, &GameWindow::updateTimes);
@@ -288,6 +289,8 @@ void GameWindow::onDialogClosed()
 
     ui->actionAdd_drinks->actionGroup()->checkedAction()->setChecked(false);
     ui->tableViewInformation->horizontalHeader()->repaint();
+
+    m_updateTimer->start(m_updateInterval);
 }
 
 void GameWindow::enableActionsBasedOnState()
@@ -390,6 +393,8 @@ void GameWindow::onNewRoundStarted()
  */
 void GameWindow::on_actionAdd_round_triggered()
 {
+    m_updateTimer->stop();
+
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     m_dialogController->showDialog(dialog);
@@ -397,6 +402,8 @@ void GameWindow::on_actionAdd_round_triggered()
 
 void GameWindow::on_actionAdd_Hochzeit_triggered()
 {
+     m_updateTimer->stop();
+
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     dialog->setCurrentPage(Round::Hochzeit);
@@ -405,6 +412,8 @@ void GameWindow::on_actionAdd_Hochzeit_triggered()
 
 void GameWindow::on_actionAdd_Solo_triggered()
 {
+     m_updateTimer->stop();
+
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     dialog->setCurrentPage(Round::Solo);
@@ -413,6 +422,8 @@ void GameWindow::on_actionAdd_Solo_triggered()
 
 void GameWindow::on_actionAdd_Trumpfabgabe_triggered()
 {
+     m_updateTimer->stop();
+
     NewRoundDialog *dialog = new NewRoundDialog(this);
     dialog->setRound(m_game->currentRound());
     dialog->setCurrentPage(Round::Trumpfabgabe);
@@ -421,6 +432,8 @@ void GameWindow::on_actionAdd_Trumpfabgabe_triggered()
 
 void GameWindow::on_actionAdd_schmeisserei_triggered()
 {
+     m_updateTimer->stop();
+
     SchmeissereiDialog *dialog = new SchmeissereiDialog(this);
     dialog->setGame(m_game);
     m_dialogController->showDialog(dialog);
@@ -428,6 +441,8 @@ void GameWindow::on_actionAdd_schmeisserei_triggered()
 
 void GameWindow::on_actionAdd_drinks_triggered()
 {
+     m_updateTimer->stop();
+
     DrinksWidget *drinksWidget = new DrinksWidget(ui->centralwidget);
     drinksWidget->setRound(m_game->currentRound());
     m_dialogController->showDialog(drinksWidget);
@@ -436,6 +451,8 @@ void GameWindow::on_actionAdd_drinks_triggered()
 
 void GameWindow::on_actionSet_comment_triggered()
 {
+     m_updateTimer->stop();
+
     CommentWidget* commentWidget = new CommentWidget(this);
     commentWidget->setGame(m_game);
     m_dialogController->showDialog(commentWidget);

@@ -83,6 +83,9 @@ private:
     ResumeWidget* m_resumeWidget;
     DialogController *m_dialogController;
 
+    QTimer *m_updateTimer;
+    int m_updateInterval;
+
     int m_minimumColumnWidth;
 
     static QMultiHash<QSharedPointer<Game>, GameWindow *> s_gameWindows;

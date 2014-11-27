@@ -51,7 +51,9 @@ public:
 
     void emitParseUpdated();
 
-    static void uploadObjects(QList<QSharedPointer<ParseObject>> _objects);
+    QJsonObject parseBatchObject();
+    virtual QJsonObject parseObject();
+
 
 signals:
     void parseUploaded();

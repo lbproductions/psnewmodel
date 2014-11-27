@@ -38,7 +38,7 @@ void ParseController::syncData()
     auto conn = std::make_shared<QMetaObject::Connection>();
     *conn = connect(this, &ParseController::updateFinished, [=] {
         QObject::disconnect(*conn);
-        uploadGames();
+        //uploadGames();
     });
     update();
 }
@@ -63,17 +63,63 @@ void ParseController::addToCache(QSharedPointer<ParseObject> object)
 
 void ParseController::uploadGames()
 {
+    QJsonArray array;
+    QList<QSharedPointer<Player>> players = Qp::readAll<Player>();
+    foreach(QSharedPointer<Player> player, players) {
+        array.append(player->parseBatchObject());
+    }
+    QJsonObject requestObject;
+    requestObject.insert("requests", QJsonValue(array));
+
+    QJsonDocument doc(requestObject);
+    qDebug() << doc.toJson();
+
+    QNetworkAccessManager* mgr = new QNetworkAccessManager(this);
+    QObject::connect(mgr, &QNetworkAccessManager::finished, [=] (QNetworkReply* reply){
+        QJsonDocument document = QJsonDocument::fromJson(reply->readAll());
+        QJsonArray array = document.array();
+        for(int i = 0; i<array.size(); i++) {
+            QSharedPointer<Player> player = players.at(i);
+            if(player->name() == "Patrick" || player->name() == "Niclas") {
+                continue;
+            }
+            QString parseID = array.at(i).toObject().value("success").toObject().value("objectId").toString();
+            if(parseID != "") {
+                player->setParseID(parseID);
+                player->setParseUpdated(true);
+                player->setParseLastUpdate(QDateTime::currentDateTime());
+                Qp::update(player);
+            }
+        }
+
+        reply->deleteLater();
+        mgr->deleteLater();
+    });
+
+    QUrl url("https://api.parse.com/1/batch");
+
+    QNetworkRequest request(url);
+    request.setHeader(QNetworkRequest::ContentTypeHeader,"application/json");
+    request.setRawHeader("X-Parse-Application-Id", "rmamC3zOAKDUorbjF6Lb75W4hJFcG97M4myz2u6v");
+    request.setRawHeader("X-Parse-REST-API-Key", "KnX9CpfpKk58yQfPp2z0vew1XzayL4E8Swt1ga2z");
+
+    mgr->post(request, doc.toJson());
+
+    return;
+
+    /*
     int count = 0;
 
     QList<QSharedPointer<Game>> games = Qp::readAll<Game>();
     foreach(QSharedPointer<Game> game, games) {
         if((game->parseID() == "" || !game->parseUpdated()) && game->type() == Game::Doppelkopf && Qp::primaryKey(game) != 271) {
             if(game->rounds().size() > 0 && count < 1) {
-                //uploadGame(game);
+                uploadGame(game);
                 count++;
             }
         }
     }
+    */
 }
 
 void ParseController::uploadGame(QSharedPointer<Game> game)

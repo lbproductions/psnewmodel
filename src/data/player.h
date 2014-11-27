@@ -256,6 +256,8 @@ public:
     bool parseCheckAfterUploadConditions();
 
     void parseUpdateFromJSON(QJsonObject object, bool created = false);
+
+    QJsonObject parseObject();
 };
 
 bool sortPlayersByLastGame(const QSharedPointer<Player> &p1, const QSharedPointer<Player> &p2);

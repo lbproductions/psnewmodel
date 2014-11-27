@@ -632,3 +632,12 @@ void Player::parseUpdateFromJSON(QJsonObject object, bool created)
 
     Qp::update(Qp::sharedFrom(this));
 }
+
+
+QJsonObject Player::parseObject()
+{
+    QJsonObject object;
+    object.insert("displayName", name());
+    object.insert("colorString", colorToParseString(color()));
+    return object;
+}

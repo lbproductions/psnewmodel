@@ -234,8 +234,19 @@ void ParseObject::emitParseUpdated()
     emit parseUpdateCompleted();
 }
 
-void ParseObject::uploadObjects(QList<QSharedPointer<ParseObject> > _objects)
+QJsonObject ParseObject::parseBatchObject()
 {
+    QJsonObject object;
+    object.insert("method", QJsonValue("POST"));
+    object.insert("path", QJsonValue("/1/classes/Player"));
+    object.insert("body", QJsonValue(parseObject()));
+    return object;
+}
+
+QJsonObject ParseObject::parseObject()
+{
+    QJsonObject object;
+    return object;
 }
 
 QString ParseObject::parseID() const
