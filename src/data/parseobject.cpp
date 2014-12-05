@@ -157,6 +157,15 @@ void ParseObject::parseOnUploadFinished(QNetworkReply *reply)
     */
 }
 
+void ParseObject::setParseCreated(QDateTime arg)
+{
+    if (m_parseCreated == arg)
+        return;
+
+    m_parseCreated = arg;
+    emit parseCreatedChanged(arg);
+}
+
 void ParseObject::parseUpdate()
 {
     if(m_isParseFetching) {
@@ -247,6 +256,11 @@ QJsonObject ParseObject::parseObject()
 {
     QJsonObject object;
     return object;
+}
+
+QDateTime ParseObject::parseCreated() const
+{
+    return m_parseCreated;
 }
 
 QString ParseObject::parseID() const

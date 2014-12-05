@@ -192,6 +192,14 @@ void GameWindow::setGame(const QSharedPointer<Game> &game)
 
     m_game = game;
 
+    /*
+    QList<QSharedPointer<Round>> roundList = m_game->rounds();
+    qSort(roundList.begin(), roundList.end(), sortGameByRoundNumber);
+    m_game->setRounds(roundList);
+
+    Qp::update(m_game);
+    */
+
     if(m_game->state() == Game::Running && s_gameWindows.values(m_game).isEmpty())
         m_game->setState(Game::Paused);
 

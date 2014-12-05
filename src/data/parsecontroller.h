@@ -16,6 +16,7 @@ class LiveDrink;
 
 class QNetworkAccessManager;
 class QNetworkReply;
+class QJsonValueRef;
 
 class ParseController : public QObject
 {
@@ -53,6 +54,8 @@ private:
     template<class T>
     void registerCacheClass();
 
+    QList<QJsonValue> sortJsonArrayToCreationTime(const QJsonArray &array);
+
     QHash<QString, QHash<QString, QSharedPointer<ParseObject>>> m_cache;
     QList<QString> m_updatedClass;
 
@@ -63,6 +66,8 @@ private:
 
     QDateTime m_updateStartTime;
 };
+
+bool sortParseObjectsByCreationTime(QSharedPointer<ParseObject> obj1, QSharedPointer<ParseObject> obj2);
 
 template<class T>
 QSharedPointer<T> ParseController::objectFromCache(QString _objectID)

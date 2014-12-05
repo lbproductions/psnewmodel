@@ -177,9 +177,9 @@ public slots:
     void addPlayer(QSharedPointer<Player> player);
 
     void addRound(QSharedPointer<Round> round);
+    void setRounds(const QList<QSharedPointer<Round> > &rounds);
 
 private slots:
-    void setRounds(const QList<QSharedPointer<Round> > &rounds);
     void removeRound(QSharedPointer<Round> round);
 
     void setPlayers(const QList<QSharedPointer<Player> > &players);
@@ -248,6 +248,7 @@ public:
 
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);
 bool sortGamesByDateLastFirst(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);
+bool sortGameByRoundNumber(const QSharedPointer<Round> &g1, const QSharedPointer<Round> &g2);
 
 
 #endif // GAME_H

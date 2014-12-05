@@ -17,6 +17,7 @@ class ParseObject : public QObject
     Q_PROPERTY(QString parseID READ parseID WRITE setParseID)
     Q_PROPERTY(bool parseUpdated READ parseUpdated WRITE setParseUpdated)
     Q_PROPERTY(QDateTime parseLastUpdate READ parseLastUpdate WRITE setParseLastUpdate)
+    Q_PROPERTY(QDateTime parseCreated READ parseCreated WRITE setParseCreated NOTIFY parseCreatedChanged)
 
 public:
     explicit ParseObject(QObject *parent = 0);
@@ -55,10 +56,14 @@ public:
     virtual QJsonObject parseObject();
 
 
+    QDateTime parseCreated() const;
+
 signals:
     void parseUploaded();
     void parseUploadFailed(QString error);
     void parseUpdateCompleted();
+
+    void parseCreatedChanged(QDateTime arg);
 
 public slots:
     void setParseID(QString arg);
@@ -69,6 +74,8 @@ public slots:
 
     void parseOnUploadFinished(QNetworkReply* reply);
 
+    void setParseCreated(QDateTime arg);
+
 protected:
     QColor colorFromParseString(QString colorString);
     QString colorToParseString(QColor color);
@@ -78,6 +85,7 @@ protected:
     QString m_parseID;
     bool m_parseUpdated;
     QDateTime m_parseLastUpdate;
+    QDateTime m_parseCreated;
 
     bool m_isUploading;
     bool m_isParseFetching;

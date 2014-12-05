@@ -1124,3 +1124,9 @@ bool Game::parseCheckAfterUploadConditions()
 
     return true;
 }
+
+
+bool sortGameByRoundNumber(const QSharedPointer<Round> &g1, const QSharedPointer<Round> &g2)
+{
+    return g1->number() < g2->number();
+}
