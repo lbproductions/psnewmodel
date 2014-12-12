@@ -22,7 +22,7 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui(new Ui::LeagueWindow),
     m_classementModel(new LeagueClassementModel(this)),
     m_gamePlacementModel(new LeagueGamePlacementModel(this)),
-    m_minimumColumnWidth(20),
+    m_minimumColumnWidth(35),
     m_maximumColumnWidth(100)
 {
     ui->setupUi(this);
