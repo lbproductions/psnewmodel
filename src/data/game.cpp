@@ -833,6 +833,9 @@ void Game::calcInitialStats()
     m_totalRoundCount = players().size() * 6;
 
     QList<QSharedPointer<Round>> _rounds = rounds();
+    qSort(_rounds.begin(), _rounds.end(), sortRoundsByNumber);
+    setRounds(_rounds);
+
     QSharedPointer<Round> lastFinishedRound;
     foreach(QSharedPointer<Round> round, _rounds) {
         if(round->state() == Round::Finished) {
@@ -1006,4 +1009,9 @@ void Game::addToGamesTogetherStats(QSharedPointer<Round> round, QSharedPointer<P
         m_playerRoundWinsTogether.insert(key1, wins);
     }
 
+}
+
+bool sortRoundsByNumber(const QSharedPointer<Round> &g1, const QSharedPointer<Round> &g2)
+{
+    return g1->number() < g2->number();
 }

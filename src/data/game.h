@@ -239,5 +239,7 @@ private:
 bool sortGamesByDate(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);
 bool sortGamesByDateLastFirst(const QSharedPointer<Game> &g1, const QSharedPointer<Game> &g2);
 
+bool sortRoundsByNumber(const QSharedPointer<Round> &g1, const QSharedPointer<Round> &g2);
+
 
 #endif // GAME_H
