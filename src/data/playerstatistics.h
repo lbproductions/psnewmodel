@@ -43,7 +43,12 @@ public:
     QList<QSharedPointer<Round> > contraWins() const;
     QList<QSharedPointer<Round> > hochzeitRounds() const;
     QList<QSharedPointer<Round> > trumpfabgabeRounds() const;
-    QList<QSharedPointer<Round> > soloRounds() const;
+    QList<QSharedPointer<Round> > soloRounds();
+    QList<QSharedPointer<Round> > soloWinRounds();
+    QList<QSharedPointer<Round> > soloPflichtRounds();
+    QList<QSharedPointer<Round> > soloPflichtWinRounds();
+    QList<QSharedPointer<Round> > soloRounds(int type);
+    QList<QSharedPointer<Round> > soloWinRounds(int type);
     QList<QSharedPointer<Schmeisserei> > schmeissereien() const;
     QList<QSharedPointer<Round> > schweinereiRounds() const;
 
@@ -78,6 +83,7 @@ public:
 
  private:
     void initStats();
+    void calcSeriesStats();
     void updateStats();
 
     bool m_statsInitialized;
@@ -85,6 +91,13 @@ public:
     RoundSeries m_lastSeries;
     QList<RoundSeries> m_winSeries;
     QList<RoundSeries> m_loseSeries;
+
+    QHash<int, QList<QSharedPointer<Round>>> m_soloTypeCounts;
+    QList<QSharedPointer<Round>> m_soloRounds;
+    QList<QSharedPointer<Round>> m_soloWinRounds;
+    QList<QSharedPointer<Round>> m_soloPfichtRounds;
+    QList<QSharedPointer<Round>> m_soloPflichtWinRounds;
+    QHash<int, QList<QSharedPointer<Round>>> m_soloTypeWins;
 
     Player *m_player;
     QList<QSharedPointer<Game> > m_games;

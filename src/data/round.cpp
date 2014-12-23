@@ -455,6 +455,18 @@ QList<QSharedPointer<Schmeisserei> > Round::schmeissereis() const
     return m_schmeissereis;
 }
 
+QList<Round::SoloType> Round::soloTypes()
+{
+    return {Fleischlos,
+                BubenSolo,
+                DamenSolo,
+                TrumpfSolo,
+                StilleHochzeit,
+                SitzenGelasseneHochzeit,
+                FalschGespielt,
+                FarbSolo};
+}
+
 void Round::addSchmeisserei(QSharedPointer<Schmeisserei> schmeisserei)
 {
     m_schmeissereis.add(schmeisserei);

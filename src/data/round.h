@@ -220,6 +220,7 @@ public:
 
     QList<QSharedPointer<Schmeisserei> > schmeissereis() const;
 
+    static QList<SoloType> soloTypes();
     static QStringList soloTypeStrings();
     static QString soloTypeStringFromType(SoloType type);
     static SoloType soloTypeFromString(const QString &typeString);

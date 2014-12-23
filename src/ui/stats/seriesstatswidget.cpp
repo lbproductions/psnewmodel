@@ -51,7 +51,7 @@ void SeriesStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShar
     }
 
     foreach(QSharedPointer<Player> player, players) {
-        PlayerStatistics* stats = new PlayerStatistics(this);
+        QSharedPointer<PlayerStatistics> stats = QSharedPointer<PlayerStatistics>(new PlayerStatistics(this));
         stats->setPlayer(player.data());
         QList<QSharedPointer<Game> > playerGames;
         foreach(QSharedPointer<Game> game, games) {
@@ -61,10 +61,7 @@ void SeriesStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShar
         }
         stats->setGames(playerGames);
 
-        createItemFromPlayerStats(QSharedPointer<PlayerStatistics>(stats));
-
-        delete stats;
-        stats = 0;
+        createItemFromPlayerStats(stats);
     }
 }
 

@@ -808,6 +808,24 @@ void Game::connectAllRoundSignals()
         connectRoundSignals(round);
     }
 }
+QList<QSharedPointer<Round> > Game::soloRounds()
+{
+    calcInitialStats();
+
+    QList<QSharedPointer<Round>> result;
+    foreach(QSharedPointer<Player> player, m_soloRounds.keys()) {
+        result.append(m_soloRounds.value(player));
+    }
+    return result;
+}
+
+QList<QSharedPointer<Round> > Game::soloRounds(QSharedPointer<Player> player)
+{
+    calcInitialStats();
+
+    return m_soloRounds.value(player);
+}
+
 
 void Game::calcInitialStats()
 {
@@ -829,6 +847,8 @@ void Game::calcInitialStats()
 
     m_playerRoundsTogether.clear();
     m_playerRoundWinsTogether.clear();
+
+    m_soloRounds.clear();
 
     m_totalRoundCount = players().size() * 6;
 
@@ -874,6 +894,13 @@ void Game::calcInitialStats()
                 addToGamesTogetherStats(round, contra1Player, contra2Player);
                 addToGamesTogetherStats(round, contra3Player, contra2Player);
                 addToGamesTogetherStats(round, contra3Player, contra1Player);
+
+                QList<QSharedPointer<Round>> soloRounds;
+                if(m_soloRounds.contains(round->soloPlayer())) {
+                    soloRounds.append(m_soloRounds.value(round->soloPlayer()));
+                }
+                soloRounds.append(round);
+                m_soloRounds.insert(round->soloPlayer(), soloRounds);
             }
             else {
                 addToGamesTogetherStats(round, re1Player, re2Player);
@@ -939,6 +966,13 @@ void Game::updateStats()
         addToGamesTogetherStats(finishedRound, contra1Player, contra2Player);
         addToGamesTogetherStats(finishedRound, contra3Player, contra2Player);
         addToGamesTogetherStats(finishedRound, contra3Player, contra1Player);
+
+        QList<QSharedPointer<Round>> soloRounds;
+        if(m_soloRounds.contains(finishedRound->soloPlayer())) {
+            soloRounds.append(m_soloRounds.value(finishedRound->soloPlayer()));
+        }
+        soloRounds.append(finishedRound);
+        m_soloRounds.insert(finishedRound->soloPlayer(), soloRounds);
     }
     else {
         addToGamesTogetherStats(finishedRound, re1Player, re2Player);

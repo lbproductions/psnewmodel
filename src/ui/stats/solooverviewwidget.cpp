@@ -6,6 +6,7 @@
 #include <data/game.h>
 #include <data/player.h>
 #include <data/league.h>
+#include <data/playerstatistics.h>
 
 #include <misc/tools.h>
 
@@ -43,19 +44,45 @@ void SoloOverviewWidget::setGames(QList<QSharedPointer<Game> > games)
 
 void SoloOverviewWidget::setGames(QList<QSharedPointer<Game> > games, QList<QSharedPointer<Player> > players)
 {
-    m_games = games;
     m_players = players;
 
-    createCountHash();
+    foreach(QSharedPointer<Player> player, players) {
+        QSharedPointer<PlayerStatistics> stats = QSharedPointer<PlayerStatistics>(new PlayerStatistics(this));
+        stats->setPlayer(player.data());
+        QList<QSharedPointer<Game> > playerGames;
+        foreach(QSharedPointer<Game> game, games) {
+            if(game->players().contains(player)) {
+                playerGames.append(game);
+            }
+        }
+        stats->setGames(playerGames);
 
+        m_stats.insert(player, stats);
+    }
+
+    init();
+}
+
+void SoloOverviewWidget::setLeague(QSharedPointer<League> league)
+{
+    m_players = league->players();
+
+    foreach(QSharedPointer<Player> player, league->players()) {
+        m_stats.insert(player, league->playerStats(player));
+    }
+    init();
+}
+
+void SoloOverviewWidget::init()
+{
     QStringList labels;
-    labels << tr("Player") << tr("TotalSoli");
+    labels << tr("Player") << tr("TotalSoli") << tr("TotalWins") << tr("RelWinCount") << tr("Pflicht") << tr("PflichtWin") << tr("PflichtRel");
 
     QString whiteLabelStyleSheet = "QLabel{color:white;}";
 
     int row = 1;
     int totalCount = 0;
-    foreach(Round::SoloType type, m_counts.keys()) {
+    foreach(Round::SoloType type, Round::soloTypes()) {
         QLabel* name = new QLabel(Round::soloTypeStringFromType(type) + ":", this);
         name->setStyleSheet(whiteLabelStyleSheet);
         ui->gridLayout->addWidget(name, row, 0);
@@ -83,38 +110,28 @@ void SoloOverviewWidget::setGames(QList<QSharedPointer<Game> > games, QList<QSha
         QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
         item->setText(0, player->name());
         item->setIcon(0, QIcon(player->colorPixmap()));
-        item->setData(1, Qt::DisplayRole, totalPlayerCount(player));
-        int column = 2;
-        foreach(Round::SoloType type, m_counts.keys()) {
-            item->setData(column, Qt::DisplayRole, m_counts.value(type).value(player));
-            column++;
+        int rounds = m_stats.value(player)->soloRounds().size();
+        int wins = m_stats.value(player)->soloWinRounds().size();
+        item->setData(1, Qt::DisplayRole, rounds);
+        item->setData(2, Qt::DisplayRole, wins);
+        double ratio = 0;
+        if(rounds > 0) {
+            ratio = (double)wins * 100 / (double)rounds;
         }
-    }
-}
-
-void SoloOverviewWidget::setLeague(QSharedPointer<League> league)
-{
-    setGames(league->calculatedGames(), league->players());
-}
-
-void SoloOverviewWidget::createCountHash()
-{
-    m_counts.clear();
-
-    foreach(QSharedPointer<Game> game, m_games) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->isSolo() && m_players.contains(round->soloPlayer())) {
-                if(m_counts.value(round->soloType()).isEmpty()) {
-                    QHash<QSharedPointer<Player>,int > hash;
-                    hash.insert(round->soloPlayer(), 1);
-                    m_counts.insert(round->soloType(), hash);
-                }
-                else{
-                    QHash<QSharedPointer<Player>,int > hash = m_counts.value(round->soloType());
-                    hash.insert(round->soloPlayer(), hash.value(round->soloPlayer()) + 1);
-                    m_counts.insert(round->soloType(), hash);
-                }
-            }
+        item->setData(3, Qt::DisplayRole, ratio);
+        rounds = m_stats.value(player)->soloPflichtRounds().size();
+        wins = m_stats.value(player)->soloPflichtWinRounds().size();
+        item->setData(4, Qt::DisplayRole, rounds);
+        item->setData(5, Qt::DisplayRole, wins);
+        ratio = 0;
+        if(rounds > 0) {
+            ratio = (double)wins * 100 / (double)rounds;
+        }
+        item->setData(6, Qt::DisplayRole, ratio);
+        int column = 7;
+        foreach(Round::SoloType type, Round::soloTypes()) {
+            item->setData(column, Qt::DisplayRole, m_stats.value(player)->soloRounds(type).size());
+            column++;
         }
     }
 }
@@ -122,19 +139,10 @@ void SoloOverviewWidget::createCountHash()
 int SoloOverviewWidget::totalTypeCount(Round::SoloType type)
 {
     int count = 0;
-    QHash<QSharedPointer<Player>,int> hash = m_counts.value(type);
-    foreach(QSharedPointer<Player> player, hash.keys()) {
-        count += hash.value(player);
+    foreach(QSharedPointer<Player> player, m_players) {
+        count += m_stats.value(player)->soloRounds(type).size();
     }
     return count;
 }
 
-int SoloOverviewWidget::totalPlayerCount(QSharedPointer<Player> player)
-{
-    int count = 0;
-    for(int i = 0; i<m_counts.keys().size(); i++) {
-        count += m_counts.value(m_counts.keys().at(i)).value(player);
-    }
-    return count;
-}
 

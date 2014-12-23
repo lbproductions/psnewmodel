@@ -53,7 +53,7 @@ QStringList Schmeisserei::typeStrings()
     return QStringList() << tr("5 Könige") <<
                             tr("Trumpfabgabe nicht genommen") <<
                             tr("Weniger als 3 Trumpf") <<
-                            tr("Mehr als 90 Punkte") <<
+                            tr("Mindestens 90 Punkte") <<
                             tr("Nichts über Fuchs");
 }
 

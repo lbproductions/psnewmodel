@@ -263,22 +263,49 @@ QList<QSharedPointer<Round> > PlayerStatistics::trumpfabgabeRounds() const
     return result;
 }
 
-QList<QSharedPointer<Round> > PlayerStatistics::soloRounds() const
+QList<QSharedPointer<Round> > PlayerStatistics::soloRounds()
 {
     if(isAllGames())
         return player()->soloRounds();
 
-    QList<QSharedPointer<Round> > result;
-    QSharedPointer<Player> sharedPlayer = player();
-    foreach(QSharedPointer<Game> game, games()) {
-        foreach(QSharedPointer<Round> round, game->rounds()) {
-            if(round->soloPlayer() == sharedPlayer) {
-                result.append(round);
-            }
-        }
-    }
+    initStats();
 
-    return result;
+    return m_soloRounds;
+}
+
+QList<QSharedPointer<Round> > PlayerStatistics::soloWinRounds()
+{
+    initStats();
+
+    return m_soloWinRounds;
+}
+
+QList<QSharedPointer<Round> > PlayerStatistics::soloPflichtRounds()
+{
+    initStats();
+
+    return m_soloPfichtRounds;
+}
+
+QList<QSharedPointer<Round> > PlayerStatistics::soloPflichtWinRounds()
+{
+    initStats();
+
+    return m_soloPflichtWinRounds;
+}
+
+QList<QSharedPointer<Round> > PlayerStatistics::soloRounds(int type)
+{
+    initStats();
+
+    return m_soloTypeCounts.value(type);
+}
+
+QList<QSharedPointer<Round> > PlayerStatistics::soloWinRounds(int type)
+{
+    initStats();
+
+    return m_soloTypeWins.value(type);
 }
 
 QList<QSharedPointer<Schmeisserei> > PlayerStatistics::schmeissereien() const
@@ -553,12 +580,57 @@ void PlayerStatistics::initStats()
         return;
     }
 
-    QList<QSharedPointer<Round> > allRounds = rounds();
-    qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
-
     m_winSeries.clear();
     m_loseSeries.clear();
     m_lastSeries.clear();
+
+    calcSeriesStats();
+
+    m_soloRounds.clear();
+    m_soloWinRounds.clear();
+    m_soloTypeCounts.clear();
+    m_soloTypeWins.clear();
+    m_soloPfichtRounds.clear();
+    m_soloPflichtWinRounds.clear();
+
+    foreach(QSharedPointer<Game> game, games()) {
+        m_soloRounds.append(game->soloRounds(Qp::sharedFrom(m_player)));
+        foreach(QSharedPointer<Round> round, game->soloRounds(Qp::sharedFrom(m_player))) {
+            QList<QSharedPointer<Round>> list;
+            if(m_soloTypeCounts.contains(round->soloType())) {
+                list.append(m_soloTypeCounts.value(round->soloType()));
+            }
+            list.append(round);
+            m_soloTypeCounts.insert(round->soloType(), list);
+
+            if(round->isPflicht()) {
+                m_soloPfichtRounds.append(round);
+            }
+
+            if(round->points(round->soloPlayer()) > 0) {
+                QList<QSharedPointer<Round>> list1;
+                if(m_soloTypeWins.contains(round->soloType())) {
+                    list1.append(m_soloTypeWins.value(round->soloType()));
+                }
+                list1.append(round);
+                m_soloTypeWins.insert(round->soloType(), list1);
+
+                m_soloWinRounds.append(round);
+
+                if(round->isPflicht()) {
+                    m_soloPflichtWinRounds.append(round);
+                }
+            }
+        }
+    }
+
+    m_statsInitialized = true;
+}
+
+void PlayerStatistics::calcSeriesStats()
+{
+    QList<QSharedPointer<Round> > allRounds = rounds();
+    qSort(allRounds.begin(), allRounds.end(), sortRoundsByDate);
 
     RoundSeries current;
     bool winSeries = false;
@@ -599,8 +671,6 @@ void PlayerStatistics::initStats()
 
     qSort(m_winSeries.begin(), m_winSeries.end(), sortRoundSeriesBySize);
     qSort(m_loseSeries.begin(), m_loseSeries.end(), sortRoundSeriesBySize);
-
-    m_statsInitialized = true;
 }
 
 void PlayerStatistics::updateStats()

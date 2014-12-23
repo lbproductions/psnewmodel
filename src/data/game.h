@@ -164,6 +164,9 @@ public:
     QList<QSharedPointer<OLD_OfflineGameInformation> > offlineGameInformation() const;
     QList<QSharedPointer<OLD_DokoOfflineGameBuddys> > dokoOfflineGameBuddys() const;
 
+    QList<QSharedPointer<Round> > soloRounds();
+    QList<QSharedPointer<Round> > soloRounds(QSharedPointer<Player> player);
+
 signals:
     void newRoundStarted();
     void schmeissereiAdded();
@@ -231,6 +234,7 @@ private:
 
     QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_playerReRounds;
     QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_playerContraRounds;
+    QHash<QSharedPointer<Player>,QList<QSharedPointer<Round> > > m_soloRounds;
 
     QHash<QString, QList<QSharedPointer<Round> > > m_playerRoundsTogether;
     QHash<QString, QList<QSharedPointer<Round> > > m_playerRoundWinsTogether;
