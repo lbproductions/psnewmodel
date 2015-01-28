@@ -252,16 +252,22 @@ QPushButton#pushButtonAdd {
         <item>
          <widget class="QPushButton" name="pushButtonAdd">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>30</width>
+            <height>0</height>
+           </size>
           </property>
           <property name="focusPolicy">
            <enum>Qt::ClickFocus</enum>
           </property>
           <property name="text">
-           <string>&gt;</string>
+           <string>+</string>
           </property>
           <property name="flat">
            <bool>true</bool>
@@ -271,7 +277,7 @@ QPushButton#pushButtonAdd {
         <item>
          <widget class="QPushButton" name="pushButtonRemove">
           <property name="sizePolicy">
-           <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
@@ -280,7 +286,7 @@ QPushButton#pushButtonAdd {
            <enum>Qt::ClickFocus</enum>
           </property>
           <property name="text">
-           <string>&lt;</string>
+           <string>-</string>
           </property>
           <property name="flat">
            <bool>true</bool>

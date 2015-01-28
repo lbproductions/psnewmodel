@@ -40,6 +40,9 @@ private slots:
 
     void on_pushButtonAdd_clicked();
     void on_pushButtonRemove_clicked();
+
+    void on_listViewPlayers_doubleClicked(const QModelIndex &index);
+
 private:
     Ui::DrinksWidget *ui;
     DrinksWidgetSortFilterModel *m_drinksModel;

@@ -639,3 +639,18 @@ void DrinksWidget::showExistingDrinksForPlayer(QSharedPointer<Player> player, QW
     static_cast<QVBoxLayout *>(widget->layout())->addLayout(layout);
 }
 
+void DrinksWidget::on_listViewPlayers_doubleClicked(const QModelIndex &index)
+{
+    QSharedPointer<Drink> drink = m_playersModel->drink();
+
+    QSharedPointer<Player> player = m_playersModel->objectByIndex(index);
+    QSharedPointer<LiveDrink> liveDrink = Qp::create<LiveDrink>();
+    liveDrink->setDrink(drink);
+    liveDrink->setPlayer(player);
+    liveDrink->setRound(m_round);
+    Qp::update(liveDrink);
+    m_drinkRoundModel->addLiveDrink(liveDrink);
+
+    ui->treeViewDrinkRound->expandAll();
+    showExistingDrinks();
+}
