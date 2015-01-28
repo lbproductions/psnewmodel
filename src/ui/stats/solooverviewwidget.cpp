@@ -130,10 +130,12 @@ void SoloOverviewWidget::init()
         item->setData(6, Qt::DisplayRole, ratio);
         int column = 7;
         foreach(Round::SoloType type, Round::soloTypes()) {
-            item->setData(column, Qt::DisplayRole, m_stats.value(player)->soloRounds(type).size());
+            item->setData(column, Qt::DisplayRole, QString::number(m_stats.value(player)->soloWinRounds(type).size()) + " / " + QString::number(m_stats.value(player)->soloRounds(type).size()));
             column++;
         }
     }
+
+    ui->treeWidget->resizeColumnToContents(0);
 }
 
 int SoloOverviewWidget::totalTypeCount(Round::SoloType type)
