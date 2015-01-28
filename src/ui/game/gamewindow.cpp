@@ -127,10 +127,11 @@ GameWindow::GameWindow(QWidget *parent) :
     m_resumeWidget = new ResumeWidget(this);
     m_resumeWidget->setVisible(false);
 
-    //    QTimer *lengthTimer = new QTimer(this);
-    //    connect(lengthTimer, &QTimer::timeout,
-    //            this, &GameWindow::updateTimes);
-    //    lengthTimer->start(1000);
+    QTimer *lengthTimer = new QTimer(this);
+    connect(lengthTimer, &QTimer::timeout, [=]() {
+        this->repaint();
+    });
+    lengthTimer->start(1000);
 
     enableActionsBasedOnState();
 
@@ -249,6 +250,8 @@ void GameWindow::updateSizes()
     ui->graphAxis->setFixedWidth(ui->tableViewInformation->verticalHeader()->width() + 40);
     resize(size() + QSize(1,0));
     resize(size() - QSize(1,0));
+
+    ui->tableViewInformation->horizontalHeader()->repaint();
 }
 
 void GameWindow::resizeEvent(QResizeEvent *)
@@ -275,11 +278,12 @@ void GameWindow::onDialogClosed()
     m_gameOverViewModel->updateViews();
     m_informationModel->updateViews();
 
+    ui->gameLengthWidget->repaint();
+
     if(!ui->actionAdd_drinks->actionGroup()->checkedAction())
         return;
 
     ui->actionAdd_drinks->actionGroup()->checkedAction()->setChecked(false);
-    ui->tableViewInformation->horizontalHeader()->repaint();
 }
 
 void GameWindow::enableActionsBasedOnState()
@@ -456,34 +460,34 @@ void GameWindow::onTableViewOverviewDoubleClicked(const QModelIndex& index)
     QSharedPointer<Round> round = m_game->rounds().at(roundIndex);
     NewRoundDialog* dlg = new NewRoundDialog(this);
     if(roundIndex == m_game->rounds().size()-1) {
-         dlg->setRound(round, NewRoundDialog::NewRound);
+        dlg->setRound(round, NewRoundDialog::NewRound);
 
-         if(rowIndex == m_game->players().size()) {
-             dlg->setCurrentPage(Round::NormalRound);
-             ui->actionAdd_round->setChecked(true);
-         }
-         else if(rowIndex == m_game->players().size() + 1) {
-             dlg->setCurrentPage(Round::Hochzeit);
-             ui->actionAdd_Hochzeit->setChecked(true);
-         }
-         else if(rowIndex == m_game->players().size() + 2) {
-             dlg->setCurrentPage(Round::Solo);
-             ui->actionAdd_Solo->setChecked(true);
-         }
-         else if(rowIndex == m_game->players().size() + 3) {
-             dlg->setCurrentPage(Round::Trumpfabgabe);
-             ui->actionAdd_Trumpfabgabe->setChecked(true);
-         }
-         else if(rowIndex == m_game->players().size() + 6) {
-             on_actionAdd_drinks_triggered();
-             return;
-         }
-         else if(rowIndex == m_game->players().size() + 5) {
-             on_actionAdd_schmeisserei_triggered();
-             return;
-         }
+        if(rowIndex == m_game->players().size()) {
+            dlg->setCurrentPage(Round::NormalRound);
+            ui->actionAdd_round->setChecked(true);
+        }
+        else if(rowIndex == m_game->players().size() + 1) {
+            dlg->setCurrentPage(Round::Hochzeit);
+            ui->actionAdd_Hochzeit->setChecked(true);
+        }
+        else if(rowIndex == m_game->players().size() + 2) {
+            dlg->setCurrentPage(Round::Solo);
+            ui->actionAdd_Solo->setChecked(true);
+        }
+        else if(rowIndex == m_game->players().size() + 3) {
+            dlg->setCurrentPage(Round::Trumpfabgabe);
+            ui->actionAdd_Trumpfabgabe->setChecked(true);
+        }
+        else if(rowIndex == m_game->players().size() + 6) {
+            on_actionAdd_drinks_triggered();
+            return;
+        }
+        else if(rowIndex == m_game->players().size() + 5) {
+            on_actionAdd_schmeisserei_triggered();
+            return;
+        }
 
-         m_dialogController->showDialog(dlg);
+        m_dialogController->showDialog(dlg);
     }
     else {
         dlg->setRound(round, NewRoundDialog::EditRound);
@@ -558,6 +562,8 @@ void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
 
 void GameWindow::on_buttonBox_accepted()
 {
+    m_dialogController->closeDialog();
+
     QSharedPointer<Game> game = Qp::create<Game>();
     game->setMitPflichtSolo(ui->checkBoxMitPflichtSoli->isChecked());
     game->setMitNeunen(ui->checkBoxMitNeunen->isChecked());
@@ -572,8 +578,6 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     setGame(game);
     game->setState(Game::Running);
-
-    m_dialogController->closeDialog();
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()

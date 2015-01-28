@@ -411,8 +411,30 @@ QWidget#widgetCreateGame {
           <item>
            <widget class="GraphAxis" name="graphAxis" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_3">
+             <property name="spacing">
+              <number>0</number>
+             </property>
+             <property name="leftMargin">
+              <number>0</number>
+             </property>
+             <property name="topMargin">
+              <number>0</number>
+             </property>
+             <property name="rightMargin">
+              <number>0</number>
+             </property>
+             <property name="bottomMargin">
+              <number>0</number>
+             </property>
              <item>
-              <widget class="GameLengthWidget" name="gameLengthWidget" native="true"/>
+              <widget class="GameLengthWidget" name="gameLengthWidget" native="true">
+               <property name="minimumSize">
+                <size>
+                 <width>90</width>
+                 <height>0</height>
+                </size>
+               </property>
+              </widget>
              </item>
             </layout>
            </widget>
