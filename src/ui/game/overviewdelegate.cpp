@@ -82,14 +82,16 @@ void OverviewDelegate::paint(QPainter *painter, const QStyleOptionViewItem &opti
     if(!text.isEmpty()) {
         painter->setPen(palette.color(QPalette::Text));
         QFont font = painter->font();
+        QRect pointRect = option.rect;
         if(index.data(GameOverviewModel::TotalPointsRole).toBool()) {
             font.setBold(true);
+            pointRect.adjust(0,0,-option.rect.size().width()*0.3,0);
+        }
+        else {
+            pointRect.adjust(0,0,-option.rect.size().width()*0.4,0);
         }
         painter->setFont(font);
-        QTextOption to;
-        to.setAlignment(Qt::AlignCenter);
-
-        painter->drawText(option.rect, text, to);
+        painter->drawText(pointRect, Qt::AlignRight | Qt::AlignVCenter, text);
     }
 
     // Draw mitspieler
