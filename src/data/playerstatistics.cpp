@@ -11,13 +11,19 @@
 
 PlayerStatistics::PlayerStatistics(QObject *parent) :
     QObject(parent),
-    m_statsInitialized(false)
+    m_statsInitialized(false),
+    m_isAllGames(false)
 {
+}
+
+void PlayerStatistics::setIsAllGames(const bool isAllGames)
+{
+    m_isAllGames = isAllGames;
 }
 
 bool PlayerStatistics::isAllGames() const
 {
-    return m_games.isEmpty();
+    return m_isAllGames;
 }
 
 QSharedPointer<Player> PlayerStatistics::player() const

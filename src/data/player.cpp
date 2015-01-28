@@ -35,6 +35,7 @@ Player::Player(QObject *parent) :
     m_offlineGameInformation(QpRelation(&Player::offlineGameInformation))
 {
     m_allGamesStatistics->setPlayer(this);
+    m_allGamesStatistics->setIsAllGames(true);
 }
 
 Player::~Player()

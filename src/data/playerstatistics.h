@@ -19,6 +19,7 @@ class PlayerStatistics : public QObject
 public:
     explicit PlayerStatistics(QObject *parent = 0);
 
+    void setIsAllGames(const bool isAllGames);
     bool isAllGames() const;
 
     QSharedPointer<Player> player() const;
@@ -87,6 +88,7 @@ public:
     void updateStats();
 
     bool m_statsInitialized;
+    bool m_isAllGames;
 
     RoundSeries m_lastSeries;
     QList<RoundSeries> m_winSeries;
