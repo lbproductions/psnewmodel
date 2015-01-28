@@ -20,6 +20,7 @@ class Schmeisserei : public QObject
     Q_PROPERTY(int kingsCount READ kingsCount WRITE setKingsCount)
     Q_PROPERTY(int trumpfCount READ trumpfCount WRITE setTrumpfCount)
     Q_PROPERTY(int points READ points WRITE setPoints)
+    Q_PROPERTY(int nines READ nines WRITE setNines NOTIFY ninesChanged)
 
     Q_CLASSINFO("QPERSISTENCE_PROPERTYMETADATA:player",
                 "reverserelation=schmeissereis")
@@ -33,7 +34,9 @@ public:
         NoTrumpfabgabeTaker,
         LessThan3Trumpf,
         MoreThan90Points,
-        NothingOverFox
+        NothingOverFox,
+        MoreThan4Nines,
+        FourNinesAndFourKings
     };
 
     explicit Schmeisserei(QObject *parent = 0);
@@ -61,11 +64,20 @@ public:
     int points() const;
     void setPoints(int arg);
 
+    int nines() const;
+
+public slots:
+    void setNines(int arg);
+
+signals:
+    void ninesChanged(int arg);
+
 private:
     Type m_type;
     int m_kingsCount;
     int m_trumpfabgabeCount;
     int m_points;
+    int m_nines;
 
     QpBelongsToOne<Round> m_round;
     QpHasOne<Player> m_player;

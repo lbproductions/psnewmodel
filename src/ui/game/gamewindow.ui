@@ -308,10 +308,20 @@ QWidget#widgetCreateGame {
                  <item row="0" column="1">
                   <widget class="PlacesComboBox" name="comboBoxSite"/>
                  </item>
-                 <item row="1" column="0" colspan="2">
+                 <item row="2" column="0" colspan="2">
                   <widget class="QCheckBox" name="checkBoxMitPflichtSoli">
                    <property name="text">
                     <string>Mit Pflichtsoli</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item row="3" column="0">
+                  <widget class="QCheckBox" name="checkBoxMitNeunen">
+                   <property name="text">
+                    <string>Mit Neunen</string>
                    </property>
                    <property name="checked">
                     <bool>true</bool>
@@ -673,8 +683,8 @@ QWidget#widgetCreateGame {
   </customwidget>
  </customwidgets>
  <resources>
-  <include location="../../resource/gamewindow/gamewindow.qrc"/>
   <include location="../../resource/statusbar/statusbar.qrc"/>
+  <include location="../../resource/gamewindow/gamewindow.qrc"/>
  </resources>
  <connections/>
 </ui>

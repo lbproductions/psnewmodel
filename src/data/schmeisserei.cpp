@@ -3,11 +3,13 @@
 #include "player.h"
 #include "round.h"
 
-
-
 Schmeisserei::Schmeisserei(QObject *parent) :
     QObject(parent),
     m_type(UnkownType),
+    m_kingsCount(0),
+    m_trumpfabgabeCount(0),
+    m_points(0),
+    m_nines(0),
     m_round(QpRelation(&Schmeisserei::round)),
     m_player(QpRelation(&Schmeisserei::player))
 {
@@ -50,11 +52,13 @@ QString Schmeisserei::typeString() const
 
 QStringList Schmeisserei::typeStrings()
 {
-    return QStringList() << tr("5 Könige") <<
+    return QStringList() << tr(">=5 Könige") <<
                             tr("Trumpfabgabe nicht genommen") <<
                             tr("Weniger als 3 Trumpf") <<
                             tr("Mindestens 90 Punkte") <<
-                            tr("Nichts über Fuchs");
+                            tr("Nichts über Fuchs")<<
+                            tr(">=5 Neunen")<<
+                            tr("4 Könige und 4 Neunen");
 }
 
 QString Schmeisserei::typeStringFromType(Schmeisserei::Type type)
@@ -107,4 +111,18 @@ void Schmeisserei::setTrumpfCount(int arg)
 void Schmeisserei::setPoints(int arg)
 {
     m_points = arg;
+}
+
+int Schmeisserei::nines() const
+{
+    return m_nines;
+}
+
+void Schmeisserei::setNines(int arg)
+{
+    if (m_nines == arg)
+        return;
+
+    m_nines = arg;
+    emit ninesChanged(arg);
 }

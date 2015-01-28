@@ -263,6 +263,8 @@ QStringList AddPhotosDialog::processedFiles()
 
 void AddPhotosDialog::on_comboBoxDefaultPlayer_currentIndexChanged(int index)
 {
+    Q_UNUSED(index)
+
     if(!ui->comboBoxDefaultPlayer->currentObject())
         return;
 

@@ -79,6 +79,13 @@ void SchmeissereiDialog::save()
     if(type == Schmeisserei::MoreThan4Kings) {
         schmeisserei->setKingsCount(ui->spinBoxCount->value());
     }
+    else if(type == Schmeisserei::MoreThan4Nines) {
+        schmeisserei->setNines(ui->spinBoxCount->value());
+    }
+    else if(type == Schmeisserei::FourNinesAndFourKings) {
+        schmeisserei->setKingsCount(4);
+        schmeisserei->setNines(4);
+    }
     else if(type == Schmeisserei::NoTrumpfabgabeTaker
             || type == Schmeisserei::LessThan3Trumpf) {
         schmeisserei->setTrumpfCount(ui->spinBoxCount->value());
@@ -121,14 +128,19 @@ void SchmeissereiDialog::on_comboBoxType_currentIndexChanged(const QString &text
         ui->spinBoxCount->setMinimum(5);
         ui->spinBoxCount->setMaximum(8);
     }
+    if(type == Schmeisserei::MoreThan4Nines) {
+        ui->labelCount->setText(tr("Nines:"));
+        ui->spinBoxCount->setMinimum(5);
+        ui->spinBoxCount->setMaximum(8);
+    }
     else if(type == Schmeisserei::NoTrumpfabgabeTaker) {
         ui->labelCount->setText(tr("Trümpfe:"));
-        ui->spinBoxCount->setMinimum(1);
+        ui->spinBoxCount->setMinimum(0);
         ui->spinBoxCount->setMaximum(3);
     }
     else if(type == Schmeisserei::LessThan3Trumpf) {
         ui->labelCount->setText(tr("Trümpfe:"));
-        ui->spinBoxCount->setMinimum(1);
+        ui->spinBoxCount->setMinimum(0);
         ui->spinBoxCount->setMaximum(2);
 
     }

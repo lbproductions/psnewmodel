@@ -560,6 +560,7 @@ void GameWindow::on_buttonBox_accepted()
 {
     QSharedPointer<Game> game = Qp::create<Game>();
     game->setMitPflichtSolo(ui->checkBoxMitPflichtSoli->isChecked());
+    game->setMitNeunen(ui->checkBoxMitNeunen->isChecked());
     game->setSite(ui->comboBoxSite->currentPlace());
     game->setAdditionalMissingPlayer(Game::MissingInTurn);
 
@@ -571,6 +572,8 @@ void GameWindow::on_buttonBox_accepted()
     game->startNextRound();
     setGame(game);
     game->setState(Game::Running);
+
+    m_dialogController->closeDialog();
 }
 
 void GameWindow::on_actionCheck_for_updates_triggered()

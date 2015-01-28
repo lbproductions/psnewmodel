@@ -30,6 +30,7 @@ class Game: public QObject
     Q_PROPERTY(QDateTime creationTime READ creationTime WRITE setCreationTime)
     Q_PROPERTY(QString comment READ comment WRITE setComment)
     Q_PROPERTY(bool mitPflichtSolo READ mitPflichtSolo WRITE setMitPflichtSolo)
+    Q_PROPERTY(bool mitNeunen READ mitNeunen WRITE setMitNeunen NOTIFY mitNeunenChanged)
     Q_PROPERTY(QSharedPointer<Place> site READ site WRITE setSite)
     Q_PROPERTY(QList<QSharedPointer<Player> > players READ players WRITE setPlayers)
     Q_PROPERTY(QList<QSharedPointer<Round> > rounds READ rounds WRITE setRounds)
@@ -167,6 +168,8 @@ public:
     QList<QSharedPointer<Round> > soloRounds();
     QList<QSharedPointer<Round> > soloRounds(QSharedPointer<Player> player);
 
+    bool mitNeunen() const;
+
 signals:
     void newRoundStarted();
     void schmeissereiAdded();
@@ -174,9 +177,13 @@ signals:
     void lengthChanged();
     void drinksChanged();
 
+    void mitNeunenChanged(bool arg);
+
 public slots:
     void setSite(QSharedPointer<Place> site);
     void addPlayer(QSharedPointer<Player> player);
+
+    void setMitNeunen(bool arg);
 
 private slots:
     void setRounds(const QList<QSharedPointer<Round> > &rounds);
@@ -206,6 +213,7 @@ private:
     QDateTime m_creationTime;
     QString m_comment;
     bool m_mitPflichtSolo;
+    bool m_mitNeunen;
     AdditionalMissingPlayer m_additionalMissingPlayer;
 
     mutable QSharedPointer<Round> m_currentRoundCached;

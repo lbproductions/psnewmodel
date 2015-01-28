@@ -40,6 +40,8 @@ void PlaceStatsWidget::setLeague(QSharedPointer<League> league)
 
 void PlaceStatsWidget::on_playerComboBox_currentIndexChanged(int index)
 {
+    Q_UNUSED(index)
+
     clearLayouts();
 
     QSharedPointer<Player> player = ui->playerComboBox->currentPlayer();

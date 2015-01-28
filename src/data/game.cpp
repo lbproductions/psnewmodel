@@ -17,6 +17,7 @@ Game::Game(QObject *parent) :
     m_type(UnkownType),
     m_creationTime(QDateTime::currentDateTime()),
     m_mitPflichtSolo(false),
+    m_mitNeunen(false),
     m_additionalMissingPlayer(MissingOppositeOfCardMixer),
     m_site(QpRelation(&Game::site)),
     m_players(QpRelation(&Game::players)),
@@ -299,6 +300,15 @@ QList<QSharedPointer<Player> > Game::players() const
 void Game::addPlayer(QSharedPointer<Player> player)
 {
     m_players.add(player);
+}
+
+void Game::setMitNeunen(bool arg)
+{
+    if (m_mitNeunen == arg)
+        return;
+
+    m_mitNeunen = arg;
+    emit mitNeunenChanged(arg);
 }
 
 void Game::removePlayer(QSharedPointer<Player> player)
@@ -824,6 +834,11 @@ QList<QSharedPointer<Round> > Game::soloRounds(QSharedPointer<Player> player)
     calcInitialStats();
 
     return m_soloRounds.value(player);
+}
+
+bool Game::mitNeunen() const
+{
+    return m_mitNeunen;
 }
 
 
