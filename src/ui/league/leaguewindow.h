@@ -26,6 +26,8 @@ class LeagueWindow : public QMainWindow
 
         void resizeEvent(QResizeEvent *);
 
+        bool eventFilter(QObject *object, QEvent *event);
+
     signals:
         
     public slots:
@@ -36,6 +38,8 @@ class LeagueWindow : public QMainWindow
         void on_doubleSpinBoxFinishedGames_valueChanged(double arg1);
 
         void on_pushButtonStats_clicked();
+
+        void on_tabWidget_currentChanged(int index);
 
 private:
         Ui::LeagueWindow *ui;
@@ -49,7 +53,6 @@ private:
 
         int m_minimumColumnWidth;
         int m_maximumColumnWidth;
-        
 };
 
 #endif // LEAGUEWINDOW_H

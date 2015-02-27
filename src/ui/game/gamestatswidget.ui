@@ -30,24 +30,38 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QTreeWidget" name="treeWidget">
-     <property name="maximumSize">
+    <widget class="QWidget" name="sidebar" native="true">
+     <property name="minimumSize">
       <size>
-       <width>150</width>
-       <height>16777215</height>
+       <width>50</width>
+       <height>0</height>
       </size>
      </property>
-     <property name="frameShape">
-      <enum>QFrame::NoFrame</enum>
+     <property name="styleSheet">
+      <string notr="true">
+QWidget#sidebar { 
+background-color: rgb(60,60,60);
+border-right: 1px solid rgb(16,16,16);
+}
+QToolButton {
+padding-top: 10px;
+border: none;
+color: rgba(133,133,133, 255);
+background-image: url(:/sidebar/button_background_nc);
+}
+QToolButton:pressed {
+color: rgba(200,200,200, 255);
+background-image: url(:/sidebar/button_background_p);
+}
+QToolButton:checked, QToolButton:checked:pressed {
+color: rgba(230,230,230, 255);
+background-image: url(:/sidebar/button_background_c);
+}
+QWidget#separator {
+border-top: 1px solid rgb(38,38,38);
+border-bottom: 1px solid rgb(77,77,77);
+}</string>
      </property>
-     <attribute name="headerVisible">
-      <bool>false</bool>
-     </attribute>
-     <column>
-      <property name="text">
-       <string notr="true">1</string>
-      </property>
-     </column>
     </widget>
    </item>
    <item>

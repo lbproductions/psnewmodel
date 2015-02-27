@@ -12,6 +12,8 @@
 #include "recontrastatslegendwidget.h"
 #include "recontrageneralstatswidget.h"
 
+#include "barchartwidget.h"
+
 ReContraStatsWidget::ReContraStatsWidget(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::ReContraStatsWidget)
@@ -98,6 +100,43 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     generalWidget->setContraGamePointAverage(contraAvg);
     ui->verticalLayoutPlayers->addWidget(generalWidget);
 
+    BarChartWidget* barCharts = new BarChartWidget(this);
+    barCharts->setSortingOrder(BarChartWidget::Descending);
+    barCharts->setBarDistance(15);
+    barCharts->setBarWidth(80);
+    barCharts->setPadding(20,20,20,20);
+    barCharts->setValueFormatString("%1 %");
+    barCharts->setTitle("Re percentage");
+    ui->verticalLayoutPlayers->addWidget(barCharts);
+    foreach(QSharedPointer<Player> player, m_playerStats.keys()) {
+        barCharts->setValue(player, m_playerStats.value(player)->rePercentage());
+    }
+
+    BarChartWidget* barCharts1 = new BarChartWidget(this);
+    barCharts1->setSortingOrder(BarChartWidget::Descending);
+    barCharts1->setBarDistance(15);
+    barCharts1->setBarWidth(80);
+    barCharts1->setPadding(20,20,20,20);
+    barCharts1->setValueFormatString("%1 %");
+    barCharts1->setTitle("Re win percentage");
+    ui->verticalLayoutPlayers->addWidget(barCharts1);
+    foreach(QSharedPointer<Player> player, m_playerStats.keys()) {
+        barCharts1->setValue(player, m_playerStats.value(player)->reWinsPercentage());
+    }
+
+    BarChartWidget* barCharts2 = new BarChartWidget(this);
+    barCharts2->setSortingOrder(BarChartWidget::Descending);
+    barCharts2->setBarDistance(15);
+    barCharts2->setBarWidth(80);
+    barCharts2->setPadding(20,20,20,20);
+    barCharts2->setValueFormatString("%1 %");
+    barCharts2->setTitle("Contra win percentage");
+    ui->verticalLayoutPlayers->addWidget(barCharts2);
+    foreach(QSharedPointer<Player> player, m_playerStats.keys()) {
+        barCharts2->setValue(player, m_playerStats.value(player)->contraWinsPercentage());
+    }
+
+    /*
     ReContraStatsLegendWidget* legend = new ReContraStatsLegendWidget(this);
     ui->verticalLayoutPlayers->addWidget(legend);
     foreach(QSharedPointer<Player> player, m_playerStats.keys()) {
@@ -108,6 +147,7 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
         widget->setContraWinPercentage(m_playerStats.value(player)->contraWinsPercentage());
         ui->verticalLayoutPlayers->addWidget(widget);
     }
+    */
 
     //fillReBox();
     //fillReWinsBox();

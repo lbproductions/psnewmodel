@@ -211,7 +211,8 @@ SOURCES += main.cpp \
     ui/stats/placestatswidget.cpp \
     ui/stats/recontraplayerstatswidget.cpp \
     ui/stats/recontrastatslegendwidget.cpp \
-    ui/stats/recontrageneralstatswidget.cpp
+    ui/stats/recontrageneralstatswidget.cpp \
+    ui/stats/barchartwidget.cpp
 
 
 HEADERS  += \
@@ -316,7 +317,8 @@ HEADERS  += \
     ui/stats/placestatswidget.h \
     ui/stats/recontraplayerstatswidget.h \
     ui/stats/recontrastatslegendwidget.h \
-    ui/stats/recontrageneralstatswidget.h
+    ui/stats/recontrageneralstatswidget.h \
+    ui/stats/barchartwidget.h
 
 
 FORMS += \

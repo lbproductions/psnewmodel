@@ -22,6 +22,7 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui(new Ui::LeagueWindow),
     m_classementModel(new LeagueClassementModel(this)),
     m_gamePlacementModel(new LeagueGamePlacementModel(this)),
+    m_gameStatsWidget(0),
     m_minimumColumnWidth(35),
     m_maximumColumnWidth(100)
 {
@@ -79,6 +80,9 @@ LeagueWindow::LeagueWindow(QWidget *parent) :
     ui->graphWidget->stackUnder(ui->graphAxis);
 
     ui->scrollAreaGraph->addFixedWidget(ui->graphAxis);
+
+    ui->tabWidget->setCurrentIndex(0);
+    ui->tabWidget->installEventFilter(this);
 }
 
 
@@ -95,9 +99,9 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
 
     ui->tableViewPlayer->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
     ui->tableViewPlayer->setFixedHeight(ui->tableViewPlayer->horizontalHeader()->height() +
-                                  (m_gamePlacementModel->rowCount()) * ui->tableViewPlayer->rowHeight(0));
+                                        (m_gamePlacementModel->rowCount()) * ui->tableViewPlayer->rowHeight(0));
     ui->tableViewPlacement->setFixedHeight(ui->tableViewPlacement->horizontalHeader()->height() +
-                                  (m_gamePlacementModel->rowCount()) * ui->tableViewPlacement->rowHeight(0));
+                                           (m_gamePlacementModel->rowCount()) * ui->tableViewPlacement->rowHeight(0));
 
     ui->graphWidget->setLeague(league);
     ui->graphAxis->setFixedWidth(ui->tableViewPlayer->verticalHeader()->width() + 171);
@@ -105,7 +109,7 @@ void LeagueWindow::setLeague(QSharedPointer<League> league)
     //ui->gamesWidget->setGames(m_league->calculatedGames());
 
     //ui->gameStatsWidget->setLeague(m_league);
-    Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonStats);
+    //Tools::setStyleSheetFromResource(":/stylesheets/pushbutton-dark.qss", ui->pushButtonStats);
 }
 
 void LeagueWindow::wheelEvent(QWheelEvent *e)
@@ -168,9 +172,38 @@ void LeagueWindow::on_doubleSpinBoxFinishedGames_valueChanged(double arg1)
 void LeagueWindow::on_pushButtonStats_clicked()
 {
     //if(!m_gameStatsWidget) {
-        m_gameStatsWidget = new GameStatsWidget(this);
+    m_gameStatsWidget = new GameStatsWidget(this);
     //}
     m_gameStatsWidget->setMinimumWidth(800);
     m_gameStatsWidget->setLeague(m_league);
     m_gameStatsWidget->show();
+}
+
+void LeagueWindow::on_tabWidget_currentChanged(int index)
+{
+    if(index == 1) {
+        if(!m_gameStatsWidget) {
+            ui->stackedWidget->setCurrentIndex(0);
+
+            m_gameStatsWidget = new GameStatsWidget(this);
+            m_gameStatsWidget->setLeague(m_league);
+
+            ui->stackedWidget->addWidget(m_gameStatsWidget);
+            ui->stackedWidget->setCurrentIndex(1);
+        }
+        else {
+            ui->stackedWidget->setCurrentIndex(1);
+        }
+    }
+}
+
+
+bool LeagueWindow::eventFilter(QObject *object, QEvent *event)
+{
+    if(object == ui->tabWidget) {
+        if(event->type() == QEvent::Resize) {
+        }
+    }
+
+    return false;
 }

@@ -36,17 +36,16 @@ class GameStatsWidget : public QWidget
         void setLeague(QSharedPointer<League> _league);
 
    private slots:
-        void onItemClicked(QTreeWidgetItem* item);
         
     private:
-        void addWidget(QString name, QWidget* widget);
+        void addWidget(QWidget* widget, QString name, QIcon icon = QIcon());
         void insertWidget(int index, QString name, QWidget* widget);
+
+        void resetAllButtons();
 
         Ui::GameStatsWidget *ui;
 
         QList<QSharedPointer<Game> > m_games;
-
-        QHash<QTreeWidgetItem*, int> m_indexes;
 
         ReContraStatsWidget* m_reContraWidget;
         PointsStatsWidget* m_pointsStatsWidget;

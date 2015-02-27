@@ -19,6 +19,8 @@
 #include <QSettings>
 #include <misc/tools.h>
 
+#include <QToolButton>
+
 GameStatsWidget::GameStatsWidget(QWidget *parent) :
     QWidget(parent, Qt::Window),
     ui(new Ui::GameStatsWidget),
@@ -30,37 +32,36 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     this->setAutoFillBackground(true);
     this->setPalette(Tools::darkPalette(this));
 
+    ui->sidebar->setLayout(new QVBoxLayout(this));
+    ui->sidebar->layout()->setContentsMargins(0,0,0,0);
+    static_cast<QVBoxLayout*>(ui->sidebar->layout())->addStretch();
+
     m_reContraWidget = new ReContraStatsWidget(this);
-    addWidget(tr("Re/Contra"), m_reContraWidget);
+    addWidget(m_reContraWidget, tr("Re/Contra"));
 
     m_pointsStatsWidget = new PointsStatsWidget(this);
-    addWidget(tr("Points"), m_pointsStatsWidget);
+    addWidget(m_pointsStatsWidget, tr("Points"));
 
     m_gamesTogetherWidget = new GamesTogetherWidget(this);
-    addWidget(tr("Games together"), m_gamesTogetherWidget);
+    addWidget(m_gamesTogetherWidget, tr("Rounds\ntogether"));
 
     m_soloWidget = new SoloOverviewWidget(this);
-    addWidget(tr("Soli"), m_soloWidget);
+    addWidget(m_soloWidget, tr("Soli"));
 
     m_drinksWidget = new DrinkStatsWidget(this);
-    addWidget(tr("Drinks"), m_drinksWidget);
+    addWidget(m_drinksWidget, tr("Drinks"));
 
     //m_gameCompareStatsWidget = new GameCompareStatsWidget(this);
     //addWidget(tr("GameCompare"), m_gameCompareStatsWidget);
 
     m_timeStatsWidget = new TimeStatsWidget(this);
-    addWidget(tr("TimeStats"), m_timeStatsWidget);
+    addWidget(m_timeStatsWidget, tr("TimeStats"));
 
     m_serveStatsWidget = new ServeStatsWidget(this);
-    addWidget(tr("ServeStats"), m_serveStatsWidget);
+    addWidget(m_serveStatsWidget, tr("ServeStats"));
 
     m_seriesStatsWidget = new SeriesStatsWidget(this);
-    addWidget(tr("SeriesStats"), m_seriesStatsWidget);
-
-    ui->treeWidget->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->treeWidget->setPalette(Tools::darkPalette(this));
-
-    connect(ui->treeWidget, SIGNAL(itemClicked(QTreeWidgetItem*,int)), this, SLOT(onItemClicked(QTreeWidgetItem*)));
+    addWidget(m_seriesStatsWidget, tr("SeriesStats"));
 
     setAttribute(Qt::WA_DeleteOnClose, true);
 }
@@ -120,21 +121,39 @@ void GameStatsWidget::setLeague(QSharedPointer<League> _league)
     m_seriesStatsWidget->setLeague(league);
 
     m_placeStatsWidget = new PlaceStatsWidget(this);
-    addWidget(tr("Places"), m_placeStatsWidget);
+    addWidget(m_placeStatsWidget, tr("Places"));
     m_placeStatsWidget->setLeague(league);
 }
 
-void GameStatsWidget::onItemClicked(QTreeWidgetItem *item)
+void GameStatsWidget::addWidget(QWidget *widget, QString name, QIcon icon)
 {
-    ui->stackedWidget->setCurrentIndex(m_indexes.value(item));
+    QToolButton* button = new QToolButton(widget);
+    button->setFixedWidth(70);
+    button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    button->setText(name);
+    button->setIcon(icon);
+    button->setCheckable(true);
+    if(ui->stackedWidget->count() == 0) {
+        button->setChecked(true);
+    }
+
+    static_cast<QVBoxLayout*>(ui->sidebar->layout())->insertWidget(ui->stackedWidget->count(), button);
+
+    ui->stackedWidget->addWidget(widget);
+
+    connect(button, &QToolButton::clicked, [=]() {
+        ui->stackedWidget->setCurrentWidget(widget);
+
+        resetAllButtons();
+        button->setChecked(true);
+    });
 }
 
-void GameStatsWidget::addWidget(QString name, QWidget *widget)
+void GameStatsWidget::resetAllButtons()
 {
-    QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
-    item->setText(0, name);
-    ui->treeWidget->addTopLevelItem(item);
-    ui->stackedWidget->insertWidget(m_widgetCounter, widget);
-    m_indexes.insert(item, m_widgetCounter);
-    m_widgetCounter++;
+    for(int i = 0; i<ui->stackedWidget->count(); i++) {
+        static_cast<QToolButton*>(static_cast<QVBoxLayout*>(ui->sidebar->layout())->itemAt(i)->widget())->setChecked(false);
+    }
 }
+
+
