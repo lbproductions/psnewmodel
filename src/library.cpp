@@ -116,10 +116,6 @@ bool Library::setupDatabase()
         return false;
     }
 
-    if(!fixDatabase(db)) {
-        return false;
-    }
-
     return true;
 }
 
@@ -305,6 +301,10 @@ bool Library::setupPersistence()
 
     if(Qp::lastError().isValid()) {
         qDebug() << Qp::lastError();
+        return false;
+    }
+
+    if(!fixDatabase(QSqlDatabase::database(DATABASE_CONNECTION_NAME))) {
         return false;
     }
 
