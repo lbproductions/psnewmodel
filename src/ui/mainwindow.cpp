@@ -8,6 +8,7 @@
 #include "chooselibrarywidget.h"
 #include "ui/league/addleaguedialog.h"
 #include "ui/dialogs/addphotosdialog.h"
+#include <ui/widgets/startwidget.h>
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -53,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolButtonPhotos->setDefaultAction(ui->actionPhotos);
 
     ui->treeViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->treeViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewPlaces->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
 
@@ -79,6 +80,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QTimer::singleShot(0, this, SLOT(restoreWindowState()));
     QTimer::singleShot(0, this, SLOT(show()));
+
+    ui->stackedWidget->setCurrentIndex(0);
 }
 
 MainWindow::~MainWindow()
@@ -100,7 +103,7 @@ void MainWindow::saveWindowState()
     settings.setValue("mainwindow/windowState", saveState());
     settings.setValue("mainwindow/treeviewplaces/state", ui->treeViewPlaces->header()->saveState());
     settings.setValue("mainwindow/treeviewplayers/state", ui->treeViewPlayers->header()->saveState());
-    settings.setValue("mainwindow/treeviewgames/state", ui->treeViewGames->header()->saveState());
+    //settings.setValue("mainwindow/treeviewgames/state", ui->listViewGames->header()->saveState());
     settings.setValue("mainwindow/treeviewdrinks/state", ui->treeViewDrinks->header()->saveState());
 }
 
@@ -111,7 +114,7 @@ void MainWindow::restoreWindowState()
     restoreState(settings.value("mainwindow/windowState").toByteArray());
     ui->treeViewPlaces->header()->restoreState(settings.value("mainwindow/treeviewplaces/state").toByteArray());
     ui->treeViewPlayers->header()->restoreState(settings.value("mainwindow/treeviewplayers/state").toByteArray());
-    ui->treeViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
+   // ui->listViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
     ui->treeViewDrinks->header()->restoreState(settings.value("mainwindow/treeviewdrinks/state").toByteArray());
 }
 
@@ -170,10 +173,14 @@ void MainWindow::on_actionPlayers_triggered()
 
 void MainWindow::on_actionGames_triggered()
 {
-    if(!ui->treeViewGames->model()) {
-        QpSortFilterProxyObjectModel<Game> *modelGames = new QpSortFilterProxyObjectModel<Game>(new GameListModel(this), this);
-        ui->treeViewGames->setModel(modelGames);
+    if(!ui->listViewGames->model()) {
+        GameSortFilterModel *modelGames = new GameSortFilterModel(new GameListModel(this), this);
+        modelGames->setSortRole(GameSortFilterModel::Date);
+        modelGames->sort(0, Qt::DescendingOrder);
+        ui->listViewGames->setModel(modelGames);
+        ui->listViewGames->setItemDelegate(new UnfinishedGamesDelegate(ui->listViewGames, this));
 
+        /*
         QSettings settings;
         if(!settings.contains("mainwindow/treeviewgames/state")) {
             ui->treeViewGames->sortByColumn(GameListModel::DateColumn, Qt::DescendingOrder);
@@ -200,6 +207,7 @@ void MainWindow::on_actionGames_triggered()
             h->resizeSection(GameListModel::TrumpfabgabenColumn, 70);
             h->resizeSection(GameListModel::DrinkCount, 70);
         }
+        */
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pageGames);
@@ -272,7 +280,7 @@ void MainWindow::on_treeViewGames_doubleClicked(const QModelIndex &)
     if(ui->stackedWidget->currentWidget() != ui->pageGames)
         return;
 
-    QSharedPointer<Game> game = Tools::selectedObjectFrom<Game>(ui->treeViewGames);
+    QSharedPointer<Game> game = Tools::selectedObjectFrom<Game>(ui->listViewGames);
     if(!game)
         return;
 

@@ -355,7 +355,7 @@ border-bottom: 1px solid rgb(77,77,77);
     <item>
      <widget class="QStackedWidget" name="stackedWidget">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="StartWidget" name="pageStart"/>
       <widget class="QWidget" name="pagePlayers">
@@ -414,15 +414,9 @@ border-bottom: 1px solid rgb(77,77,77);
          <number>0</number>
         </property>
         <item>
-         <widget class="QTreeView" name="treeViewGames">
+         <widget class="QListView" name="listViewGames">
           <property name="frameShape">
            <enum>QFrame::NoFrame</enum>
-          </property>
-          <property name="rootIsDecorated">
-           <bool>false</bool>
-          </property>
-          <property name="sortingEnabled">
-           <bool>true</bool>
           </property>
          </widget>
         </item>

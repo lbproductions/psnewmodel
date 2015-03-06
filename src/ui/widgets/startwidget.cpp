@@ -4,7 +4,6 @@
 #include "../mainwindow.h"
 #include "ui_mainwindow.h"
 #include "ui/model/gamelistmodel.h"
-#include "noisygradientitemdelegate.h"
 #include "ui/game/gamewindow.h"
 
 #include "leaguesdelegate.h"
@@ -19,16 +18,6 @@
 /******************************************************************
  * UnfinishedGamesDelegate
  */
-class UnfinishedGamesDelegate : public NoisyGradientItemDelegate
-{
-public:
-    explicit UnfinishedGamesDelegate(QAbstractItemView *view, QObject *parent = 0);
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-
-private:
-    QSharedPointer<Game> forIndex(const QModelIndex &index) const;
-};
 
 UnfinishedGamesDelegate::UnfinishedGamesDelegate(QAbstractItemView *view, QObject *parent) :
     NoisyGradientItemDelegate(view, parent)
