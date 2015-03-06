@@ -51,6 +51,7 @@ void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShare
 
     QHash<QSharedPointer<Player>, double> playerVolume;
     QHash<QSharedPointer<Player>, QList<QSharedPointer<LiveDrink> > > playerDrinks;
+    QHash<QSharedPointer<Drink>, int> drinkCounts;
 
     double totalVolume = 0;
     foreach(QSharedPointer<LiveDrink> drink, drinks) {
@@ -63,6 +64,18 @@ void DrinkStatsWidget::setGames(QList<QSharedPointer<Game> > games, QList<QShare
         }
         list.append(drink);
         playerDrinks.insert(drink->player(), list);
+
+        drinkCounts.insert(drink->drink(), drinkCounts.value(drink->drink()) + 1);
+    }
+
+    QList<QColor> colors = Tools::generateColors(drinkCounts.keys().size());
+    foreach(QSharedPointer<Drink> drink, drinkCounts.keys()) {
+        int count = drinkCounts.value(drink);
+        double value = (double)count / (double)drinks.size() * 100.0;
+        if(value <= 0) {
+            continue;
+        }
+        ui->pieWidget->addValue(drink->name() + QString(" [%1]").arg(count), value, colors.at(drinkCounts.keys().indexOf(drink)%colors.size()));
     }
 
     ui->labelTotalDrinkCount->setText(QString::number(drinks.size()));

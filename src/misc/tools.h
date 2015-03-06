@@ -42,6 +42,9 @@ public:
 
     static void clearLayout(QLayout* layout);
     static void clearWidget(QWidget* widget);
+
+    static QList<QColor> generateColors(int num);
+    static QColor generateColor(float x);
 };
 
 template<class T>
