@@ -125,11 +125,19 @@ void PointsStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QShare
     m_layout->addWidget(barCharts, 0,1);
 
     barCharts = createBarWidget();
-    barCharts->setTitle("WinPoints/Round");
+    barCharts->setTitle("Points/Game");
+    barCharts->setMiddle(0);
     foreach(QSharedPointer<Player> player, players) {
-        barCharts->setValue(player, statsHash.value(player)->averagePointsPerRound());
+        barCharts->setValue(player, statsHash.value(player)->averagePointsPerGame());
     }
     m_layout->addWidget(barCharts, 1,0);
+
+    barCharts = createBarWidget();
+    barCharts->setTitle("WinPoints/Round");
+    foreach(QSharedPointer<Player> player, players) {
+        barCharts->setValue(player, statsHash.value(player)->averagePointsPerWinRound());
+    }
+    m_layout->addWidget(barCharts, 1,1);
 
     barCharts = createBarWidget();
     barCharts->setTitle("WinPoints/ReRound");

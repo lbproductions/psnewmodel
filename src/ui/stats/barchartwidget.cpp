@@ -9,6 +9,7 @@ BarChartWidget::BarChartWidget(QWidget *parent) :
     m_sortingOrder(Descending),
     m_min(-1),
     m_max(-1),
+    m_middle(-1),
     m_barDistance(0),
     m_barWidth(-1),
     m_paddingLeft(0),
@@ -37,8 +38,8 @@ void BarChartWidget::paintEvent(QPaintEvent *)
     QList<QSharedPointer<Player>> players = sortPlayers();
     calcMinMax();
 
-    int textHeight = 20;
-    int titleHeight = 30;
+    int textHeight = 15;
+    int titleHeight = 25;
 
     int totalWidth = width() - m_barDistance * (players.size()-1) - m_paddingLeft - m_paddingRight;
     int barWidth = totalWidth/players.size();
@@ -51,6 +52,8 @@ void BarChartWidget::paintEvent(QPaintEvent *)
         totalHeight-=textHeight;
     }
 
+    //painter.drawRect(m_paddingLeft, startHeight-totalHeight, totalWidth, totalHeight);
+
     painter.save();
     QFont font = painter.font();
     font.setPixelSize(20);
@@ -59,20 +62,52 @@ void BarChartWidget::paintEvent(QPaintEvent *)
     painter.drawText(QRect(m_paddingLeft,m_paddingTop,width()-m_paddingLeft-m_paddingRight,titleHeight), Qt::AlignLeft, m_title);
     painter.restore();
 
-    for(int i = 0; i<players.size(); i++) {
-        int y = (m_values.value(players.at(i)) / m_max) * totalHeight;
-        painter.setBrush(players.at(i)->color());
-        painter.setPen(QColor(108,108,108));
-        painter.drawRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-y, barWidth, y);
+    if(m_middle == -1) {//normal mode
+        for(int i = 0; i<players.size(); i++) {
+            int y = ((m_values.value(players.at(i))-m_min) / (m_max-m_min)) * totalHeight;
+            painter.setBrush(players.at(i)->color());
+            painter.setPen(QColor(108,108,108));
+            painter.drawRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-y, barWidth, y);
 
-        painter.save();
-        painter.setPen(QColor(228,228,228));
-        painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-y-textHeight, barWidth, textHeight), Qt::AlignCenter,
-                         m_valueFormatString.arg(m_values.value(players.at(i))));
+            painter.save();
+            painter.setPen(QColor(228,228,228));
+            painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-y-textHeight, barWidth, textHeight), Qt::AlignCenter,
+                             m_valueFormatString.arg(m_values.value(players.at(i))));
 
-        painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight, barWidth, textHeight), Qt::AlignCenter,
-                         players.at(i)->name());
-        painter.restore();
+            painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight, barWidth, textHeight), Qt::AlignCenter,
+                             players.at(i)->name());
+            painter.restore();
+        }
+    }
+    else {
+        int middleY = (m_middle-m_min)/(m_max-m_min) * totalHeight;
+        painter.drawLine(m_paddingLeft, startHeight-middleY, players.size()*(barWidth+m_barDistance), startHeight-middleY);
+
+        for(int i = 0; i<players.size(); i++) {
+            painter.setBrush(players.at(i)->color());
+            painter.setPen(QColor(108,108,108));
+
+            painter.save();
+            double height = ((double)(m_values.value(players.at(i))-m_middle) / (double)(m_max-m_min)) * totalHeight;
+            if(height < 0) {
+                painter.drawRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-middleY, barWidth, -height);
+                painter.setPen(QColor(228,228,228));
+                painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-middleY-textHeight, barWidth, textHeight), Qt::AlignCenter,
+                                 m_valueFormatString.arg(m_values.value(players.at(i))));
+                painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-middleY-height, barWidth, textHeight), Qt::AlignCenter,
+                                 players.at(i)->name());
+            }
+            else {
+                painter.drawRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-middleY-height, barWidth, height);
+                painter.setPen(QColor(228,228,228));
+                painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-middleY-height-textHeight, barWidth, textHeight), Qt::AlignCenter,
+                                 m_valueFormatString.arg(m_values.value(players.at(i))));
+                painter.drawText(QRect(m_paddingLeft + i*(barWidth+m_barDistance), startHeight-middleY, barWidth, textHeight), Qt::AlignCenter,
+                                 players.at(i)->name());
+            }
+
+            painter.restore();
+        }
     }
 
     painter.restore();
@@ -92,6 +127,11 @@ void BarChartWidget::setMinMax(double min, double max)
 {
     m_min = min;
     m_max = max;
+}
+
+void BarChartWidget::setMiddle(double middle)
+{
+    m_middle = middle;
 }
 
 void BarChartWidget::setBarDistance(int distance)
@@ -152,10 +192,19 @@ QList<QSharedPointer<Player>> BarChartWidget::sortPlayers()
 }
 
 void BarChartWidget::calcMinMax()
-{
+{    
     if(m_values.isEmpty()) {
         return;
     }
+
+    /*
+    if(m_middle != -1) {
+        m_min = 0;
+        m_max = 2*m_middle;
+
+        return;
+    }
+    */
 
     QList<double> values = m_values.values();
     qSort(values.begin(), values.end(), qLess<double>());
@@ -165,6 +214,6 @@ void BarChartWidget::calcMinMax()
     }
 
     if(m_max == -1) {
-        m_max = values.last();
+        m_max = qMax(m_middle,values.last());
     }
 }

@@ -24,6 +24,8 @@ public:
 
     void setMinMax(double min, double max);
 
+    void setMiddle(double middle);
+
     void setBarDistance(int distance);
 
     void setBarWidth(int barWidth);
@@ -44,6 +46,7 @@ private:
 
     double m_min;
     double m_max;
+    double m_middle;
 
     int m_barDistance;
     int m_barWidth;

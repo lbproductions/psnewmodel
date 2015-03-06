@@ -336,7 +336,7 @@ double Player::contraWinsPercentage() const
 
 double Player::averagePointsPerRound() const
 {
-    return m_allGamesStatistics->averagePointsPerRound();
+    return m_allGamesStatistics->averagePointsPerWinRound();
 }
 
 QList<QSharedPointer<Round> > Player::winRounds() const

@@ -59,7 +59,8 @@ public:
     double contraPercentage() const;
     double contraWinsPercentage() const;
 
-    double averagePointsPerRound() const;
+    double averagePointsPerGame() const;
+    double averagePointsPerWinRound() const;
     double averageRePointsPerRound() const;
     double averageContraPointsPerRound() const;
     double averagePlacement() const;

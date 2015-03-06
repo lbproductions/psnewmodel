@@ -377,7 +377,16 @@ double PlayerStatistics::contraWinsPercentage() const
     return percentage(contraWins().size() * 100, contraRounds().size());
 }
 
-double PlayerStatistics::averagePointsPerRound() const
+double PlayerStatistics::averagePointsPerGame() const
+{
+    int points = 0;
+    foreach(QSharedPointer<Round> round, rounds()) {
+        points += round->points(player());
+    }
+    return percentage(points, games().size());
+}
+
+double PlayerStatistics::averagePointsPerWinRound() const
 {
     int points = 0;
     foreach(QSharedPointer<Round> round, winRounds()) {

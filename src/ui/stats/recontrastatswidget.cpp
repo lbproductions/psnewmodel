@@ -104,9 +104,11 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     barCharts->setSortingOrder(BarChartWidget::Descending);
     barCharts->setBarDistance(15);
     barCharts->setBarWidth(80);
-    barCharts->setPadding(20,20,20,20);
+    barCharts->setPadding(10,10,10,10);
+    barCharts->setMiddle(50);
     barCharts->setValueFormatString("%1 %");
     barCharts->setTitle("Re percentage");
+    barCharts->setMinimumWidth(95*m_playerStats.size() + 20);
     ui->verticalLayoutPlayers->addWidget(barCharts);
     foreach(QSharedPointer<Player> player, m_playerStats.keys()) {
         barCharts->setValue(player, m_playerStats.value(player)->rePercentage());
@@ -116,7 +118,8 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     barCharts1->setSortingOrder(BarChartWidget::Descending);
     barCharts1->setBarDistance(15);
     barCharts1->setBarWidth(80);
-    barCharts1->setPadding(20,20,20,20);
+    barCharts1->setPadding(10,10,10,10);
+    barCharts1->setMiddle(50);
     barCharts1->setValueFormatString("%1 %");
     barCharts1->setTitle("Re win percentage");
     ui->verticalLayoutPlayers->addWidget(barCharts1);
@@ -128,7 +131,8 @@ void ReContraStatsWidget::setGames(QList<QSharedPointer<Game> > list, QList<QSha
     barCharts2->setSortingOrder(BarChartWidget::Descending);
     barCharts2->setBarDistance(15);
     barCharts2->setBarWidth(80);
-    barCharts2->setPadding(20,20,20,20);
+    barCharts2->setPadding(10,10,10,10);
+    barCharts2->setMiddle(50);
     barCharts2->setValueFormatString("%1 %");
     barCharts2->setTitle("Contra win percentage");
     ui->verticalLayoutPlayers->addWidget(barCharts2);

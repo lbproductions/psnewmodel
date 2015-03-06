@@ -74,7 +74,7 @@ void TotalPointsWidget::setLeague(QSharedPointer<League> league)
         item->setIcon(0, QIcon(player->colorPixmap()));
         item->setText(1, player->name());
         item->setData(2, Qt::DisplayRole, league->playerStats(player)->winRounds().size());
-        item->setData(3, Qt::DisplayRole, league->playerStats(player)->averagePointsPerRound());
+        item->setData(3, Qt::DisplayRole, league->playerStats(player)->averagePointsPerWinRound());
         item->setTextAlignment(2, Qt::AlignRight);
         item->setTextAlignment(3, Qt::AlignRight);
         ui->treeWidgetRoundWinPoints->addTopLevelItem(item);
