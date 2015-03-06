@@ -55,6 +55,7 @@ void BarChartWidget::paintEvent(QPaintEvent *)
     QFont font = painter.font();
     font.setPixelSize(20);
     painter.setFont(font);
+    painter.setPen(Qt::white);
     painter.drawText(QRect(m_paddingLeft,m_paddingTop,width()-m_paddingLeft-m_paddingRight,titleHeight), Qt::AlignLeft, m_title);
     painter.restore();
 

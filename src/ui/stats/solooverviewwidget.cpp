@@ -75,9 +75,25 @@ void SoloOverviewWidget::setLeague(QSharedPointer<League> league)
 
 void SoloOverviewWidget::init()
 {
-    QStringList labels;
-    labels << tr("Player") << tr("TotalSoli") << tr("TotalWins") << tr("RelWinCount") << tr("Pflicht") << tr("PflichtWin") << tr("PflichtRel");
+    int totalSoli = totalCount();
+    if(totalSoli == 0) {
+        return;
+    }
 
+    QList<QColor> colors = {Qt::red, Qt::green, Qt::blue, Qt::yellow, Qt::cyan, Qt::magenta, Qt::black, Qt::white};
+
+    foreach(Round::SoloType type, Round::soloTypes()) {
+        int count = totalTypeCount(type);
+        double value = (double)count / (double)totalSoli * 100.0;
+        if(value <= 0) {
+            continue;
+        }
+        ui->pieWidget->addValue(Round::soloTypeStringFromType(type) + QString(" [%1]").arg(count), value, colors.at(type-2));
+    }
+
+
+    QStringList labels = {tr("Player") , tr("TotalSoli") , tr("TotalWins") , tr("RelWinCount") , tr("Pflicht") , tr("PflichtWin") , tr("PflichtRel")};
+    /*
     QString whiteLabelStyleSheet = "QLabel{color:white;}";
 
     int row = 1;
@@ -102,9 +118,7 @@ void SoloOverviewWidget::init()
     QLabel* totalValue = new QLabel(QString::number(totalCount), this);
     totalValue->setStyleSheet(whiteLabelStyleSheet);
     ui->gridLayout->addWidget(totalValue, 0, 1);
-
-    ui->treeWidget->setColumnCount(labels.size());
-    ui->treeWidget->setHeaderLabels(labels);
+    */
 
     foreach(QSharedPointer<Player> player, m_players) {
         QTreeWidgetItem* item = new QTreeWidgetItem(ui->treeWidget);
@@ -135,7 +149,14 @@ void SoloOverviewWidget::init()
         }
     }
 
+    foreach(Round::SoloType type, Round::soloTypes()) {
+        labels.append(Round::soloTypeStringFromType(type));
+    }
+
     ui->treeWidget->resizeColumnToContents(0);
+    ui->treeWidget->setColumnCount(labels.size());
+    ui->treeWidget->setHeaderLabels(labels);
+
 }
 
 int SoloOverviewWidget::totalTypeCount(Round::SoloType type)
@@ -145,6 +166,17 @@ int SoloOverviewWidget::totalTypeCount(Round::SoloType type)
         count += m_stats.value(player)->soloRounds(type).size();
     }
     return count;
+}
+
+int SoloOverviewWidget::totalCount()
+{
+    int result = 0;
+
+    foreach(Round::SoloType type, Round::soloTypes()) {
+        result += totalTypeCount(type);
+    }
+
+    return result;
 }
 
 

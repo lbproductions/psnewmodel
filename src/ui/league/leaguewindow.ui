@@ -363,7 +363,11 @@ QTabWidget::tab-bar {
                   <height>0</height>
                  </size>
                 </property>
-                <layout class="QHBoxLayout" name="horizontalLayout"/>
+                <layout class="QHBoxLayout" name="horizontalLayout">
+                 <property name="bottomMargin">
+                  <number>12</number>
+                 </property>
+                </layout>
                </widget>
               </item>
              </layout>
@@ -372,8 +376,6 @@ QTabWidget::tab-bar {
           </item>
          </layout>
          <zorder>scrollAreaGraph</zorder>
-         <zorder>scrollAreaGraph</zorder>
-         <zorder></zorder>
         </widget>
         <widget class="QWidget" name="tabStats">
          <attribute name="title">

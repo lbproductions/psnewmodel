@@ -32,6 +32,7 @@ class SoloOverviewWidget : public QWidget
         void createCountHash();
 
         int totalTypeCount(Round::SoloType type);
+        int totalCount();
 
         Ui::SoloOverviewWidget *ui;
 

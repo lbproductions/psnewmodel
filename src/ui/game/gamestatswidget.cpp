@@ -37,31 +37,31 @@ GameStatsWidget::GameStatsWidget(QWidget *parent) :
     static_cast<QVBoxLayout*>(ui->sidebar->layout())->addStretch();
 
     m_reContraWidget = new ReContraStatsWidget(this);
-    addWidget(m_reContraWidget, tr("Re/Contra"));
+    addWidget(m_reContraWidget, tr("Re/Contra"), QIcon(":/sidebar/games_c.png"));
 
     m_pointsStatsWidget = new PointsStatsWidget(this);
-    addWidget(m_pointsStatsWidget, tr("Points"));
+    addWidget(m_pointsStatsWidget, tr("Points"), QIcon(":/sidebar/players_c.png"));
 
     m_gamesTogetherWidget = new GamesTogetherWidget(this);
-    addWidget(m_gamesTogetherWidget, tr("Rounds\ntogether"));
+    addWidget(m_gamesTogetherWidget, tr("Rounds\ntogether"), QIcon(":/sidebar/players_c.png"));
 
     m_soloWidget = new SoloOverviewWidget(this);
-    addWidget(m_soloWidget, tr("Soli"));
+    addWidget(m_soloWidget, tr("Soli"), QIcon(":/gamewindow/solo.png"));
 
     m_drinksWidget = new DrinkStatsWidget(this);
-    addWidget(m_drinksWidget, tr("Drinks"));
+    addWidget(m_drinksWidget, tr("Drinks"), QIcon(":/gamewindow/drink.png"));
 
     //m_gameCompareStatsWidget = new GameCompareStatsWidget(this);
     //addWidget(tr("GameCompare"), m_gameCompareStatsWidget);
 
     m_timeStatsWidget = new TimeStatsWidget(this);
-    addWidget(m_timeStatsWidget, tr("TimeStats"));
+    addWidget(m_timeStatsWidget, tr("TimeStats"), QIcon(":/sidebar/players_c.png"));
 
     m_serveStatsWidget = new ServeStatsWidget(this);
-    addWidget(m_serveStatsWidget, tr("ServeStats"));
+    addWidget(m_serveStatsWidget, tr("ServeStats"), QIcon(":/sidebar/players_c.png"));
 
     m_seriesStatsWidget = new SeriesStatsWidget(this);
-    addWidget(m_seriesStatsWidget, tr("SeriesStats"));
+    addWidget(m_seriesStatsWidget, tr("SeriesStats"), QIcon(":/sidebar/players_c.png"));
 
     setAttribute(Qt::WA_DeleteOnClose, true);
 }
@@ -77,7 +77,7 @@ void GameStatsWidget::setGames(QList<QSharedPointer<Game> > games)
 
     m_reContraWidget->setGames(games);
 
-    m_pointsStatsWidget->StatsTreeWidget::setGames(games);
+    m_pointsStatsWidget->setGames(games);
 
     m_gamesTogetherWidget->StatsTreeWidget::setGames(games);
 
@@ -121,7 +121,7 @@ void GameStatsWidget::setLeague(QSharedPointer<League> _league)
     m_seriesStatsWidget->setLeague(league);
 
     m_placeStatsWidget = new PlaceStatsWidget(this);
-    addWidget(m_placeStatsWidget, tr("Places"));
+    addWidget(m_placeStatsWidget, tr("Places"), QIcon(":/sidebar/places_c.png"));
     m_placeStatsWidget->setLeague(league);
 }
 
