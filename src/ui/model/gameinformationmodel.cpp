@@ -161,7 +161,7 @@ QVariant GameInformationModel::headerData(int section, Qt::Orientation orientati
         return tr("Soli");
     }
     else if(extraRow == GameOverviewModel::SchweinereienRow) {
-        if(role == Qt::DecorationRole) {
+        if(role == Qt::DecorationRole && m_game->state() != Game::Finished && m_game->state() != Game::Paused) {
             return QPixmap(":/gamewindow/schweinerei");
         }
         return tr("Schweinereien");
