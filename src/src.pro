@@ -216,7 +216,8 @@ SOURCES += main.cpp \
     ui/stats/nightcharts.cpp \
     ui/delegates/playersdelegate.cpp \
     ui/delegates/gamesdelegate.cpp \
-    ui/delegates/placesdelegate.cpp
+    ui/delegates/placesdelegate.cpp \
+    ui/delegates/drinksdelegate.cpp
 
 
 HEADERS  += \
@@ -326,7 +327,8 @@ HEADERS  += \
     ui/stats/nightcharts.h \
     ui/delegates/playersdelegate.h \
     ui/delegates/gamesdelegate.h \
-    ui/delegates/placesdelegate.h
+    ui/delegates/placesdelegate.h \
+    ui/delegates/drinksdelegate.h
 
 
 FORMS += \

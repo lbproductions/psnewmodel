@@ -12,6 +12,7 @@
 #include <ui/delegates/gamesdelegate.h>
 #include <ui/delegates/playersdelegate.h>
 #include <ui/delegates/placesdelegate.h>
+#include <ui/delegates/drinksdelegate.h>
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -59,7 +60,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->listViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listViewPlaces->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->treeViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui->actionInformation, &QAction::triggered,
             ui->actionPlayerInformation, &QAction::trigger);
@@ -75,8 +76,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->listViewPlaces, &QListView::doubleClicked,
             this, &MainWindow::on_actionPlaceInformation_triggered);
 
-    ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
-    connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
+    ui->listViewDrinks->addAction(ui->actionDrinkInformation);
+    connect(ui->listViewDrinks, &QListView::doubleClicked,
             this, &MainWindow::on_actionDrinkInformation_triggered);
 
     ui->actionCheck_for_updates->setMenuRole(QAction::ApplicationSpecificRole);
@@ -108,10 +109,6 @@ void MainWindow::saveWindowState()
     QSettings settings;
     settings.setValue("mainwindow/geometry", saveGeometry());
     settings.setValue("mainwindow/windowState", saveState());
-    //settings.setValue("mainwindow/listviewplaces/state", ui->listViewPlaces->header()->saveState());
-    //settings.setValue("mainwindow/listViewPlayers/state", ui->listViewPlayers->header()->saveState());
-    //settings.setValue("mainwindow/treeviewgames/state", ui->listViewGames->header()->saveState());
-    settings.setValue("mainwindow/treeviewdrinks/state", ui->treeViewDrinks->header()->saveState());
 }
 
 void MainWindow::restoreWindowState()
@@ -119,10 +116,6 @@ void MainWindow::restoreWindowState()
     QSettings settings;
     restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
     restoreState(settings.value("mainwindow/windowState").toByteArray());
-    //ui->listViewPlaces->header()->restoreState(settings.value("mainwindow/listviewplaces/state").toByteArray());
-    //ui->listViewPlayers->header()->restoreState(settings.value("mainwindow/listViewPlayers/state").toByteArray());
-   // ui->listViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
-    ui->treeViewDrinks->header()->restoreState(settings.value("mainwindow/treeviewdrinks/state").toByteArray());
 }
 
 void MainWindow::on_actionStart_triggered()
@@ -171,9 +164,12 @@ void MainWindow::on_actionPlaces_triggered()
 
 void MainWindow::on_actionDrinks_triggered()
 {
-    if(!ui->treeViewDrinks->model()) {
-        QpSortFilterProxyObjectModel<Drink> *modelDrinks = new QpSortFilterProxyObjectModel<Drink>(new DrinksListModel(this), this);
-        ui->treeViewDrinks->setModel(modelDrinks);
+    if(!ui->listViewDrinks->model()) {
+        DrinksSortFilterModel *modelDrinks = new DrinksSortFilterModel(this);
+        modelDrinks->setSortRole(DrinksSortFilterModel::DrinkCount);
+        modelDrinks->sort(0, Qt::DescendingOrder);
+        ui->listViewDrinks->setModel(modelDrinks);
+        ui->listViewDrinks->setItemDelegate(new DrinksDelegate(ui->listViewDrinks,this));
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pageDrinks);
@@ -199,7 +195,7 @@ void MainWindow::on_actionDrinkInformation_triggered()
     if(ui->stackedWidget->currentWidget() != ui->pageDrinks)
         return;
 
-    QSharedPointer<Drink> drink = Tools::selectedObjectFrom<Drink>(ui->treeViewDrinks);
+    QSharedPointer<Drink> drink = Tools::selectedObjectFrom<Drink>(ui->listViewDrinks);
     if(!drink)
         return;
 

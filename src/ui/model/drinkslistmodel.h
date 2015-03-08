@@ -27,4 +27,21 @@ public:
 
 };
 
+class DrinksSortFilterModel : public QpSortFilterProxyObjectModel<Drink>
+{
+    Q_OBJECT
+public:
+
+    enum SortRole {
+        Name = Qt::UserRole + 1,
+        DrinkCount
+    };
+
+    explicit DrinksSortFilterModel(QObject *parent = 0);
+
+protected:
+    bool filterAcceptsObject(QSharedPointer<Drink> drink) const Q_DECL_OVERRIDE;
+    bool lessThan(QSharedPointer<Drink> left, QSharedPointer<Drink> right) const Q_DECL_OVERRIDE;
+};
+
 #endif // DRINKSLISTMODEL_H

@@ -44,6 +44,8 @@ void DrinkInformationDialog::setDrink(const QSharedPointer<Drink> &drink)
     }
     ui->picture->setPixmap(m_drink->picture());
     ui->labelCount->setText(QString::number(drink->liveDrinks().size()));
+
+    checkData();
 }
 
 void DrinkInformationDialog::accept()

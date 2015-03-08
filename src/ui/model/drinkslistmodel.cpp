@@ -76,5 +76,27 @@ QVariant DrinksListModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
 
+DrinksSortFilterModel::DrinksSortFilterModel(QObject *parent) :
+    QpSortFilterProxyObjectModel<Drink>(new DrinksListModel(parent), parent)
+{
+}
+
+bool DrinksSortFilterModel::filterAcceptsObject(QSharedPointer<Drink> drink) const
+{
+    Q_UNUSED(drink)
+
+    return true;
+}
+
+bool DrinksSortFilterModel::lessThan(QSharedPointer<Drink> left, QSharedPointer<Drink> right) const
+{
+    if(sortRole() == Name)
+        return left->name() < right->name();
+
+    if(sortRole() == DrinkCount)
+        return left->liveDrinks().size() < right->liveDrinks().size();
+
+    return QpSortFilterProxyObjectModel<Drink>::lessThan(left, right);
 }
