@@ -26,6 +26,14 @@ PlaceInformationDialog::~PlaceInformationDialog()
 void PlaceInformationDialog::setPlace(QSharedPointer<Place> place)
 {
     m_place = place;
+
+    ui->lineEditNumber->setText(QString::number(place->houseNumber()));
+    ui->lineEditPLZ->setText(QString::number(place->postalCode()));
+    ui->lineEditStreet->setText(place->street());
+    ui->lineEditTown->setText(place->city());
+    ui->imageWellIcon->setPixmap(place->cityEmblem());
+
+    checkData();
 }
 
 void PlaceInformationDialog::checkData()
@@ -60,6 +68,9 @@ void PlaceInformationDialog::accept()
     m_place->setPostalCode(ui->lineEditPLZ->text().toInt());
     m_place->setStreet(ui->lineEditStreet->text());
     m_place->setHouseNumber(ui->lineEditNumber->text().toInt());
+    m_place->setCityEmblem(ui->imageWellIcon->pixmap());
+
+    Qp::update(m_place);
 
 
     if(create)

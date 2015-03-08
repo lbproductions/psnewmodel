@@ -51,6 +51,8 @@ private slots:
 
     void on_actionNew_Drink_triggered();
 
+    void on_actionPlaceInformation_triggered();
+
 signals:
     void photosAdded();
 

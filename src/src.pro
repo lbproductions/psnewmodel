@@ -215,7 +215,8 @@ SOURCES += main.cpp \
     ui/stats/barchartwidget.cpp \
     ui/stats/nightcharts.cpp \
     ui/delegates/playersdelegate.cpp \
-    ui/delegates/gamesdelegate.cpp
+    ui/delegates/gamesdelegate.cpp \
+    ui/delegates/placesdelegate.cpp
 
 
 HEADERS  += \
@@ -324,7 +325,8 @@ HEADERS  += \
     ui/stats/barchartwidget.h \
     ui/stats/nightcharts.h \
     ui/delegates/playersdelegate.h \
-    ui/delegates/gamesdelegate.h
+    ui/delegates/gamesdelegate.h \
+    ui/delegates/placesdelegate.h
 
 
 FORMS += \

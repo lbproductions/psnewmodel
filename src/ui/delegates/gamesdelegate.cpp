@@ -52,20 +52,22 @@ void GamesDelegate::paint(QPainter *painter, const QStyleOptionViewItem &option,
                       .arg(game->finishedRoundCount())
                       .arg(game->totalRoundCount()));
 
-    rect.adjust(0,0,-13,0);
-    QRect siteRect;
-    painter->drawText(rect, Qt::AlignRight | Qt::AlignBottom,
-                      tr("%1").arg(game->site()->displayString()),
-                      &siteRect);
+    if(game->site()) {
+        rect.adjust(0,0,-13,0);
+        QRect siteRect;
+        painter->drawText(rect, Qt::AlignRight | Qt::AlignBottom,
+                          tr("%1").arg(game->site()->displayString()),
+                          &siteRect);
 
-    auto list = game->site()->players();
-    if(!list.isEmpty()) {
-        painter->setBrush(list.first()->color());
-        if(list.first()->color() == QColor(Qt::white))
-            painter->setPen(Qt::gray);
-        else
-            painter->setPen(list.first()->color());
-        painter->drawEllipse(QRect(siteRect.topRight() + QPoint(4,3), QSize(10,10)));
+        auto list = game->site()->players();
+        if(!list.isEmpty()) {
+            painter->setBrush(list.first()->color());
+            if(list.first()->color() == QColor(Qt::white))
+                painter->setPen(Qt::gray);
+            else
+                painter->setPen(list.first()->color());
+            painter->drawEllipse(QRect(siteRect.topRight() + QPoint(4,3), QSize(10,10)));
+        }
     }
 
     painter->restore();

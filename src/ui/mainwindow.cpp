@@ -11,6 +11,7 @@
 
 #include <ui/delegates/gamesdelegate.h>
 #include <ui/delegates/playersdelegate.h>
+#include <ui/delegates/placesdelegate.h>
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -57,7 +58,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->listViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
-    ui->treeViewPlaces->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewPlaces->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
 
     connect(ui->actionInformation, &QAction::triggered,
@@ -69,6 +70,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->listViewPlayers->addAction(ui->actionPlayerInformation);
     connect(ui->listViewPlayers, &QListView::doubleClicked,
             this, &MainWindow::on_actionPlayerInformation_triggered);
+
+    ui->listViewPlaces->addAction(ui->actionPlaceInformation);
+    connect(ui->listViewPlaces, &QListView::doubleClicked,
+            this, &MainWindow::on_actionPlaceInformation_triggered);
 
     ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
     connect(ui->treeViewDrinks, &QTreeView::doubleClicked,
@@ -103,7 +108,7 @@ void MainWindow::saveWindowState()
     QSettings settings;
     settings.setValue("mainwindow/geometry", saveGeometry());
     settings.setValue("mainwindow/windowState", saveState());
-    settings.setValue("mainwindow/treeviewplaces/state", ui->treeViewPlaces->header()->saveState());
+    //settings.setValue("mainwindow/listviewplaces/state", ui->listViewPlaces->header()->saveState());
     //settings.setValue("mainwindow/listViewPlayers/state", ui->listViewPlayers->header()->saveState());
     //settings.setValue("mainwindow/treeviewgames/state", ui->listViewGames->header()->saveState());
     settings.setValue("mainwindow/treeviewdrinks/state", ui->treeViewDrinks->header()->saveState());
@@ -114,7 +119,7 @@ void MainWindow::restoreWindowState()
     QSettings settings;
     restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
     restoreState(settings.value("mainwindow/windowState").toByteArray());
-    ui->treeViewPlaces->header()->restoreState(settings.value("mainwindow/treeviewplaces/state").toByteArray());
+    //ui->listViewPlaces->header()->restoreState(settings.value("mainwindow/listviewplaces/state").toByteArray());
     //ui->listViewPlayers->header()->restoreState(settings.value("mainwindow/listViewPlayers/state").toByteArray());
    // ui->listViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
     ui->treeViewDrinks->header()->restoreState(settings.value("mainwindow/treeviewdrinks/state").toByteArray());
@@ -153,22 +158,12 @@ void MainWindow::on_actionGames_triggered()
 
 void MainWindow::on_actionPlaces_triggered()
 {
-    if(!ui->treeViewPlaces->model()) {
-        QpSortFilterProxyObjectModel<Place> *model = new QpSortFilterProxyObjectModel<Place>(new PlacesListModel(this), this);
-        ui->treeViewPlaces->setModel(model);
-
-        QSettings settings;
-        if(!settings.contains("mainwindow/treeviewplaces/state")) {
-            ui->treeViewPlaces->sortByColumn(PlacesListModel::GameCountColumn, Qt::DescendingOrder);
-            QHeaderView *h = ui->treeViewPlaces->header();
-            h->resizeSection(PlacesListModel::CityEmblemColumn, 22);
-            h->resizeSection(PlacesListModel::PostalCodeColumn, 65);
-            h->resizeSection(PlacesListModel::CityColumn, 80);
-            h->resizeSection(PlacesListModel::StreetColumn, 160);
-            h->resizeSection(PlacesListModel::HouseNumberColumn, 40);
-            h->resizeSection(PlacesListModel::CommentColumn, 100);
-            h->resizeSection(PlacesListModel::PlayersColumn, 140);
-        }
+    if(!ui->listViewPlaces->model()) {
+        PlacesSortFilterModel *model = new PlacesSortFilterModel(this);
+        model->setSortRole(PlacesSortFilterModel::Games);
+        model->sort(0, Qt::DescendingOrder);
+        ui->listViewPlaces->setModel(model);
+        ui->listViewPlaces->setItemDelegate(new PlacesDelegate(ui->listViewPlaces, this));
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pagePlaces);
@@ -302,5 +297,19 @@ void MainWindow::on_actionNew_Place_triggered()
 void MainWindow::on_actionNew_Drink_triggered()
 {
     DrinkInformationDialog dialog;
+    dialog.exec();
+}
+
+void MainWindow::on_actionPlaceInformation_triggered()
+{
+    if(ui->stackedWidget->currentWidget() != ui->pagePlaces)
+        return;
+
+    QSharedPointer<Place> place = Tools::selectedObjectFrom<Place>(ui->listViewPlaces);
+    if(!place)
+        return;
+
+    PlaceInformationDialog dialog;
+    dialog.setPlace(place);
     dialog.exec();
 }

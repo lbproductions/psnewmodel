@@ -102,24 +102,6 @@ void PlayersDelegate::paint(QPainter *painter, const QStyleOptionViewItem &optio
     QPoint lossesSubtitlePos = option.rect.topLeft() + QPoint(option.rect.width()-distanceLeft-gamesWidth-2*itemDistance-winsWidth-lossesWidth, gamesOffset/2 + numberHeight);
     drawText(painter, QRect(lossesSubtitlePos, QSize(lossesWidth, subtitleHeight)), Qt::AlignCenter, lossesSubtitle, option);
     painter->restore();
-
-    /*
-    painter->save();
-    painter->setFont(subtitleFont);
-    QString wins = QString("%1 wins").arg(player->wins());
-    QString losses = QString("%1 losses").arg(player->losses());
-
-    int winsStartHeight = gamesOffset/2;
-    int winsWidth = qMax(painter->fontMetrics().width(wins), painter->fontMetrics().width(losses));
-
-    QPoint winsPos = option.rect.topLeft() + QPoint(option.rect.width()-distanceLeft-gamesWidth-distanceLeft-winsWidth, winsStartHeight);
-    drawText(painter, QRect(winsPos, QSize(winsWidth, numberHeight)), Qt::AlignRight | Qt::AlignTop, wins, option, Qt::black);
-
-    QPoint lossesPos = option.rect.topLeft() + QPoint(option.rect.width()-distanceLeft-gamesWidth-distanceLeft-winsWidth, gamesOffset/2 + numberHeight);
-    drawText(painter, QRect(lossesPos, QSize(winsWidth, subtitleHeight)), Qt::AlignRight | Qt::AlignBottom, losses, option);
-
-    painter->restore();
-    */
 }
 
 QSize PlayersDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const

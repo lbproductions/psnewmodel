@@ -57,7 +57,7 @@ QVariant PlacesListModel::data(const QModelIndex &index, int role) const
         case CityColumn:
             return place->city();
         case CityEmblemColumn:
-            return place->cityEmblem();
+            return place->cityEmblem().scaledToHeight(40, Qt::SmoothTransformation);
         case StreetColumn:
             return place->street();
         case HouseNumberColumn:
@@ -95,4 +95,27 @@ QVariant PlacesListModel::data(const QModelIndex &index, int role) const
     }
 
     return QVariant();
+}
+
+PlacesSortFilterModel::PlacesSortFilterModel(QObject *parent) :
+    QpSortFilterProxyObjectModel<Place>(new PlacesListModel(parent), parent)
+{
+}
+
+bool PlacesSortFilterModel::filterAcceptsObject(QSharedPointer<Place> place) const
+{
+    Q_UNUSED(place)
+
+    return true;
+}
+
+bool PlacesSortFilterModel::lessThan(QSharedPointer<Place> left, QSharedPointer<Place> right) const
+{
+    if(sortRole() == Name)
+        return left->displayString() < right->displayString();
+
+    if(sortRole() == Games)
+        return left->games().size() < right->games().size();
+
+    return QpSortFilterProxyObjectModel<Place>::lessThan(left, right);
 }

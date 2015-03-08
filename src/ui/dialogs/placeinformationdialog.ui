@@ -66,8 +66,26 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="3" rowspan="2">
+    <widget class="ImageWell" name="imageWellIcon">
+     <property name="minimumSize">
+      <size>
+       <width>70</width>
+       <height>0</height>
+      </size>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>ImageWell</class>
+   <extends>QFrame</extends>
+   <header location="global">ui/widgets/imagewell.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>

@@ -207,12 +207,16 @@ QRectF NoisyGradientItemDelegate::drawText(QPainter *painter,
 
 QSize NoisyGradientItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    return QSize(0,18);
+
+    /* Returns extremly large sizes for cells with pixmaps in it
     QSize size = QStyledItemDelegate::sizeHint(option, index);
     if (m_view->selectionModel()->selectedIndexes().contains(index)) {
         size.setHeight(size.height() + 1);
     }
 
     return size;
+    */
 }
 
 void NoisyGradientItemDelegate::setCheckBoxOffset(const QPoint &offset)
