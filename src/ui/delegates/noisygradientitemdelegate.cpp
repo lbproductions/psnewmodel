@@ -116,11 +116,21 @@ void NoisyGradientItemDelegate::paint(QPainter *painter, const QStyleOptionViewI
 
 
 QRectF NoisyGradientItemDelegate::drawTitleText(QPainter *painter,
-                                              const QStyleOptionViewItem &option,
-                                              const QString &text,
-                                              const QPoint &offset) const
+                                                const QStyleOptionViewItem &option,
+                                                const QString &text,
+                                                const QPoint &offset) const
 {
+    return drawTitleText(painter, option.rect.adjusted(offset.x(),
+                                                       offset.y(),
+                                                       -TEXT_RIGHT_DISTANCE,
+                                                       -TEXT_FOOT_DISTANCE),
+                         Qt::AlignLeft,
+                         text,
+                         option);
+}
 
+QRectF NoisyGradientItemDelegate::drawTitleText(QPainter *painter, const QRect rect, int flags, const QString &text, const QStyleOptionViewItem &option) const
+{
     QColor COLOR_TITLE = COLOR_TITLE_NORMAL;
     QColor COLOR_TITLE_SHADOW = COLOR_TITLE_NORMAL_SHADOW;
 
@@ -139,20 +149,18 @@ QRectF NoisyGradientItemDelegate::drawTitleText(QPainter *painter,
     // Shadow title
     QRectF shadowBoundingRect;
     painter->setPen(COLOR_TITLE_SHADOW);
-    painter->drawText(option.rect.adjusted(offset.x() + TITLE_OFFSET_SHADOW.x(),
-                                           offset.y() + TITLE_OFFSET_SHADOW.y(),
-                                           -offset.x() + TITLE_OFFSET_SHADOW.x(),
-                                           -offset.y() + TITLE_OFFSET_SHADOW.y()),
-                      Qt::AlignLeft,
+    painter->drawText(rect.adjusted(TITLE_OFFSET_SHADOW.x(),
+                                    TITLE_OFFSET_SHADOW.y(),
+                                    0,0),
+                      flags,
                       text,
                       &shadowBoundingRect);
 
     // Foreground title
     QRectF titleBoundingRect;
     painter->setPen(COLOR_TITLE);
-    painter->drawText(option.rect.adjusted(offset.x(), offset.y(),
-                                           -offset.x(), -offset.y()),
-                      Qt::AlignLeft,
+    painter->drawText(rect,
+                      flags,
                       text,
                       &titleBoundingRect);
     painter->restore();
@@ -160,13 +168,12 @@ QRectF NoisyGradientItemDelegate::drawTitleText(QPainter *painter,
     return shadowBoundingRect.united(titleBoundingRect);
 }
 
-QRectF NoisyGradientItemDelegate::drawText(QPainter *painter,
-                                         const QStyleOptionViewItem &option,
-                                         const QString &text,
-                                         const QPoint &offset,
-                                         int alignment) const
+QRectF NoisyGradientItemDelegate::drawText(QPainter *painter, const QRect rect, int flags, const QString &text, const QStyleOptionViewItem &option, const QColor textColor) const
 {
     QColor COLOR_TEXT = COLOR_TEXT_NORMAL;
+    if(textColor.isValid()) {
+        COLOR_TEXT = textColor;
+    }
 
     if (option.state & QStyle::State_Selected) {
         COLOR_TEXT = COLOR_TEXT_SELECTED;
@@ -179,13 +186,23 @@ QRectF NoisyGradientItemDelegate::drawText(QPainter *painter,
     QFont font = painter->font();
     font.setBold(false);
     painter->setFont(font);
-    painter->drawText(option.rect.adjusted(offset.x(), offset.y(),
-                                           -TEXT_RIGHT_DISTANCE, -TEXT_FOOT_DISTANCE),
-                      alignment,
+    painter->drawText(rect,
+                      flags,
                       text,
                       &boundingRect);
     painter->restore();
     return boundingRect;
+}
+
+QRectF NoisyGradientItemDelegate::drawText(QPainter *painter,
+                                           const QStyleOptionViewItem &option,
+                                           const QString &text,
+                                           const QPoint &offset,
+                                           int alignment) const
+{
+    return drawText(painter, option.rect.adjusted(offset.x(), offset.y(),-TEXT_RIGHT_DISTANCE,
+                                                  -TEXT_FOOT_DISTANCE),
+                    alignment, text, option);
 }
 
 QSize NoisyGradientItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
@@ -248,9 +265,9 @@ void NoisyGradientItemDelegate::drawCheckBox(QPainter *painter,
 }
 
 bool NoisyGradientItemDelegate::editorEvent(QEvent *event,
-                                                 QAbstractItemModel *model,
-                                                 const QStyleOptionViewItem &option,
-                                                 const QModelIndex &index)
+                                            QAbstractItemModel *model,
+                                            const QStyleOptionViewItem &option,
+                                            const QModelIndex &index)
 {
     if ((event->type() == QEvent::MouseButtonRelease)
             || (event->type() == QEvent::MouseButtonDblClick)) {
@@ -287,7 +304,7 @@ bool NoisyGradientItemDelegate::editorEvent(QEvent *event,
 void NoisyGradientItemDelegate::drawPixmap(QPainter *painter, const QStyleOptionViewItem &option,const QPixmap &pixmap, const QPoint &offset) const
 {
     QRect rect(option.rect.adjusted(offset.x(), offset.y(),
-                                      offset.x(), offset.y()).topLeft(),
+                                    offset.x(), offset.y()).topLeft(),
                pixmap.size());
     painter->drawPixmap(rect,
                         pixmap);

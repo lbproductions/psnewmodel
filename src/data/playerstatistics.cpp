@@ -81,6 +81,7 @@ QList<QSharedPointer<Game> > PlayerStatistics::wins() const
             }
         }
     }
+    /*
     // TODO: Remove or change these loop into current data structure
     if(isAllGames()) {
         foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
@@ -91,6 +92,7 @@ QList<QSharedPointer<Game> > PlayerStatistics::wins() const
             }
         }
     }
+    */
     return result;
 }
 
@@ -118,6 +120,7 @@ QList<QSharedPointer<Game> > PlayerStatistics::losses() const
             }
         }
     }
+    /*
     // TODO: Remove or change these loop into current data structure
     if(isAllGames()) {
         foreach(QSharedPointer<OLD_OfflineGameInformation> info, player()->offlineGameInformation()) {
@@ -126,6 +129,7 @@ QList<QSharedPointer<Game> > PlayerStatistics::losses() const
             }
         }
     }
+    */
     return result;
 }
 

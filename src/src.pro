@@ -190,9 +190,9 @@ SOURCES += main.cpp \
     ui/stats/drinkstatswidget.cpp \
     ui/stats/gamecomparestatswidget.cpp \
     ui/widgets/startwidget.cpp \
-    ui/widgets/noisygradientitemdelegate.cpp \
+    ui/delegates/noisygradientitemdelegate.cpp \
     ui/model/placeslistmodel.cpp \
-    ui/widgets/leaguesdelegate.cpp \
+    ui/delegates/leaguesdelegate.cpp \
     ui/model/leaguelistmodel.cpp \
     ui/stats/timestatswidget.cpp \
     application.cpp \
@@ -213,7 +213,9 @@ SOURCES += main.cpp \
     ui/stats/recontrastatslegendwidget.cpp \
     ui/stats/recontrageneralstatswidget.cpp \
     ui/stats/barchartwidget.cpp \
-    ui/stats/nightcharts.cpp
+    ui/stats/nightcharts.cpp \
+    ui/delegates/playersdelegate.cpp \
+    ui/delegates/gamesdelegate.cpp
 
 
 HEADERS  += \
@@ -297,9 +299,9 @@ HEADERS  += \
     ui/stats/drinkstatswidget.h \
     ui/stats/gamecomparestatswidget.h \
     ui/widgets/startwidget.h \
-    ui/widgets/noisygradientitemdelegate.h \
+    ui/delegates/noisygradientitemdelegate.h \
     ui/model/placeslistmodel.h \
-    ui/widgets/leaguesdelegate.h \
+    ui/delegates/leaguesdelegate.h \
     ui/model/leaguelistmodel.h \
     ui/stats/timestatswidget.h \
     application.h \
@@ -320,7 +322,9 @@ HEADERS  += \
     ui/stats/recontrastatslegendwidget.h \
     ui/stats/recontrageneralstatswidget.h \
     ui/stats/barchartwidget.h \
-    ui/stats/nightcharts.h
+    ui/stats/nightcharts.h \
+    ui/delegates/playersdelegate.h \
+    ui/delegates/gamesdelegate.h
 
 
 FORMS += \

@@ -41,14 +41,23 @@ public:
                const QModelIndex &index) const Q_DECL_OVERRIDE;
 
     QRectF drawTitleText(QPainter *painter,
-                       const QStyleOptionViewItem &option,
-                       const QString &text,
-                       const QPoint &offset) const;
+                         const QStyleOptionViewItem &option,
+                         const QString &text,
+                         const QPoint &offset) const;
+    QRectF drawTitleText(QPainter *painter,
+                         const QRect rect, int flags,
+                         const QString &text,
+                         const QStyleOptionViewItem &option) const;
     QRectF drawText(QPainter *painter,
-                  const QStyleOptionViewItem &option,
-                  const QString &text,
-                  const QPoint &offset,
-                  int alignment = Qt::AlignLeft | Qt::AlignTop) const;
+                         const QRect rect, int flags,
+                         const QString &text,
+                         const QStyleOptionViewItem &option,
+                         const QColor textColor = QColor()) const;
+    QRectF drawText(QPainter *painter,
+                    const QStyleOptionViewItem &option,
+                    const QString &text,
+                    const QPoint &offset,
+                    int alignment = Qt::AlignLeft | Qt::AlignTop) const;
     void drawCheckBox(QPainter *painter,
                       const QStyleOptionViewItem &option,
                       const QModelIndex &index) const;
@@ -65,6 +74,7 @@ public:
                      const QModelIndex &index) Q_DECL_OVERRIDE;
 
     QAbstractItemView *view() const;
+    void restoreTextColor();
 
 protected:
     void setCheckBoxOffset(const QPoint &offset);

@@ -54,5 +54,22 @@ public:
     QVariant data(const QModelIndex &index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 };
 
+class PlayersSortFilterModel : public QpSortFilterProxyObjectModel<Player>
+{
+    Q_OBJECT
+public:
+
+    enum SortRole {
+        Name = Qt::UserRole + 1,
+        Games
+    };
+
+    explicit PlayersSortFilterModel(QObject *parent = 0);
+
+protected:
+    bool filterAcceptsObject(QSharedPointer<Player> player) const Q_DECL_OVERRIDE;
+    bool lessThan(QSharedPointer<Player> left, QSharedPointer<Player> right) const Q_DECL_OVERRIDE;
+};
+
 #endif // PLAYERSLISTMODEL_H
 

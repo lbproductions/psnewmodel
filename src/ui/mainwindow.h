@@ -7,8 +7,7 @@ namespace Ui {
 class MainWindow;
 }
 
-template<class T>
-class QpSortFilterProxyObjectModel;
+class PlayersSortFilterModel;
 class Player;
 
 class MainWindow : public QMainWindow
@@ -59,7 +58,7 @@ private:
     friend class StartWidget;
 
     Ui::MainWindow *ui;
-    QpSortFilterProxyObjectModel<Player>* m_playerListModel;
+    PlayersSortFilterModel* m_playerListModel;
 
     void saveWindowState();
 };

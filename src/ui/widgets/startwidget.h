@@ -2,22 +2,9 @@
 #define STARTWIDGET_H
 
 #include <QWidget>
-#include "noisygradientitemdelegate.h"
 
 class MainWindow;
 class GameSortFilterModel;
-class Game;
-
-class UnfinishedGamesDelegate : public NoisyGradientItemDelegate
-{
-public:
-    explicit UnfinishedGamesDelegate(QAbstractItemView *view, QObject *parent = 0);
-    void paint(QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const Q_DECL_OVERRIDE;
-
-private:
-    QSharedPointer<Game> forIndex(const QModelIndex &index) const;
-};
 
 namespace Ui {
 class StartWidget;

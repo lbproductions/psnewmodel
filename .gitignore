@@ -1,5 +1,3 @@
-# C++ objects and libs
-
 *.slo
 *.lo
 *.o
@@ -8,14 +6,11 @@
 *.lai
 *.so
 *.dll
-
-# Qt-es
-
 *.pro.user
 *.pro.user.*
 moc_*.cpp
 qrc_*.cpp
 Makefile
 *-build-*
-
 /src/local_dbconfig.h
+.DS_Store

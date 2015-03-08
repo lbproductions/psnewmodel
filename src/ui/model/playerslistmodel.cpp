@@ -173,3 +173,27 @@ QVariant PlayersListModel::data(const QModelIndex &index, int role) const
 
     return QVariant();
 }
+
+
+PlayersSortFilterModel::PlayersSortFilterModel(QObject *parent) :
+    QpSortFilterProxyObjectModel<Player>(new PlayersListModel(parent), parent)
+{
+}
+
+bool PlayersSortFilterModel::filterAcceptsObject(QSharedPointer<Player> player) const
+{
+    Q_UNUSED(player)
+
+    return true;
+}
+
+bool PlayersSortFilterModel::lessThan(QSharedPointer<Player> left, QSharedPointer<Player> right) const
+{
+    if(sortRole() == Name)
+        return left->name() < right->name();
+
+    if(sortRole() == Games)
+        return left->games().size() < right->games().size();
+
+    return QpSortFilterProxyObjectModel<Player>::lessThan(left, right);
+}

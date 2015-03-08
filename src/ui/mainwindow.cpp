@@ -8,7 +8,9 @@
 #include "chooselibrarywidget.h"
 #include "ui/league/addleaguedialog.h"
 #include "ui/dialogs/addphotosdialog.h"
-#include <ui/widgets/startwidget.h>
+
+#include <ui/delegates/gamesdelegate.h>
+#include <ui/delegates/playersdelegate.h>
 
 #include <library.h>
 #include <ui/model/playerslistmodel.h>
@@ -53,7 +55,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->toolButtonPlayers->setDefaultAction(ui->actionPlayers);
     ui->toolButtonPhotos->setDefaultAction(ui->actionPhotos);
 
-    ui->treeViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
+    ui->listViewPlayers->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->listViewGames->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewPlaces->setAttribute(Qt::WA_MacShowFocusRect, false);
     ui->treeViewDrinks->setAttribute(Qt::WA_MacShowFocusRect, false);
@@ -64,8 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
             ui->actionDrinkInformation, &QAction::trigger);
     connect(ui->actionClose, &QAction::triggered, this, &QWidget::close);
 
-    ui->treeViewPlayers->addAction(ui->actionPlayerInformation);
-    connect(ui->treeViewPlayers, &QTreeView::doubleClicked,
+    ui->listViewPlayers->addAction(ui->actionPlayerInformation);
+    connect(ui->listViewPlayers, &QListView::doubleClicked,
             this, &MainWindow::on_actionPlayerInformation_triggered);
 
     ui->treeViewDrinks->addAction(ui->actionDrinkInformation);
@@ -102,7 +104,7 @@ void MainWindow::saveWindowState()
     settings.setValue("mainwindow/geometry", saveGeometry());
     settings.setValue("mainwindow/windowState", saveState());
     settings.setValue("mainwindow/treeviewplaces/state", ui->treeViewPlaces->header()->saveState());
-    settings.setValue("mainwindow/treeviewplayers/state", ui->treeViewPlayers->header()->saveState());
+    //settings.setValue("mainwindow/listViewPlayers/state", ui->listViewPlayers->header()->saveState());
     //settings.setValue("mainwindow/treeviewgames/state", ui->listViewGames->header()->saveState());
     settings.setValue("mainwindow/treeviewdrinks/state", ui->treeViewDrinks->header()->saveState());
 }
@@ -113,7 +115,7 @@ void MainWindow::restoreWindowState()
     restoreGeometry(settings.value("mainwindow/geometry").toByteArray());
     restoreState(settings.value("mainwindow/windowState").toByteArray());
     ui->treeViewPlaces->header()->restoreState(settings.value("mainwindow/treeviewplaces/state").toByteArray());
-    ui->treeViewPlayers->header()->restoreState(settings.value("mainwindow/treeviewplayers/state").toByteArray());
+    //ui->listViewPlayers->header()->restoreState(settings.value("mainwindow/listViewPlayers/state").toByteArray());
    // ui->listViewGames->header()->restoreState(settings.value("mainwindow/treeviewgames/state").toByteArray());
     ui->treeViewDrinks->header()->restoreState(settings.value("mainwindow/treeviewdrinks/state").toByteArray());
 }
@@ -125,47 +127,12 @@ void MainWindow::on_actionStart_triggered()
 
 void MainWindow::on_actionPlayers_triggered()
 {
-    if(!ui->treeViewPlayers->model()) {
-        QSettings settings;
-        m_playerListModel = new QpSortFilterProxyObjectModel<Player>(new PlayersListModel(this), this);
-        ui->treeViewPlayers->setModel(m_playerListModel);
-
-        if(!settings.contains("mainwindow/treeviewplayers/state")) {
-            ui->treeViewPlayers->sortByColumn(PlayersListModel::NameColumn, Qt::AscendingOrder);
-            QHeaderView *h = ui->treeViewPlayers->header();
-            h->resizeSection(PlayersListModel::AvatarColumn, 24);
-            h->resizeSection(PlayersListModel::ColorColumn, 24);
-            h->resizeSection(PlayersListModel::GameCountColumn, 45);
-            h->resizeSection(PlayersListModel::WinsCountColumn, 40);
-            h->resizeSection(PlayersListModel::LossesCountColumn, 80);
-
-            h->resizeSection(PlayersListModel::PointsColumn, 60);
-            h->resizeSection(PlayersListModel::AverageColumn, 60);
-            h->resizeSection(PlayersListModel::GamePointsColumn, 100);
-
-            h->resizeSection(PlayersListModel::LastGameColumn, 75);
-            h->resizeSection(PlayersListModel::LastWinColumn, 110);
-
-            h->resizeSection(PlayersListModel::ContraCountColumn, 50);
-            h->resizeSection(PlayersListModel::ContraPercentageColumn, 60);
-            h->resizeSection(PlayersListModel::ContraWinsColumn, 50);
-            h->resizeSection(PlayersListModel::ContraWinsPercentageColumn, 130);
-
-            h->resizeSection(PlayersListModel::ReCountColumn, 45);
-            h->resizeSection(PlayersListModel::RePercentageColumn, 60);
-            h->resizeSection(PlayersListModel::ReWinsColumn, 50);
-            h->resizeSection(PlayersListModel::ReWinsPercentageColumn, 130);
-
-            h->resizeSection(PlayersListModel::HochzeitenCountColumn, 60);
-            h->resizeSection(PlayersListModel::SchmeissereienCountColumn, 60);
-            h->resizeSection(PlayersListModel::SchweinereienCountColumn, 60);
-            h->resizeSection(PlayersListModel::SoloCountColumn, 60);
-            h->resizeSection(PlayersListModel::TrumpfabgabenCountColumn, 150);
-
-            h->resizeSection(PlayersListModel::GenderColumn, 60);
-            h->resizeSection(PlayersListModel::HeightColumn, 50);
-            h->resizeSection(PlayersListModel::WeightColumn, 50);
-        }
+    if(!ui->listViewPlayers->model()) {
+        m_playerListModel = new PlayersSortFilterModel(this);
+        m_playerListModel->setSortRole(PlayersSortFilterModel::Games);
+        m_playerListModel->sort(0, Qt::DescendingOrder);
+        ui->listViewPlayers->setModel(m_playerListModel);
+        ui->listViewPlayers->setItemDelegate(new PlayersDelegate(ui->listViewPlayers, this));
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pagePlayers);
@@ -178,36 +145,7 @@ void MainWindow::on_actionGames_triggered()
         modelGames->setSortRole(GameSortFilterModel::Date);
         modelGames->sort(0, Qt::DescendingOrder);
         ui->listViewGames->setModel(modelGames);
-        ui->listViewGames->setItemDelegate(new UnfinishedGamesDelegate(ui->listViewGames, this));
-
-        /*
-        QSettings settings;
-        if(!settings.contains("mainwindow/treeviewgames/state")) {
-            ui->treeViewGames->sortByColumn(GameListModel::DateColumn, Qt::DescendingOrder);
-            QHeaderView *h = ui->treeViewGames->header();
-            h->resizeSection(GameListModel::StateColumn, 22);
-            h->resizeSection(GameListModel::HostColumn, 22);
-            h->resizeSection(GameListModel::DateColumn, 85);
-            h->resizeSection(GameListModel::NameColumn, 210);
-            h->resizeSection(GameListModel::RoundCountColumn, 70);
-            h->resizeSection(GameListModel::PercentageComplete, 70);
-            h->resizeSection(GameListModel::LengthColumn, 100);
-
-            h->resizeSection(GameListModel::PlayerCountColumn, 85);
-            h->resizeSection(GameListModel::PlayersColumn, 270);
-            h->resizeSection(GameListModel::SiteColumn, 300);
-
-            h->resizeSection(GameListModel::TotalPointsColumn, 70);
-            h->resizeSection(GameListModel::ReWinRoundsCountColumn, 70);
-            h->resizeSection(GameListModel::ContraWinRoundsCountColumn, 70);
-            h->resizeSection(GameListModel::HochzeitCountColumn, 70);
-            h->resizeSection(GameListModel::SchmeissereienCountColumn, 70);
-            h->resizeSection(GameListModel::SchweinereienCountColumn, 70);
-            h->resizeSection(GameListModel::SoloCountColumn, 70);
-            h->resizeSection(GameListModel::TrumpfabgabenColumn, 70);
-            h->resizeSection(GameListModel::DrinkCount, 70);
-        }
-        */
+        ui->listViewGames->setItemDelegate(new GamesDelegate(ui->listViewGames, this));
     }
 
     ui->stackedWidget->setCurrentWidget(ui->pageGames);
@@ -251,7 +189,7 @@ void MainWindow::on_actionPlayerInformation_triggered()
     if(ui->stackedWidget->currentWidget() != ui->pagePlayers)
         return;
 
-    QModelIndexList list = ui->treeViewPlayers->selectionModel()->selectedIndexes();
+    QModelIndexList list = ui->listViewPlayers->selectionModel()->selectedIndexes();
     if(list.isEmpty())
         return;
 
