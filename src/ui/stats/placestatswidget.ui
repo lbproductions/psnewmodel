@@ -112,7 +112,6 @@
              <property name="title">
               <string>Wins</string>
              </property>
-             <zorder>groupBoxLosses</zorder>
             </widget>
            </item>
            <item>
