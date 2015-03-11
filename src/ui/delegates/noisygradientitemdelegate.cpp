@@ -58,11 +58,24 @@ void NoisyGradientItemDelegate::paint(QPainter *painter, const QStyleOptionViewI
     QColor COLOR_LINE_TOP1 = COLOR_LINE_TOP1_NORMAL;
     QColor COLOR_LINE_TOP2 = COLOR_LINE_TOP2_NORMAL;
     QColor COLOR_LINE_BOTTOM = COLOR_LINE_BOTTOM_NORMAL;
+
     QColor COLOR_GRADIENT_TOP = COLOR_GRADIENT_TOP_NORMAL;
+    if(m_backgroundTop.isValid()) {
+        COLOR_GRADIENT_TOP = m_backgroundTop;
+    }
     QColor COLOR_GRADIENT_BOTTOM = COLOR_GRADIENT_BOTTOM_NORMAL;
+    if(m_backgroundBottom.isValid()) {
+        COLOR_GRADIENT_BOTTOM = m_backgroundBottom;
+    }
 
     QColor COLOR_TITLE = COLOR_TITLE_NORMAL;
+    if(m_titleColor.isValid()) {
+        COLOR_TITLE = m_titleColor;
+    }
     QColor COLOR_TITLE_SHADOW = COLOR_TITLE_NORMAL_SHADOW;
+    if(m_titleShadowColor.isValid()) {
+        COLOR_TITLE_SHADOW = m_titleShadowColor;
+    }
 
     QColor COLOR_TEXT = COLOR_TEXT_NORMAL;
 
@@ -132,7 +145,13 @@ QRectF NoisyGradientItemDelegate::drawTitleText(QPainter *painter,
 QRectF NoisyGradientItemDelegate::drawTitleText(QPainter *painter, const QRect rect, int flags, const QString &text, const QStyleOptionViewItem &option) const
 {
     QColor COLOR_TITLE = COLOR_TITLE_NORMAL;
+    if(m_titleColor.isValid()) {
+        COLOR_TITLE = m_titleColor;
+    }
     QColor COLOR_TITLE_SHADOW = COLOR_TITLE_NORMAL_SHADOW;
+    if(m_titleShadowColor.isValid()) {
+        COLOR_TITLE_SHADOW = m_titleShadowColor;
+    }
 
     if (option.state & QStyle::State_Selected) {
         COLOR_TITLE = COLOR_TITLE_SELECTED;
@@ -207,6 +226,9 @@ QRectF NoisyGradientItemDelegate::drawText(QPainter *painter,
 
 QSize NoisyGradientItemDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
+    Q_UNUSED(index)
+    Q_UNUSED(option)
+
     return QSize(0,18);
 
     /* Returns extremly large sizes for cells with pixmaps in it
@@ -245,6 +267,24 @@ void NoisyGradientItemDelegate::repaintItemsWhenSelectionChanges(const QItemSele
 QAbstractItemView *NoisyGradientItemDelegate::view() const
 {
     return m_view;
+}
+
+void NoisyGradientItemDelegate::setBackgroundColors(QColor backgroundTop, QColor backgroundBottom)
+{
+    m_backgroundTop = backgroundTop;
+
+    if(backgroundBottom.isValid()) {
+        m_backgroundBottom = backgroundBottom;
+    }
+    else {
+        m_backgroundBottom = backgroundTop;
+    }
+}
+
+void NoisyGradientItemDelegate::setTitleColors(QColor titleColor, QColor titleShadowColor)
+{
+    m_titleColor = titleColor;
+    m_titleShadowColor = titleShadowColor;
 }
 
 void NoisyGradientItemDelegate::drawCheckBox(QPainter *painter,

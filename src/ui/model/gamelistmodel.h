@@ -58,6 +58,7 @@ public:
 
     QList<QString> players() const;
     void setPlayers(const QList<QString> &players);
+    void setPlayers(const QList<QSharedPointer<Player>> &players);
 
 protected:
     bool filterAcceptsObject(QSharedPointer<Game> game) const Q_DECL_OVERRIDE;

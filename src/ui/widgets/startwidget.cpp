@@ -87,7 +87,7 @@ void StartWidget::on_listViewLeague_doubleClicked(const QModelIndex &index)
 void StartWidget::on_lineEditSearch_textChanged(const QString &arg1)
 {
     if(arg1 == "") {
-        m_sortModel->setPlayers({});
+        m_sortModel->setPlayers(QStringList());
         return;
     }
 

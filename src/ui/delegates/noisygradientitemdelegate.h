@@ -74,7 +74,9 @@ public:
                      const QModelIndex &index) Q_DECL_OVERRIDE;
 
     QAbstractItemView *view() const;
-    void restoreTextColor();
+
+    void setBackgroundColors(QColor backgroundTop, QColor backgroundBottom = QColor());
+    void setTitleColors(QColor titleColor, QColor titleShadowColor = QColor());
 
 protected:
     void setCheckBoxOffset(const QPoint &offset);
@@ -86,6 +88,12 @@ private:
     QAbstractItemView *m_view;
 
     QPoint m_checkBoxOffset;
+
+    QColor m_backgroundTop;
+    QColor m_backgroundBottom;
+
+    QColor m_titleColor;
+    QColor m_titleShadowColor;
 };
 
 #endif // NOISYGRADIENTITEMDELEGATE_H

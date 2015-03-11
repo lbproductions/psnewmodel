@@ -18,12 +18,19 @@
 #include <ui/widgets/playerslistwidget.h>
 #include <ui/widgets/menubar.h>
 #include <ui/widgets/popupwidget.h>
+
+#include <ui/delegates/gamesdelegate.h>
+
 #include <ui/dialogs/drinkinformationdialog.h>
+
 #include <data/game.h>
 #include <data/place.h>
+#include <data/player.h>
+
 #include <ui/model/gameoverviewmodel.h>
 #include <ui/model/gameinformationmodel.h>
-#include <data/player.h>
+#include <ui/model/gamelistmodel.h>
+
 #include <misc/tools.h>
 #include <misc/settings.h>
 #include <misc/updater/updater.h>
@@ -68,6 +75,18 @@ GameWindow::GameWindow(QWidget *parent) :
     setAttribute(Qt::WA_DeleteOnClose, true);
 
     ui->listWidgetPlayers->setDragDropMode(QAbstractItemView::InternalMove);
+
+    m_openGamesSortFilterModel = new GameSortFilterModel(new GameListModel(this), this);
+    m_openGamesSortFilterModel->setFilterRole(GameSortFilterModel::UnfinishedStateFilter);
+    m_openGamesSortFilterModel->setSortRole(GameSortFilterModel::Date);
+    m_openGamesSortFilterModel->sort(0, Qt::DescendingOrder);
+    ui->listViewOpenGames->setModel(m_openGamesSortFilterModel);
+    GamesDelegate* gamesDelegate = new GamesDelegate(ui->listViewOpenGames, this);
+    gamesDelegate->setBackgroundColors(QColor(55,55,55));
+    gamesDelegate->setTitleColors(QColor(255,255,255), QColor(150,150,150));
+    ui->listViewOpenGames->setItemDelegate(gamesDelegate);
+    connect(ui->listViewOpenGames->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &GameWindow::on_listViewOpenGames_clicked);
+
 
     ui->tableViewInformation->hide();
     ui->tableViewOverview->hide();
@@ -558,6 +577,8 @@ void GameWindow::addPlayerToGame(QSharedPointer<Player> player)
     ui->listWidgetPlayers->add(player);
     if(ui->listWidgetPlayers->count() >= 4)
         ui->buttonBox->button(QDialogButtonBox::Ok)->setEnabled(true);
+
+    m_openGamesSortFilterModel->setPlayers(ui->listWidgetPlayers->items());
 }
 
 void GameWindow::on_buttonBox_accepted()
@@ -603,4 +624,26 @@ void GameWindow::on_actionNew_Drink_triggered()
 {
     DrinkInformationDialog dlg;
     dlg.exec();
+}
+
+void GameWindow::on_listViewOpenGames_activated(const QModelIndex &index)
+{
+    Q_UNUSED(index)
+
+    QSharedPointer<Game> game = Tools::selectedObjectFrom<Game>(ui->listViewOpenGames);
+    if(!game)
+        return;
+
+    setGame(game);
+}
+
+void GameWindow::on_listViewOpenGames_clicked(const QModelIndex &index)
+{
+    Q_UNUSED(index)
+
+    QSharedPointer<Game> game = Tools::selectedObjectFrom<Game>(ui->listViewOpenGames);
+    if(!game)
+        return;
+
+    ui->graphWidget->setGame(game);
 }

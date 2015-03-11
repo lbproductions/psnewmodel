@@ -18,6 +18,7 @@ class OverviewPlayerHeaderView;
 class StatisticsWidget;
 class ResumeWidget;
 class DialogController;
+class GameSortFilterModel;
 
 class GameWindow : public QMainWindow
 {
@@ -71,6 +72,10 @@ private slots:
 
     void on_actionNew_Drink_triggered();
 
+    void on_listViewOpenGames_activated(const QModelIndex &index);
+
+    void on_listViewOpenGames_clicked(const QModelIndex &index);
+
 private:
     Ui::GameWindow *ui;
 
@@ -79,6 +84,8 @@ private:
     GameOverviewModel *m_gameOverViewModel;
     GameInformationModel *m_informationModel;
     OverviewPlayerHeaderView *m_verticalHeaderView;
+
+    GameSortFilterModel* m_openGamesSortFilterModel;
 
     ResumeWidget* m_resumeWidget;
     DialogController *m_dialogController;

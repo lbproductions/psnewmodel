@@ -203,6 +203,16 @@ void GameSortFilterModel::setPlayers(const QList<QString> &players)
 {
     m_players = players;
 
-    this->invalidate();
+    invalidateFilter();
+}
+
+void GameSortFilterModel::setPlayers(const QList<QSharedPointer<Player> > &players)
+{
+    QStringList playerStrings;
+    foreach(QSharedPointer<Player> player, players) {
+        playerStrings.append(player->name());
+    }
+
+    setPlayers(playerStrings);
 }
 
