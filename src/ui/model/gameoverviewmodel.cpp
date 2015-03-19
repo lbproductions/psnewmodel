@@ -290,7 +290,7 @@ QVariant GameOverviewModel::headerData(int section, Qt::Orientation orientation,
         int playerSize = m_game->players().size();
 
         if(role == Qt::DisplayRole) {
-            if(roundIndex >= total)
+            if(roundIndex >= total || m_game->state() == Game::Finished)
                 return QVariant();
 
             if(roundIndex < count && playerSize > 0 && roundIndex % playerSize == 0) {
