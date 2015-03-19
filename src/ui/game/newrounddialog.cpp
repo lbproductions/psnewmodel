@@ -54,6 +54,16 @@ void NewRoundDialog::setRound(QSharedPointer<Round> round, Context context)
     QSharedPointer<Game> game = round->game();
     m_context = context;
 
+    ui->labelNextCardmixer->setText("");
+    if(context == NewRound && game->roundsToPlay() > 1) {
+        QSharedPointer<Player> cardmixer = round->cardMixer();
+        int index = game->players().indexOf(cardmixer);
+        QSharedPointer<Player> nextCardmixer = game->players().at((index+1)%game->players().size());
+        if(nextCardmixer) {
+            ui->labelNextCardmixer->setText(tr("Next cardmixer: ") + nextCardmixer->name());
+        }
+    }
+
     ui->textEditHochzeitComment->setText(round->comment());
     ui->textEditNormalComment->setText(round->comment());
     ui->textEditSoloComment->setText(round->comment());
